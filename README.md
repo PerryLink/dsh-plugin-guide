@@ -11,7 +11,7 @@ Official docs archive · Cordis primer · community deep-dives · battle-tested 
 [![GitHub stars](https://img.shields.io/github/stars/PerryLink/dsh-plugin-guide?style=for-the-badge&color=yellow&label=%E2%AD%90%20Stars)](https://github.com/PerryLink/dsh-plugin-guide/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/PerryLink/dsh-plugin-guide?style=for-the-badge&color=blue&label=Forks)](https://github.com/PerryLink/dsh-plugin-guide/network/members)
 [![verify-kit CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-plugin-guide/verify.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/PerryLink/dsh-plugin-guide/actions/workflows/verify.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)](LICENSE)
 [![Topic: dsh](https://img.shields.io/badge/Topic-dsh-4D6BFE?style=for-the-badge)](https://github.com/topics/dsh)
 [![Topic: dsh-plugin](https://img.shields.io/badge/Topic-dsh--plugin-8257D0?style=for-the-badge)](https://github.com/topics/dsh-plugin)
 [![Docs: EN/ZH](https://img.shields.io/badge/Docs-EN%2FZH-8257D0?style=for-the-badge)](references/official-docs/)
@@ -104,7 +104,7 @@ This repository is discoverable under the GitHub topics **[`dsh`](https://github
 
 ## 📄 License & attribution
 
-- Our own text (`SKILL.md`, `guide/`, `references/` reports, `scripts/`, this README): **MIT** — see [LICENSE](LICENSE).
+- Our own text (`SKILL.md`, `guide/`, `references/` reports, `scripts/`, this README): **Apache-2.0** — see [LICENSE](LICENSE).
 - Bundled third-party content is documented in [NOTICE.md](NOTICE.md), including its distribution boundaries
   (e.g. `downloads/` is local-only; `awesome-dsh-plugins` must not be redistributed).
 

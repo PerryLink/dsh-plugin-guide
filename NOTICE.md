@@ -1,6 +1,6 @@
 # NOTICE — 第三方内容归属与许可说明
 
-本仓库（dsh-plugin-guide）是对 DeepSeek Harness 插件开发资料的研究归档。**本仓库自有文本**（`SKILL.md`、`guide/`、`references/` 下的调研报告与汇总、`scripts/`、`README.md`）以 MIT 许可发布（见 [LICENSE](LICENSE)）。
+本仓库（dsh-plugin-guide）是对 DeepSeek Harness 插件开发资料的研究归档。**本仓库自有文本**（`SKILL.md`、`guide/`、`references/` 下的调研报告与汇总、`scripts/`、`README.md`）以 **Apache License 2.0** 许可发布（见 [LICENSE](LICENSE)）。
 
 ## 归档的第三方内容及其许可
 

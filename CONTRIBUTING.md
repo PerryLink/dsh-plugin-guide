@@ -22,7 +22,7 @@ Thanks for helping improve this knowledge base! English guide below, followed by
 
 1. Fork → branch → change → `pwsh -File scripts/verify-kit.ps1` → PR.
 2. Keep PRs small and scoped; one topic per PR.
-3. We follow MIT for our own text; third-party content keeps its upstream license.
+3. We follow Apache-2.0 for our own text; third-party content keeps its upstream license.
 
 ---
 
@@ -50,4 +50,4 @@ Thanks for helping improve this knowledge base! English guide below, followed by
 
 1. Fork → 分支 → 修改 → 跑 `pwsh -File scripts/verify-kit.ps1` → 提 PR。
 2. PR 小而聚焦，一个 PR 一个主题。
-3. 自有文本按 MIT 许可；第三方内容保留其上游许可。
+3. 自有文本按 Apache-2.0 许可；第三方内容保留其上游许可。
