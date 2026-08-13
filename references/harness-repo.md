@@ -13,7 +13,7 @@ DeepSeek Harness（DSH）是一个**基于 vendored Cordis 框架的插件式 ag
 
 `docs/architecture.md` §Cordis 开门见山：
 
-> [Cordis](cordis-primer.md) is the framework under dsh: plugins contribute services, typed events, and reversible effects to a shared context. Every part of the product is a plugin, including the model adapter, the tool registry, the session log, and the agent loop itself, so every part is replaceable from configuration.
+> [Cordis](official-docs/docs/cordis-primer.md) is the framework under dsh: plugins contribute services, typed events, and reversible effects to a shared context. Every part of the product is a plugin, including the model adapter, the tool registry, the session log, and the agent loop itself, so every part is replaceable from configuration.
 
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 
@@ -38,6 +38,8 @@ vendored 清单（`vendor/README.md` §Manifest，L13–L24）：
 | `timer/` | `@deepseek-ai/cordis-plugin-timer` | @cordisjs/plugin-timer | 1.1.2 | github.com/deepseek-harness/cordis |
 | `hmr/` | `@deepseek-ai/cordis-plugin-hmr` | @cordisjs/plugin-hmr | 1.0.15 | github.com/deepseek-harness/cordis |
 | `logger-console/` | `@deepseek-ai/cordis-plugin-logger-console` | @cordisjs/plugin-logger-console | 1.0.0 | github.com/deepseek-harness/cordis |
+
+（08-14 核查：`deepseek-harness/cordis` 已 404，`deepseek-harness` org 的 fork 仓库不再公开可访问；其源码以 harness 仓库 `vendor/` 内的 vendored 副本为准。）
 
 `vendor/README.md` 还记录了一份 exhaustive 的**本地修改日志（18 条）**，其中对插件作者最重要的是：
 - `cordis/src/fiber.ts` lifecycle hardening（effect 创建在 owner 处于 `UNLOADING` 时被拒绝；`PENDING`/`LOADING` 时合法）（L38，条目 6）。
