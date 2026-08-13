@@ -92,6 +92,12 @@ pwsh -File scripts/download-community-repos.ps1   # 15 सामुदायि�
 pwsh -File scripts/verify-kit.ps1   # महत्वपूर्ण पथ + टूटी कड़ियों की जाँच
 ```
 
+## सहभागी हों
+
+- ⭐ **स्टार दें** — इससे अन्य DSH प्लगइन लेखकों को यह मिल पाएगा।
+- कोई त्रुटि, नई समस्या या विश्लेषण योग्य रिपो मिला? [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) खोलें या pull request भेजें — देखें [CONTRIBUTING.md](CONTRIBUTING.md)।
+- समुदाय से जुड़ें: [DeepSeek Harness Discord](https://discord.gg/Ycq5dCaS4) · [आधिकारिक चर्चाएँ](https://github.com/deepseek-ai/deepseek-harness/discussions) · [`dsh-plugin` टॉपिक](https://github.com/topics/dsh-plugin)।
+
 ## लाइसेंस और श्रेय
 
 - हमारा अपना पाठ (`SKILL.md`, `guide/`, `references/` की रिपोर्टें, `scripts/`, यह README): **MIT** — देखें [LICENSE](LICENSE)।

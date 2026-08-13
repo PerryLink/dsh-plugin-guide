@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a wrong fact, a broken link, or a broken script
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please check that the issue is about **this repository's content**
+        (guide / references / scripts / README), not about DeepSeek Harness itself.
+  - type: input
+    id: location
+    attributes:
+      label: Where is the problem?
+      description: File path (e.g. `guide/plugin-dev-guide.md`) or URL.
+      placeholder: guide/plugin-dev-guide.md §7.3
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+      description: The wrong fact / broken link / failing command, and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Link to the authoritative source (official docs, repo file, command output).
+    validations:
+      required: false
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix (optional)
+      description: If you know the correction, tell us here.
+    validations:
+      required: false

@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest a new pitfall, deep-dive, or documentation improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like to see?
+      description: A new pitfall (with root cause + fix), a community repo to deep-dive, a missing section, or a translation fix.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Why is it valuable?
+      description: Who does it help and how?
+    validations:
+      required: false
+  - type: textarea
+    id: links
+    attributes:
+      label: Links / evidence
+      description: Pointers to the source material.
+    validations:
+      required: false

@@ -13,6 +13,8 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/PerryLink/dsh-plugin-guide/stargazers"><img src="https://img.shields.io/github/stars/PerryLink/dsh-plugin-guide?style=flat-square&color=yellow" alt="Stars"></a>
+  <a href="https://github.com/PerryLink/dsh-plugin-guide/network/members"><img src="https://img.shields.io/github/forks/PerryLink/dsh-plugin-guide?style=flat-square&color=blue" alt="Forks"></a>
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT">
   <img src="https://img.shields.io/badge/dsh-dsh--plugin-4D6BFE" alt="dsh-plugin">
   <img src="https://img.shields.io/badge/documents-EN%2FZH-8257D0" alt="Documents: EN/ZH">
@@ -91,6 +93,12 @@ pwsh -File scripts/download-community-repos.ps1   # 15 community repositories
 ```sh
 pwsh -File scripts/verify-kit.ps1   # critical paths + broken-link scan
 ```
+
+## Get involved
+
+- ⭐ **Star the repo** — it helps other DSH plugin authors discover it.
+- Found an error, a new pitfall, or a missing repo to deep-dive? Open an [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) or a pull request — see [CONTRIBUTING.md](CONTRIBUTING.md).
+- Join the community: [DeepSeek Harness Discord](https://discord.gg/Ycq5dCaS4) · [official discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) · the [`dsh-plugin` topic](https://github.com/topics/dsh-plugin).
 
 ## License & attribution
 

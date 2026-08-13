@@ -90,6 +90,12 @@ pwsh -File scripts/download-community-repos.ps1   # 15 个社区仓库
 pwsh -File scripts/verify-kit.ps1   # 关键路径 + 断链扫描
 ```
 
+## 参与共建
+
+- ⭐ **给仓库点 Star**——帮助更多 DSH 插件开发者发现它。
+- 发现错误、新坑或值得深读的仓库？提 [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) 或 Pull Request——见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+- 加入社区：[DeepSeek Harness Discord](https://discord.gg/Ycq5dCaS4) · [官方讨论区](https://github.com/deepseek-ai/deepseek-harness/discussions) · [`dsh-plugin` 话题页](https://github.com/topics/dsh-plugin)。
+
 ## 许可与归属
 
 - 自有文本（`SKILL.md`、`guide/`、`references/` 报告、`scripts/`、本 README）：**MIT** —— 见 [LICENSE](LICENSE)。

@@ -92,6 +92,12 @@ pwsh -File scripts/download-community-repos.ps1   # 15 repositórios comunitári
 pwsh -File scripts/verify-kit.ps1   # caminhos críticos + varredura de links quebrados
 ```
 
+## Participe
+
+- ⭐ **Dê uma estrela** — ajuda outros autores de plugins DSH a encontrá-lo.
+- Encontrou um erro, uma nova armadilha ou um repo que merece análise? Abra uma [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) ou um pull request — veja [CONTRIBUTING.md](CONTRIBUTING.md).
+- Junte-se à comunidade: [Discord do DeepSeek Harness](https://discord.gg/Ycq5dCaS4) · [discussões oficiais](https://github.com/deepseek-ai/deepseek-harness/discussions) · [topic `dsh-plugin`](https://github.com/topics/dsh-plugin).
+
 ## Licença e atribuição
 
 - Texto próprio (`SKILL.md`, `guide/`, relatórios de `references/`, `scripts/`, este README): **MIT** — veja [LICENSE](LICENSE).
