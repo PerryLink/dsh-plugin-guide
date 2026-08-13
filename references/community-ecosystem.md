@@ -20,7 +20,7 @@
 
 ## 3. 插件全量清单（dsh-plugin topic）
 
-工作区 `dsh-plugin-topic-2026-08-13/`（2026-08-13T15:15Z，304 仓库、去重 303 条）：`README.md` 全量清单表、`repos.tsv`、`raw-github-api-page-1..4.json`、`related-readmes/`。
+工作区快照两期：`dsh-plugin-topic-2026-08-13/`（2026-08-13T15:15Z，304 仓库、去重 303 条）与 `dsh-plugin-topic-2026-08-14/`（2026-08-13T18:36Z，API total_count 552–554、去重 550 条）：`README.md` 全量清单表、`repos.tsv`、`raw-github-api-page-*.json`、`related-readmes/`（仅 08-13 期）。约 3.5 小时内 +246 个仓库，与官方 npm 公开化同日。
 
 ## 4. 插件开发方法类仓库（深读重点）
 
@@ -39,6 +39,14 @@
 | [Nagi-ovo/dsh-find-plugins](https://github.com/Nagi-ovo/dsh-find-plugins) | 插件发现 | `downloads/community-repos/dsh-find-plugins/` |
 | [omdsh-dev/dsh-hub-workshop](https://github.com/omdsh-dev/dsh-hub-workshop) | 插件市场/注册 workshop | `downloads/community-repos/dsh-hub-workshop/` |
 
+### 4.1 08-14 新出现的 Web GUI 插件市场（观察，未深读）
+
+- [bradeGithub/DSH-Plugins-Marketplace](https://github.com/bradeGithub/DSH-Plugins-Marketplace) — 在 DSH Web GUI 内一键浏览/安装/更新 `topic:dsh-plugin` 的全部插件
+- [Toukaiteio/dsh-plugin-installer](https://github.com/Toukaiteio/dsh-plugin-installer) — 市场插件：接入 GitHub 插件生态
+- [Scorp1o117/dsh-plugin-marketplace](https://github.com/Scorp1o117/dsh-plugin-marketplace) — 设置页内浏览 topic：搜索、按 star 排序、展示安装指引
+
+三者均为 08-13/14 出现；安装权威与信任边界仍适用 dsh-hub-workshop 的"发现 ≠ 安装权限"结论（见 [community-repo-deep-dive.md](community-repo-deep-dive.md) §1.12；08-13 17:27Z 其 `registry-v1.json` 已上线、entries 仍空、11 个候选全部 blocked）。
+
 ## 5. Awesome 精选列表
 
 - [AdamPlatin123/awesome-dsh-plugins](https://github.com/AdamPlatin123/awesome-dsh-plugins) — 插件目录 + 每日兼容性追踪（`downloads/community-repos/awesome-dsh-plugins/`）
@@ -47,12 +55,26 @@
 - [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) — 插件精选列表
 - [bruc3van/awesome-dsh-plugin](https://github.com/bruc3van/awesome-dsh-plugin) — "30 秒找到适合你的插件"（`downloads/community-repos/awesome-dsh-plugin/`）
 - [Dominic789654/awesome-deepseek-harness](https://github.com/Dominic789654/awesome-deepseek-harness) — 插件/skill/MCP/编排/UI 策展
+- [walkinglabs/awesome-deepseek-harness-plugins](https://github.com/walkinglabs/awesome-deepseek-harness-plugins) — 双语精选：插件/工具/工作流/学习资源（08-14 新）
+- [vvlife/awesome-deepseek-harness-plugins](https://github.com/vvlife/awesome-deepseek-harness-plugins) — 插件/工具/皮肤/扩展策展（08-14 新）
+- [cccakeee/awesome-dsh-plugins](https://github.com/cccakeee/awesome-dsh-plugins) — evidence-led 目录：可加载扩展/skill/带权限意识的安装指引（08-14 新）
 
 ## 6. 社区与学习
 
 - [hikariming/dshfind](https://github.com/hikariming/dshfind) — DSH 学习与分享社区（MDX）
 - 论坛/博客/B 站线索：见 `cordis-paper-and-community.md` Part 2（84 条 URL 清单）
-- [turtle-ui](https://github.com/deepseek-harness/turtle-ui) — 官方 git 安装 prepare 脚本范例
+- turtle-ui — 官方 git 安装 prepare 脚本范例（**08-14 核查：仓库已 404**）；同用途的活范例见 [omdsh-dev/plugin-template](https://github.com/omdsh-dev/plugin-template) 的 `scripts/prepare.mjs`
+- dsh-external/hub — 生态 hub（**08-14 核查：仓库已 404**）
+
+### 6.1 08-14 新出现、未深读的候选仓库
+
+- [NanmiCoder/dsh-agent-teams](https://github.com/NanmiCoder/dsh-agent-teams) — AgentTeams 插件 + `skills/dsh-plugin-development/SKILL.md`
+- [vibeinging/dsh-tool-search](https://github.com/vibeinging/dsh-tool-search) — 按需工具发现插件
+- [zhu1090093659/dsh-web-ui](https://github.com/zhu1090093659/dsh-web-ui) — Web UI 插件与皮肤合集（task board/git graph/皮肤中心）
+- [ccch1mneyyy/dsh-cc-tui](https://github.com/ccch1mneyyy/dsh-cc-tui) — Claude Code 风格终端 TUI
+- [dataelement/dsh-desktop](https://github.com/dataelement/dsh-desktop) — 桌面客户端（未核实详情）
+- [hust-open-atom-club/oh-dsh-desktop](https://github.com/hust-open-atom-club/oh-dsh-desktop) — 可扩展 macOS 工作台 + 插件市场
+- [lhh010/dsh-bash-encoding](https://github.com/lhh010/dsh-bash-encoding) — bash 编码相关修复插件
 
 ## 7. 工作区已有插件实例（可作参考实现）
 

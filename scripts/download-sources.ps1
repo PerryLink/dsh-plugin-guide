@@ -1,9 +1,11 @@
-# DeepSeek Harness 插件开发资料全量下载脚本
+﻿# DeepSeek Harness 插件开发资料全量下载脚本
 # 输出: dsh-plugin-guide/downloads/{web,github,community} + manifest.tsv
+# 参数: -DocRoot <路径> 官方 checkout 的 docs 目录(Phase D 站点路由来源),默认本机 checkout。
+param([string]$DocRoot = 'D:\deepseek-harness\docs')
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'SilentlyContinue'
 
-$kit  = 'D:\deepseek-harness\Project\Plugins\dsh-plugin-guide'
+$kit  = Split-Path $PSScriptRoot -Parent
 $dl   = Join-Path $kit 'downloads'
 New-Item -ItemType Directory -Force -Path $dl | Out-Null
 $manifest = New-Object System.Collections.Generic.List[string]
@@ -117,7 +119,7 @@ if (Test-Path $ptreeFile) {
 
 # ---------- Phase D: GitHub Pages 全站爬取 ----------
 $siteBase = 'https://deepseek-harness.github.io/deepseek-harness/'
-$docRoot = 'D:\deepseek-harness\docs'
+$docRoot = $DocRoot
 $routes = New-Object System.Collections.Generic.HashSet[string]
 
 function SitePath([string]$rel) {

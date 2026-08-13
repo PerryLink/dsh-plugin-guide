@@ -36,6 +36,7 @@ Incluye:
 - **más de 20 errores reales verificados** (copias dobles de cordis, trío de tsconfig, zstd multiframe, …),
 - todo resumido en una **guía paso a paso** y una **chuleta de una página**,
 - y un **skill para agentes** (`dsh-plugin-guide`) invocable en cualquier sesión de agente.
+- **Actualidad:** verificado por última vez el 2026-08-14 — documentación oficial idéntica byte a byte a `master` (47f9438); etiquetas npm y el topic `dsh-plugin` (más de 550 repos) re-verificados en vivo.
 
 ## Contenido
 

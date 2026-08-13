@@ -145,6 +145,7 @@ Protocolo de chunks: `block-start` → `text-delta*` → `block-end` (bloque com
 - Junctions de Windows con PowerShell `New-Item -ItemType Junction`; la letra de unidad de vitest en mayúscula `C:/`.
 - `DSH_PERMISSION_MODE=danger-full-access` es de alto riesgo (sin backend de sandbox en Windows, aprobaciones desactivadas); `DSH_*` en `~/.dsh/.env` rompe el arranque.
 - Los archivos de sesión son zstd multiframe: usa `scanZstdFrames`/`createZstdFrameDecoder` (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`).
+- npm: `dsh` sin alcance es el proyecto ajeno node-dsh (un shell) — instala `@deepseek-ai/dsh`; `@deepseek-ai/dsh-tools` y `@deepseek-ai/dsh-session-persistence-jsonl` tienen `latest` obsoleto (0.0.1-rc.1), fija `next` (0.1.0-rc.6) (verificado 2026-08-14).
 - Haz `resolve()` en ambos lados antes de comparar rutas (trampa de barras invertidas de Windows).
 
 ## Índice de fuentes clave

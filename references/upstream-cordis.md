@@ -513,7 +513,7 @@ DSH 是“vendored Cordis 上的、基于插件的 agent harness”，因此 Cor
 
 - DSH 将 Cordis 及其基础库**源码 vendored** 进 `vendor/`（不再依赖 npm），以便“完全拥有框架层（可审计、可打补丁、可钉版本）”（https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/README.md ）。
 - 全部改名为 `@deepseek-ai` scope：`cordis` → `@deepseek-ai/cordis`；`@cordisjs/plugin-<x>` → `@deepseek-ai/cordis-plugin-<x>`。目录名与版本号不变。
-- 上游 SHA（manifest）：`cordis` 4.0.0-rc.7（package.json 显示 4.0.1）、`@cordisjs/plugin-loader` 1.0.0-rc.5 来自 https://github.com/cordiverse/cordis @ `56b3d4f725681cf4556c1a8695a709cc3b6eed74`；`include` 1.0.4 / `group` 1.0.0 / `timer` 1.1.2 / `hmr` 1.0.15 / `logger-console` 1.0.0 来自 https://github.com/deepseek-harness/cordis @ `abb0a307cb1d3b0947f455d590cf5ba922d4caa4`；`cosmokit` 1.8.1、`schemastery` 3.18.0。→ 注意：include/group/timer/hmr/logger-console 来自 **DSH 自己的 cordis fork**，core 与 loader 来自上游 cordiverse。
+- 上游 SHA（manifest）：`cordis` 4.0.0-rc.7（package.json 显示 4.0.1）、`@cordisjs/plugin-loader` 1.0.0-rc.5 来自 https://github.com/cordiverse/cordis @ `56b3d4f725681cf4556c1a8695a709cc3b6eed74`；`include` 1.0.4 / `group` 1.0.0 / `timer` 1.1.2 / `hmr` 1.0.15 / `logger-console` 1.0.0 来自 https://github.com/deepseek-harness/cordis @ `abb0a307cb1d3b0947f455d590cf5ba922d4caa4`（**08-14 核查：该 fork 仓库已 404**）；`cosmokit` 1.8.1、`schemastery` 3.18.0。→ 注意：include/group/timer/hmr/logger-console 来自 **DSH 自己的 cordis fork**，core 与 loader 来自上游 cordiverse。
 - 18 条本地修改记录在 `vendor/README.md`（生命周期加固、事务化 loader/include、`!!js`/`disabled` 插值、`@deepseek-ai` rescope 等）。
 
 ### 8.2 capability seam（能力接缝）＝ Service Definition / Provider / Consumer

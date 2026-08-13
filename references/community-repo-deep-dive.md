@@ -28,7 +28,7 @@
 | 9 | randerous/**dsh-turn-meta** | 最小首插件范例 | monorepo 包 | TypeScript | npm/tarball（`workspace:^` 依赖） | 11 | `agent/pre-step` `{prepend:true}` waterfall 注入 + source 归属 + `./invariant` 伴生 |
 | 10 | bobleer/**deepseek-harness-plugin-mcp** | 把 DSH 插件发布给外部 agent 的 MCP server | 双入口 npm 包（stdio/HTTP MCP + DSH bundle） | TypeScript | `npx deepseek-harness-plugin-mcp`；`dsh plugin add github:bobleer/...` | 46 | Catalog/Profile/Runtime 三平面；`ctx.tools`→MCP 工具桥接 + `tools/change` 联动 |
 | 11 | Nagi-ovo/**dsh-find-plugins** | 找插件/装插件 agent skill | skill（SKILL.md + script） | Markdown + Node ESM | 拷入 skills 目录 | 5 | 身份 = `dsh-plugin` topic；bundle/cordis/skill 四类装法优先级 |
-| 12 | omdsh-dev/**dsh-hub-workshop** | 插件市场/注册 workshop | 静态站点 + JSON feed/schema + CF Worker | HTML/JS + JSON Schema | 无需安装（feed 站点） | 60 | “发现 ≠ 安装权限”信任边界；40 位不可变 commit 准入；registry 安装权威当前为空 |
+| 12 | omdsh-dev/**dsh-hub-workshop** | 插件市场/注册 workshop | 静态站点 + JSON feed/schema + CF Worker | HTML/JS + JSON Schema | 无需安装（feed 站点） | 60 | “发现 ≠ 安装权限”信任边界；40 位不可变 commit 准入；registry 安装权威为空（08-13 17:27Z 复核仍空，11 候选 blocked） |
 | 13 | AdamPlatin123/**awesome-dsh-plugins** | 生态情报/兼容性雷达 | 情报仓库（报告 + 脚本） | bash/python/Markdown | 无需安装 | 1556 | 288 仓每日 mainline 四维兼容引擎 + 两代格式对照 + 12 条安全清单 |
 | 14 | bruc3van/**awesome-dsh-plugin** | 双语精选 catalog | catalog + JSON Schema + 生成器 | Python | 无需安装 | 11 | 严格 JSON Schema + 强制双语 `localizedText` + CI `--check` |
 | 15 | Alex-Yanggg/**awesome-DSH-plugin** | 使用者场景导航 + 全量 topic 快照 | 数据 JSON + 生成器 | Node.js ESM | 无需安装 | 10 | 场景化“套装”推荐 + 212 仓机器快照（含 star/license/语言） |
@@ -484,7 +484,7 @@
 - **形态**：纯静态站点 + JSON feed/schema + Cloudflare Worker + 3 个 Node 脚本；`private: true`、唯一依赖 `wrangler`。
 - **目录/registry schema**（`catalog.schema.json`、`registry-v1.json`、`submission.schema.json`）：`package` 记录必填 `id/name/description/kind/tags/author/repository/ref/updatedAt/license/status/install`；`kind` enum（skill/mcp/extension/channel/ui/adapter/manager/toolkit）、`category` enum（9+1 类）；`install.type` enum 含 `profile-bundle/repository-plugin/marisa/plugin-registry/source/manual/npm/script`。`ref` 必须是 **40 位 hex 不可变 commit**（`^[0-9a-f]{40}$`）；`status` ∈ verified/beta/prototype（注意：实际 `catalog.json` 用 v0.3 schema、`status: discovery`、`ref: master/main`，与 `catalog.schema.json` 的 v0.2 声明不一致——schema 文件是遗留未同步文件，运行中校验门断言 v0.3）。
 - **submission 条件约束**（`submission.schema.json`）：`management.method=repository-plugin ⇒ source` 必须匹配 `^github:owner/repo#40hex&path:/...$`；`method=profile-bundle ⇒ profileBundle` 必须为对象（`spec` 匹配 `github:…#40hex` 或 semver）；`deepHook=true ⇒ requiresFabric=true`；`installScriptsMustRemainDisabled` 恒 `const: true`。
-- **样例记录**（`catalog.json`）：`status: discovery`、`install.type: manual`、`install.note: "Topic 标签只用于发现。请先检查源码、许可证、固定版本、权限和运行环境；该条目尚未获得 Registry 安装权限。"`——目录 264 条全是 `discovery`，`registry-v1.json` 安装权威**为空**（`entries: []`，`signature: null`）。
+- **样例记录**（`catalog.json`）：`status: discovery`、`install.type: manual`、`install.note: "Topic 标签只用于发现。请先检查源码、许可证、固定版本、权限和运行环境；该条目尚未获得 Registry 安装权限。"`——目录 264 条全是 `discovery`，`registry-v1.json` 安装权威**为空**（`entries: []`，`signature: null`）。**08-13 17:27Z 复核（新 HEAD ca595d6）**：`registry-v1.json`/`registry-admissions.json` 已随站点上线（origins: hub.omdsh.dev / hub.0.org.cn；`runtimeBaseline: @deepseek-ai/dsh@0.1.0-rc.6`）；`entries` 仍为空；admissions 中 11 个候选全部 `blocked`——9 个因 `official-repository-plugin-unavailable`（repository-plugin 0811 移除的落地印证）、1 个 `current-runtime-baseline-not-verified`、1 个 `production-authority-environment-not-verified`；全部 `staticVerification: passed`、`runtimeVerification: blocked`；`signature: null`。
 - **硬断言门**（`scripts/check-public-site.mjs`）：空安装 feed（`registry.entries.length===0`）、264 条目录、9 个白名单仓库、255 topic 仓库必须同时成立，否则 fail。
 - **前端生成的安装坐标**（`assets/publish.js`）：profile-bundle spec `git+<repo>.git#<ref>`；repository-plugin source `github:<repo>#<ref>&path:/<packageDirectory>`（缺 path 时补 `/.dsh-plugin`）；`omdsh workshop install <id> --profile web --enable`（`assets/app.js`）。
 - **记录的坑**：退役 `dsh-external` 组织名被脚本硬编码清洗（`build-topic-catalog.mjs` 用 `['dsh','external'].join('-')` + `replaceAll(..., 'retired DSH ecosystem')`）；空安装 feed 是硬门（禁止提前发布可安装条目）；不可变 commit 是唯一可信坐标（分支/浮动标签禁用）。
@@ -580,7 +580,7 @@
 - 最低：公开 + `dsh-plugin` topic + 合法 `package.json`（非空 name）+ 入口字段 + README 说明安装/卸载/最小示例 + 依赖显式声明 + 许可证 + 不提交密钥/PII——`awesome-dsh-plugins/README.md`（最低收录条件）、`awesome-dsh-plugins/analysis/security-issues.md`。
 - dsh-suite：真是 DSH 插件、有代码、repo+stars 可核实、双语描述 ≤140 字、compat 诚实（没实测留 unknown）；蹭 tag/工具链/占位进 watchlist——`dsh-suite/CONTRIBUTING.md`。
 - bruc3van：厂商中立 + 双语 + 一句事实描述（禁营销）+ status/source 维度——`awesome-dsh-plugin/README.md`、`CONTRIBUTING.md`。
-- dsh-hub-workshop：**发现 ≠ 安装权限**；40 位不可变 commit 是唯一准入坐标；安装条目须逐项审核，registry 安装权威当前为空——`dsh-hub-workshop/README.md`、`submission.schema.json`、`scripts/check-public-site.mjs`。
+- dsh-hub-workshop：**发现 ≠ 安装权限**；40 位不可变 commit 是唯一准入坐标；安装条目须逐项审核，registry 安装权威为空（08-13 17:27Z 复核：`registry-v1.json` 上线、entries 仍空、11 候选全部 blocked）——`dsh-hub-workshop/README.md`、`submission.schema.json`、`scripts/check-public-site.mjs`。
 - 三个 awesome 列表与 dsh-suite 都**不推导** `dsh plugin add`（以插件自身 README 为准）；只有 dsh-hub-workshop 的 submission schema 把 `github:owner/repo#40hex&path:...` 写进准入正则。
 
 ---

@@ -1,8 +1,7 @@
 # Cordis 论文与社区调研
 
-> **归档更正（2026-08-13 下载复核）**：
-> 1. 官方仓库 README（`downloads/github/harness/README.md`）明文列出官方 **Discord 社群 https://discord.gg/Ycq5dCaS4** —— 本报告正文中"无官方 Discord"的结论已过时，予以更正。
-> 2. cordiverse/paper 仓库经 GitHub API 仓库树核实**仅含 3 个文件**：`README.md`、`.gitattributes`、**`paper.pdf`（论文全文）**——PDF 已归档于 `downloads/github/paper/repo/paper.pdf`，无 `main.tex`；arXiv/DOI 未发现，与正文一致。
+> **归档备注（2026-08-13 下载复核）**：
+> cordiverse/paper 仓库经 GitHub API 仓库树核实**仅含 3 个文件**：`README.md`、`.gitattributes`、**`paper.pdf`（论文全文）**——PDF 已归档于 `downloads/github/paper/repo/paper.pdf`，无 `main.tex`；arXiv/DOI 未发现，与正文一致。
 
 > 调研日期：2026-08。覆盖 (1) [cordiverse/paper](https://github.com/cordiverse/paper) 白皮书与 Cordis 框架设计；(2) DeepSeek Harness（DSH）插件开发社区与第三方知识。
 > 方法论说明：本环境沙箱禁止直连外网（`Invoke-WebRequest`/`curl` 均被 TLS/SChannel 拒绝），因此论文 `README.md` 原文无法直接抓取。论文的实质内容通过以下三个强证据来源交叉重建：(a) DSH 仓库内 vendored 的 Cordis 源码（`vendor/cordis/src/`），(b) 官方文档 `docs/cordis-primer.md` 与 `docs/architecture.md`（DSH README 明确说明其由 Cordis 驱动、设计见该论文），(c) web_search 返回的第三方解读。凡无法从这些来源直接核实、需依赖论文原文的表述，均标注 **[unverified]**。
@@ -125,9 +124,9 @@ vendored `cordis` README 开宗明义：
 | 入群问卷（飞书表单） | 入群前置问卷 | https://trtgsjkv6r.feishu.cn/share/base/form/shrcnIt5twSVdLGD52KJBckGCgg |
 | 微信公众号 | DeepSeek Harness 团队公众号（黑鲸头像） | README 内二维码 |
 | `dsh-plugin` Topic | 插件仓库打此 topic 便于被发现 | https://github.com/topics/dsh-plugin |
-| `dsh-external/hub` | 社区聚合目录引用的官方/外部 hub（存在性经 awesome 列表引用，未直接核实 **[unverified]**） | 见 2.2 |
+| `dsh-external/hub` | 社区聚合目录引用的官方/外部 hub（**08-14 核查：仓库 404**） | 见 2.2 |
 
-> **Discord**：未发现 DeepSeek Harness 官方 Discord **[unverified]**（搜索仅命中无关的 MuseBot、DeepSeek-Reasonix 等）。官方社区 = GitHub Discussions + 企微群 + 微信公众号。
+> **Discord**：官方仓库 README 明文链接 https://discord.gg/Ycq5dCaS4（"DeepSeek Harness Discord community"，08-14 复核仍在）。官方社区 = Discord + GitHub Discussions + 企微群 + 微信公众号。
 
 ### 2.2 官方插件开发文档（仓库内，权威一手资料）
 

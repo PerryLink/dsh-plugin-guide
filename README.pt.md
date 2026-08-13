@@ -36,6 +36,7 @@ Inclui:
 - **mais de 20 armadilhas reais testadas** (cópias duplas do cordis, trio do tsconfig, zstd multiframe, …),
 - tudo destilado em um **guia passo a passo** e uma **folha de consulta de uma página**,
 - e uma **skill para agentes** (`dsh-plugin-guide`) que você pode invocar em qualquer sessão de agente.
+- **Atualidade:** última verificação em 2026-08-14 — documentação oficial idêntica byte a byte ao `master` (47f9438); tags npm e o tópico `dsh-plugin` (mais de 550 repositórios) re-verificados ao vivo.
 
 ## Conteúdo
 

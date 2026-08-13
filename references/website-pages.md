@@ -664,5 +664,5 @@
 
 - `www.deepseek.com/harness/` 页面正文、下载按钮、具体文案：**[unverified]**。
 - 文档站线上渲染页：**[unverified]**（沙箱网络被禁，`site:deepseek-harness.github.io` 无索引）；页面清单/标题/内容以官方仓库 `website/docs.ts` + `docs/` 源文件为权威。
-- `deepseek-harness.github.io` 对应的 GitHub org（与 `deepseek-ai/deepseek-harness` 的关系，是否独立文档 org）未直接核实；但 `docs/user/develop/basic/publish.md` 提到 `https://github.com/deepseek-harness/turtle-ui`，证明存在 `deepseek-harness` org。
+- `deepseek-harness.github.io` 对应的 GitHub org（与 `deepseek-ai/deepseek-harness` 的关系，是否独立文档 org）未直接核实；但 `docs/user/develop/basic/publish.md` 提到 `https://github.com/deepseek-harness/turtle-ui`，证明存在 `deepseek-harness` org（**08-14 核查：turtle-ui 仓库现 404**）。
 - 发布/公测的具体日期与版本号（0.1.x）来自第三方新闻，非官方页面确认。
