@@ -1,0 +1,13 @@
+# 原始下载物(38MB 第三方快照)不入版本库,由 scripts/*.ps1 再生
+downloads/
+
+# 临时/备份
+*.bak
+_check/
+*.tar.gz
+*.tmp
+
+# 系统
+node_modules/
+Thumbs.db
+.DS_Store
