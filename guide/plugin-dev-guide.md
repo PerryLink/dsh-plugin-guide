@@ -36,24 +36,24 @@ export function apply(ctx: Context) {
 
 | 层级 | 文档 | 位置 |
 |---|---|---|
-| 官网入口 | deepseek.com/harness | https://www.deepseek.com/harness/ |
-| 文档站（用户向，中/英双语） | develop/basic 系列 | https://deepseek-harness.github.io/deepseek-harness/develop/basic/ |
-| 框架概念 5 分钟版 | Cordis Primer（`docs/cordis-primer.md`，有 `.zh.md`） | 本地副本 references/official-docs/docs/cordis-primer.md |
-| 框架 7 章动手教程 | Cordis tutorial（01-07，均双语） | references/official-docs/docs/cordis-tutorial/ |
-| 插件开发四步教程 | 第一个插件 → 工具 → 配置 → 打包安装 | references/official-docs/docs/user/develop/basic/ |
-| 框架能力三篇 | 生命周期 / 服务与依赖 / 事件系统 | references/official-docs/docs/user/develop/framework/ |
-| 实战两篇 | 三层能力拆分 / LLM 适配器 | references/official-docs/docs/user/develop/practice/ |
-| 架构总纲 | architecture.md（改 `packages/` 前必读） | references/official-docs/docs/architecture.md |
-| 扩展点全景 | extension-cookbook.md（feature → mechanism 表） | references/official-docs/docs/cookbook/extension-cookbook.md |
-| 工具契约权威参考 | cookbook/adding-a-tool.md + `dsh-tools` README | references/official-docs/docs/cookbook/adding-a-tool.md |
-| 事件生产/消费矩阵 | event-producer-consumer.md（生成式，全事件表） | references/official-docs/docs/event-producer-consumer.md |
-| 每个子系统的服务/事件 API | subsystems/*.md 的生成式 Cordis API 区 | references/official-docs/docs/subsystems/ |
-| Cordis 核心 API 参考 | cordis-api/context、events、fiber、registry、service | references/official-docs/docs/cordis-api/ |
-| 上游 Cordis 框架 | cordiverse/cordis（README/docs 已下载） | downloads/github/cordis/ + references/upstream-cordis.md |
-| Cordis 论文 | cordiverse/paper | downloads/github/paper/ + references/cordis-paper.md |
-| 生态/社区 | dsh-plugin topic 清单、awesome 列表、插件注册中心 | references/community-ecosystem.md + downloads/community/ |
+| 官网入口 | [deepseek.com/harness](https://www.deepseek.com/harness/) | 在线快照 downloads/web/deepseek-com-harness.html |
+| 文档站（用户向，中/英双语） | [develop/basic 系列](https://deepseek-harness.github.io/deepseek-harness/develop/basic/) | 本地副本 references/official-docs/docs/user/develop/basic/ |
+| 框架概念 5 分钟版 | [Cordis Primer](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-primer)（`docs/cordis-primer.md`，有 `.zh.md`） | 本地副本 references/official-docs/docs/cordis-primer.md |
+| 框架 7 章动手教程 | [Cordis tutorial 01-07](https://deepseek-harness.github.io/deepseek-harness/develop/cordis-tutorial/)（均双语） | references/official-docs/docs/cordis-tutorial/ |
+| 插件开发四步教程 | [第一个插件 → 工具 → 配置 → 打包安装](https://deepseek-harness.github.io/deepseek-harness/develop/basic/) | references/official-docs/docs/user/develop/basic/ |
+| 框架能力三篇 | [生命周期 / 服务与依赖 / 事件系统](https://deepseek-harness.github.io/deepseek-harness/develop/framework/) | references/official-docs/docs/user/develop/framework/ |
+| 实战两篇 | [三层能力拆分 / LLM 适配器](https://deepseek-harness.github.io/deepseek-harness/develop/practice/) | references/official-docs/docs/user/develop/practice/ |
+| 架构总纲 | [architecture.md](https://deepseek-harness.github.io/deepseek-harness/reference/)（改 `packages/` 前必读） | references/official-docs/docs/architecture.md |
+| 扩展点全景 | [extension-cookbook.md](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/extension-cookbook)（feature → mechanism 表） | references/official-docs/docs/cookbook/extension-cookbook.md |
+| 工具契约权威参考 | [adding-a-tool.md](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool) + `dsh-tools` README | references/official-docs/docs/cookbook/adding-a-tool.md |
+| 事件生产/消费矩阵 | [event-producer-consumer.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/event-producer-consumer.md)（生成式，全事件表；未上站） | references/official-docs/docs/event-producer-consumer.md |
+| 每个子系统的服务/事件 API | [subsystems/*.md](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/) 的生成式 Cordis API 区 | references/official-docs/docs/subsystems/ |
+| Cordis 核心 API 参考 | [cordis-api/*](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/context)（context、events、fiber、registry、service） | references/official-docs/docs/cordis-api/ |
+| 上游 Cordis 框架 | [cordiverse/cordis](https://github.com/cordiverse/cordis)（README/docs 已下载） | downloads/github/cordis/ + references/upstream-cordis.md |
+| Cordis 论文 | [cordiverse/paper](https://github.com/cordiverse/paper) | downloads/github/paper/ + references/cordis-paper-and-community.md |
+| 生态/社区 | [社区开发文档与生态链接](../references/community-ecosystem.md)（topic 清单、awesome 列表、注册中心） | references/community-ecosystem.md + downloads/community/ |
 
-网站与本地文档是同源的：GitHub Pages 站点由 `website/docs.ts`（副本在 references/official-docs/website-docs.ts）把仓库 `docs/` 投影成中/英两棵路由树；`develop/basic/` 页面 = `docs/user/develop/basic/index.zh.md`。**想"离线全量"看官方文档，读 references/official-docs/docs/ 即可。**
+网站与本地文档是同源的：GitHub Pages 站点由 `website/docs.ts`（副本在 references/official-docs/website-docs.ts）把仓库 `docs/` 投影成中/英两棵路由树；`develop/basic/` 页面 = `docs/user/develop/basic/index.zh.md`。**想"离线全量"看官方文档，读 references/official-docs/docs/ 即可。** 线上 URL 与本地副本的**完整对照**（含 `en/` 英文投影、全部 reference/cookbook/cordis-api/subsystems 路由与 GitHub 直链）见 [links.md](links.md)。
 
 ---
 
@@ -329,7 +329,7 @@ Git 源安装支持子路径选择器：`dsh plugin --profile demo add "github:o
 
 `dsh plugin add github:you/hello-plugin` 拉的是**源码不是构建产物**：不会跑 `build`，TS 包没有 `lib/` 会加载失败。双方配合：
 
-- **作者**：写 `prepare` 脚本（git 安装后 pnpm 会执行）自包含地构建发布入口——不得假设 monorepo 兄弟目录等 dev-only 上下文。参考 [turtle-ui](https://github.com/deepseek-harness/turtle-ui)：`prepare` 用专用 tsdown 配置转译 `src/`，无 project references、无类型检查。
+- **作者**：写 `prepare` 脚本（git 安装后 pnpm 会执行）自包含地构建发布入口——不得假设 monorepo 兄弟目录等 dev-only 上下文。官方范例见 [publish.md](../references/official-docs/docs/user/develop/basic/publish.md)（其引用的 turtle-ui 仓库 08-14 核查已 404）；活范例参考 [plugin-template](https://github.com/omdsh-dev/plugin-template) 的 `scripts/prepare.mjs`：`prepare` 用专用 tsdown 配置转译 `src/`，无 project references、无类型检查。
 - **用户**：pnpm ≥10 默认拒绝运行 git 依赖的 `prepare`，第一次 `add` 会失败并在 profile 的 `pnpm-workspace.yaml` 加：
 
 ```yaml
@@ -349,7 +349,7 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 **身份与依赖（最致命）**
 - **cordis 双副本 / 双 Cordis 分裂**：插件构建时若从 `.pnpm` 副本解析 cordis，与 harness 的 vendored 副本是"两个模块"，`declare module` 增强合并不了 → 报 `Property 'tools' does not exist on type 'Context'`。构建期把 cordis 解析到 harness 的 `vendor/cordis`；npm 安装路径下 peer 必须与宿主同一身份——**scoped `@deepseek-ai/cordis` 与 unscoped `cordis` 混用同样分裂**（dsh-tools 的类型只增强 scoped 版本）。独立包把 cordis 设为 peerDependency（+ dev），版本对齐宿主。
 - **官方 `@deepseek-ai/*` 包曾未发布公共 npm**（rc 早期）：社区 bundle 的 `dependencies` 留空，靠 profile 的 pnpm 闭包 flat fallback（`$DSH_HOME/profiles/node_modules`）注入；声明了反而解析失败。rc.6 起公开包可用（from-scratch 教程锁 `0.1.0-rc.6`、cordis `4.0.1`），两条时间线的资料都要知道，按当时宿主版本取舍。
-- **npm `latest` 标签是过期版本**：`@deepseek-ai/dsh-tools` 的 `latest` 停在陈旧 0.0.1-rc.1——脚手架（create-dsh-plugin）显式钉 `next` 标签版本；裸跑 `npm i @deepseek-ai/dsh-tools` 会踩旧版。
+- **npm `latest` 标签是过期版本**：`@deepseek-ai/dsh-tools` 的 `latest` 停在陈旧 0.0.1-rc.1——脚手架（create-dsh-plugin）显式钉 `next` 标签版本；裸跑 `npm i @deepseek-ai/dsh-tools` 会踩旧版。2026-08-14 复核仍成立：dsh-tools 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 均为 0.0.1-rc.1、`next` 为 0.1.0-rc.6；`@deepseek-ai/dsh` latest=next=0.1.0-rc.6、`@deepseek-ai/cordis` latest=4.0.1。**无作用域 `dsh` 包是无关项目 node-dsh**（"A shell written in JavaScript"）——官方 CLI 包是 `@deepseek-ai/dsh`，别装错。
 
 **tsconfig 三件套 + 构建陷阱**
 - 独立 TS 插件包实测可用形态：`module: esnext` + `moduleResolution: bundler` + `allowImportingTsExtensions: true`（否则 TS5097）+ `rewriteRelativeImportExtensions: true`（否则产物残留 `./x.ts` 导入 → 运行时 ESM 崩溃）+ `lib: ["ES2024"]` + `outDir: lib` + `declarationDir: lib/types`。用 `Buffer`/`node:` 时显式 `"types": ["node"]`（不写 `types` 字段会隐式包含全部 @types，脆弱）。
@@ -386,16 +386,16 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 
 ## 9. 生态与社区（找参考实现、发插件）
 
-- **官方社群**：Discord https://discord.gg/Ycq5dCaS4 · GitHub Discussions https://github.com/deepseek-ai/deepseek-harness/discussions · 发布插件时给仓库加 `dsh-plugin` topic 提升可见度。
-- **话题清单**：GitHub topic `dsh-plugin`（全量 300+ 仓库清单已在本工作区 `dsh-plugin-topic-2026-08-13/`，含 raw GitHub API 快照与精选 README）。
-- **精选列表**：awesome-dsh-plugins（每日兼容性追踪）、awesome-deepseek-harness、Alex-Yanggg/awesome-DSH-plugin、bruc3van/awesome-dsh-plugin。
-- **插件注册/分发中心**：vlln/plugin-registry（薄控制台 + `make-dsh-plugin` skill；注意其记录的机制时间线：repository-plugin 0809 推出、0811 移除）、omdsh-dev/dsh-hub、dsh-external/hub。
-- **模板与脚手架**：omdsh-dev/plugin-template（完整生产模板：src 四文件结构 + 7 个开发 skill + tsdown 自包含 prepare + 契约文档 docs/dsh-plugin-contracts.md）、`npm create dsh-plugin@latest`（whyihaveyou/dsh-suite 的脚手架，tool/events/webui 三模板）、omdsh-dev/dsh-plugin-skills、omdsh-dev/dsh-plugin-dev（踩坑档案 skill+文档，20 个实测坑）。
-- **教程与最小模板**：Opr4Mp3r/deepseek-harness-plugin-from-scratch（代码审计式渐进教程：checkpoint + 反模式 17 坑 + 交付检查单，锁 harness@47f9438/npm rc.6）、randerous/dsh-turn-meta（最小首插件：agent/pre-step + prepend:true + source 归属注入范例）、omdsh-dev/fabric（类 MC Fabric 的 hook 处理器）、omdsh-dev/dsh-plugin-check（插件健康检查：清单协议/patch 格式/构建陷阱）、bobleer/deepseek-harness-plugin-mcp（经 MCP 发现/安装/运行插件）、Nagi-ovo/dsh-find-plugins、omdsh-dev/dsh-hub-workshop（插件市场/注册 workshop）。
-- **兼容性追踪**：whyihaveyou/dsh-suite（双语目录 + 每日兼容性 CI，167+ 插件带 🟢/⚪ 徽章）、AdamPlatin123/awesome-dsh-plugins（每日兼容性追踪）。
-- **社区/学习**：hikariming/dshfind（DSH 学习与分享社区，MDX）。
-- **本工作区已有实例可参考**：`dsh-chat-import`（JS + cordis.patch.yml）、`dsh-resume-plugin`（多 skill 插件）、`dsh-plugin-claude-bridge`（TS + src/ + tsconfig）；15 个社区开发仓库的**完整源码副本**在 `downloads/community-repos/`（深读报告见 references/community-repo-deep-dive.md）。
-- 完整信息与更多链接见 references/community-ecosystem.md。
+- **官方社群**：[Discord](https://discord.gg/Ycq5dCaS4) · [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) · 发布插件时给仓库加 [`dsh-plugin` topic](https://github.com/topics/dsh-plugin) 提升可见度。
+- **话题清单**：[GitHub topic `dsh-plugin`](https://github.com/topics/dsh-plugin)（全量 550+ 仓库清单已在本工作区 `dsh-plugin-topic-2026-08-14/`；08-13 快照 304 个见 `dsh-plugin-topic-2026-08-13/`，均含 raw GitHub API 快照与全量表）。
+- **精选列表**：[awesome-dsh-plugins](https://github.com/AdamPlatin123/awesome-dsh-plugins)（每日兼容性追踪）、[awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness)、[Alex-Yanggg/awesome-DSH-plugin](https://github.com/Alex-Yanggg/awesome-DSH-plugin)、[bruc3van/awesome-dsh-plugin](https://github.com/bruc3van/awesome-dsh-plugin)；08-14 新增 [walkinglabs](https://github.com/walkinglabs/awesome-deepseek-harness-plugins)、[vvlife](https://github.com/vvlife/awesome-deepseek-harness-plugins) 的 awesome-deepseek-harness-plugins 与 [cccakeee/awesome-dsh-plugins](https://github.com/cccakeee/awesome-dsh-plugins)（完整清单见 community-ecosystem.md §5）。
+- **插件注册/分发中心**：[vlln/plugin-registry](https://github.com/vlln/plugin-registry)（薄控制台 + `make-dsh-plugin` skill；注意其记录的机制时间线：repository-plugin 0809 推出、0811 移除）、[omdsh-dev/dsh-hub-workshop](https://github.com/omdsh-dev/dsh-hub-workshop)（插件市场/注册 workshop；dsh-external/hub 08-14 核查已 404）；08-14 另出现多个 Web GUI 内插件市场（[DSH-Plugins-Marketplace](https://github.com/bradeGithub/DSH-Plugins-Marketplace)、[dsh-plugin-installer](https://github.com/Toukaiteio/dsh-plugin-installer)、[dsh-plugin-marketplace](https://github.com/Scorp1o117/dsh-plugin-marketplace)，未深读，信任边界同 dsh-hub-workshop"发现 ≠ 安装权限"）。
+- **模板与脚手架**：[omdsh-dev/plugin-template](https://github.com/omdsh-dev/plugin-template)（完整生产模板：src 四文件结构 + 7 个开发 skill + tsdown 自包含 prepare + 契约文档 docs/dsh-plugin-contracts.md）、[`npm create dsh-plugin@latest`](https://github.com/whyihaveyou/dsh-suite)（whyihaveyou/dsh-suite 的脚手架，tool/events/webui 三模板）、[omdsh-dev/dsh-plugin-skills](https://github.com/omdsh-dev/dsh-plugin-skills)、[omdsh-dev/dsh-plugin-dev](https://github.com/omdsh-dev/dsh-plugin-dev)（踩坑档案 skill+文档，20 个实测坑）。
+- **教程与最小模板**：[Opr4Mp3r/deepseek-harness-plugin-from-scratch](https://github.com/Opr4Mp3r/deepseek-harness-plugin-from-scratch)（代码审计式渐进教程：checkpoint + 反模式 17 坑 + 交付检查单，锁 harness@47f9438/npm rc.6）、[randerous/dsh-turn-meta](https://github.com/randerous/dsh-turn-meta)（最小首插件：agent/pre-step + prepend:true + source 归属注入范例）、[omdsh-dev/fabric](https://github.com/omdsh-dev/fabric)（类 MC Fabric 的 hook 处理器）、[omdsh-dev/dsh-plugin-check](https://github.com/omdsh-dev/dsh-plugin-check)（插件健康检查：清单协议/patch 格式/构建陷阱）、[bobleer/deepseek-harness-plugin-mcp](https://github.com/bobleer/deepseek-harness-plugin-mcp)（经 MCP 发现/安装/运行插件）、[Nagi-ovo/dsh-find-plugins](https://github.com/Nagi-ovo/dsh-find-plugins)、[omdsh-dev/dsh-hub-workshop](https://github.com/omdsh-dev/dsh-hub-workshop)（插件市场/注册 workshop）。
+- **兼容性追踪**：[whyihaveyou/dsh-suite](https://github.com/whyihaveyou/dsh-suite)（双语目录 + 每日兼容性 CI，167+ 插件带 🟢/⚪ 徽章）、[AdamPlatin123/awesome-dsh-plugins](https://github.com/AdamPlatin123/awesome-dsh-plugins)（每日兼容性追踪）。
+- **社区/学习**：[hikariming/dshfind](https://github.com/hikariming/dshfind)（DSH 学习与分享社区，MDX）。
+- **本工作区已有实例可参考**：`dsh-chat-import`（JS + cordis.patch.yml）、`dsh-resume-plugin`（多 skill 插件）、`dsh-plugin-claude-bridge`（TS + src/ + tsconfig）；15 个社区开发仓库的**完整源码副本**在 `downloads/community-repos/`（深读报告见 [references/community-repo-deep-dive.md](../references/community-repo-deep-dive.md)）。
+- 完整信息与更多链接见 [references/community-ecosystem.md](../references/community-ecosystem.md)；官方文档 URL 对照见 [guide/links.md](links.md)。
 
 ---
 

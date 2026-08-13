@@ -11,8 +11,8 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 
 本技能与知识库随同一目录分发（本 SKILL.md 所在目录即知识库根），路径均为相对路径；单独复制本文件而不带 `guide/`、`references/` 时按回退路径找：
 
-1. **本文件同目录**：`./guide/`（综合指南+速查表）、`./references/`（调研报告与官方文档全文副本 `references/official-docs/docs/`）、`./downloads/`（原始下载物，可选）
-2. 本机主副本：`D:\deepseek-harness\Project\Plugins\dsh-plugin-guide\`
+1. **本文件同目录**：`./guide/`（综合指南+速查表+文档链接索引）、`./references/`（调研报告与官方文档全文副本 `references/official-docs/docs/`）、`./downloads/`（原始下载物，可选）
+2. 本机主副本：`D:\deepseek-harness\Project\Plugins\dsh-plugin-guide\`（示例路径，按本机实际安装位置调整）
 3. 官方仓库 checkout：`D:\deepseek-harness\`（`docs/`、`vendor/cordis/`、`packages/`、`examples/`）
 4. 线上：https://github.com/deepseek-ai/deepseek-harness 、 https://deepseek-harness.github.io/deepseek-harness/develop/basic/ 、 https://github.com/cordiverse/cordis
 
@@ -21,7 +21,7 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 ## 开发前置（第一步必做）
 
 1. 若未读过 Cordis 概念：读 `references/official-docs/docs/cordis-primer.md`（5 个概念，5 分钟）；需要动手跟练时跑 `references/official-docs/docs/cordis-tutorial/` 01-07（无 API key 可跑）。
-2. 打开 `guide/quick-reference.md`（契约速查）+ `guide/plugin-dev-guide.md`（完整路径）。
+2. 打开 `guide/quick-reference.md`（契约速查）+ `guide/plugin-dev-guide.md`（完整路径）。官方/社区文档 URL 对照见 `guide/links.md`。
 3. 确认目标扩展点：读 `references/official-docs/docs/architecture.md` 的「Where new behavior goes」表与 `references/official-docs/docs/cookbook/extension-cookbook.md` 的 feature→mechanism 表——**新行为必须挂到已文档化扩展点，不得改 agent-loop**。
 
 ## 必须遵守的插件契约（官方红线，逐条核对）
@@ -46,7 +46,7 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 - **新 LLM 提供商**：`docs/user/develop/practice/llm-adapter.md`（StreamChunk 协议）。
 - **UI/会话节点**：`docs/cookbook/adding-a-conversation-node.md` + `docs/subsystems/session.md`、`client-modules.md`。
 - **打包/发布**：`docs/user/develop/basic/publish.md`（bundle/profile、层顺序、git 安装坑）。
-- **查服务/事件精确签名**：`docs/subsystems/*.md` 生成式 Cordis API 区 + `docs/cordis-api/*`；**不要自造第二份静态清单**。
+- **查服务/事件精确签名**：`docs/subsystems/*.md` 生成式 Cordis API 区 + `docs/cordis-api/*`；**不要自造第二份静态清单**。站点 URL ↔ 本地副本对照见 `guide/links.md`，社区链接完整清单见 `references/community-ecosystem.md`。
 - **参考社区实现与实测坑**：`references/community-ecosystem.md`、`references/community-repo-deep-dive.md`（15 个开发仓库深读）、`downloads/community-repos/`（完整源码副本，需先跑 `scripts/download-community-repos.ps1` 生成）。社区已确认的机制变化（如 repository-plugin 0811 移除、bundle vs 纯 cordis 双通道）与 20 个实测坑（cordis 双副本/tsconfig 三件套/多帧 zstd/Windows junction 等）在 `guide/plugin-dev-guide.md` §7。
 
 ## 验证（交付前）
@@ -58,7 +58,7 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 
 ## 知识库维护（需要时）
 
-- 刷新线上资料：`pwsh -File ./scripts/download-sources.ps1`；刷新社区仓库：`pwsh -File ./scripts/download-community-repos.ps1`（两个脚本幂等，产出进 `./downloads/`）。
+- 刷新线上资料：`pwsh -File ./scripts/download-sources.ps1`；刷新社区仓库：`pwsh -File ./scripts/download-community-repos.ps1`（两个脚本幂等，产出进 `./downloads/`）。话题清单计数重核：按 `references/sources.md` §D.2 记录的方式用 GitHub Search API `q=topic:dsh-plugin` 分页重抓，快照与计数一并更新。
 - 同步官方文档副本：`Copy-Item -Recurse <checkout>\docs .\references\official-docs\docs`。
 - 冲突裁决：与官方文档冲突时以 `references/official-docs/`（官方仓库原文）为准。
 

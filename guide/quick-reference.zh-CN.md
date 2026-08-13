@@ -144,6 +144,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 - Windows junction 用 PowerShell `New-Item -ItemType Junction`；vitest 盘符大写 `C:/`。
 - `DSH_PERMISSION_MODE=danger-full-access` 高风险（Windows 无沙箱后端、禁用审批）；`DSH_*` 放 `~/.dsh/.env` 会报错。
 - 会话文件多帧 zstd：用 `scanZstdFrames`/`createZstdFrameDecoder`（`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`）。
+- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`；`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 是过期版本（0.0.1-rc.1），要钉 `next`（0.1.0-rc.6）（2026-08-14 复核）。
 - 路径比较前两侧都 `resolve()`（Windows 反斜杠陷阱）。
 
 ## 关键源索引
@@ -152,7 +153,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 - 仓库根约束：`references/official-docs/AGENTS.md`、`packages/AGENTS.md`、`examples/AGENTS.md`、`vendor/README.md`
 - 站点爬取 HTML：`downloads/web/site/**`（中英双语全站）+ `downloads/manifest.tsv`（下载清单）
 - 上游 Cordis：`downloads/github/cordis/**` + 调研 `references/upstream-cordis.md`
-- Cordis 论文：`downloads/github/paper/**` + 调研 `references/cordis-paper.md`
+- Cordis 论文：`downloads/github/paper/**` + 调研 `references/cordis-paper-and-community.md`
 - 网站/官网调研：`references/website-pages.md`
 - 仓库调研：`references/harness-repo.md`
 - 社区/生态：`references/community-ecosystem.md` + 工作区 `dsh-plugin-topic-2026-08-13/`

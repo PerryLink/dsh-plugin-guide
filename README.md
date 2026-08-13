@@ -38,6 +38,7 @@ It bundles:
 - **20+ battle-tested pitfalls** (cordis dual copies, tsconfig trio, multi-frame zstd, …),
 - everything distilled into a **step-by-step guide** and a **one-page cheat sheet**,
 - and an installable **agent skill** (`dsh-plugin-guide`) you can invoke in any agent session.
+- **Freshness:** last verified 2026-08-14 — official docs byte-identical to upstream `master` (47f9438), npm tags and the `dsh-plugin` topic (550+ repos) re-checked live.
 
 ## What's inside
 
@@ -46,6 +47,7 @@ It bundles:
 | `SKILL.md` | The `dsh-plugin-guide` agent skill: hard rules + task-based development paths |
 | `guide/plugin-dev-guide.md` | The complete development guide (10 chapters) |
 | `guide/quick-reference.md` | One-page cheat sheet |
+| `guide/links.md` | Curated URL index: official dev docs (site ↔ local copies) + community doc links |
 | `references/official-docs/` | Verbatim copy of the official repo docs (EN + ZH) |
 | `references/*.md` | Research reports: repo docs, website, Cordis, the paper, community ecosystem, 15-repo deep dive |
 | `scripts/` | Idempotent download scripts + integrity checker |
@@ -69,6 +71,7 @@ Then just ask your agent: *"Use the dsh-plugin-guide skill to build me a … plu
 
 - **In a hurry?** → [`guide/quick-reference.md`](guide/quick-reference.md)
 - **Full path?** → [`guide/plugin-dev-guide.md`](guide/plugin-dev-guide.md)
+- **Documentation links?** → [`guide/links.md`](guide/links.md) (official site URLs + local copies) · [`references/community-ecosystem.md`](references/community-ecosystem.md) (community dev docs & repos)
 - **Exact APIs?** → `references/official-docs/docs/subsystems/` and `docs/cordis-api/`
 
 ## Highlights

@@ -34,6 +34,7 @@
 - **20+ 个实测踩坑**（cordis 双副本、tsconfig 三件套、多帧 zstd……），每条带根因与修法；
 - 汇总成的**分步开发指南**与**一页速查表**；
 - 以及可直接在任意智能体会话中调用的 **`dsh-plugin-guide` 技能**。
+- **新鲜度**：2026-08-14 复核——官方文档与上游 `master`（47f9438）逐文件一致；npm 标签与 `dsh-plugin` 话题（550+ 仓库）已实时重核。
 
 ## 目录结构
 
@@ -42,6 +43,7 @@
 | `SKILL.md` | `dsh-plugin-guide` 技能：硬性红线 + 按任务类型的开发路径 |
 | `guide/plugin-dev-guide.md` | 完整开发指南（10 章） |
 | `guide/quick-reference.md` | 一页速查表 |
+| `guide/links.md` | 精选 URL 索引：官方开发文档（线上 ↔ 本地副本）+ 社区开发文档链接 |
 | `references/official-docs/` | 官方文档逐字副本（中英双语） |
 | `references/*.md` | 调研报告：仓库文档、官网文档站、Cordis、论文、社区生态、15 仓库深读 |
 | `scripts/` | 幂等下载脚本 + 完整性检查器 |
@@ -65,6 +67,7 @@ Copy-Item -Recurse -Force `
 
 - **赶时间？** → [`guide/quick-reference.md`](guide/quick-reference.md)
 - **完整路径？** → [`guide/plugin-dev-guide.md`](guide/plugin-dev-guide.md)
+- **找文档链接？** → [`guide/links.md`](guide/links.md)（官方线上 URL + 本地副本）· [`references/community-ecosystem.md`](references/community-ecosystem.md)（社区开发文档与仓库）
 - **查精确 API？** → `references/official-docs/docs/subsystems/` 与 `docs/cordis-api/`
 
 ## 亮点
