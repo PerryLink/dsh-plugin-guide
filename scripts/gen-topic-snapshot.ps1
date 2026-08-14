@@ -1,13 +1,14 @@
 ﻿# dsh-plugin-guide 话题快照生成脚本
 # 用途: 抓取 GitHub topic:dsh-plugin 全量仓库清单,产出与 sources.md §D.2 记录一致的快照目录
 #   <OutDir>/raw-github-api-page-<n>.json + repos.tsv + README.md(全量表)
-# 用法: pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <路径> [-PerPage 100] [-MaxPages 10]
+# 用法: pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <路径> [-PerPage 100] [-MaxPages 10] [-DelaySeconds 6]
 # 说明: 走 GitHub Search API(未认证 10 次/分钟),分页抓取、按 full_name 去重、按 star 降序;
 #       与 08-13/08-14 两期快照同构,便于续期对比(新增/消失仓库用 repos.tsv diff)。
 param(
   [Parameter(Mandatory=$true)][string]$OutDir,
   [int]$PerPage = 100,
-  [int]$MaxPages = 10
+  [int]$MaxPages = 10,
+  [int]$DelaySeconds = 6
 )
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'SilentlyContinue'
@@ -31,7 +32,7 @@ for ($p = 1; $p -le $MaxPages; $p++) {
   $raw = Join-Path $OutDir "raw-github-api-page-$p.json"
   $r | ConvertTo-Json -Depth 6 | Set-Content $raw -Encoding UTF8
   Write-Output "page ${p}: total=$($r.total_count) items=$($r.items.Count)"
-  Start-Sleep -Seconds 1
+  Start-Sleep -Seconds $DelaySeconds
   if ($all.Count -ge $total -or $r.items.Count -lt $PerPage) { break }
 }
 

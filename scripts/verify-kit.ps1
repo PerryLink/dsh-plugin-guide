@@ -2,7 +2,7 @@
 # 用法: pwsh -File scripts/verify-kit.ps1 -Root <路径>
 # 校验范围: 本知识库自有文档(SKILL/README/NOTICE/guide/references 顶层);
 # 官方文档副本(references/official-docs)是逐字副本,其内部链接指向 deepseek-harness checkout,不在校验范围。
-param([string]$Root = '')
+param([string]$Root = '', [string]$Checkout = '', [switch]$Strict)
 if ([string]::IsNullOrEmpty($Root)) { $Root = if ($PSScriptRoot) { Split-Path $PSScriptRoot -Parent } else { (Get-Location).Path } }
 $ErrorActionPreference = 'SilentlyContinue'
 $issues = New-Object System.Collections.Generic.List[string]
@@ -42,10 +42,26 @@ $critical = @(
   'references/official-docs/docs/subsystems/tools.md',
   'references/official-docs/docs/cordis-api/context.md',
   'references/official-docs/AGENTS.md',
-  'scripts/download-sources.ps1','scripts/download-community-repos.ps1','scripts/gen-topic-snapshot.ps1','scripts/verify-kit.ps1'
+  'references/official-docs/SNAPSHOT.md',
+  'references/official-docs/packages/AGENTS.md',
+  'references/official-docs/examples/AGENTS.md',
+  'references/official-docs/packages/README.md',
+  'references/official-docs/vendor/README.md',
+  'scripts/download-sources.ps1','scripts/download-community-repos.ps1','scripts/gen-topic-snapshot.ps1','scripts/sync-official-docs.ps1','scripts/install-skill.ps1','scripts/verify-kit.ps1'
 )
 foreach ($c in $critical) { if (-not (Test-Path (Join-Path $Root $c))) { $issues.Add("CRITICAL-MISSING: $c") } }
 $info.Add("critical: $($critical.Count) 项, 缺失 $((($issues | Where-Object { $_ -like 'CRITICAL-*' }) | Measure-Object).Count)")
+
+# ---- 1b) 归档内容断言(防止同名文件错位: 历史事故是 examples/AGENTS.md 被当成仓库根 AGENTS.md) ----
+function Assert-FirstLine([string]$rel, [string]$pattern, [string]$expect) {
+  $p = Join-Path $Root $rel
+  if (-not (Test-Path $p)) { return }
+  $first = Get-Content $p -Encoding UTF8 | Where-Object { $_.Trim() -ne '' } | Select-Object -First 1
+  if ($first -notlike $pattern) { $issues.Add("CONTENT-ASSERT-FAIL: $rel 首行应为 $expect, 实际: $first") }
+}
+Assert-FirstLine 'references/official-docs/AGENTS.md'           '# AGENTS.md'                     "仓库根 AGENTS.md 标题"
+Assert-FirstLine 'references/official-docs/packages/AGENTS.md' '# AGENTS.md*Harness Packages*'  "packages/AGENTS.md 标题"
+Assert-FirstLine 'references/official-docs/examples/AGENTS.md' '# AGENTS.md*Examples*'           "examples/AGENTS.md 标题"
 
 # ---- 2) 自有文档相对链接解析 ----
 # 只检查 markdown 链接目标(读者会点击的);代码块/行内码里的裸词不参与,
@@ -93,6 +109,63 @@ $info.Add("link-scan: $($scopeFiles.Count) 个自有文档; 缺失 $missing; dow
 foreach ($f in @('SKILL.md','README.md','guide/plugin-dev-guide.md','guide/quick-reference.md','guide/links.md')) {
   $hits = Select-String -Path (Join-Path $Root $f) -Pattern 'D:\\deepseek-harness' -AllMatches
   foreach ($h in $hits) { $info.Add("ABS-PATH(设计内回退/示例): [$f] L$($h.LineNumber)") }
+}
+
+# ---- 4) 官方文档副本与 checkout 漂移校验(可选: -Checkout <deepseek-harness 路径>) ----
+# 把副本与 ref(origin/master, 回退 HEAD)的 git blob 逐一对比: 与工作树/本地未推送提交无关, 只回答"副本与上游是否一致"。
+if ($Checkout -and (Test-Path $Checkout)) {
+  $kbDocs = Join-Path $Root 'references\official-docs'
+  $driftCount = 0; $kbExtra = 0; $missingKb = 0; $checkedDrift = 0
+  $gitOk = (& git -C $Checkout rev-parse --is-inside-work-tree 2>$null) -eq 'true'
+  if (-not $gitOk) {
+    $info.Add("checkout-drift: $Checkout 不是 git 仓库, 跳过(使用 scripts/sync-official-docs.ps1 的非 git 模式同步)")
+  } else {
+    $ref = if ((& git -C $Checkout rev-parse --verify -q origin/master 2>$null)) { 'origin/master' } else { 'HEAD' }
+    $map = @{
+      'docs'               = 'docs';
+      'AGENTS.md'          = 'AGENTS.md';
+      'packages/AGENTS.md' = 'packages\AGENTS.md';
+      'examples/AGENTS.md' = 'examples\AGENTS.md';
+      'packages/README.md' = 'packages\README.md';
+      'vendor/README.md'   = 'vendor\README.md';
+      'website/docs.ts'    = 'website-docs.ts'
+    }
+    $keys = @($map.Keys)
+    foreach ($line in (& git -C $Checkout ls-tree -r $ref -- $keys)) {
+      if (-not $line) { continue }
+      $i = $line.IndexOf("`t")
+      if ($i -lt 0) { continue }
+      $path = $line.Substring($i + 1)
+      $sha = (($line.Substring(0, $i) -split '\s+')[2])
+      $checkedDrift++
+      $prefix = $null; $kbRel = $null
+      foreach ($k in $keys) { if ($path -eq $k -or $path.StartsWith("$k/")) { $prefix = $k; $kbRel = $map[$k]; break } }
+      if (-not $kbRel) { continue }
+      $suffix = if ($path -eq $prefix) { '' } else { $path.Substring($prefix.Length + 1) }
+      $kbPath = if ($suffix) { Join-Path (Join-Path $kbDocs $kbRel) ($suffix -replace '/','\') } else { Join-Path $kbDocs $kbRel }
+      if (-not (Test-Path $kbPath)) { $missingKb++; $issues.Add("CHECKOUT-DRIFT-MISSING-KB: $path -> 副本无此文件, 请运行 sync-official-docs.ps1"); continue }
+      $kbSha = (& git -C $Checkout hash-object $kbPath).Trim()
+      if ($kbSha -ne $sha) {
+        $driftCount++
+        if ($driftCount -le 10) { $issues.Add("CHECKOUT-DRIFT: $path 与 $ref 不一致(副本落后或超前于上游), 运行 sync-official-docs.ps1 同步") }
+      }
+    }
+    # KB 内多出、源 ref 已没有的文件(仅 docs/ 目录映射)
+    $docsDir = Join-Path $kbDocs 'docs'
+    if (Test-Path $docsDir) {
+      $docsRoot = (Resolve-Path $docsDir).Path
+      $treePaths = New-Object System.Collections.Generic.HashSet[string]
+      foreach ($line in (& git -C $Checkout ls-tree -r --name-only $ref -- docs)) { if ($line) { [void]$treePaths.Add($line) } }
+      Get-ChildItem -Recurse -File $docsDir | ForEach-Object {
+        $rel = 'docs/' + $_.FullName.Substring($docsRoot.Length + 1).Replace('\','/')
+        if (-not $treePaths.Contains($rel)) { $kbExtra++; $issues.Add("CHECKOUT-DRIFT-KB-EXTRA: 副本有、$ref 无: $rel (同步时会被清理)") }
+      }
+    }
+    $info.Add("checkout-drift: ref=$ref 比较 $checkedDrift 个 blob; 内容漂移 $driftCount, KB 缺失 $missingKb, KB 多余 $kbExtra")
+    if ($Strict -and ($driftCount -gt 0 -or $missingKb -gt 0 -or $kbExtra -gt 0)) { $issues.Add("CHECKOUT-DRIFT-STRICT: -Strict 下漂移视为失败") }
+  }
+} elseif ($Checkout) {
+  $issues.Add("CHECKOUT-MISSING: -Checkout 指定的路径不存在: $Checkout")
 }
 
 # ---- 输出 ----
