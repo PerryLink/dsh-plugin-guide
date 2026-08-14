@@ -137,6 +137,8 @@ Protocolo de chunks: `block-start` → `text-delta*` → `block-end` (bloque com
 4. Nunca codifiques valores ajustables (prueba: ¿puede cambiarlos cordis.yml?); la mala configuración falla en voz alta.
 5. Paquetes de plugin independientes: cordis es peerDependency con la misma identidad del host (mezclar scoped `@deepseek-ai/cordis` y unscoped divide identidades); ESM; manifiesto `dsh.bundle`; instalaciones git necesitan `prepare` + `allowBuilds`; publica `lib/` o un tarball.
 6. Documentación bilingüe en pares; descripciones/prompts son comportamiento; cambios no triviales llevan Agent Note; ejecuta el conjunto mínimo de checks antes de empujar (dsh-pre-push-checks).
+7. Los ids opacos entre límites son branded (`Branded<B>` de `dsh-brand`), nunca `string` pelado.
+8. Los miembros de `SessionEventMap` son required-on-read: los eventos de tipo desconocido deben llevar `ignorable: true` (o el log se rechaza); solo los cambios de formato estructural bumpan `SESSION_FORMAT_VERSION`. El switch sobre `SessionEvent` cae por un `default` documentado — sin `assertNever` (unión merge-extensible).
 
 ## Lista rápida de trampas comunitarias (detalles: guía §7.3 / community-repo-deep-dive.md)
 
@@ -145,13 +147,26 @@ Protocolo de chunks: `block-start` → `text-delta*` → `block-end` (bloque com
 - Junctions de Windows con PowerShell `New-Item -ItemType Junction`; la letra de unidad de vitest en mayúscula `C:/`.
 - `DSH_PERMISSION_MODE=danger-full-access` es de alto riesgo (sin backend de sandbox en Windows, aprobaciones desactivadas); `DSH_*` en `~/.dsh/.env` rompe el arranque.
 - Los archivos de sesión son zstd multiframe: usa `scanZstdFrames`/`createZstdFrameDecoder` (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`).
-- npm: `dsh` sin alcance es el proyecto ajeno node-dsh (un shell) — instala `@deepseek-ai/dsh`; `@deepseek-ai/dsh-tools` y `@deepseek-ai/dsh-session-persistence-jsonl` tienen `latest` obsoleto (0.0.1-rc.1), fija `next` (0.1.0-rc.6) (verificado 2026-08-14).
+- npm: `dsh` sin alcance es el proyecto ajeno node-dsh (un shell) — instala `@deepseek-ai/dsh`; `@deepseek-ai/dsh-tools` y `@deepseek-ai/dsh-session-persistence-jsonl` tienen `latest` obsoleto (0.0.1-rc.1), fija `next` (0.1.0-rc.6); `create-dsh-plugin` ya está publicado (0.1.1, 2026-08-13); dsh-core/dsh-sdk siguen sin publicarse (verificado 2026-08-14).
 - Haz `resolve()` en ambos lados antes de comparar rutas (trampa de barras invertidas de Windows).
+
+## Enlaces de documentación
+
+Documentación oficial de desarrollo — base del sitio <https://deepseek-harness.github.io/deepseek-harness> (la raíz es chino, `en/` es inglés; copias locales textuales en `references/official-docs/docs/`):
+
+- Básico: [develop/basic/](https://deepseek-harness.github.io/deepseek-harness/develop/basic/) → [tool](https://deepseek-harness.github.io/deepseek-harness/develop/basic/tool) · [config](https://deepseek-harness.github.io/deepseek-harness/develop/basic/config) · [publish](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)
+- Framework: [develop/framework/](https://deepseek-harness.github.io/deepseek-harness/develop/framework/) ([service](https://deepseek-harness.github.io/deepseek-harness/develop/framework/service), [events](https://deepseek-harness.github.io/deepseek-harness/develop/framework/events)) · Práctica: [develop/practice/](https://deepseek-harness.github.io/deepseek-harness/develop/practice/) ([LLM adapter](https://deepseek-harness.github.io/deepseek-harness/develop/practice/llm-adapter))
+- Guías: [quickstart](https://deepseek-harness.github.io/deepseek-harness/guide/quickstart) · [providers](https://deepseek-harness.github.io/deepseek-harness/guide/providers) · [python-sdk](https://deepseek-harness.github.io/deepseek-harness/guide/python-sdk)
+- Cordis: [primer](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-primer) · [tutorial](https://deepseek-harness.github.io/deepseek-harness/develop/cordis-tutorial/) · [core API](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/context)
+- Referencia: [architecture](https://deepseek-harness.github.io/deepseek-harness/reference/) · [cookbook/adding-a-tool](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool) · [cookbook/extension-cookbook](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/extension-cookbook) · [subsystems](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)
+- Índice completo URL ↔ copia local: [guide/links.md](links.md)
+
+Documentación comunitaria de desarrollo — plantillas/tutoriales/errores, lista completa en [references/community-ecosystem.md](../references/community-ecosystem.md): [plugin-template](https://github.com/omdsh-dev/plugin-template) · [dsh-plugin-dev pitfalls](https://github.com/omdsh-dev/dsh-plugin-dev) · [from-scratch tutorial](https://github.com/Opr4Mp3r/deepseek-harness-plugin-from-scratch) · [dsh-plugin-check](https://github.com/omdsh-dev/dsh-plugin-check)
 
 ## Índice de fuentes clave
 
 - Documentación oficial textual: `references/official-docs/docs/**` (215 páginas, incluye pares `.zh.md`)
-- Restricciones raíz del repo: `references/official-docs/AGENTS.md`, `packages/AGENTS.md`, `examples/AGENTS.md`, `vendor/README.md`
+- Restricciones raíz del repo: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/examples/AGENTS.md`, `references/official-docs/vendor/README.md`; estado de sincronización en `references/official-docs/SNAPSHOT.md`
 - HTML del sitio: `downloads/web/site/**` (sitio completo EN+ZH) + `downloads/manifest.tsv`
 - Cordis upstream: `downloads/github/cordis/**` + investigación `references/upstream-cordis.md`
 - Paper de Cordis: `downloads/github/paper/**` + investigación `references/cordis-paper-and-community.md`

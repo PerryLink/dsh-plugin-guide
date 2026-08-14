@@ -20,13 +20,13 @@ Official docs archive · Cordis primer · community deep-dives · battle-tested 
 
 > 🗺️ **Every fact links to its origin** — official docs, upstream repos, or community repos. When in doubt, the verbatim official copy wins.
 >
-> ⏱️ **Last verified 2026-08-14** — official docs byte-identical to upstream `master` (47f9438); npm tags and the `dsh-plugin` topic (550+ repos) re-checked live.
+> ⏱️ **Last verified 2026-08-14** — official docs byte-identical to upstream `master` (47f9438, see [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)); npm tags and the `dsh-plugin` topic (API total_count 1391, 993 repos captured in the paged snapshot) re-checked live.
 
 ## 📊 At a glance
 
 | Official docs | Community deep-dives | Battle-tested pitfalls | `dsh-plugin` topic | Languages | Agent skill |
 |---|---|---|---|---|---|
-| 215 pages (EN + ZH) | 15 repos | 20+ | 550+ repos | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 pages (EN + ZH) | 15 repos | 20+ | 993+ repos (API ≈1390) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 Quick start
 
@@ -37,16 +37,17 @@ Copy the whole folder into your agent's skill directory (relative paths stay int
 **Windows (PowerShell)**
 
 ```powershell
-Copy-Item -Recurse -Force `
-  'D:\path\to\dsh-plugin-guide' `
-  "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # or <project>\.agents\skills\
+pwsh -File scripts/install-skill.ps1 `
+  -Target "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # or <project>\.agents\skills\dsh-plugin-guide
 ```
 
 **macOS / Linux**
 
 ```bash
-cp -r /path/to/dsh-plugin-guide ~/.deepseek/skills/      # or <project>/.agents/skills/
+pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide   # or <project>/.agents/skills/dsh-plugin-guide
 ```
+
+The installer skips `downloads/` (generated) and `.github/`, then verifies every copied file byte-for-byte. A manual `Copy-Item -Recurse` of the whole folder also works.
 
 Then just ask your agent: *"Use the dsh-plugin-guide skill to build me a … plugin."*
 
@@ -84,10 +85,11 @@ Then just ask your agent: *"Use the dsh-plugin-guide skill to build me a … plu
 ## 🔄 Keeping it fresh
 
 ```sh
+pwsh -File scripts/sync-official-docs.ps1                     # verbatim docs copy from a local checkout (origin/master only)
 pwsh -File scripts/download-sources.ps1                       # official site/docs, Cordis, paper
 pwsh -File scripts/download-community-repos.ps1               # 15 community repositories
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <dir>       # dsh-plugin topic census
-pwsh -File scripts/verify-kit.ps1                             # critical paths + broken-link scan
+pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # critical paths + link scan + docs drift report
 ```
 
 CI runs `verify-kit` on every push and pull request.

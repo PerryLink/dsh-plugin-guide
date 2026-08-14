@@ -20,7 +20,7 @@
 
 ## 3. 插件全量清单（dsh-plugin topic）
 
-工作区快照两期：`dsh-plugin-topic-2026-08-13/`（2026-08-13T15:15Z，304 仓库、去重 303 条）与 `dsh-plugin-topic-2026-08-14/`（2026-08-13T18:36Z，API total_count 552–554、去重 550 条）：`README.md` 全量清单表、`repos.tsv`、`raw-github-api-page-*.json`、`related-readmes/`（仅 08-13 期）。约 3.5 小时内 +246 个仓库，与官方 npm 公开化同日。
+工作区快照三期：`dsh-plugin-topic-2026-08-13/`（2026-08-13T15:15Z，304 仓库、去重 303 条）、`dsh-plugin-topic-2026-08-14/`（2026-08-13T18:36Z，API total_count 552–554、去重 550 条）与 `dsh-plugin-topic-2026-08-14b/`（2026-08-14T08:16Z，API total_count 1391、分页去重 993 条）：`README.md` 全量清单表、`repos.tsv`、`raw-github-api-page-*.json`、`related-readmes/`（仅 08-13 期）。08-13 当天约 3.5 小时内 +246 个仓库（与官方 npm 公开化同日）；到 08-14 早间 total_count 已增长至 ≈1390（GitHub Search API 分页上限 1000 条，993 是分页内去重数）。
 
 ## 4. 插件开发方法类仓库（深读重点）
 

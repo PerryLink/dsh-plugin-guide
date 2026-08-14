@@ -137,6 +137,8 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 4. Never hardcode tunables (test: can cordis.yml change it?); misconfiguration fails loud.
 5. Standalone plugin packages: cordis is a peerDependency matching the host identity (mixing scoped `@deepseek-ai/cordis` and unscoped splits identities); ESM; `dsh.bundle` manifest; git installs need `prepare` + `allowBuilds`; ship `lib/` or a tarball.
 6. Bilingual docs in pairs; tool descriptions/prompts are behavior; non-trivial changes need an Agent Note; run the minimal check set before pushing (dsh-pre-push-checks).
+7. Opaque cross-boundary ids are branded (`Branded<B>` from `dsh-brand`), never bare `string`.
+8. `SessionEventMap` members are required-on-read: unknown event types must carry `ignorable: true` (or the log is refused); only structural format changes bump `SESSION_FORMAT_VERSION`. Switch over `SessionEvent` falls through a documented `default` — no `assertNever` (merge-extensible union).
 
 ## Community pitfalls quick list (details: guide §7.3 / community-repo-deep-dive.md)
 
@@ -145,7 +147,7 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 - Windows junctions via PowerShell `New-Item -ItemType Junction`; vitest drive letter must be uppercase `C:/`.
 - `DSH_PERMISSION_MODE=danger-full-access` is high-risk (no sandbox backend on Windows, approvals disabled); `DSH_*` vars in `~/.dsh/.env` break startup.
 - Session files are multi-frame zstd: use `scanZstdFrames`/`createZstdFrameDecoder` (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`).
-- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh`; `@deepseek-ai/dsh-tools` and `@deepseek-ai/dsh-session-persistence-jsonl` have stale `latest` (0.0.1-rc.1), pin `next` (0.1.0-rc.6) (verified 2026-08-14).
+- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh`; `@deepseek-ai/dsh-tools` and `@deepseek-ai/dsh-session-persistence-jsonl` have stale `latest` (0.0.1-rc.1), pin `next` (0.1.0-rc.6); `create-dsh-plugin` is now published (0.1.1, 2026-08-13); dsh-core/dsh-sdk still unpublished (verified 2026-08-14).
 - `resolve()` both sides before path comparisons (Windows backslash trap).
 
 ## Documentation links
@@ -154,6 +156,7 @@ Official dev docs — site base <https://deepseek-harness.github.io/deepseek-har
 
 - Basics: [develop/basic/](https://deepseek-harness.github.io/deepseek-harness/develop/basic/) → [tool](https://deepseek-harness.github.io/deepseek-harness/develop/basic/tool) · [config](https://deepseek-harness.github.io/deepseek-harness/develop/basic/config) · [publish](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)
 - Framework: [develop/framework/](https://deepseek-harness.github.io/deepseek-harness/develop/framework/) ([service](https://deepseek-harness.github.io/deepseek-harness/develop/framework/service), [events](https://deepseek-harness.github.io/deepseek-harness/develop/framework/events)) · Practice: [develop/practice/](https://deepseek-harness.github.io/deepseek-harness/develop/practice/) ([LLM adapter](https://deepseek-harness.github.io/deepseek-harness/develop/practice/llm-adapter))
+- Guides: [quickstart](https://deepseek-harness.github.io/deepseek-harness/guide/quickstart) · [providers](https://deepseek-harness.github.io/deepseek-harness/guide/providers) · [python-sdk](https://deepseek-harness.github.io/deepseek-harness/guide/python-sdk)
 - Cordis: [primer](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-primer) · [tutorial](https://deepseek-harness.github.io/deepseek-harness/develop/cordis-tutorial/) · [core API](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/context)
 - Reference: [architecture](https://deepseek-harness.github.io/deepseek-harness/reference/) · [cookbook/adding-a-tool](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool) · [cookbook/extension-cookbook](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/extension-cookbook) · [subsystems](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)
 - Full URL ↔ local-copy index: [guide/links.md](links.md)
@@ -163,7 +166,7 @@ Community dev docs — templates/tutorials/pitfalls, full list in [references/co
 ## Key source index
 
 - Official docs verbatim: `references/official-docs/docs/**` (215 pages, all `.zh.md` pairs included)
-- Repo-root constraints: `references/official-docs/AGENTS.md`, `packages/AGENTS.md`, `examples/AGENTS.md`, `vendor/README.md`
+- Repo-root constraints: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/examples/AGENTS.md`, `references/official-docs/vendor/README.md`; sync state in `references/official-docs/SNAPSHOT.md`
 - Site crawl HTML: `downloads/web/site/**` (EN+ZH full site) + `downloads/manifest.tsv` (download ledger)
 - Upstream Cordis: `downloads/github/cordis/**` + research `references/upstream-cordis.md`
 - Cordis paper: `downloads/github/paper/**` + research `references/cordis-paper-and-community.md`

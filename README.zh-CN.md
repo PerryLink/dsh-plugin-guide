@@ -20,13 +20,13 @@
 
 > 🗺️ **每条事实都链接到出处**——官方文档、上游仓库或社区仓库。有疑问时以官方原文副本为准。
 >
-> ⏱️ **最后核验 2026-08-14**——官方文档与上游 `master`（47f9438）逐字节一致；npm 标签与 `dsh-plugin` 话题（550+ 仓库）已实时重核。
+> ⏱️ **最后核验 2026-08-14**——官方文档与上游 `master`（47f9438，见 [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)）逐字节一致；npm 标签与 `dsh-plugin` 话题（API total_count 1391，分页快照收录 993 个仓库）已实时重核。
 
 ## 📊 一览
 
 | 官方文档 | 社区深读 | 实测踩坑 | `dsh-plugin` 话题 | 语言 | 智能体技能 |
 |---|---|---|---|---|---|
-| 215 篇（中英） | 15 个仓库 | 20+ | 550+ 仓库 | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 篇（中英） | 15 个仓库 | 20+ | 993+ 仓库（API ≈1390） | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 快速开始
 
@@ -37,16 +37,17 @@
 **Windows（PowerShell）**
 
 ```powershell
-Copy-Item -Recurse -Force `
-  'D:\path\to\dsh-plugin-guide' `
-  "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # 或 <项目>\.agents\skills\
+pwsh -File scripts/install-skill.ps1 `
+  -Target "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # 或 <项目>\.agents\skills\dsh-plugin-guide
 ```
 
 **macOS / Linux**
 
 ```bash
-cp -r /path/to/dsh-plugin-guide ~/.deepseek/skills/      # 或 <项目>/.agents/skills/
+pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide   # 或 <项目>/.agents/skills/dsh-plugin-guide
 ```
+
+安装脚本会跳过 `downloads/`（脚本生成）与 `.github/`，并对每个复制的文件做逐字节校验；手工 `Copy-Item -Recurse` 整个目录也可以。
 
 然后对智能体说：*"用 dsh-plugin-guide 技能帮我开发一个 XX 插件。"*
 
@@ -84,10 +85,11 @@ cp -r /path/to/dsh-plugin-guide ~/.deepseek/skills/      # 或 <项目>/.agents/
 ## 🔄 保持新鲜
 
 ```sh
+pwsh -File scripts/sync-official-docs.ps1                     # 从本地 checkout 同步官方文档逐字副本（只取 origin/master）
 pwsh -File scripts/download-sources.ps1                       # 官网/文档站、Cordis、论文
 pwsh -File scripts/download-community-repos.ps1               # 15 个社区仓库
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <目录>      # dsh-plugin 话题普查
-pwsh -File scripts/verify-kit.ps1                             # 关键路径 + 断链扫描
+pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # 关键路径 + 断链扫描 + 官方文档漂移报告
 ```
 
 每次 push 与 PR 都会由 CI 运行 `verify-kit`。

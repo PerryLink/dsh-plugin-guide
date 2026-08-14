@@ -23,4 +23,4 @@
 ## 更新与维护
 
 - 首次使用/刷新归档：运行 `scripts/download-sources.ps1` 与 `scripts/download-community-repos.ps1`（需网络）。
-- 同步官方文档：`Copy-Item -Recurse <deepseek-harness-checkout>\docs references\official-docs\docs`。
+- 同步官方文档：`pwsh -File scripts/sync-official-docs.ps1 -Checkout <deepseek-harness-checkout>`（只同步 git 已跟踪文件，快照记录见 `references/official-docs/SNAPSHOT.md`）。

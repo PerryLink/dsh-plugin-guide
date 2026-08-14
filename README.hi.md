@@ -20,13 +20,13 @@
 
 > 🗺️ **हर तथ्य अपने मूल से जुड़ा है** — आधिकारिक दस्तावेज़, अपस्ट्रीम रिपो या सामुदायिक रिपो। संदेह हो तो आधिकारिक हूबहू प्रति ही मान्य है।
 >
-> ⏱️ **अंतिम सत्यापन 2026-08-14** — आधिकारिक दस्तावेज़ अपस्ट्रीम `master` (47f9438) से बाइट-दर-बाइट समान; npm टैग और `dsh-plugin` टॉपिक (550+ रेपो) लाइव पुनः-जाँचे गए।
+> ⏱️ **अंतिम सत्यापन 2026-08-14** — आधिकारिक दस्तावेज़ अपस्ट्रीम `master` (47f9438, देखें [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)) से बाइट-दर-बाइट समान; npm टैग और `dsh-plugin` टॉपिक (API total_count 1391, पेज्ड स्नैपशॉट में 993 रेपो) लाइव पुनः-जाँचे गए।
 
 ## 📊 एक नज़र में
 
 | आधिकारिक दस्तावेज़ | सामुदायिक विश्लेषण | वास्तविक समस्याएँ | `dsh-plugin` टॉपिक | भाषाएँ | एजेंट स्किल |
 |---|---|---|---|---|---|
-| 215 पृष्ठ (EN + ZH) | 15 रिपो | 20+ | 550+ रिपो | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 पृष्ठ (EN + ZH) | 15 रिपो | 20+ | 993+ रिपो (API ≈1390) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 त्वरित शुरुआत
 
@@ -37,16 +37,17 @@
 **Windows (PowerShell)**
 
 ```powershell
-Copy-Item -Recurse -Force `
-  'D:\path\to\dsh-plugin-guide' `
-  "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # या <project>\.agents\skills\
+pwsh -File scripts/install-skill.ps1 `
+  -Target "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # या <project>\.agents\skills\dsh-plugin-guide
 ```
 
 **macOS / Linux**
 
 ```bash
-cp -r /path/to/dsh-plugin-guide ~/.deepseek/skills/      # या <project>/.agents/skills/
+pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide   # या <project>/.agents/skills/dsh-plugin-guide
 ```
+
+इंस्टॉलर `downloads/` (जनरेटेड) और `.github/` को छोड़ देता है, और हर कॉपी की गई फ़ाइल को बाइट-दर-बाइट सत्यापित करता है। पूरे फ़ोल्डर का मैन्युअल `Copy-Item -Recurse` भी काम करता है।
 
 फिर अपने एजेंट से कहें: *"dsh-plugin-guide स्किल का उपयोग करके मुझे एक … प्लगइन बनाओ।"*
 
@@ -84,10 +85,11 @@ cp -r /path/to/dsh-plugin-guide ~/.deepseek/skills/      # या <project>/.age
 ## 🔄 इसे ताज़ा रखें
 
 ```sh
+pwsh -File scripts/sync-official-docs.ps1                     # स्थानीय checkout से हूबहू दस्तावेज़ प्रति (केवल origin/master)
 pwsh -File scripts/download-sources.ps1                       # आधिकारिक साइट/दस्तावेज़, Cordis, पेपर
 pwsh -File scripts/download-community-repos.ps1               # 15 सामुदायिक रिपॉज़िटरी
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <dir>       # dsh-plugin टॉपिक जनगणना
-pwsh -File scripts/verify-kit.ps1                             # महत्वपूर्ण पथ + टूटी कड़ियों की जाँच
+pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # महत्वपूर्ण पथ + टूटी कड़ियाँ + दस्तावेज़ ड्रिफ़्ट रिपोर्ट
 ```
 
 हर push और pull request पर CI `verify-kit` चलाता है।

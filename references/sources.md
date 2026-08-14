@@ -63,7 +63,7 @@
 
 - 官方 Discord 社群：https://discord.gg/Ycq5dCaS4 （官方仓库 README 明文链接）
 - GitHub 讨论区：https://github.com/deepseek-ai/deepseek-harness/discussions
-- GitHub topic：https://github.com/topics/dsh-plugin（全量清单快照在工作区：`dsh-plugin-topic-2026-08-13/`＝304 个/2026-08-13T15:15Z；`dsh-plugin-topic-2026-08-14/`＝去重 550 个/2026-08-13T18:36Z，API total_count 552–554）
+- GitHub topic：https://github.com/topics/dsh-plugin（全量清单快照在工作区：`dsh-plugin-topic-2026-08-13/`＝304 个/2026-08-13T15:15Z；`dsh-plugin-topic-2026-08-14/`＝去重 550 个/2026-08-13T18:36Z，API total_count 552–554；`dsh-plugin-topic-2026-08-14b/`＝去重 993 个/2026-08-14T08:16Z，API total_count 1391——search API 分页上限 1000 条，993 是分页内去重数，其余见 total_count）
 - awesome-dsh-plugins：https://github.com/AdamPlatin123/awesome-dsh-plugins
 - awesome-deepseek-harness：https://github.com/0xsline/awesome-deepseek-harness
 - awesome-DSH-plugin：https://github.com/Alex-Yanggg/awesome-DSH-plugin
@@ -90,9 +90,10 @@
 - 方式：`scripts/download-sources.ps1`（curl.exe；GitHub API 带 User-Agent；含多分支回退 master/main/HEAD）+ `scripts/download-community-repos.ps1`（codeload tarball + tar 解包）。
 - 明细：`downloads/manifest.tsv`（主脚本）与 `downloads/community-repos/_download.log`（社区仓库脚本）。
 - 重跑：两个脚本均幂等，可随时刷新。
-- 时间戳：下载会话当日（详见 manifest 与文件 mtime）；dsh-plugin topic 快照共两期：2026-08-13T15:15:06Z（304 个）与 2026-08-13T18:36Z（去重 550 个），见 §D.2。
+- 时间戳：下载会话当日（详见 manifest 与文件 mtime）；dsh-plugin topic 快照共三期：2026-08-13T15:15:06Z（304 个）、2026-08-13T18:36Z（去重 550 个）与 2026-08-14T08:16Z（去重 993 个，API total_count 1391），见 §D.2。
 - 官网 deepseek.com 页面受 Cloudflare 保护时可能失败——以 manifest 记录为准，正文内容以 GitHub Pages 同源文档为准。
 - **备注**：用户清单中 `ess-plugin-mcp` 经 GitHub 搜索无精确匹配（最接近者为 Skyrim .ess 插件工具的 MCP，与 DSH 无关）；按 DSH 生态语义定位到 `bobleer/deepseek-harness-plugin-mcp`（让任意 agent 经 MCP 发现/安装/运行 DSH 插件）并归档，如用户所指另有其仓，请告知后补充。
-- **2026-08-14 复核（网络实时核验）**：上游 master 仍为 47f9438（本地 checkout 即上游 HEAD，官方文档副本与 checkout 逐文件 hash 一致）；无 GitHub Releases/tag。npm `@deepseek-ai/dsh` latest=next=0.1.0-rc.6（08-13T12:35Z 发布）、`@deepseek-ai/cordis` latest=4.0.1，`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 仍为过期的 0.0.1-rc.1（`next`=0.1.0-rc.6）；已发布还包括 dsh-shell（0.0.1-rc.5）、dsh-session*/dsh-web/dsh-headless/dsh-loader-smoke/dsh-skill（0.0.1-rc.1）；dsh-core、dsh-sdk、create-dsh-plugin 未发布（404）；**无作用域 `dsh` 包是无关项目 node-dsh**（description: A shell written in JavaScript）。
+- **2026-08-14 复核（网络实时核验）**：上游 master 仍为 47f9438（本地 checkout 即上游 HEAD，官方文档副本与 checkout 逐文件 hash 一致）；无 GitHub Releases/tag。npm `@deepseek-ai/dsh` latest=next=0.1.0-rc.6（08-13T12:35Z 发布）、`@deepseek-ai/cordis` latest=4.0.1，`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 仍为过期的 0.0.1-rc.1（`next`=0.1.0-rc.6）；已发布还包括 dsh-shell（0.0.1-rc.5）、dsh-session*/dsh-web/dsh-headless/dsh-loader-smoke/dsh-skill（0.0.1-rc.1）；dsh-core、dsh-sdk 未发布（404）；**无作用域 `dsh` 包是无关项目 node-dsh**（description: A shell written in JavaScript）。
+- **2026-08-14 二次复核（08:16Z，网络实时核验）**：`create-dsh-plugin` 已发布（latest=0.1.1，2026-08-13T15:15:42Z）——上次复核"未发布（404）"的记录作废；`@deepseek-ai/cordis` 另发布 `next`=4.0.1-rc.4；其余 npm 结论不变（dsh/dsh-tools/dsh-session-persistence-jsonl/dsh-shell 同上；dsh-core、dsh-sdk 仍 404）。`dsh-plugin` 话题 API total_count 增长至 1391（08-14T08:16Z，分页去重 993，见 §D.2）。官方文档副本与上游 `origin/master`（47f9438）逐字节一致，快照记录见 `references/official-docs/SNAPSHOT.md`。
 - **2026-08-14 外链扫描**：KB 自有文档 215 个外部 URL 逐一探测。真死链已修复/标注：turtle-ui、dsh-external/hub、deepseek-harness/cordis（404）；npmjs/socket.dev/新闻站（163/sohu/qq/aihot）与 discord.gg 对 curl 返回 403/501/超时属反爬，浏览器可用，非死链；cordiverse/paper 的 raw README（master/main）均 200。
 - **2026-08-14 社区仓库提交复核**：15 个深读仓库中 6 个在 08-13T15:15Z 快照后有新提交——dsh-suite（16:20Z X digest 管线/first-party 目录）、from-scratch（16:29Z 教程 prose 与 checkpoint 对齐）、plugin-mcp（16:16Z Streamable HTTP 每会话独立 Server 修复）、dsh-hub-workshop（17:30Z qualify catalog + close registry）、AdamPlatin123/awesome-dsh-plugins（18:10Z 登记 PR #4/#14 等）、bruc3van/awesome-dsh-plugin（17:56Z 目录刷新）；其余 9 个无新提交、无改名/归档。已按最新 HEAD 全部重下（HEAD 记录 downloads/community-repos/_heads.tsv）。

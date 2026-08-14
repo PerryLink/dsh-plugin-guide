@@ -136,6 +136,8 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 4. 不得硬编码可调参数（判断：cordis.yml 能否改）；misconfig fail loud。
 5. 独立插件包：cordis 是 peerDependency（与宿主同身份：scoped `@deepseek-ai/cordis` 与 unscoped 混用会"双 Cordis 分裂"）；ESM；`dsh.bundle` 清单；git 安装配 `prepare` + `allowBuilds`；发布带 `lib/` 或 tarball。
 6. 文档双语成对；工具描述/提示词即行为；非平凡变更加 Agent Note；提交前跑最小检查集（dsh-pre-push-checks）。
+7. 跨边界 opaque id 用 branded（`Branded<B>` from `dsh-brand`），从不裸 `string`。
+8. `SessionEventMap` 成员默认 required-on-read：不认识类型的会话事件必须带 `ignorable: true`（否则日志被拒读）；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。对 `SessionEvent` 的 switch 落入文档化 `default`——**禁用 `assertNever`**（merge-extensible union）。
 
 ## 社区实测坑速查（详见 guide §7.3 / community-repo-deep-dive.md）
 
@@ -144,13 +146,26 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 - Windows junction 用 PowerShell `New-Item -ItemType Junction`；vitest 盘符大写 `C:/`。
 - `DSH_PERMISSION_MODE=danger-full-access` 高风险（Windows 无沙箱后端、禁用审批）；`DSH_*` 放 `~/.dsh/.env` 会报错。
 - 会话文件多帧 zstd：用 `scanZstdFrames`/`createZstdFrameDecoder`（`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`）。
-- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`；`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 是过期版本（0.0.1-rc.1），要钉 `next`（0.1.0-rc.6）（2026-08-14 复核）。
+- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`；`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 是过期版本（0.0.1-rc.1），要钉 `next`（0.1.0-rc.6）；`create-dsh-plugin` 已发布（0.1.1，2026-08-13）；dsh-core/dsh-sdk 仍未发布（2026-08-14 复核）。
 - 路径比较前两侧都 `resolve()`（Windows 反斜杠陷阱）。
+
+## 文档链接
+
+官方开发文档——站点基址 <https://deepseek-harness.github.io/deepseek-harness>（根路由中文，`en/` 前缀英文；逐字副本在 `references/official-docs/docs/`）：
+
+- 入门：[develop/basic/](https://deepseek-harness.github.io/deepseek-harness/develop/basic/) → [tool](https://deepseek-harness.github.io/deepseek-harness/develop/basic/tool) · [config](https://deepseek-harness.github.io/deepseek-harness/develop/basic/config) · [publish](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)
+- 框架与实践：[develop/framework/](https://deepseek-harness.github.io/deepseek-harness/develop/framework/)（[service](https://deepseek-harness.github.io/deepseek-harness/develop/framework/service)、[events](https://deepseek-harness.github.io/deepseek-harness/develop/framework/events)）· [develop/practice/](https://deepseek-harness.github.io/deepseek-harness/develop/practice/)（[LLM adapter](https://deepseek-harness.github.io/deepseek-harness/develop/practice/llm-adapter)）
+- 用户指南：[quickstart](https://deepseek-harness.github.io/deepseek-harness/guide/quickstart) · [providers](https://deepseek-harness.github.io/deepseek-harness/guide/providers) · [python-sdk](https://deepseek-harness.github.io/deepseek-harness/guide/python-sdk)
+- Cordis：[primer](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-primer) · [tutorial](https://deepseek-harness.github.io/deepseek-harness/develop/cordis-tutorial/) · [core API](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/context)
+- 参考：[architecture](https://deepseek-harness.github.io/deepseek-harness/reference/) · [cookbook/adding-a-tool](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool) · [cookbook/extension-cookbook](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/extension-cookbook) · [subsystems](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)
+- 完整 URL ↔ 本地副本对照：[guide/links.md](links.md)
+
+社区开发文档——模板/教程/踩坑，完整清单见 [references/community-ecosystem.md](../references/community-ecosystem.md)：[plugin-template](https://github.com/omdsh-dev/plugin-template) · [dsh-plugin-dev pitfalls](https://github.com/omdsh-dev/dsh-plugin-dev) · [from-scratch tutorial](https://github.com/Opr4Mp3r/deepseek-harness-plugin-from-scratch) · [dsh-plugin-check](https://github.com/omdsh-dev/dsh-plugin-check)
 
 ## 关键源索引
 
 - 本地官方文档全文：`references/official-docs/docs/**`（215 篇，含全部 `.zh.md`）
-- 仓库根约束：`references/official-docs/AGENTS.md`、`packages/AGENTS.md`、`examples/AGENTS.md`、`vendor/README.md`
+- 仓库根约束：`references/official-docs/AGENTS.md`、`references/official-docs/packages/AGENTS.md`、`references/official-docs/examples/AGENTS.md`、`references/official-docs/vendor/README.md`；同步状态见 `references/official-docs/SNAPSHOT.md`
 - 站点爬取 HTML：`downloads/web/site/**`（中英双语全站）+ `downloads/manifest.tsv`（下载清单）
 - 上游 Cordis：`downloads/github/cordis/**` + 调研 `references/upstream-cordis.md`
 - Cordis 论文：`downloads/github/paper/**` + 调研 `references/cordis-paper-and-community.md`

@@ -137,6 +137,8 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 4. समायोज्य मान कभी हार्डकोड न करें (कसौटी: क्या cordis.yml इसे बदल सकता है?); गलत कॉन्फ़िग ज़ोर से विफल हो।
 5. स्वतंत्र प्लगइन पैकेज: cordis peerDependency है और होस्ट पहचान से मेल खाना चाहिए (scoped `@deepseek-ai/cordis` और unscoped मिलाना पहचान बाँट देता है); ESM; `dsh.bundle` मैनिफ़ेस्ट; git इंस्टॉल को `prepare` + `allowBuilds` चाहिए; `lib/` या tarball प्रकाशित करें।
 6. दस्तावेज़ द्विभाषी जोड़ों में; टूल विवरण/प्रॉम्प्ट ही व्यवहार हैं; गैर-तुच्छ बदलाव में Agent Note चाहिए; पुश से पहले न्यूनतम जाँच सेट चलाएँ (dsh-pre-push-checks)।
+7. सीमाओं के पार अपारदर्शी ids branded होते हैं (`Branded<B>` from `dsh-brand`), कभी भी नंगे `string` नहीं।
+8. `SessionEventMap` सदस्य required-on-read हैं: अज्ञात प्रकार के इवेंट पर `ignorable: true` होना चाहिए (वरना log अस्वीकृत); केवल संरचनात्मक प्रारूप बदलाव ही `SESSION_FORMAT_VERSION` bump करते हैं। `SessionEvent` पर switch दस्तावेज़ित `default` में गिरता है — `assertNever` नहीं (merge-extensible union)।
 
 ## समुदाय की त्वरित समस्या-सूची (विवरण: गाइड §7.3 / community-repo-deep-dive.md)
 
@@ -145,13 +147,26 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 - Windows junctions PowerShell `New-Item -ItemType Junction` से; vitest ड्राइव अक्षर बड़ा `C:/`।
 - `DSH_PERMISSION_MODE=danger-full-access` उच्च जोखिम है (Windows पर सैंडबॉक्स बैकएंड नहीं, अनुमोदन बंद); `~/.dsh/.env` में `DSH_*` स्टार्टअप तोड़ता है।
 - सत्र फ़ाइलें मल्टी-फ़्रेम zstd हैं: `scanZstdFrames`/`createZstdFrameDecoder` उपयोग करें (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`)।
-- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें; `@deepseek-ai/dsh-tools` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` पुराना है (0.0.1-rc.1), `next` (0.1.0-rc.6) पिन करें (2026-08-14 को सत्यापित)।
+- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें; `@deepseek-ai/dsh-tools` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` पुराना है (0.0.1-rc.1), `next` (0.1.0-rc.6) पिन करें; `create-dsh-plugin` अब प्रकाशित है (0.1.1, 2026-08-13); dsh-core/dsh-sdk अभी भी अप्रकाशित (2026-08-14 को सत्यापित)।
 - पथ तुलना से पहले दोनों ओर `resolve()` करें (Windows बैकस्लैश जाल)।
+
+## दस्तावेज़ लिंक
+
+आधिकारिक डेव दस्तावेज़ — साइट आधार <https://deepseek-harness.github.io/deepseek-harness> (रूट चीनी, `en/` अंग्रेज़ी; हूबहू स्थानीय प्रतियाँ `references/official-docs/docs/` में):
+
+- मूल बातें: [develop/basic/](https://deepseek-harness.github.io/deepseek-harness/develop/basic/) → [tool](https://deepseek-harness.github.io/deepseek-harness/develop/basic/tool) · [config](https://deepseek-harness.github.io/deepseek-harness/develop/basic/config) · [publish](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)
+- फ़्रेमवर्क: [develop/framework/](https://deepseek-harness.github.io/deepseek-harness/develop/framework/) ([service](https://deepseek-harness.github.io/deepseek-harness/develop/framework/service), [events](https://deepseek-harness.github.io/deepseek-harness/develop/framework/events)) · अभ्यास: [develop/practice/](https://deepseek-harness.github.io/deepseek-harness/develop/practice/) ([LLM adapter](https://deepseek-harness.github.io/deepseek-harness/develop/practice/llm-adapter))
+- गाइड: [quickstart](https://deepseek-harness.github.io/deepseek-harness/guide/quickstart) · [providers](https://deepseek-harness.github.io/deepseek-harness/guide/providers) · [python-sdk](https://deepseek-harness.github.io/deepseek-harness/guide/python-sdk)
+- Cordis: [primer](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-primer) · [tutorial](https://deepseek-harness.github.io/deepseek-harness/develop/cordis-tutorial/) · [core API](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/context)
+- संदर्भ: [architecture](https://deepseek-harness.github.io/deepseek-harness/reference/) · [cookbook/adding-a-tool](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool) · [cookbook/extension-cookbook](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/extension-cookbook) · [subsystems](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)
+- पूर्ण URL ↔ स्थानीय प्रति सूची: [guide/links.md](links.md)
+
+सामुदायिक डेव दस्तावेज़ — टेम्पलेट/ट्यूटोरियल/समस्याएँ, पूरी सूची [references/community-ecosystem.md](../references/community-ecosystem.md) में: [plugin-template](https://github.com/omdsh-dev/plugin-template) · [dsh-plugin-dev pitfalls](https://github.com/omdsh-dev/dsh-plugin-dev) · [from-scratch tutorial](https://github.com/Opr4Mp3r/deepseek-harness-plugin-from-scratch) · [dsh-plugin-check](https://github.com/omdsh-dev/dsh-plugin-check)
 
 ## मुख्य स्रोत सूची
 
 - आधिकारिक दस्तावेज़ हूबहू: `references/official-docs/docs/**` (215 पृष्ठ, `.zh.md` जोड़े सहित)
-- रिपो-रूट बाधाएँ: `references/official-docs/AGENTS.md`, `packages/AGENTS.md`, `examples/AGENTS.md`, `vendor/README.md`
+- रिपो-रूट बाधाएँ: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/examples/AGENTS.md`, `references/official-docs/vendor/README.md`; सिंक स्थिति `references/official-docs/SNAPSHOT.md` में
 - साइट क्रॉल HTML: `downloads/web/site/**` (EN+ZH पूर्ण साइट) + `downloads/manifest.tsv`
 - अपस्ट्रीम Cordis: `downloads/github/cordis/**` + शोध `references/upstream-cordis.md`
 - Cordis पेपर: `downloads/github/paper/**` + शोध `references/cordis-paper-and-community.md`

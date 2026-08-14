@@ -58,8 +58,9 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 
 ## 知识库维护（需要时）
 
-- 刷新线上资料：`pwsh -File ./scripts/download-sources.ps1`；刷新社区仓库：`pwsh -File ./scripts/download-community-repos.ps1`（两个脚本幂等，产出进 `./downloads/`）。话题清单计数重核：按 `references/sources.md` §D.2 记录的方式用 GitHub Search API `q=topic:dsh-plugin` 分页重抓，快照与计数一并更新。
-- 同步官方文档副本：`Copy-Item -Recurse <checkout>\docs .\references\official-docs\docs`。
+- 同步官方文档副本：`pwsh -File ./scripts/sync-official-docs.ps1 [-Checkout <deepseek-harness checkout>]`——只同步 git 已跟踪文件（未跟踪草稿与未推送提交不会进来），并刷新 `references/official-docs/SNAPSHOT.md`；README 的"最后核验"日期与提交号引用 SNAPSHOT.md，不要手改。漂移校验：`pwsh -File ./scripts/verify-kit.ps1 -Checkout <checkout>`。
+- 刷新线上资料：`pwsh -File ./scripts/download-sources.ps1`；刷新社区仓库：`pwsh -File ./scripts/download-community-repos.ps1`（两个脚本幂等，产出进 `./downloads/`）。话题清单计数重核：`pwsh -File ./scripts/gen-topic-snapshot.ps1 -OutDir <dir> -MaxPages 20`（GitHub Search API `q=topic:dsh-plugin`；分页上限 1000 条，去重数与 API total_count 都要记录进 sources.md §D.2）。
+- 安装/刷新 agent 技能副本：`pwsh -File ./scripts/install-skill.ps1 -Target <skill目录>`（跳过 downloads/ 与 .github/，逐字节校验）。
 - 冲突裁决：与官方文档冲突时以 `references/official-docs/`（官方仓库原文）为准。
 
 ## 边界
