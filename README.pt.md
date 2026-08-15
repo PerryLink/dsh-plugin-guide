@@ -26,7 +26,7 @@ Arquivo da documentação oficial · Introdução ao Cordis · Análise da comun
 
 | Documentação oficial | Análises comunitárias | Armadilhas reais | Tópico `dsh-plugin` | Idiomas | Skill de agente |
 |---|---|---|---|---|---|
-| 215 páginas (EN + ZH) | 111 repos | 20+ | 998 snapshot (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 páginas (EN + ZH) | 114 repos | 20+ | 998 snapshot (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 Início rápido
 
@@ -69,7 +69,7 @@ Depois é só pedir ao seu agente: *"Use a skill dsh-plugin-guide para criar um 
 | `guide/quick-reference.md` | Folha de consulta de uma página (5 idiomas) |
 | `guide/links.md` | Índice de URLs curado: documentação oficial de desenvolvimento (site ↔ cópias locais) + links comunitários |
 | `references/official-docs/` | Cópia integral da documentação oficial do repo (EN + ZH) |
-| `references/*.md` | Relatórios de pesquisa: docs do repo, site, Cordis, o paper, ecossistema comunitário, arquivo de 111 repos (15 analisados) |
+| `references/*.md` | Relatórios de pesquisa: docs do repo, site, Cordis, o paper, ecossistema comunitário, arquivo de 114 repos (15 analisados) |
 | `scripts/` | Scripts de download idempotentes + verificador de integridade + gerador de censo do tópico |
 | `downloads/` | Instantâneos brutos — gerados por `scripts/`, não versionados |
 
@@ -78,7 +78,7 @@ Depois é só pedir ao seu agente: *"Use a skill dsh-plugin-guide para criar um 
 - 📜 **Contrato do plugin e regras rígidas** — efeitos/disposers, `next()` no waterfall, visível-para-o-modelo ⇔ registrado, configuração Schemastery.
 - 🕰️ **Linha do tempo dos mecanismos** — repository-plugin introduzido em 0809, removido em 0811; os dois canais de instalação (bundle vs plugin cordis simples).
 - 🕳️ **Mais de 20 armadilhas reais** com causa e solução: cópias duplas do cordis, trio do tsconfig, `tsc` emitindo mesmo com erros, junctions do Windows, sessões zstd multiframe, variáveis `DSH_*`, `latest` do npm desatualizado…
-- 🔬 **111 repositórios comunitários arquivados** (15 analisados) — modelos, scaffolds, arquivos de armadilhas, regras do plugin-check, camada Fabric, ponte MCP, mais um guia em 15 idiomas, um curso s01–s23, manuais, SDKs TS/Rust e o lote 08-15 (shells de desktop, ponte QQ, PoCs de segurança, port Python).
+- 🔬 **114 repositórios comunitários arquivados** (15 analisados) — modelos, scaffolds, arquivos de armadilhas, regras do plugin-check, camada Fabric, ponte MCP, mais um guia em 15 idiomas, um curso s01–s23, manuais, SDKs TS/Rust e o lote 08-15 (shells de desktop, ponte QQ, PoCs de segurança, port Python).
 - 🔗 **Índice de fontes completo** — cada fato aponta para sua origem (docs oficiais, repos upstream, repos comunitários).
 - 🗃️ **1654 Discussions oficiais arquivadas** (com comentários de threads selecionadas) + 100+ artigos comunitários (zh/en/HN) — atualize com `scripts/archive-discussions.ps1` / `scripts/download-community-articles.ps1`.
 - 🆕 **Selo de atualidade** — re-verificado contra o `master` upstream, npm e o tópico `dsh-plugin` ao vivo em 2026-08-15.
@@ -88,7 +88,7 @@ Depois é só pedir ao seu agente: *"Use a skill dsh-plugin-guide para criar um 
 ```sh
 pwsh -File scripts/sync-official-docs.ps1                     # cópia integral dos docs a partir de um checkout local (apenas origin/master)
 pwsh -File scripts/download-sources.ps1                       # site/docs oficiais, Cordis, paper
-pwsh -File scripts/download-community-repos.ps1               # 111 repositórios comunitários (tarballs codeload, atualização por ETag)
+pwsh -File scripts/download-community-repos.ps1               # 114 repositórios comunitários (tarballs codeload, atualização por ETag)
 pwsh -File scripts/download-community-articles.ps1            # artigos comunitários zh/en/HN (snapshots HTML)
 pwsh -File scripts/archive-discussions.ps1                    # Discussions oficiais (requer $env:GH_TOKEN)
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <dir>       # censo do tópico dsh-plugin

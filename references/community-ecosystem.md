@@ -1,6 +1,6 @@
 # 生态与社区汇总（community-ecosystem.md）
 
-> DeepSeek Harness 插件生态与社区资料的索引与要点。全部仓库的**完整源码 tarball 副本**在 `downloads/community-repos/`（111 个，HEAD/ETag 记录 `_heads.tsv`）；首批 15 个的逐仓库深读报告见 [community-repo-deep-dive.md](community-repo-deep-dive.md)；08-14 晚生态扫描报告见 `downloads/_research/github-ecosystem-scan.md`；08-15 增量（第七批 14 仓 + Discussions 刷新 + 文章归档落地）见 §4.6 与文末"08-15 更新记录"；全量来源总账见 [sources.md](sources.md)。
+> DeepSeek Harness 插件生态与社区资料的索引与要点。全部仓库的**完整源码 tarball 副本**在 `downloads/community-repos/`（114 个，HEAD/ETag 记录 `_heads.tsv`）；首批 15 个的逐仓库深读报告见 [community-repo-deep-dive.md](community-repo-deep-dive.md)；08-14 晚生态扫描报告见 `downloads/_research/github-ecosystem-scan.md`；08-15 增量（第七批 14 仓 + 第八批 3 仓 + Discussions 刷新 + 文章归档落地）见 §4.6/§4.7 与文末"08-15 更新记录"；全量来源总账见 [sources.md](sources.md)。
 
 ## 1. 官方渠道
 
@@ -147,6 +147,12 @@
 - **其他实现/移植**：[HenryZ838978/deepseek-harness](https://github.com/HenryZ838978/deepseek-harness)（Python 移植：`pip install deepseek-harness` + dsh CLI + MCP server + 16 协议怪癖/270+ 试验）、[Lyowisee/deepseek-harness](https://github.com/Lyowisee/deepseek-harness)
 - **市场/目录**：[mishibeikejie/zat-dsh-engine](https://github.com/mishibeikejie/zat-dsh-engine)（可视化插件市场）、[beancookie/awesome-dsh-plugin](https://github.com/beancookie/awesome-dsh-plugin)（英文精选列表）
 
+### 4.7 08-15 第八批（午间补充，3 个）
+
+- [orxz/deepseek-harness-themes](https://github.com/orxz/deepseek-harness-themes) — DSH 主题（皮肤）集合与安装文档
+- [vvlife/whalehub-dsh](https://github.com/vvlife/whalehub-dsh) — WhaleHub 🐋 插件市场：发现、搜索、一键安装
+- [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market) — dsh-market 组织下的插件市场注册表
+
 ## 5. Awesome 精选列表
 
 - [AdamPlatin123/awesome-dsh-plugins](https://github.com/AdamPlatin123/awesome-dsh-plugins) — 插件目录 + 每日兼容性追踪（`downloads/community-repos/awesome-dsh-plugins/`）
@@ -189,7 +195,7 @@
 - **官方 Discussions 刷新**：1408 → **1654 条**（新编号最高 1629+）；代表性新线程：
   - [#1629 RFC：官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（zoahdev，08-15T01:15Z）——提议 template repo + `pnpm create dsh-plugin`，点名 dsh-tools `latest` 版本火车混淆（关联 #984）；
   - 安全审计类 #817/#454/#523/#250 与社区 PoC 仓库 zzszmyf/dsh-security-pocs 呼应。
-- **新仓库第七批 14 个**归档（§4.6）：桌面端扎堆（7 个 Electron 壳）、QQ/Termux 桥接、安全 PoC、Python 移植、可视化市场、英文 awesome。
+- **新仓库第七批 14 个 + 第八批 3 个**归档（§4.6/§4.7）：桌面端扎堆（7 个 Electron 壳）、QQ/Termux 桥接、安全 PoC、Python 移植、可视化市场、英文 awesome、主题注册表、WhaleHub/dsh-market 市场。
 - **社区文章归档落地**：`downloads/web/community-articles/` 由 53 篇扩到 **145 篇**（zh 94 / en 41 / hn 10，新脚本 `scripts/download-community-articles.ps1`）；digg/知乎/InfoQ/venturebeat/TNW/Twitter/YouTube/Reddit 反爬，线索已留档。
 - **上游与 npm 无变化**：官方仓库 HEAD 仍 47f9438（无新提交/Release）；`@deepseek-ai/dsh` latest=next=0.1.0-rc.6。
 - **工具链**：新增 `scripts/archive-discussions.ps1`（token 支持 + 防缩水保护）；`gen-topic-snapshot.ps1` 支持 token 并改用 Invoke-WebRequest（规避 PS 5.1 curl 数组参数拆词坑）；`download-community-repos.ps1` 修复弱 ETag 解析并新增第七批。

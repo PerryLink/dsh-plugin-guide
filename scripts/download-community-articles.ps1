@@ -128,6 +128,10 @@ $list = @(
   'en:tipranks-openrouter = https://fastly.tipranks.com/news/private-companies/openrouter-expands-ai-model-orchestration-with-ori-deepseek-harness-integration',
   'en:webgate-mit = https://web.gate.it/zh/news/detail/deepseek-open-sources-harness-v01-under-the-mit-license-rivaling-claude-23440280',
   'en:blockbeats-v4pro = https://en.theblockbeats.news/flash/361500',
+  'en:runtimewire-harness = https://runtimewire.com/article/deepseek-open-sources-agent-harness-v4-pro-api-price-hike',
+  'en:digitalapplied-harness = https://www.digitalapplied.com/blog/deepseek-harness-open-source-agent-framework-2026',
+  'en:digitalapplied-v4pro-ga = https://www.digitalapplied.com/blog/deepseek-v4-pro-ga-official-release-2026',
+  'en:afbytes-venturebeat-mirror = https://afbytes.com/news/article/rss:f2c63a396b39d3537b5fd16ac4f5ca04f9574ad53febab5a97db5852c6/deepseek-harness-launches-as-open-source-rival-to-claude-code-alongside-v4-pro-on-api-with-higher-prices',
   # ---------- hn ----------
   'hn:49286003-cordis = https://hn.edgecompute.app/item/49286003',
   'hn:49287821-xcmd = https://hn.edgecompute.app/item/49287821',

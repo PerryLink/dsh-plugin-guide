@@ -26,7 +26,7 @@
 
 | आधिकारिक दस्तावेज़ | सामुदायिक विश्लेषण | वास्तविक समस्याएँ | `dsh-plugin` टॉपिक | भाषाएँ | एजेंट स्किल |
 |---|---|---|---|---|---|
-| 215 पृष्ठ (EN + ZH) | 111 रिपो | 20+ | 998 स्नैपशॉट (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 पृष्ठ (EN + ZH) | 114 रिपो | 20+ | 998 स्नैपशॉट (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 त्वरित शुरुआत
 
@@ -69,7 +69,7 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 | `guide/quick-reference.md` | एक पेज की चीट शीट (5 भाषाएँ) |
 | `guide/links.md` | क्यूरेटेड URL सूची: आधिकारिक डेव दस्तावेज़ (साइट ↔ स्थानीय प्रतियाँ) + सामुदायिक लिंक |
 | `references/official-docs/` | आधिकारिक रिपो दस्तावेज़ की हूबहू प्रति (EN + ZH) |
-| `references/*.md` | शोध रिपोर्ट: रिपो दस्तावेज़, वेबसाइट, Cordis, पेपर, सामुदायिक पारिस्थितिकी, 111 रिपो संग्रह (15 का विश्लेषण) |
+| `references/*.md` | शोध रिपोर्ट: रिपो दस्तावेज़, वेबसाइट, Cordis, पेपर, सामुदायिक पारिस्थितिकी, 114 रिपो संग्रह (15 का विश्लेषण) |
 | `scripts/` | आइडेम्पोटेंट डाउनलोड स्क्रिप्ट + अखंडता जाँचकर्ता + टॉपिक जनगणना जनरेटर |
 | `downloads/` | कच्चे स्नैपशॉट — `scripts/` से बनते हैं, गिट में नहीं |
 
@@ -78,7 +78,7 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 - 📜 **प्लगइन अनुबंध और सख़्त नियम** — इफ़ेक्ट/डिस्पोज़र, waterfall में `next()`, मॉडल-दृश्य ⇔ लॉग, Schemastery कॉन्फ़िग।
 - 🕰️ **तंत्र की समयरेखा** — repository-plugin 0809 को आया, 0811 को हटाया गया; दो इंस्टॉल मार्ग (bundle बनाम सादा cordis प्लगइन)।
 - 🕳️ **20+ वास्तविक समस्याएँ** कारण और समाधान सहित: cordis की दोहरी प्रतियाँ, tsconfig तिकड़ी, त्रुटि पर भी `tsc` का आउटपुट, Windows junctions, मल्टी-फ़्रेम zstd सत्र, `DSH_*` पर्यावरण चर, npm का पुराना `latest`…
-- 🔬 **111 सामुदायिक रिपो संग्रहीत** (15 का गहन विश्लेषण) — टेम्पलेट, स्कैफ़ोल्ड, समस्या-संग्रह, plugin-check नियम, Fabric परत, MCP ब्रिज, साथ ही 15-भाषा गाइड, s01–s23 पाठ्यक्रम, हैंडबुक, TS/Rust SDK और 08-15 बैच (डेस्कटॉप शेल, QQ ब्रिज, सुरक्षा PoC, Python पोर्ट)।
+- 🔬 **114 सामुदायिक रिपो संग्रहीत** (15 का गहन विश्लेषण) — टेम्पलेट, स्कैफ़ोल्ड, समस्या-संग्रह, plugin-check नियम, Fabric परत, MCP ब्रिज, साथ ही 15-भाषा गाइड, s01–s23 पाठ्यक्रम, हैंडबुक, TS/Rust SDK और 08-15 बैच (डेस्कटॉप शेल, QQ ब्रिज, सुरक्षा PoC, Python पोर्ट)।
 - 🔗 **संपूर्ण स्रोत सूची** — हर तथ्य अपने मूल (आधिकारिक दस्तावेज़, अपस्ट्रीम रिपो, सामुदायिक रिपो) से जुड़ा है।
 - 🗃️ **1654 आधिकारिक Discussions संग्रहीत** (चयनित थ्रेड्स की टिप्पणियों सहित) + 100+ सामुदायिक लेख (zh/en/HN) — `scripts/archive-discussions.ps1` / `scripts/download-community-articles.ps1` से ताज़ा करें।
 - 🆕 **ताज़गी की मुहर** — 2026-08-15 को अपस्ट्रीम `master`, npm और लाइव `dsh-plugin` टॉपिक से पुनः-सत्यापित।
@@ -88,7 +88,7 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 ```sh
 pwsh -File scripts/sync-official-docs.ps1                     # स्थानीय checkout से हूबहू दस्तावेज़ प्रति (केवल origin/master)
 pwsh -File scripts/download-sources.ps1                       # आधिकारिक साइट/दस्तावेज़, Cordis, पेपर
-pwsh -File scripts/download-community-repos.ps1               # 111 सामुदायिक रिपॉज़िटरी (codeload tarball, ETag रिफ़्रेश)
+pwsh -File scripts/download-community-repos.ps1               # 114 सामुदायिक रिपॉज़िटरी (codeload tarball, ETag रिफ़्रेश)
 pwsh -File scripts/download-community-articles.ps1            # zh/en/HN सामुदायिक लेख (HTML स्नैपशॉट)
 pwsh -File scripts/archive-discussions.ps1                    # आधिकारिक Discussions ($env:GH_TOKEN आवश्यक)
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <dir>       # dsh-plugin टॉपिक जनगणना

@@ -26,7 +26,7 @@
 
 | 官方文档 | 社区深读 | 实测踩坑 | `dsh-plugin` 话题 | 语言 | 智能体技能 |
 |---|---|---|---|---|---|
-| 215 篇（中英） | 111 个仓库 | 20+ | 998 快照（API ≈2670） | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 篇（中英） | 114 个仓库 | 20+ | 998 快照（API ≈2670） | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 快速开始
 
@@ -78,7 +78,7 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 - 📜 **插件契约与红线**——注册即 effect、waterfall 必须 `next()`、模型可见⟺已记录、Schemastery 配置。
 - 🕰️ **机制时间线**——repository-plugin 机制 0809 推出、0811 移除；bundle 与纯 cordis 两条安装通道。
 - 🕳️ **20+ 个实测坑**（根因+修法）：cordis 双副本、tsconfig 三件套、`tsc` 报错仍产出、Windows junction、多帧 zstd 会话、`DSH_*` 环境变量、npm `latest` 过期……
-- 🔬 **111 个社区仓库归档**（15 个深读）——模板、脚手架、踩坑档案、plugin-check 规则、Fabric 层、MCP 桥，另有 15 语言指南、s01–s23 课程、深度手册、TS/Rust SDK 等 26 个文档型仓库与 08-15 第七批 14 个仓库（桌面端/QQ 桥接/安全 PoC/Python 移植）。
+- 🔬 **114 个社区仓库归档**（15 个深读）——模板、脚手架、踩坑档案、plugin-check 规则、Fabric 层、MCP 桥，另有 15 语言指南、s01–s23 课程、深度手册、TS/Rust SDK 等 26 个文档型仓库与 08-15 第七批 14 个仓库（桌面端/QQ 桥接/安全 PoC/Python 移植）。
 - 🔗 **全量来源索引**——每条结论都链接到出处（官方文档、上游仓库、社区仓库）。
 - 🗃️ **官方 Discussions 全量归档（1654 条，含精选线程评论）+ 中英文社区文章快照 100+ 篇**——用 `scripts/archive-discussions.ps1` / `scripts/download-community-articles.ps1` 一键刷新。
 - 🆕 **新鲜度印章**——2026-08-15 对照上游 `master`、npm 与实时 `dsh-plugin` 话题复核。
@@ -88,7 +88,7 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 ```sh
 pwsh -File scripts/sync-official-docs.ps1                     # 从本地 checkout 同步官方文档逐字副本（只取 origin/master）
 pwsh -File scripts/download-sources.ps1                       # 官网/文档站、Cordis、论文
-pwsh -File scripts/download-community-repos.ps1               # 111 个社区仓库（codeload tarball，ETag 增量刷新）
+pwsh -File scripts/download-community-repos.ps1               # 114 个社区仓库（codeload tarball，ETag 增量刷新）
 pwsh -File scripts/download-community-articles.ps1            # 中/英/HN 社区文章 HTML 快照
 pwsh -File scripts/archive-discussions.ps1                    # 官方 Discussions（需 $env:GH_TOKEN）
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <目录>      # dsh-plugin 话题普查

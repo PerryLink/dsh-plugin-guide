@@ -1,4 +1,4 @@
-# 社区插件开发相关仓库全量下载(tarball)脚本
+﻿# 社区插件开发相关仓库全量下载(tarball)脚本
 # 输出: dsh-plugin-guide/downloads/community-repos/<repo>/
 # 刷新策略: codeload HEAD 请求的 ETag 对比（内容变更即重新下载）；记录在 downloads/community-repos/_heads.tsv。
 # 传输: 纯 curl + codeload（main -> master -> HEAD 分支回退），不消耗 GitHub API 配额，也不依赖 git 进程。
@@ -136,7 +136,11 @@ $repos = @(
   'Vengisk/deepseek-harness-termux',
   'zzszmyf/dsh-security-pocs',
   'HenryZ838978/deepseek-harness',
-  'Lyowisee/deepseek-harness'
+  'Lyowisee/deepseek-harness',
+  # 第八批：08-15 午间补充（主题注册表/WhaleHub 市场/dsh-market 组织）
+  'orxz/deepseek-harness-themes',
+  'vvlife/whalehub-dsh',
+  'dsh-market/dsh-market'
 )
 
 $headsFile = Join-Path $dl '_heads.tsv'

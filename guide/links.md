@@ -52,7 +52,7 @@
 
 ## 4. 社区开发文档（常用入口）
 
-完整 111 仓库清单、awesome 列表与归档位置见 [community-ecosystem.md](../references/community-ecosystem.md)；逐仓库深读见 [community-repo-deep-dive.md](../references/community-repo-deep-dive.md)（首批 15 个）；08-14 晚生态扫描（26 高优文档型 + 19 中优 skill/契约 + 20 低优目录）见 `downloads/_research/github-ecosystem-scan.md`；08-15 第七批（14 个桌面端/桥接/安全/移植仓库）见 community-ecosystem.md §4.6。
+完整 114 仓库清单、awesome 列表与归档位置见 [community-ecosystem.md](../references/community-ecosystem.md)；逐仓库深读见 [community-repo-deep-dive.md](../references/community-repo-deep-dive.md)（首批 15 个）；08-14 晚生态扫描（26 高优文档型 + 19 中优 skill/契约 + 20 低优目录）见 `downloads/_research/github-ecosystem-scan.md`；08-15 第七批（14 个桌面端/桥接/安全/移植仓库）与第八批（3 个主题/市场仓库）见 community-ecosystem.md §4.6/§4.7。
 
 | 仓库 | 用途 |
 |---|---|
