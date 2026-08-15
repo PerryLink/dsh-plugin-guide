@@ -8,9 +8,9 @@
 | Source checkout | `D:\deepseek-harness` |
 | Source ref | `origin/master` |
 | Source commit | `47f943859bef60e4160492346772ded9b24f765a` |
-| Synced at (UTC) | 2026-08-14T08:10:55Z |
-| Scope | tracked files at the ref: `docs/`, root `AGENTS.md`, `packages/AGENTS.md`, `examples/AGENTS.md`, `packages/README.md`, `vendor/README.md`, `website/docs.ts` |
+| Synced at (UTC) | 2026-08-14T15:13:50Z |
+| Scope | tracked files at the ref: `docs/`, root `AGENTS.md`, `BENCHMARK.md`, `CLAUDE.md`(symlink 目标文本), `CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`, `README.zh.md`/`.i18n.yaml`（上游英文 `README.md` 不在本目录，快照见 `downloads/github/harness/README.md`）, `THIRD_PARTY_NOTICES.md`, `LICENSE`, `packages/AGENTS.md`, `examples/AGENTS.md`, `packages/README.md`, `vendor/README.md`, `website/docs.ts` |
 | File counts | docs/: 215 md files (105 .zh.md pairs) |
-| Pruned this run | 0 docs/ files no longer in the source ref |
+| Pruned this run | 107 个不在范围内/上游已删除的条目 |
 
 Drift check: `pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>` (tracked files only).

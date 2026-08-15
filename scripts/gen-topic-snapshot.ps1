@@ -2,18 +2,23 @@
 # 用途: 抓取 GitHub topic:dsh-plugin 全量仓库清单,产出与 sources.md §D.2 记录一致的快照目录
 #   <OutDir>/raw-github-api-page-<n>.json + repos.tsv + README.md(全量表)
 # 用法: pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <路径> [-PerPage 100] [-MaxPages 10] [-DelaySeconds 6]
-# 说明: 走 GitHub Search API(未认证 10 次/分钟),分页抓取、按 full_name 去重、按 star 降序;
-#       与 08-13/08-14 两期快照同构,便于续期对比(新增/消失仓库用 repos.tsv diff)。
+# 说明: 走 GitHub Search API(未认证 10 次/分钟、分页上限 1000 条),分页抓取、按 full_name 去重、按 star 降序;
+#       提供 $env:GH_TOKEN / -Token 后限速提到 30 次/分钟且更稳定。
+#       传输用 Invoke-WebRequest(PS 5.1 下 curl 数组参数的引号拆分会把 -H 头打碎——已规避)。
+#       与 08-13/08-14 各期快照同构,便于续期对比(新增/消失仓库用 repos.tsv diff)。
 param(
   [Parameter(Mandatory=$true)][string]$OutDir,
   [int]$PerPage = 100,
   [int]$MaxPages = 10,
-  [int]$DelaySeconds = 6
+  [int]$DelaySeconds = 6,
+  [string]$Token = $env:GH_TOKEN
 )
-$ErrorActionPreference = 'Continue'
+$ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$ua = @('-H','User-Agent: dsh-plugin-guide-research')
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+
+$headers = @{ 'User-Agent' = 'dsh-plugin-guide-research'; 'Accept' = 'application/vnd.github+json' }
+if ($Token) { $headers['Authorization'] = "Bearer $Token" }
 
 $all = @()
 $total = -1
@@ -21,19 +26,20 @@ for ($p = 1; $p -le $MaxPages; $p++) {
   $r = $null
   for ($a = 0; $a -lt 3 -and $null -eq $r; $a++) {
     try {
-      $json = & curl.exe -sS -L --max-time 40 $ua "https://api.github.com/search/repositories?q=topic:dsh-plugin&per_page=$PerPage&page=$p"
-      $r = $json | ConvertFrom-Json
+      $resp = Invoke-WebRequest -Uri "https://api.github.com/search/repositories?q=topic:dsh-plugin&per_page=$PerPage&page=$p" -Headers $headers -TimeoutSec 45 -UseBasicParsing
+      $r = $resp.Content | ConvertFrom-Json
     } catch { Start-Sleep -Seconds 3 }
   }
   if ($null -eq $r) { Write-Output "page ${p} FAILED (after retries)"; break }
-  if ($r.items.Count -eq 0) { Write-Output "page ${p}: no items (end)"; break }
+  if ($r.PSObject.Properties.Name -contains 'message') { Write-Output "page ${p}: API message $($r.message)"; break }
+  if (@($r.items).Count -eq 0) { Write-Output "page ${p}: no items (end)"; break }
   $total = $r.total_count
   $all += @($r.items)
   $raw = Join-Path $OutDir "raw-github-api-page-$p.json"
   $r | ConvertTo-Json -Depth 6 | Set-Content $raw -Encoding UTF8
-  Write-Output "page ${p}: total=$($r.total_count) items=$($r.items.Count)"
+  Write-Output "page ${p}: total=$($r.total_count) items=$(@($r.items).Count)"
   Start-Sleep -Seconds $DelaySeconds
-  if ($all.Count -ge $total -or $r.items.Count -lt $PerPage) { break }
+  if ($all.Count -ge $total -or @($r.items).Count -lt $PerPage) { break }
 }
 
 $uniq = @{}
@@ -53,6 +59,7 @@ $L += '# DeepSeek Harness `dsh-plugin` 话题全量清单'
 $L += ''
 $L += '> 数据来源：GitHub Search API `q=topic:dsh-plugin`（公开话题页 <https://github.com/topics/dsh-plugin>）。'
 $L += "> 抓取时间：$utc（UTC）。API total_count $total；本清单去重收录 $($rows.Count) 个。"
+$L += '> 注意：Search API 分页上限 1000 条，去重数与 total_count 都要记录（见 sources.md §D.2 惯例）。'
 $L += ''
 $L += '## 元信息'
 $L += ''
@@ -81,4 +88,4 @@ foreach ($i in $rows) {
   $L += "| $n | [$name](https://github.com/$name) | $stars | $lang | $lic | $arch | $desc | $push | $topics |"
 }
 Set-Content -Path (Join-Path $OutDir 'README.md') -Value ($L -join "`r`n") -Encoding UTF8
-Write-Output "DONE: $($rows.Count) unique repos -> $OutDir (README/`repos.tsv/`raw pages)"
+Write-Output "DONE: $($rows.Count) unique repos -> $OutDir (README/repos.tsv/raw pages)"

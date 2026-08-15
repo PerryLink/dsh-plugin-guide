@@ -10,7 +10,7 @@
 | `references/official-docs/AGENTS.md` 等 | 同上仓库根/子目录文档 | MIT | 同上 |
 | `downloads/github/cordis/**` | [cordiverse/cordis](https://github.com/cordiverse/cordis) | MIT | 上游 README/文档快照（`downloads/` 不入 git，脚本再生） |
 | `downloads/github/paper/**` | [cordiverse/paper](https://github.com/cordiverse/paper) | MIT | 论文 README 与 paper.pdf（不入 git，脚本再生） |
-| `downloads/community-repos/**` | 15 个社区仓库（omdsh-dev/*、vlln/* 等） | 各异（MIT / BSD-3-Clause / Apache-2.0 等，以各仓库 LICENSE 为准） | 完整源码快照，仅供本地研究（不入 git，脚本再生） |
+| `downloads/community-repos/**` | 111 个社区仓库（omdsh-dev/*、vlln/*、文档型教程/skill 集合/目录市场/桌面端/安全 PoC 等，清单见 `references/community-ecosystem.md`） | 各异（MIT / BSD-3-Clause / Apache-2.0 等，以各仓库 LICENSE 为准） | 完整源码快照，仅供本地研究（不入 git，脚本再生） |
 | `downloads/web/**` | deepseek-harness.github.io、deepseek.com | 站点所有权利归原作者 | 页面 HTML 快照（不入 git，脚本再生） |
 
 ## 分发边界（重要）

@@ -114,6 +114,8 @@ vendored `cordis` README 开宗明义：
 
 ## Part 2 — 社区调研：DeepSeek Harness 插件开发
 
+> **2026-08-14 晚补录（2026-08-15 二次修订）**：本 Part 所列 84 条 URL 的实体内存在此轮调研中已按需归档——中英文教程/实测文章**145 篇**（zh 94/en 41/hn 10）进 `downloads/web/community-articles/`（含本 Part 之外的新线索，摘要见 `downloads/_research/{chinese,english}-community-scan.md`，刷新脚本 `scripts/download-community-articles.ps1`）；GitHub 文档型仓库 **111 个**进 `downloads/community-repos/`（清单见 community-ecosystem.md §4，含 08-15 第七批 14 个）；官方 Discussions **1654 条**进 `downloads/github/harness/discussions/`（`scripts/archive-discussions.ps1` 刷新）。以下表格保留为原始调研记录。
+
 ### 2.1 官方渠道
 
 | 渠道 | 内容 | URL |

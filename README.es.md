@@ -20,13 +20,13 @@ Archivo de documentación oficial · Introducción a Cordis · Análisis de la c
 
 > 🗺️ **Cada hecho enlaza a su origen** — documentación oficial, repos upstream o repos comunitarios. Ante la duda, la copia oficial textual manda.
 >
-> ⏱️ **Verificado por última vez el 2026-08-14** — documentación oficial idéntica byte a byte al `master` upstream (47f9438, véase [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)); etiquetas npm y el topic `dsh-plugin` (API total_count 1391, 993 repos capturados en el snapshot paginado) re-verificados en vivo.
+> ⏱️ **Verificado por última vez el 2026-08-15** — documentación oficial idéntica byte a byte al `master` upstream (47f9438, véase [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)); etiquetas npm y el topic `dsh-plugin` (API total_count subió **2668 → 2671** durante el snapshot del 08-15; 998 repos capturados, véase [sources.md](references/sources.md) §D.2) re-verificados en vivo; HEAD upstream (47f9438) y npm `@deepseek-ai/dsh` (0.1.0-rc.6) sin cambios.
 
 ## 📊 De un vistazo
 
 | Documentación oficial | Análisis comunitarios | Errores reales | Topic `dsh-plugin` | Idiomas | Skill de agente |
 |---|---|---|---|---|---|
-| 215 páginas (EN + ZH) | 15 repos | 20+ | 993+ repos (API ≈1390) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 páginas (EN + ZH) | 111 repos | 20+ | 998 snapshot (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 Inicio rápido
 
@@ -69,7 +69,7 @@ Luego dile a tu agente: *"Usa el skill dsh-plugin-guide para crearme un plugin d
 | `guide/quick-reference.md` | Chuleta de una página (5 idiomas) |
 | `guide/links.md` | Índice de URLs curado: documentación oficial de desarrollo (sitio ↔ copias locales) + enlaces comunitarios |
 | `references/official-docs/` | Copia textual de la documentación oficial del repo (EN + ZH) |
-| `references/*.md` | Informes de investigación: docs del repo, sitio web, Cordis, el paper, ecosistema comunitario, 15 repos analizados |
+| `references/*.md` | Informes de investigación: docs del repo, sitio web, Cordis, el paper, ecosistema comunitario, archivo de 111 repos (15 analizados) |
 | `scripts/` | Scripts de descarga idempotentes + verificador de integridad + generador de censo del topic |
 | `downloads/` | Instantáneas crudas — generadas por `scripts/`, no versionadas |
 
@@ -78,16 +78,19 @@ Luego dile a tu agente: *"Usa el skill dsh-plugin-guide para crearme un plugin d
 - 📜 **Contrato del plugin y reglas estrictas** — efectos/disposers, `next()` en waterfall, visible-para-el-modelo ⇔ registrado, configuración Schemastery.
 - 🕰️ **Línea de tiempo de mecanismos** — repository-plugin introducido el 0809, eliminado el 0811; los dos canales de instalación (bundle vs plugin cordis simple).
 - 🕳️ **Más de 20 errores reales** con causa y solución: copias dobles de cordis, trío de tsconfig, `tsc` que emite pese a errores, junctions de Windows, sesiones zstd multiframe, variables `DSH_*`, `latest` de npm obsoleto…
-- 🔬 **15 repositorios comunitarios analizados** — plantillas, andamiajes, archivo de errores, reglas de plugin-check, capa Fabric, puente MCP.
+- 🔬 **111 repositorios comunitarios archivados** (15 analizados) — plantillas, andamiajes, archivos de errores, reglas de plugin-check, capa Fabric, puente MCP, más una guía en 15 idiomas, un curso s01–s23, manuales, SDKs TS/Rust y el lote 08-15 (shells de escritorio, puente QQ, PoCs de seguridad, port a Python).
 - 🔗 **Índice de fuentes completo** — cada hecho enlaza a su origen (docs oficiales, repos upstream, repos comunitarios).
-- 🆕 **Sello de actualidad** — re-verificado contra `master` upstream, npm y el topic `dsh-plugin` en vivo el 2026-08-14.
+- 🗃️ **1654 Discussions oficiales archivadas** (con comentarios de hilos seleccionados) + más de 100 artículos comunitarios (zh/en/HN) — refresca con `scripts/archive-discussions.ps1` / `scripts/download-community-articles.ps1`.
+- 🆕 **Sello de actualidad** — re-verificado contra `master` upstream, npm y el topic `dsh-plugin` en vivo el 2026-08-15.
 
 ## 🔄 Mantenerlo fresco
 
 ```sh
 pwsh -File scripts/sync-official-docs.ps1                     # copia textual de docs desde un checkout local (solo origin/master)
 pwsh -File scripts/download-sources.ps1                       # sitio/docs oficiales, Cordis, paper
-pwsh -File scripts/download-community-repos.ps1               # 15 repositorios comunitarios
+pwsh -File scripts/download-community-repos.ps1               # 111 repositorios comunitarios (tarballs codeload, refresco por ETag)
+pwsh -File scripts/download-community-articles.ps1            # artículos comunitarios zh/en/HN (instantáneas HTML)
+pwsh -File scripts/archive-discussions.ps1                    # Discussions oficiales (requiere $env:GH_TOKEN)
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <dir>       # censo del topic dsh-plugin
 pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # rutas críticas + enlaces rotos + informe de deriva de docs
 ```

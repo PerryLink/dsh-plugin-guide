@@ -50,4 +50,5 @@ Thanks for helping improve this knowledge base! English guide below, followed by
 
 1. Fork → 分支 → 修改 → 跑 `pwsh -File scripts/verify-kit.ps1` → 提 PR（本地有 harness checkout 时加 `-Checkout <路径>` 跑官方文档漂移校验）。
 2. PR 小而聚焦，一个 PR 一个主题。
-3. 自有文本按 Apache-2.0 许可；第三方内容保留其上游许可。
+3. 刷新社区资料时优先用脚本而不是手工复制：`scripts/download-community-repos.ps1`（111 个社区仓库）、`scripts/download-community-articles.ps1`（zh/en/HN 文章快照）、`scripts/archive-discussions.ps1`（官方 Discussions，需 `$env:GH_TOKEN`）、`scripts/gen-topic-snapshot.ps1`（dsh-plugin 话题普查）、`scripts/sync-official-docs.ps1`（官方文档副本）；更新数据后把新计数写回 `references/sources.md` 与 `references/community-ecosystem.md`。
+4. 自有文本按 Apache-2.0 许可；第三方内容保留其上游许可。

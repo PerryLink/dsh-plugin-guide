@@ -20,13 +20,13 @@
 
 > 🗺️ **每条事实都链接到出处**——官方文档、上游仓库或社区仓库。有疑问时以官方原文副本为准。
 >
-> ⏱️ **最后核验 2026-08-14**——官方文档与上游 `master`（47f9438，见 [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)）逐字节一致；npm 标签与 `dsh-plugin` 话题（API total_count 1391，分页快照收录 993 个仓库）已实时重核。
+> ⏱️ **最后核验 2026-08-15**——官方文档与上游 `master`（47f9438，见 [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)）逐字节一致；npm 标签与 `dsh-plugin` 话题（08-15 快照抓取期间 API total_count **2668 → 2671 持续增长**，分页快照收录 998 个仓库，见 [sources.md](references/sources.md) §D.2）已实时重核；上游 HEAD 与 npm `@deepseek-ai/dsh`（0.1.0-rc.6）无变化。
 
 ## 📊 一览
 
 | 官方文档 | 社区深读 | 实测踩坑 | `dsh-plugin` 话题 | 语言 | 智能体技能 |
 |---|---|---|---|---|---|
-| 215 篇（中英） | 15 个仓库 | 20+ | 993+ 仓库（API ≈1390） | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 篇（中英） | 111 个仓库 | 20+ | 998 快照（API ≈2670） | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 快速开始
 
@@ -69,7 +69,7 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 | `guide/quick-reference.md` | 一页速查表（5 语种） |
 | `guide/links.md` | 精选 URL 索引：官方开发文档（线上 ↔ 本地副本）+ 社区开发文档链接 |
 | `references/official-docs/` | 官方文档逐字副本（中英双语） |
-| `references/*.md` | 调研报告：仓库文档、文档站、Cordis、论文、社区生态、15 仓库深读 |
+| `references/*.md` | 调研报告：仓库文档、文档站、Cordis、论文、社区生态、111 仓库归档（15 个深读） |
 | `scripts/` | 幂等下载脚本 + 完整性检查器 + 话题快照生成器 |
 | `downloads/` | 原始下载物——由 `scripts/` 生成，不入版本库 |
 
@@ -78,16 +78,19 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 - 📜 **插件契约与红线**——注册即 effect、waterfall 必须 `next()`、模型可见⟺已记录、Schemastery 配置。
 - 🕰️ **机制时间线**——repository-plugin 机制 0809 推出、0811 移除；bundle 与纯 cordis 两条安装通道。
 - 🕳️ **20+ 个实测坑**（根因+修法）：cordis 双副本、tsconfig 三件套、`tsc` 报错仍产出、Windows junction、多帧 zstd 会话、`DSH_*` 环境变量、npm `latest` 过期……
-- 🔬 **15 个社区仓库深读**——模板、脚手架、踩坑档案、plugin-check 规则、Fabric 层、MCP 桥。
+- 🔬 **111 个社区仓库归档**（15 个深读）——模板、脚手架、踩坑档案、plugin-check 规则、Fabric 层、MCP 桥，另有 15 语言指南、s01–s23 课程、深度手册、TS/Rust SDK 等 26 个文档型仓库与 08-15 第七批 14 个仓库（桌面端/QQ 桥接/安全 PoC/Python 移植）。
 - 🔗 **全量来源索引**——每条结论都链接到出处（官方文档、上游仓库、社区仓库）。
-- 🆕 **新鲜度印章**——2026-08-14 对照上游 `master`、npm 与实时 `dsh-plugin` 话题复核。
+- 🗃️ **官方 Discussions 全量归档（1654 条，含精选线程评论）+ 中英文社区文章快照 100+ 篇**——用 `scripts/archive-discussions.ps1` / `scripts/download-community-articles.ps1` 一键刷新。
+- 🆕 **新鲜度印章**——2026-08-15 对照上游 `master`、npm 与实时 `dsh-plugin` 话题复核。
 
 ## 🔄 保持新鲜
 
 ```sh
 pwsh -File scripts/sync-official-docs.ps1                     # 从本地 checkout 同步官方文档逐字副本（只取 origin/master）
 pwsh -File scripts/download-sources.ps1                       # 官网/文档站、Cordis、论文
-pwsh -File scripts/download-community-repos.ps1               # 15 个社区仓库
+pwsh -File scripts/download-community-repos.ps1               # 111 个社区仓库（codeload tarball，ETag 增量刷新）
+pwsh -File scripts/download-community-articles.ps1            # 中/英/HN 社区文章 HTML 快照
+pwsh -File scripts/archive-discussions.ps1                    # 官方 Discussions（需 $env:GH_TOKEN）
 pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <目录>      # dsh-plugin 话题普查
 pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # 关键路径 + 断链扫描 + 官方文档漂移报告
 ```

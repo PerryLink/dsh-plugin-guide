@@ -1,4 +1,4 @@
-# dsh-plugin-guide skill installer.
+﻿# dsh-plugin-guide skill installer.
 # Purpose: copy the KB (excluding generated/local-only parts) into an agent skill directory and verify byte parity.
 # Usage:   pwsh -File scripts/install-skill.ps1 -Target <skill-dir> [-Source <kb-root>]
 # Scope:   SKILL.md, guide/, references/ (incl. official-docs), scripts/, README*.md, LICENSE, NOTICE.md, CONTRIBUTING.md, SECURITY.md.

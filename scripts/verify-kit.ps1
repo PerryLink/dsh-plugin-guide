@@ -47,7 +47,7 @@ $critical = @(
   'references/official-docs/examples/AGENTS.md',
   'references/official-docs/packages/README.md',
   'references/official-docs/vendor/README.md',
-  'scripts/download-sources.ps1','scripts/download-community-repos.ps1','scripts/gen-topic-snapshot.ps1','scripts/sync-official-docs.ps1','scripts/install-skill.ps1','scripts/verify-kit.ps1'
+  'scripts/download-sources.ps1','scripts/download-community-repos.ps1','scripts/gen-topic-snapshot.ps1','scripts/sync-official-docs.ps1','scripts/install-skill.ps1','scripts/verify-kit.ps1','scripts/archive-discussions.ps1','scripts/download-community-articles.ps1'
 )
 foreach ($c in $critical) { if (-not (Test-Path (Join-Path $Root $c))) { $issues.Add("CRITICAL-MISSING: $c") } }
 $info.Add("critical: $($critical.Count) 项, 缺失 $((($issues | Where-Object { $_ -like 'CRITICAL-*' }) | Measure-Object).Count)")
@@ -122,13 +122,30 @@ if ($Checkout -and (Test-Path $Checkout)) {
   } else {
     $ref = if ((& git -C $Checkout rev-parse --verify -q origin/master 2>$null)) { 'origin/master' } else { 'HEAD' }
     $map = @{
-      'docs'               = 'docs';
-      'AGENTS.md'          = 'AGENTS.md';
-      'packages/AGENTS.md' = 'packages\AGENTS.md';
-      'examples/AGENTS.md' = 'examples\AGENTS.md';
-      'packages/README.md' = 'packages\README.md';
-      'vendor/README.md'   = 'vendor\README.md';
-      'website/docs.ts'    = 'website-docs.ts'
+      'docs'                   = 'docs';
+      'AGENTS.md'              = 'AGENTS.md';
+      'BENCHMARK.md'           = 'BENCHMARK.md';
+      'CONTRIBUTING.md'        = 'CONTRIBUTING.md';
+      'CONTRIBUTING.zh.md'     = 'CONTRIBUTING.zh.md';
+      'CONTRIBUTING.i18n.yaml' = 'CONTRIBUTING.i18n.yaml';
+      'README.zh.md'           = 'README.zh.md';
+      'README.i18n.yaml'       = 'README.i18n.yaml';
+      'THIRD_PARTY_NOTICES.md' = 'THIRD_PARTY_NOTICES.md';
+      'LICENSE'                = 'LICENSE';
+      'packages/AGENTS.md'     = 'packages\AGENTS.md';
+      'examples/AGENTS.md'     = 'examples\AGENTS.md';
+      'packages/README.md'     = 'packages\README.md';
+      'vendor/README.md'       = 'vendor\README.md';
+      'website/docs.ts'        = 'website-docs.ts'
+    }
+    # CLAUDE.md 上游是 symlink(blob 为目标路径文本), 与 KB 普通文件 blob 必然不同——单独比对目标文本内容。
+    $claudeUpstream = (& git -C $Checkout cat-file -p "${ref}:CLAUDE.md" 2>$null | Select-Object -First 1)
+    if ($claudeUpstream) {
+      $claudeKb = Join-Path $kbDocs 'CLAUDE.md'
+      if (Test-Path $claudeKb) {
+        $claudeKbContent = (Get-Content $claudeKb -Raw -Encoding UTF8).Trim()
+        if ($claudeKbContent -ne $claudeUpstream.Trim()) { $issues.Add("CHECKOUT-DRIFT: CLAUDE.md symlink 目标文本与 $ref 不一致, 运行 sync-official-docs.ps1 同步") }
+      } else { $missingKb++; $issues.Add("CHECKOUT-DRIFT-MISSING-KB: CLAUDE.md -> 副本无此文件, 请运行 sync-official-docs.ps1") }
     }
     $keys = @($map.Keys)
     foreach ($line in (& git -C $Checkout ls-tree -r $ref -- $keys)) {
