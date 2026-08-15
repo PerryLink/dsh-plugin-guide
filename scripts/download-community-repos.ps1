@@ -145,6 +145,19 @@ $repos = @(
 
 $headsFile = Join-Path $dl '_heads.tsv'
 $logFile = Join-Path $dl '_download.log'
+
+# 同名仓库消歧: 清单中多个 owner 有同名仓库(如 4 个 awesome-dsh-plugins、7 个 deepseek-harness-desktop),
+# 且 Windows 文件系统大小写不敏感——裸 repo 名互相覆盖会丢数据。规则: 首个出现者保留裸名
+# (兼容既有文档引用), 后续同名者用 "<owner>-<repo>" 目录名。
+# 必须在切片之前对全量清单计算: 切片后每片只见子集, 跨片的同名会误判(08-15 真实踩坑)。
+$seenNames = @{}
+$dirNames = @{}
+foreach ($r in $repos) {
+  $owner, $repoName = $r -split '/'
+  $repoKey = $repoName.ToLowerInvariant()
+  if ($seenNames.ContainsKey($repoKey)) { $dirNames[$r] = "$owner-$repoName" } else { $seenNames[$repoKey] = $true; $dirNames[$r] = $repoName }
+}
+
 if ($Slice -gt 0 -and $Slices -gt 1) {
   $headsFile = Join-Path $dl ("_heads.s{0}.tsv" -f $Slice)
   $logFile = Join-Path $dl ("_download.s{0}.log" -f $Slice)
@@ -162,15 +175,9 @@ if ((Test-Path $headsFile) -and -not $Force) {
 }
 
 $log = New-Object System.Collections.Generic.List[string]
-# 同名仓库消歧: 清单中多个 owner 有同名仓库(如 4 个 awesome-dsh-plugins、7 个 deepseek-harness-desktop),
-# 且 Windows 文件系统大小写不敏感——裸 repo 名互相覆盖会丢数据。规则: 首个出现者保留裸名
-# (兼容既有文档引用), 后续同名者用 "<owner>-<repo>" 目录名。
-$seenNames = @{}
 foreach ($r in $repos) {
   $owner, $repo = $r -split '/'
-  $repoKey = $repo.ToLowerInvariant()
-  if ($seenNames.ContainsKey($repoKey)) { $repo = "$owner-$repo" } else { $seenNames[$repoKey] = $true }
-  $repoDir = Join-Path $dl $repo
+  $repoDir = Join-Path $dl $dirNames[$r]
   # -OnlyMissing: 只补清单中本地缺失的仓库（已有目录跳过下载；仍会探测 ETag 写入 heads，便于后续增量刷新）。
   $exists = (Test-Path $repoDir) -and (Get-ChildItem $repoDir -File -ErrorAction SilentlyContinue)
   if ($OnlyMissing -and $exists -and -not $Force) {
@@ -200,10 +207,10 @@ foreach ($r in $repos) {
   if (-not $Force -and $downloaded -and $heads.ContainsKey($r) -and $etag -and $heads[$r] -eq $etag) {
     $log.Add("SKIP`t$r`tup-to-date@$etagShort"); continue
   }
-  $tgz = Join-Path $dl ("$repo.tar.gz")
+  $tgz = Join-Path $dl ($dirNames[$r] + '.tar.gz')
   $code = & $curl -sS -L --retry 1 --retry-delay 2 --connect-timeout 10 --max-time 120 -o $tgz -w '%{http_code}' "https://codeload.github.com/$r/tar.gz/$branch" 2>&1
   if ($code -match '^2' -and (Test-Path $tgz) -and (Get-Item $tgz).Length -gt 1024) {
-    $tmp = Join-Path $dl ("_$repo")
+    $tmp = Join-Path $dl ("_" + $dirNames[$r])
     if (Test-Path $tmp) { Remove-Item $tmp -Recurse -Force }
     New-Item -ItemType Directory -Force -Path $tmp | Out-Null
     & $tar -xzf $tgz -C $tmp 2>&1 | Out-Null
