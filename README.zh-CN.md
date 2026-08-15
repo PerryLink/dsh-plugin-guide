@@ -30,7 +30,22 @@
 
 ## 🚀 快速开始
 
-### 🤖 作为智能体技能使用
+### 🧩 作为 DSH 插件安装（推荐）
+
+本仓库本身是一个可安装的 **DSH bundle**：安装后把整套知识库注册为 `dsh-plugin-guide` 智能体技能——每个会话的技能目录里都可见，模型按需加载工作流、官方文档与社区深读（`./guide/`、`./references/`），无需复制、无需搜索。
+
+```sh
+# 从 git 安装（源码；建议钉住 commit 保证可复现）：
+dsh plugin --profile <profile> add github:PerryLink/dsh-plugin-guide#<sha>
+
+# 或打 tarball 安装（入口是纯 ESM JS，无需构建步骤）：
+pnpm pack
+dsh plugin --profile <profile> add ./dsh-plugin-guide-<version>.tgz
+```
+
+bundle 声明了 `dsh.bundle.patch`，并以可选 peerDependency 钉住 `@deepseek-ai/dsh@0.1.0-rc.6` 版本火车。用 `dsh --profile <profile> --dump-config` 验证 `dsh-plugin-guide` 层已生效。
+
+### 🤖 或复制为普通智能体技能
 
 把整个目录复制进你的 agent 技能目录（相对路径保持不变）：
 
@@ -65,6 +80,7 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 | 路径 | 内容 |
 |---|---|
 | `SKILL.md` | `dsh-plugin-guide` 技能：硬性红线 + 按任务类型的开发路径 |
+| `package.json` · `cordis.patch.yml` · `index.js` | 可安装的 DSH bundle：`dsh.bundle.patch` 清单 + 把知识库注册为 `dsh-plugin-guide` 技能的入口 |
 | `guide/plugin-dev-guide.md` | 完整开发指南（10 章） |
 | `guide/quick-reference.md` | 一页速查表（5 语种） |
 | `guide/links.md` | 精选 URL 索引：官方开发文档（线上 ↔ 本地副本）+ 社区开发文档链接 |

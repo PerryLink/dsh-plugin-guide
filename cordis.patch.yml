@@ -1,0 +1,4 @@
+# dsh-plugin-guide bundle layer: register the packaged knowledge base as an agent skill.
+- insert:
+    - id: dsh-plugin-guide
+      name: dsh-plugin-guide

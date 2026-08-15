@@ -1,0 +1,49 @@
+{
+  "name": "dsh-plugin-guide",
+  "version": "0.1.0",
+  "description": "The dsh-plugin-guide knowledge base as an installable DeepSeek Harness plugin: official docs, Cordis primer, community deep-dives, and battle-tested pitfalls registered as an on-demand agent skill.",
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "SKILL.md",
+    "guide",
+    "references",
+    "scripts",
+    "LICENSE",
+    "NOTICE.md",
+    "README.md",
+    "README.zh-CN.md",
+    "README.es.md",
+    "README.pt.md",
+    "README.hi.md"
+  ],
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "dsh-plugin",
+    "cordis",
+    "agent-skill",
+    "plugin-development",
+    "knowledge-base"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PerryLink/dsh-plugin-guide.git"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh": "0.1.0-rc.6"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh": {
+      "optional": true
+    }
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

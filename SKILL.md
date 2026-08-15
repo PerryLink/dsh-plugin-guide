@@ -9,12 +9,11 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 
 ## 知识库位置（按顺序找，用第一个存在的）
 
-本技能与知识库随同一目录分发（本 SKILL.md 所在目录即知识库根），路径均为相对路径；单独复制本文件而不带 `guide/`、`references/` 时按回退路径找：
+本技能与知识库随同一目录分发（本 SKILL.md 所在目录即知识库根），路径均为相对路径；单独复制本文件而不带 `guide/`、`references/` 时按回退路径找。以 `dsh-plugin-guide` 插件（bundle）安装时，技能 resourceBase 即包目录，下文的 `./guide/`、`./references/` 相对路径由 DSH 的 `skill` 工具按此目录解析：
 
-1. **本文件同目录**：`./guide/`（综合指南+速查表+文档链接索引）、`./references/`（调研报告与官方文档全文副本 `references/official-docs/docs/`）、`./downloads/`（原始下载物，可选）
-2. 本机主副本：`D:\deepseek-harness\Project\Plugins\dsh-plugin-guide\`（示例路径，按本机实际安装位置调整）
-3. 官方仓库 checkout：`D:\deepseek-harness\`（`docs/`、`vendor/cordis/`、`packages/`、`examples/`）
-4. 线上：https://github.com/deepseek-ai/deepseek-harness 、 https://deepseek-harness.github.io/deepseek-harness/develop/basic/ 、 https://github.com/cordiverse/cordis
+1. **本文件同目录**（= 插件包目录 `dsh-plugin-guide`，或 `scripts/install-skill.ps1` 安装的独立技能目录）：`./guide/`（综合指南+速查表+文档链接索引）、`./references/`（调研报告与官方文档全文副本 `references/official-docs/docs/`）、`./downloads/`（原始下载物，可选，需按 §知识库维护 的脚本生成）
+2. 官方仓库 checkout：`D:\deepseek-harness\`（示例路径，按本机实际安装位置调整；`docs/`、`vendor/cordis/`、`packages/`、`examples/`）
+3. 线上：https://github.com/deepseek-ai/deepseek-harness 、 https://deepseek-harness.github.io/deepseek-harness/develop/basic/ 、 https://github.com/cordiverse/cordis
 
 下文相对路径默认相对上述第 1 条（本技能文件所在目录）。
 

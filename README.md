@@ -30,7 +30,22 @@ Official docs archive · Cordis primer · community deep-dives · battle-tested 
 
 ## 🚀 Quick start
 
-### 🤖 Use it as an agent skill
+### 🧩 Install as a DSH plugin (recommended)
+
+This repository is an installable **DSH bundle**: it registers the whole knowledge base as the `dsh-plugin-guide` agent skill. The skill stays visible in every session catalog and loads its workflow steps, official docs, and community deep-dives on demand (`./guide/`, `./references/`) — no copying, no searching.
+
+```sh
+# from a git checkout (sources; pin a commit for reproducibility):
+dsh plugin --profile <profile> add github:PerryLink/dsh-plugin-guide#<sha>
+
+# or a packed tarball (no build step needed — the entry point is plain ESM JS):
+pnpm pack
+dsh plugin --profile <profile> add ./dsh-plugin-guide-<version>.tgz
+```
+
+The bundle declares `dsh.bundle.patch` and pins the harness train via an optional peer dependency on `@deepseek-ai/dsh@0.1.0-rc.6`. Verify the layer landed with `dsh --profile <profile> --dump-config` (look for the `dsh-plugin-guide` layer).
+
+### 🤖 Or copy it as a plain agent skill
 
 Copy the whole folder into your agent's skill directory (relative paths stay intact):
 
@@ -65,6 +80,7 @@ Then just ask your agent: *"Use the dsh-plugin-guide skill to build me a … plu
 | Path | What it is |
 |---|---|
 | `SKILL.md` | The `dsh-plugin-guide` agent skill: hard rules + task-based development paths |
+| `package.json` · `cordis.patch.yml` · `index.js` | The installable DSH bundle: `dsh.bundle.patch` manifest + entry point that registers the knowledge base as the `dsh-plugin-guide` skill |
 | `guide/plugin-dev-guide.md` | The complete development guide (10 chapters) |
 | `guide/quick-reference.md` | One-page cheat sheet (5 languages) |
 | `guide/links.md` | Curated URL index: official dev docs (site ↔ local copies) + community doc links |
