@@ -1,25 +1,36 @@
 name: Feature request
-description: Suggest a new pitfall, deep-dive, or documentation improvement
+description: Suggest a new pitfall, deep-dive, section, translation fix, or bundle improvement
 labels: [enhancement]
 body:
   - type: textarea
-    id: idea
+    id: problem
     attributes:
-      label: What would you like to see?
-      description: A new pitfall (with root cause + fix), a community repo to deep-dive, a missing section, or a translation fix.
+      label: Problem to solve
+      description: What gap or pain point does this address?
+      placeholder: e.g. While developing a plugin I keep searching for the exact event semantics...
     validations:
       required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen after this is implemented (new content, new script, new bundle behavior)?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)
+      description: Anything you already tried or other ways this could be solved.
+    validations:
+      required: false
+
   - type: textarea
     id: context
     attributes:
-      label: Why is it valuable?
-      description: Who does it help and how?
-    validations:
-      required: false
-  - type: textarea
-    id: links
-    attributes:
-      label: Links / evidence
-      description: Pointers to the source material.
+      label: Additional context (optional)
+      description: Links, evidence, or anything else that helps.
     validations:
       required: false

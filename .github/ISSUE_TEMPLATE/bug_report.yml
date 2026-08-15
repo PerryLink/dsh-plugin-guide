@@ -1,38 +1,73 @@
 name: Bug report
-description: Report a wrong fact, a broken link, or a broken script
+description: Report a bug, a wrong fact, a broken link, or a failing script
 labels: [bug]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting! Please check that the issue is about **this repository's content**
-        (guide / references / scripts / README), not about DeepSeek Harness itself.
+        Thanks for reporting! Please check that the issue is about **this repository's content or bundle**
+        (guide / references / scripts / the dsh-plugin-guide bundle), not about DeepSeek Harness itself.
+
   - type: input
-    id: location
+    id: package-version
     attributes:
-      label: Where is the problem?
-      description: File path (e.g. `guide/plugin-dev-guide.md`) or URL.
-      placeholder: guide/plugin-dev-guide.md §7.3
+      label: Package version
+      description: The dsh-plugin-guide version (or git commit) you are using.
+      placeholder: 0.1.0 (or commit 9447366)
     validations:
       required: true
-  - type: textarea
-    id: problem
+
+  - type: input
+    id: runtime-version
     attributes:
-      label: What is wrong?
-      description: The wrong fact / broken link / failing command, and what you expected.
+      label: Runtime version
+      description: The DeepSeek Harness version the plugin is installed into.
+      placeholder: "@deepseek-ai/dsh@0.1.0-rc.6"
     validations:
       required: true
-  - type: textarea
-    id: evidence
+
+  - type: input
+    id: os-node
     attributes:
-      label: Evidence
-      description: Link to the authoritative source (official docs, repo file, command output).
+      label: OS / Node version
+      description: Operating system and Node.js version.
+      placeholder: Windows 11, Node v22.22.3
     validations:
-      required: false
+      required: true
+
   - type: textarea
-    id: fix
+    id: repro
     attributes:
-      label: Suggested fix (optional)
-      description: If you know the correction, tell us here.
+      label: Steps to reproduce
+      description: The exact commands or clicks that trigger the problem.
+      placeholder: |
+        1. dsh plugin --profile demo add ...
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened, including error messages.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: Relevant output or session excerpts.
+      value: |
+        > ⚠️ **Redact before pasting**: remove any tokens, API keys, request headers, personal paths, and other secrets from your logs.
     validations:
       required: false

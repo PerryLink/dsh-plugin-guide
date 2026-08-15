@@ -11,6 +11,8 @@ Official docs archive · Cordis primer · community deep-dives · battle-tested 
 [![GitHub stars](https://img.shields.io/github/stars/PerryLink/dsh-plugin-guide?style=for-the-badge&color=yellow&label=%E2%AD%90%20Stars)](https://github.com/PerryLink/dsh-plugin-guide/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/PerryLink/dsh-plugin-guide?style=for-the-badge&color=blue&label=Forks)](https://github.com/PerryLink/dsh-plugin-guide/network/members)
 [![verify-kit CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-plugin-guide/verify.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/PerryLink/dsh-plugin-guide/actions/workflows/verify.yml)
+[![npm version](https://img.shields.io/npm/v/dsh-plugin-guide?style=for-the-badge&label=npm)](https://www.npmjs.com/package/dsh-plugin-guide)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-plugin-guide?style=for-the-badge&label=downloads)](https://www.npmjs.com/package/dsh-plugin-guide)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)](LICENSE)
 [![Topic: dsh](https://img.shields.io/badge/Topic-dsh-4D6BFE?style=for-the-badge)](https://github.com/topics/dsh)
 [![Topic: dsh-plugin](https://img.shields.io/badge/Topic-dsh--plugin-8257D0?style=for-the-badge)](https://github.com/topics/dsh-plugin)
@@ -122,6 +124,12 @@ This repository is discoverable under the GitHub topics **[`dsh`](https://github
 - ⭐ **Star the repo** — it helps other DSH plugin authors discover it.
 - Found an error, a new pitfall, or a missing repo to deep-dive? Open an [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) or a pull request — see [CONTRIBUTING.md](CONTRIBUTING.md).
 - Join the community: [DeepSeek Harness Discord](https://discord.gg/Ycq5dCaS4) · [official discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) · [`dsh-plugin` topic](https://github.com/topics/dsh-plugin).
+
+## 💛 Contributors
+
+- [PerryLink](https://github.com/PerryLink) — creator and maintainer: knowledge-base content, the installable-bundle transformation, ecosystem submissions, and community engineering.
+- Day-to-day maintenance is assisted by DeepSeek Harness agents (they hold no GitHub account and are listed here for transparency, not as contributors).
+
 
 ## 📄 License & attribution
 

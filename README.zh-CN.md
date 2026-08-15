@@ -11,6 +11,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/PerryLink/dsh-plugin-guide?style=for-the-badge&color=yellow&label=%E2%AD%90%20Stars)](https://github.com/PerryLink/dsh-plugin-guide/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/PerryLink/dsh-plugin-guide?style=for-the-badge&color=blue&label=Forks)](https://github.com/PerryLink/dsh-plugin-guide/network/members)
 [![verify-kit CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-plugin-guide/verify.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/PerryLink/dsh-plugin-guide/actions/workflows/verify.yml)
+[![npm version](https://img.shields.io/npm/v/dsh-plugin-guide?style=for-the-badge&label=npm)](https://www.npmjs.com/package/dsh-plugin-guide)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-plugin-guide?style=for-the-badge&label=downloads)](https://www.npmjs.com/package/dsh-plugin-guide)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)](LICENSE)
 [![Topic: dsh](https://img.shields.io/badge/Topic-dsh-4D6BFE?style=for-the-badge)](https://github.com/topics/dsh)
 [![Topic: dsh-plugin](https://img.shields.io/badge/Topic-dsh--plugin-8257D0?style=for-the-badge)](https://github.com/topics/dsh-plugin)
@@ -122,6 +124,12 @@ pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # 关键路径 + �
 - ⭐ **给仓库点 Star**——帮助更多 DSH 插件开发者发现它。
 - 发现错误、新坑或值得深读的仓库？提 [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) 或 Pull Request——见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 - 加入社区：[DeepSeek Harness Discord](https://discord.gg/Ycq5dCaS4) · [官方讨论区](https://github.com/deepseek-ai/deepseek-harness/discussions) · [`dsh-plugin` 话题页](https://github.com/topics/dsh-plugin)。
+
+## 💛 贡献者
+
+- [PerryLink](https://github.com/PerryLink) — 创建者与维护者：知识库内容、插件化改造（bundle 契约）、生态投递与社区工程。
+- 日常维护由 DeepSeek Harness 智能体协助完成（其无 GitHub 账号，此处仅为透明性列出，不计入贡献者）。
+
 
 ## 📄 许可与归属
 

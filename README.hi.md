@@ -11,6 +11,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/PerryLink/dsh-plugin-guide?style=for-the-badge&color=yellow&label=%E2%AD%90%20Stars)](https://github.com/PerryLink/dsh-plugin-guide/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/PerryLink/dsh-plugin-guide?style=for-the-badge&color=blue&label=Forks)](https://github.com/PerryLink/dsh-plugin-guide/network/members)
 [![verify-kit CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-plugin-guide/verify.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/PerryLink/dsh-plugin-guide/actions/workflows/verify.yml)
+[![npm version](https://img.shields.io/npm/v/dsh-plugin-guide?style=for-the-badge&label=npm)](https://www.npmjs.com/package/dsh-plugin-guide)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-plugin-guide?style=for-the-badge&label=downloads)](https://www.npmjs.com/package/dsh-plugin-guide)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)](LICENSE)
 [![Topic: dsh](https://img.shields.io/badge/Topic-dsh-4D6BFE?style=for-the-badge)](https://github.com/topics/dsh)
 [![Topic: dsh-plugin](https://img.shields.io/badge/Topic-dsh--plugin-8257D0?style=for-the-badge)](https://github.com/topics/dsh-plugin)
@@ -117,6 +119,12 @@ pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # महत्व�
 - ⭐ **स्टार दें** — इससे अन्य DSH प्लगइन लेखकों को यह मिल पाएगा।
 - कोई त्रुटि, नई समस्या या विश्लेषण योग्य रिपो मिला? [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) खोलें या pull request भेजें — देखें [CONTRIBUTING.md](CONTRIBUTING.md)।
 - समुदाय से जुड़ें: [DeepSeek Harness Discord](https://discord.gg/Ycq5dCaS4) · [आधिकारिक चर्चाएँ](https://github.com/deepseek-ai/deepseek-harness/discussions) · [`dsh-plugin` टॉपिक](https://github.com/topics/dsh-plugin)।
+
+## 💛 योगदानकर्ता
+
+- [PerryLink](https://github.com/PerryLink) — निर्माता और अनुरक्षक: नॉलेज बेस सामग्री, इंस्टॉल करने योग्य बंडल रूपांतरण, इकोसिस्टम योगदान और सामुदायिक इंजीनियरिंग।
+- दैनिक अनुरक्षण में DeepSeek Harness एजेंट सहायता करते हैं (उनका कोई GitHub खाता नहीं है; पारदर्शिता के लिए सूचीबद्ध, योगदानकर्ता के रूप में नहीं)।
+
 
 ## 📄 लाइसेंस और श्रेय
 

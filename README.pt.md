@@ -11,6 +11,8 @@ Arquivo da documentação oficial · Introdução ao Cordis · Análise da comun
 [![GitHub stars](https://img.shields.io/github/stars/PerryLink/dsh-plugin-guide?style=for-the-badge&color=yellow&label=%E2%AD%90%20Stars)](https://github.com/PerryLink/dsh-plugin-guide/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/PerryLink/dsh-plugin-guide?style=for-the-badge&color=blue&label=Forks)](https://github.com/PerryLink/dsh-plugin-guide/network/members)
 [![verify-kit CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-plugin-guide/verify.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/PerryLink/dsh-plugin-guide/actions/workflows/verify.yml)
+[![npm version](https://img.shields.io/npm/v/dsh-plugin-guide?style=for-the-badge&label=npm)](https://www.npmjs.com/package/dsh-plugin-guide)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-plugin-guide?style=for-the-badge&label=downloads)](https://www.npmjs.com/package/dsh-plugin-guide)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)](LICENSE)
 [![Topic: dsh](https://img.shields.io/badge/Topic-dsh-4D6BFE?style=for-the-badge)](https://github.com/topics/dsh)
 [![Topic: dsh-plugin](https://img.shields.io/badge/Topic-dsh--plugin-8257D0?style=for-the-badge)](https://github.com/topics/dsh-plugin)
@@ -117,6 +119,12 @@ Este repositório é visível sob os topics do GitHub **[`dsh`](https://github.c
 - ⭐ **Dê uma estrela** — ajuda outros autores de plugins DSH a encontrá-lo.
 - Encontrou um erro, uma nova armadilha ou um repo que merece análise? Abra uma [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) ou um pull request — veja [CONTRIBUTING.md](CONTRIBUTING.md).
 - Junte-se à comunidade: [Discord do DeepSeek Harness](https://discord.gg/Ycq5dCaS4) · [discussões oficiais](https://github.com/deepseek-ai/deepseek-harness/discussions) · [topic `dsh-plugin`](https://github.com/topics/dsh-plugin).
+
+## 💛 Contribuidores
+
+- [PerryLink](https://github.com/PerryLink) — criador e mantenedor: conteúdo da base de conhecimento, a transformação em bundle instalável, as contribuições ao ecossistema e a engenharia comunitária.
+- A manutenção diária conta com a assistência de agentes do DeepSeek Harness (eles não têm conta no GitHub e são listados aqui apenas por transparência, não como contribuidores).
+
 
 ## 📄 Licença e atribuição
 
