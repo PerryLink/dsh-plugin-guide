@@ -54,7 +54,7 @@
 | 第六批（3） | onychen/learn-dsh、alchaincyf/deepseek-harness-orange-book（橙皮书《从开机到拆开》）、bobleer/deepseek-harness-gui（Tauri 桌面壳） | 中英文社区扫描补充 |
 | 第七批（14） | anywhere-labs/cc1252/LisiChen0/Skyearn/salathleizhang/ChisaAlter/hairyf 的 deepseek-harness-desktop 系列（7 个桌面端）、banana770/dsh-qq-bridge（QQ 桥接）、Vengisk/deepseek-harness-termux、zzszmyf/dsh-security-pocs（安全 PoC）、HenryZ838978/deepseek-harness（Python 移植）、Lyowisee/deepseek-harness、mishibeikejie/zat-dsh-engine（可视化市场）、beancookie/awesome-dsh-plugin | 08-15 上午 web_search 增量扫描（清单见 community-ecosystem.md §4.6） |
 
-归档位置 `downloads/community-repos/<repo>/`；ETag 记录 `_heads.tsv`；运行日志 `_download.log`。脚本改造史：08-14 晚改为 codeload HEAD 探测 + tarball（零 api.github.com 配额消耗）；08-15 修复弱 ETag（`W/"..."`）解析 bug 并新增第七批。
+归档位置 `downloads/community-repos/<repo>/`；ETag 记录 `_heads.tsv`；运行日志 `_download.log`。**同名消歧规则（08-15 起）**：多个 owner 有同名仓库（如 4 个 awesome-dsh-plugins、7 个 deepseek-harness-desktop）且 Windows 文件系统大小写不敏感——清单中首个出现者保留裸目录名（兼容既有文档引用），后续同名者用 `<owner>-<repo>` 目录名。脚本改造史：08-14 晚改为 codeload HEAD 探测 + tarball（零 api.github.com 配额消耗）；08-15 修复弱 ETag（`W/"..."`）解析 bug、PS 5.1 切片数学、新增第七批与 `-OnlyMissing`。
 
 ### D.2 生态与社区其他来源
 

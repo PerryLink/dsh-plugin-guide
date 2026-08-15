@@ -1,4 +1,4 @@
-﻿# 社区插件开发相关仓库全量下载(tarball)脚本
+# 社区插件开发相关仓库全量下载(tarball)脚本
 # 输出: dsh-plugin-guide/downloads/community-repos/<repo>/
 # 刷新策略: codeload HEAD 请求的 ETag 对比（内容变更即重新下载）；记录在 downloads/community-repos/_heads.tsv。
 # 传输: 纯 curl + codeload（main -> master -> HEAD 分支回退），不消耗 GitHub API 配额，也不依赖 git 进程。
@@ -158,8 +158,14 @@ if ((Test-Path $headsFile) -and -not $Force) {
 }
 
 $log = New-Object System.Collections.Generic.List[string]
+# 同名仓库消歧: 清单中多个 owner 有同名仓库(如 4 个 awesome-dsh-plugins、7 个 deepseek-harness-desktop),
+# 且 Windows 文件系统大小写不敏感——裸 repo 名互相覆盖会丢数据。规则: 首个出现者保留裸名
+# (兼容既有文档引用), 后续同名者用 "<owner>-<repo>" 目录名。
+$seenNames = @{}
 foreach ($r in $repos) {
   $owner, $repo = $r -split '/'
+  $repoKey = $repo.ToLowerInvariant()
+  if ($seenNames.ContainsKey($repoKey)) { $repo = "$owner-$repo" } else { $seenNames[$repoKey] = $true }
   $repoDir = Join-Path $dl $repo
   # -OnlyMissing: 只补清单中本地缺失的仓库（已有目录跳过下载；仍会探测 ETag 写入 heads，便于后续增量刷新）。
   $exists = (Test-Path $repoDir) -and (Get-ChildItem $repoDir -File -ErrorAction SilentlyContinue)

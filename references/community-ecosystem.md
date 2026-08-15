@@ -151,7 +151,7 @@
 
 - [AdamPlatin123/awesome-dsh-plugins](https://github.com/AdamPlatin123/awesome-dsh-plugins) — 插件目录 + 每日兼容性追踪（`downloads/community-repos/awesome-dsh-plugins/`）
 - [0xsline/awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness) — 插件/工具/基建策展
-- [Alex-Yanggg/awesome-DSH-plugin](https://github.com/Alex-Yanggg/awesome-DSH-plugin) — 精选插件/扩展/调试工具/开发模块（`downloads/community-repos/awesome-DSH-plugin-alexyanggg/`）
+- [Alex-Yanggg/awesome-DSH-plugin](https://github.com/Alex-Yanggg/awesome-DSH-plugin) — 精选插件/扩展/调试工具/开发模块（`downloads/community-repos/Alex-Yanggg-awesome-DSH-plugin/`）
 - [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) — 插件精选列表（837★）
 - [bruc3van/awesome-dsh-plugin](https://github.com/bruc3van/awesome-dsh-plugin) — "30 秒找到适合你的插件"（`downloads/community-repos/awesome-dsh-plugin/`）
 - [Dominic789654/awesome-deepseek-harness](https://github.com/Dominic789654/awesome-deepseek-harness) — 插件/skill/MCP/编排/UI 策展

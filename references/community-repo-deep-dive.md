@@ -517,7 +517,7 @@
 - **对开发者价值**：`status`（active/beta/archived）× `source`（official/community）是最简有用的维护状态/来源维度；但本列表不做兼容性实测、不推导 `dsh plugin add`。
 - **.dsh-plugin / repository-plugin 机制演变**：无（纯人工精选目录，schema 无 install/path/dsh 字段）。
 
-### 1.15 awesome-DSH-plugin-alexyanggg（Alex-Yanggg）— 使用者场景导航 + 全量快照
+### 1.15 Alex-Yanggg-awesome-DSH-plugin（Alex-Yanggg）— 使用者场景导航 + 全量快照
 
 - **目的**：“用 30 秒找到适合你的 DeepSeek Harness 插件”——不只是仓库列表，告诉你插件解决什么问题、适合谁、从哪里开始（`README.md`）。
 - **数据模式**：`data/repositories.json`（GitHub `topic:dsh-plugin` 机器快照，**212 条**，每条 21 字段含 `full_name/html_url/description/category/category_zh/category_en/language/stargazers_count/forks_count/license/archived/disabled/created_at/updated_at/pushed_at/default_branch/topics`）+ `data/curated.json`（人工：`category_overrides`/`scenarios`（goal_zh/goal_en + repos + why）/`starter_kits`/`editor_picks`）。分类用正则 `categoryRules` 自动归类 + `category_overrides` 人工覆盖（`scripts/update.mjs`）。
@@ -690,6 +690,6 @@
 - 收录规则：`README.md`；schema：`catalog/schema.json`；数据：`catalog/plugins.json`
 - 生成器/校验：`scripts/generate_readmes.py`；PR 流程：`CONTRIBUTING.md`、`.github/PULL_REQUEST_TEMPLATE.md`；CI：`.github/workflows/validate.yml`
 
-**awesome-DSH-plugin-alexyanggg（Alex-Yanggg）**
+**Alex-Yanggg-awesome-DSH-plugin（Alex-Yanggg）**
 - 场景/套装/安全提示：`README.md`；机器快照：`data/repositories.json`；人工层：`data/curated.json`
 - 生成器：`scripts/update.mjs`；收录标准：`CONTRIBUTING.md`；自动刷新：`.github/workflows/update-catalog.yml`；全量目录：`CATALOG.md`
