@@ -175,7 +175,7 @@ foreach ($r in $repos) {
   $exists = (Test-Path $repoDir) -and (Get-ChildItem $repoDir -File -ErrorAction SilentlyContinue)
   if ($OnlyMissing -and $exists -and -not $Force) {
     $hdr2 = & $curl -sI --connect-timeout 10 --max-time 30 "https://codeload.github.com/$r/tar.gz/HEAD" 2>&1 | Out-String
-    if ($hdr2 -match '(?i)^etag:\s*"?W/?\s*"?([0-9a-fA-F]+)"?') { $heads[$r] = $matches[1]; $log.Add("KEEP`t$r`tlocal-exists") }
+    if ($hdr2 -match '(?i)etag:\s*"?((?:W/)?[0-9a-fA-F]+)"?') { $heads[$r] = $matches[1]; $log.Add("KEEP`t$r`tlocal-exists") }
     else { $log.Add("KEEP`t$r`tlocal-exists(etag-probe-miss)") }
     continue
   }
@@ -187,9 +187,9 @@ foreach ($r in $repos) {
     $hdr = & $curl -sI --connect-timeout 10 --max-time 40 "https://codeload.github.com/$r/tar.gz/$cand" 2>&1 | Out-String
     if ($hdr -match 'HTTP/\S+\s+200') {
       $branch = $cand
-      # 弱 ETag 形如 W/"abc..."：正则跳过 W/ 前缀，完整捕获引号内十六进制值。
-      # 修复: 旧正则把 "W" 当成 etag（弱 ETag 时 Substring(0,12) 抛越界异常，heads 记录损坏）。
-      if ($hdr -match '(?i)^etag:\s*"?W/?\s*"?([0-9a-fA-F]+)"?') { $etag = $matches[1] }
+      # ETag 形如 ETag: "abc..."（弱 ETag 为 W/"abc..."）：正则可选跳过 W/ 前缀，完整捕获引号内十六进制值。
+      # 修复历史: 旧正则带 ^ 锚点（-match 非多行，永远匹配不到中间行的 etag）且 W/ 前缀为必选，导致 etag 恒为空、Substring(0,12) 越界、heads 记录损坏——08-15 修复。
+      if ($hdr -match '(?i)etag:\s*"?((?:W/)?[0-9a-fA-F]+)"?') { $etag = $matches[1] }
       break
     }
   }
@@ -201,7 +201,7 @@ foreach ($r in $repos) {
     $log.Add("SKIP`t$r`tup-to-date@$etagShort"); continue
   }
   $tgz = Join-Path $dl ("$repo.tar.gz")
-  $code = & $curl -sS -L --retry 2 --retry-delay 2 --connect-timeout 10 --max-time 180 -o $tgz -w '%{http_code}' "https://codeload.github.com/$r/tar.gz/$branch" 2>&1
+  $code = & $curl -sS -L --retry 1 --retry-delay 2 --connect-timeout 10 --max-time 120 -o $tgz -w '%{http_code}' "https://codeload.github.com/$r/tar.gz/$branch" 2>&1
   if ($code -match '^2' -and (Test-Path $tgz) -and (Get-Item $tgz).Length -gt 1024) {
     $tmp = Join-Path $dl ("_$repo")
     if (Test-Path $tmp) { Remove-Item $tmp -Recurse -Force }
