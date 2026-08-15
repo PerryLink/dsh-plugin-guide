@@ -172,9 +172,9 @@
 
 - [hikariming/dshfind](https://github.com/hikariming/dshfind) — DSH 学习与分享社区（MDX）
 - 论坛/博客/B 站线索：见 `cordis-paper-and-community.md` Part 2（84 条 URL 清单）
-- **社区文章归档**（`downloads/web/community-articles/`，**08-15 实盘 145 篇**，`scripts/download-community-articles.ps1` 幂等刷新）：
+- **社区文章归档**（`downloads/web/community-articles/`，**08-15 实盘 149 篇**，`scripts/download-community-articles.ps1` 幂等刷新）：
   - `zh/`（94 篇）：cnblogs 教程（pc2005 npm 发布实战、qq8864 会话导出/插件vs工具、sing1ee Agent Loop 解析、knqiufan/foxcharon/itech/adgine-ai/isLinXu）、CSDN（yuqingteck/damodev/zhuosj/aiutools/qq8864/csdnnews/aicoding）、51CTO 2 篇、阿里云 2 篇、bibigpt/aixq 实战、量子位/智东西/品玩/DTinsight/极客公园/36氪/界面/IT之家/甲子光年等媒体实测、V2EX 8 线程（1234203/1234320/1234341/1234424/1234521/1231389/1214141…）、locdd 3 线程、B 站视频页 9 支、新闻/财经页若干
-  - `en/`（41 篇）：NYU Shanghai RITS Cordis 解读、dev.to 2 篇、AgentPedia/ExplainX/AgentBreaking、essamamdani、X-CMD 安装页、dsh-index.xlings、xlings 多版本、36Kr 英文 3 篇、Ollama 官方集成文档、aiengineerguide TIL、GIGAZINE、OpenRouter Ori Harness 文档、digg X 聚合页（curl 拦截，部分未归档）、Pandaily/Edgen/TMTPOST/BlockBeats 等新闻页
+  - `en/`（45 篇）：NYU Shanghai RITS Cordis 解读、dev.to 2 篇、AgentPedia/ExplainX/AgentBreaking、essamamdani、X-CMD 安装页、dsh-index.xlings、xlings 多版本、36Kr 英文 3 篇、Ollama 官方集成文档、aiengineerguide TIL、GIGAZINE、OpenRouter Ori Harness 文档、digg X 聚合页（curl 拦截，部分未归档）、Pandaily/Edgen/TMTPOST/BlockBeats 等新闻页
   - `hn/`（10 篇）：Hacker News 镜像 7 条线程（主发布 49285244 + Cordis 论文/X-CMD/dsh-index/xlings/jelly ball/官方 X 帖）
   - 反爬未归档清单（知乎/InfoQ/venturebeat/TNW/Twitter/YouTube/Reddit）与全部线索摘要见 `downloads/_research/{chinese,english}-community-scan.md`
 - **中文社群与媒体入口**：微信公众号「DeepSeek Harness 团队」（黑鲸头像）；企微小助手群（官方 README 链接）；V2EX 与 locdd 活跃讨论；B 站教程视频（见上）；知乎提问 2040450519303288568（403 反爬）
@@ -196,6 +196,6 @@
   - [#1629 RFC：官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（zoahdev，08-15T01:15Z）——提议 template repo + `pnpm create dsh-plugin`，点名 dsh-tools `latest` 版本火车混淆（关联 #984）；
   - 安全审计类 #817/#454/#523/#250 与社区 PoC 仓库 zzszmyf/dsh-security-pocs 呼应。
 - **新仓库第七批 14 个 + 第八批 3 个**归档（§4.6/§4.7）：桌面端扎堆（7 个 Electron 壳）、QQ/Termux 桥接、安全 PoC、Python 移植、可视化市场、英文 awesome、主题注册表、WhaleHub/dsh-market 市场。
-- **社区文章归档落地**：`downloads/web/community-articles/` 由 53 篇扩到 **145 篇**（zh 94 / en 41 / hn 10，新脚本 `scripts/download-community-articles.ps1`）；digg/知乎/InfoQ/venturebeat/TNW/Twitter/YouTube/Reddit 反爬，线索已留档。
+- **社区文章归档落地**：`downloads/web/community-articles/` 由 53 篇扩到 **149 篇**（zh 94 / en 45 / hn 10，新脚本 `scripts/download-community-articles.ps1`）；digg/知乎/InfoQ/venturebeat/TNW/Twitter/YouTube/Reddit 反爬，线索已留档。
 - **上游与 npm 无变化**：官方仓库 HEAD 仍 47f9438（无新提交/Release）；`@deepseek-ai/dsh` latest=next=0.1.0-rc.6。
 - **工具链**：新增 `scripts/archive-discussions.ps1`（token 支持 + 防缩水保护）；`gen-topic-snapshot.ps1` 支持 token 并改用 Invoke-WebRequest（规避 PS 5.1 curl 数组参数拆词坑）；`download-community-repos.ps1` 修复弱 ETag 解析并新增第七批。

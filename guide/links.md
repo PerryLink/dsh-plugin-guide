@@ -84,7 +84,7 @@
 - awesome 列表（插件发现）：见 [community-ecosystem.md](../references/community-ecosystem.md) §5
 - **中文社群与媒体**：微信公众号「DeepSeek Harness 团队」（黑鲸头像，08-12 注册）、企微小助手群（官方 README 链接）；[V2EX](https://global.v2ex.co/t/1234341) 系列线程（1234203/1234320/1234341/1234424/1234521…）；[Bilibili 教程视频](https://www.bilibili.com/video/BV1WmgF6qEMn/)（速通/安装/实战共 9 支，清单见归档 README）；知乎提问 [2040450519303288568](https://www.zhihu.com/question/2040450519303288568)（403 反爬，需浏览器）
 - **英文社群与媒体**：Hacker News（[主发布线程 49285244](https://hn.edgecompute.app/item/49285244) + 5 条子线程，镜像已归档）；X/Twitter（官方 @deepseek_ai [发布帖](https://twitter.com/deepseek_ai/status/2087887408440164663)，digg 聚合见 [Web UI 截图帖](https://digg.com/tech/7fx4ofvh)/[内测招募帖](https://digg.com/tech/silt5bft)）；[OpenRouter Ori Harness](https://openrouter.ai/docs/guides/ori/harness)（OpenRouter 的 DSH 集成）；[Ollama 官方集成](https://docs.ollama.com/integrations/deepseek-harness)
-- 社区文章归档（**145 篇**，`downloads/web/community-articles/`，`scripts/download-community-articles.ps1` 幂等刷新）：中文教程/实测（cnblogs、CSDN、51CTO、阿里云、V2EX、locdd、36氪、量子位、B站…）、英文教程（dev.to、AgentPedia、ExplainX、X-CMD、Ollama…）、HN 镜像线程 7 条
+- 社区文章归档（**149 篇**，`downloads/web/community-articles/`，`scripts/download-community-articles.ps1` 幂等刷新）：中文教程/实测（cnblogs、CSDN、51CTO、阿里云、V2EX、locdd、36氪、量子位、B站…）、英文教程（dev.to、AgentPedia、ExplainX、X-CMD、Ollama…）、HN 镜像线程 7 条
 - 中文速查 + 踩坑：[V2EX 1234341](https://global.v2ex.co/t/1234341)；X-CMD 一键安装：https://www.x-cmd.com/install/deepseek-harness/ ；Ollama 集成：https://docs.ollama.com/integrations/deepseek-harness
 
 ## 6. 断链校验

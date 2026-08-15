@@ -95,12 +95,12 @@
 - `search-*.json`：npm 搜索快照（scope:deepseek-ai / dsh-plugin / deepseek-harness / create-dsh）
 - 依赖上下文包：commander、js-yaml、node-addon-require-builtin、dsh（无关项目 node-dsh，仅存档对比）
 
-## H. 社区文章与论坛归档（2026-08-14 晚新增；2026-08-15 实盘落地为 145 篇）
+## H. 社区文章与论坛归档（2026-08-14 晚新增；2026-08-15 实盘落地为 149 篇）
 
 `downloads/web/community-articles/`（日志 `_download.log`；刷新脚本 `scripts/download-community-articles.ps1`；线索与摘要见 `downloads/_research/chinese-community-scan.md` 与 `english-community-scan.md`）：
 
 - `zh/`（94 篇）—— cnblogs 教程（pc2005 npm 发布实战、qq8864 会话导出/插件vs工具、sing1ee Agent Loop 解析、knqiufan/foxcharon/itech/adgine-ai/isLinXu）、CSDN（yuqingteck Hello Tool、damodev 大仓工程化、zhuosj、aiutools、qq8864、csdnnews、aicoding）、51CTO 2 篇、阿里云开发者社区 2 篇、bibigpt/aixq 实战、量子位/智东西/品玩/DTinsight/极客公园/36氪/界面/IT之家/甲子光年/53AI/搜狐/网易/新浪/东方财富等媒体实测与新闻、V2EX 8 线程（1234203/1234320/1234341/1234424/1234521/1231389/1214141）、locdd 3 线程、B 站视频页 9 支（BV1WmgF6qEMn/BV1iAgc6xEj7/BV1KFgF6zEtk/BV1NKgw6VErB/BV1o4gP6iEeo/BV1vugA6FERZ/BV1VkgK6NEZS/BV1eDgW6QEFx/BV17ygc6tEE1）
-- `en/`（41 篇）—— NYU Shanghai RITS Cordis 解读、dev.to 2 篇（onsen 全指南、reidmarlow 价格信号）、AgentPedia/ExplainX/AgentBreaking 教程、essamamdani、X-CMD 安装页、dsh-index.xlings、xlings 多版本页、36Kr 英文 3 篇、Ollama 官方集成文档、aiengineerguide TIL、GIGAZINE、OpenRouter Ori Harness 文档、Pandaily/Edgen/TMTPOST/BlockBeats/Gate.it/e-ink 等新闻页（digg 2 页被反爬拦截）
+- `en/`（45 篇）—— NYU Shanghai RITS Cordis 解读、dev.to 2 篇（onsen 全指南、reidmarlow 价格信号）、AgentPedia/ExplainX/AgentBreaking 教程、essamamdani、X-CMD 安装页、dsh-index.xlings、xlings 多版本页、36Kr 英文 3 篇、Ollama 官方集成文档、aiengineerguide TIL、GIGAZINE、OpenRouter Ori Harness 文档、Pandaily/Edgen/TMTPOST/BlockBeats/Gate.it/e-ink 等新闻页（digg 2 页被反爬拦截）
 - `hn/`（10 篇）—— Hacker News 镜像（hn.edgecompute.app）7 条线程：49285244（主发布）、49286003（Cordis 论文）、49287821（X-CMD）、49294357（dsh-index）、49291049（xlings）、49291893（jelly ball 视频）、49285620（官方 X 帖）
 - 未归档（反爬/需浏览器）：知乎提问 2040450519303288568、InfoQ 中文 451、venturebeat 429、thenextweb 403、Reddit/X/YouTube（见两份扫描报告的"未收录但无法访问"清单）
 
@@ -124,4 +124,4 @@
 - **2026-08-14 二次复核（08:16Z，网络实时核验）**：`create-dsh-plugin` 已发布（latest=0.1.1，2026-08-13T15:15:42Z）——上次复核"未发布（404）"的记录作废；`@deepseek-ai/cordis` 另发布 `next`=4.0.1-rc.4；其余 npm 结论不变（dsh/dsh-tools/dsh-session-persistence-jsonl/dsh-shell 同上；dsh-core、dsh-sdk 仍 404）。`dsh-plugin` 话题 API total_count 增长至 1391（08-14T08:16Z，分页去重 993，见 §D.2）。官方文档副本与上游 `origin/master`（47f9438）逐字节一致，快照记录见 `references/official-docs/SNAPSHOT.md`。
 - **2026-08-14 外链扫描**：KB 自有文档 215 个外部 URL 逐一探测。真死链已修复/标注：turtle-ui、dsh-external/hub、deepseek-harness/cordis（404）；npmjs/socket.dev/新闻站（163/sohu/qq/aihot）与 discord.gg 对 curl 返回 403/501/超时属反爬，浏览器可用，非死链；cordiverse/paper 的 raw README（master/main）均 200。
 - **2026-08-14 社区仓库提交复核**：15 个深读仓库中 6 个在 08-13T15:15Z 快照后有新提交——dsh-suite（16:20Z X digest 管线/first-party 目录）、from-scratch（16:29Z 教程 prose 与 checkpoint 对齐）、plugin-mcp（16:16Z Streamable HTTP 每会话独立 Server 修复）、dsh-hub-workshop（17:30Z qualify catalog + close registry）、AdamPlatin123/awesome-dsh-plugins（18:10Z 登记 PR #4/#14 等）、bruc3van/awesome-dsh-plugin（17:56Z 目录刷新）；其余 9 个无新提交、无改名/归档。已按最新 HEAD 全部重下（HEAD 记录 downloads/community-repos/_heads.tsv）。
-- **2026-08-15 复核（网络实时核验 + 增量归档）**：上游 master 仍 47f9438、无新提交/Release/tag；`@deepseek-ai/dsh` latest=next=0.1.0-rc.6 无变化。`dsh-plugin` 话题 total_count 08-14 晚 2034 → **08-15 快照抓取期间 2668→2671**（第四期快照 `downloads/topic-snapshots/dsh-plugin-topic-2026-08-15/`，去重 998；`topic:deepseek-harness` 1432→1872）。官方 Discussions 全量刷新 1408→1654（含新增 RFC #1629）。社区仓库新增第七批 14 个 + 第八批 3 个（web_search 增量线索，见 community-ecosystem.md §4.6/§4.7）。社区文章归档 53→145 篇（zh 94/en 41/hn 10）。修复 `download-community-repos.ps1` 弱 ETag 解析 bug（弱 ETag `W/"..."` 曾致 heads 记录损坏 + Substring 越界）。
+- **2026-08-15 复核（网络实时核验 + 增量归档）**：上游 master 仍 47f9438、无新提交/Release/tag；`@deepseek-ai/dsh` latest=next=0.1.0-rc.6 无变化。`dsh-plugin` 话题 total_count 08-14 晚 2034 → **08-15 快照抓取期间 2668→2671**（第四期快照 `downloads/topic-snapshots/dsh-plugin-topic-2026-08-15/`，去重 998；`topic:deepseek-harness` 1432→1872）。官方 Discussions 全量刷新 1408→1654（含新增 RFC #1629）。社区仓库新增第七批 14 个 + 第八批 3 个（web_search 增量线索，见 community-ecosystem.md §4.6/§4.7）。社区文章归档 53→149 篇（zh 94/en 45/hn 10）。修复 `download-community-repos.ps1` 弱 ETag 解析 bug（弱 ETag `W/"..."` 曾致 heads 记录损坏 + Substring 越界）。
