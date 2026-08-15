@@ -26,7 +26,7 @@ Official docs archive · Cordis primer · community deep-dives · battle-tested 
 
 | Official docs | Community deep-dives | Battle-tested pitfalls | `dsh-plugin` topic | Languages | Agent skill |
 |---|---|---|---|---|---|
-| 215 pages (EN + ZH) | 114 repos | 20+ | ~1000 snapshot (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| 215 pages (EN + ZH) | 114 repos | 20+ | 998 snapshot (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
 
 ## 🚀 Quick start
 
