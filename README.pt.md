@@ -30,6 +30,17 @@ Arquivo da documentação oficial · Introdução ao Cordis · Análise da comun
 
 ## 🚀 Início rápido
 
+### 🧩 Instale como plugin do DSH (recomendado)
+
+Este repositório é um **bundle DSH** instalável: registra toda a base de conhecimento como a skill de agente `dsh-plugin-guide`. A skill fica visível no catálogo de cada sessão e o modelo carrega fluxos de trabalho, documentação oficial e análises comunitárias sob demanda (`./guide/`, `./references/`) — sem copiar nem buscar.
+
+```sh
+dsh plugin --profile <profile> add github:PerryLink/dsh-plugin-guide#<sha>
+# ou um tarball: pnpm pack && dsh plugin --profile <profile> add ./dsh-plugin-guide-<version>.tgz
+```
+
+O bundle declara `dsh.bundle.patch` e fixa o trem `@deepseek-ai/dsh@0.1.0-rc.6` como peerDependency opcional.
+
 ### 🤖 Use como skill de agente
 
 Copie a pasta inteira para o diretório de skills do seu agente (os caminhos relativos permanecem válidos):
