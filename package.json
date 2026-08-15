@@ -45,5 +45,39 @@
     "bundle": {
       "patch": "./cordis.patch.yml"
     }
+  },
+  "dshWorkshop": {
+    "schema": "omdsh-workshop-package/v1",
+    "type": "plugin",
+    "integration": {
+      "protocol": "harness-profile",
+      "artifact": "cordis.patch.yml"
+    },
+    "install": {
+      "mode": "transactional",
+      "adapter": "profile-bundle",
+      "failurePolicy": "generation-rollback",
+      "touchesCurrentBeforeActivation": false
+    },
+    "lifecycle": {
+      "activation": "restart-profile",
+      "dispose": "supported"
+    },
+    "permissions": ["filesystem:read"],
+    "compatibility": {
+      "dshVersions": ["0.1.0-rc.6"]
+    },
+    "capability": {
+      "id": "dsh-plugin-guide",
+      "kind": "service",
+      "invocation": "ctx.skills.get('dsh-plugin-guide') resolves a complete SkillDefinition",
+      "expected": "session skill catalog lists dsh-plugin-guide and the loaded body carries the SKILL.md workflow with a directory resourceBase"
+    },
+    "evidence": {
+      "install": null,
+      "failureIsolation": null,
+      "hotReload": null,
+      "remove": null
+    }
   }
 }
