@@ -2,138 +2,178 @@
 
 # 🐳 dsh-plugin-guide
 
-**Todo lo que necesitas para crear plugins de [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).**
+**Todo lo que necesitas para construir plugins de [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).**
 
-Archivo de documentación oficial · Introducción a Cordis · Análisis de la comunidad · Errores reales · Skill para agentes
+*Archivo de documentación oficial · primer de Cordis · deep-dives de la comunidad · trampas probadas en batalla · agent skill*
 
-[English](README.md) · [中文](README.zh-CN.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/dsh-plugin-✅-green)](https://github.com/topics/dsh-plugin)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-plugin-guide/verify.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-plugin-guide/actions)
+[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-plugin-guide?label=version)](https://github.com/PerryLink/dsh-plugin-guide/releases)
+[![npm version](https://img.shields.io/npm/v/dsh-plugin-guide)](https://www.npmjs.com/package/dsh-plugin-guide)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-plugin-guide)](https://www.npmjs.com/package/dsh-plugin-guide)
 
-[![GitHub stars](https://img.shields.io/github/stars/PerryLink/dsh-plugin-guide?style=for-the-badge&color=yellow&label=%E2%AD%90%20Stars)](https://github.com/PerryLink/dsh-plugin-guide/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/PerryLink/dsh-plugin-guide?style=for-the-badge&color=blue&label=Forks)](https://github.com/PerryLink/dsh-plugin-guide/network/members)
-[![verify-kit CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-plugin-guide/verify.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/PerryLink/dsh-plugin-guide/actions/workflows/verify.yml)
-[![npm version](https://img.shields.io/npm/v/dsh-plugin-guide?style=for-the-badge&label=npm)](https://www.npmjs.com/package/dsh-plugin-guide)
-[![npm downloads](https://img.shields.io/npm/dm/dsh-plugin-guide?style=for-the-badge&label=downloads)](https://www.npmjs.com/package/dsh-plugin-guide)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)](LICENSE)
-[![Topic: dsh](https://img.shields.io/badge/Topic-dsh-4D6BFE?style=for-the-badge)](https://github.com/topics/dsh)
-[![Topic: dsh-plugin](https://img.shields.io/badge/Topic-dsh--plugin-8257D0?style=for-the-badge)](https://github.com/topics/dsh-plugin)
-[![Docs: EN/ZH](https://img.shields.io/badge/Docs-EN%2FZH-8257D0?style=for-the-badge)](references/official-docs/)
+[English](README.md) · [简体中文](README.zh.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
 </div>
 
-> 🗺️ **Cada hecho enlaza a su origen** — documentación oficial, repos upstream o repos comunitarios. Ante la duda, la copia oficial textual manda.
->
-> ⏱️ **Verificado por última vez el 2026-08-15** — documentación oficial idéntica byte a byte al `master` upstream (47f9438, véase [SNAPSHOT.md](references/official-docs/SNAPSHOT.md)); etiquetas npm y el topic `dsh-plugin` (API total_count subió **2668 → 2671** durante el snapshot del 08-15; 998 repos capturados, véase [sources.md](references/sources.md) §D.2) re-verificados en vivo; HEAD upstream (47f9438) y npm `@deepseek-ai/dsh` (0.1.0-rc.6) sin cambios.
+---
 
-## 📊 De un vistazo
+## Compatibility
 
-| Documentación oficial | Análisis comunitarios | Errores reales | Topic `dsh-plugin` | Idiomas | Skill de agente |
-|---|---|---|---|---|---|
-| 215 páginas (EN + ZH) | 114 repos | 20+ | 998 snapshot (API ≈2670) | EN · 中文 · ES · PT · HI | `dsh-plugin-guide` |
+| Surface | Status |
+|---|---|
+| Harness | DeepSeek Harness `0.1.0-rc.6` |
+| Node | `^22.19.0 || >=24.0.0` (runtime de DeepSeek Harness) |
+| Platforms | Todas (bundle ESM plano; sin código nativo, sin red) |
+| Model | Cualquiera (sin interacción con el modelo) |
 
-## 🚀 Inicio rápido
+## What you get
 
-### 🧩 Instálalo como plugin de DSH (recomendado)
+`dsh-plugin-guide` es la base de conocimiento de desarrollo de plugins DSH, empaquetada como un bundle instalable que registra todo como la skill de agente `dsh-plugin-guide`. La skill permanece visible en el catálogo de cada sesión y carga sus pasos de flujo de trabajo, documentación oficial y deep-dives de la comunidad bajo demanda.
 
-Este repositorio es un **bundle DSH** instalable: registra toda la base de conocimiento como la skill de agente `dsh-plugin-guide`. La skill queda visible en el catálogo de cada sesión y el modelo carga flujos de trabajo, documentación oficial y análisis comunitarios bajo demanda (`./guide/`, `./references/`) — sin copiar ni buscar.
+- **Contrato de plugin y reglas duras** — effects/disposers, waterfall `next()`, visible para el modelo ⟺ registrado, configuración Schemastery.
+- **Archivo de documentación oficial** — una copia textual de la documentación oficial del repo (EN + ZH), byte-idéntica al upstream en la última instantánea verificada.
+- **Primer de Cordis** — los cinco conceptos y la línea de tiempo de mecanismos (repository-plugin introducido 0809, eliminado 0811; los dos canales de instalación).
+- **20+ trampas del mundo real** con causa raíz + arreglo (copias duales de cordis, trío tsconfig, sesiones zstd multi-frame, junctions de Windows, `latest` obsoleto de npm, …).
+- **Deep-dives de la comunidad** — 114 repositorios de la comunidad archivados (15 con deep-dive), más un índice fuente completo donde cada hecho enlaza a su origen.
+
+## Knowledge base
+
+| Path | Qué es |
+|---|---|
+| `SKILL.md` | La skill de agente `dsh-plugin-guide`: reglas duras + rutas de desarrollo por tarea |
+| `package.json` · `cordis.patch.yml` · `index.js` | El bundle DSH instalable: manifiesto `dsh.bundle.patch` + punto de entrada que registra la skill |
+| `guide/plugin-dev-guide.md` | La guía de desarrollo completa (10 capítulos) |
+| `guide/quick-reference.md` | Hoja de referencia de una página (5 idiomas) |
+| `guide/links.md` | Índice de URL curado: documentación oficial de desarrollo (sitio ↔ copias locales) + enlaces de documentación de la comunidad |
+| `references/official-docs/` | Copia textual de la documentación oficial del repo (EN + ZH) |
+| `references/*.md` | Informes de investigación: documentación del repo, sitio web, Cordis, el paper, ecosistema de la comunidad, archivo de 114 repos (15 con deep-dive) |
+| `scripts/` | Scripts de descarga idempotentes + verificador de integridad + generador de instantáneas de tema |
+| `downloads/` | Instantáneas crudas — generadas por `scripts/`, no confirmadas |
+
+## Quick start
 
 ```sh
-dsh plugin --profile <profile> add github:PerryLink/dsh-plugin-guide#<sha>
-# o un tarball: pnpm pack && dsh plugin --profile <profile> add ./dsh-plugin-guide-<version>.tgz
+# 1. install the bundle into your profile
+dsh plugin --profile web add "github:PerryLink/dsh-plugin-guide#main"
+
+# or from npm (published releases)
+dsh plugin --profile web add dsh-plugin-guide
+
+# 2. restart and verify the row
+dsh --profile web --dump-config | grep -A3 'id: dsh-plugin-guide'
 ```
 
-El bundle declara `dsh.bundle.patch` y fija el tren `@deepseek-ai/dsh@0.1.0-rc.6` como peerDependency opcional.
+Luego pídele a tu agente: *"Usa la skill dsh-plugin-guide para construirme un plugin de …."*
 
-### 🤖 Úsalo como skill de agente
+## Install & uninstall
 
-Copia toda la carpeta al directorio de skills de tu agente (las rutas relativas se mantienen):
+- **canal git** (último `main`): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — fija un commit para reproducibilidad; el punto de entrada es JS ESM plano, sin paso de build.
+- **canal npm** (versiones publicadas): `dsh plugin --profile web add dsh-plugin-guide`.
+- **canal tarball**: `pnpm pack` en este repo, luego `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
+- **desinstalar**: `dsh plugin --profile web remove dsh-plugin-guide`.
 
-**Windows (PowerShell)**
+## Copy as a plain agent skill
+
+También puedes copiar la carpeta completa al directorio de skills de tu agente (las rutas relativas permanecen intactas):
 
 ```powershell
+# Windows (PowerShell)
 pwsh -File scripts/install-skill.ps1 `
-  -Target "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # o <proyecto>\.agents\skills\dsh-plugin-guide
+  -Target "$env:USERPROFILE\.deepseek\skills\dsh-plugin-guide"   # o <project>\.agents\skills\dsh-plugin-guide
 ```
-
-**macOS / Linux**
 
 ```bash
-pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide   # o <proyecto>/.agents/skills/dsh-plugin-guide
+# macOS / Linux
+pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide   # o <project>/.agents/skills/dsh-plugin-guide
 ```
 
-El instalador omite `downloads/` (generado) y `.github/`, y verifica byte a byte cada archivo copiado. Un `Copy-Item -Recurse` manual de toda la carpeta también funciona.
+El instalador omite `downloads/` (generado) y `.github/`, y luego verifica cada archivo copiado byte a byte. Un `Copy-Item -Recurse` manual de toda la carpeta también funciona.
 
-Luego dile a tu agente: *"Usa el skill dsh-plugin-guide para crearme un plugin de …"*.
+## Configuration
 
-### 📖 O simplemente lee
+`dsh-plugin-guide` no expone ningún `Config` de Schemastery — registra la base de conocimiento como una skill de agente sin claves ajustables.
 
-| Quieres… | Lee |
-|---|---|
-| La chuleta de una página | [`guide/quick-reference.md`](guide/quick-reference.md) |
-| La ruta completa de 10 capítulos | [`guide/plugin-dev-guide.md`](guide/plugin-dev-guide.md) |
-| Enlaces a documentación oficial y comunitaria | [`guide/links.md`](guide/links.md) · [`references/community-ecosystem.md`](references/community-ecosystem.md) |
-| APIs exactas de servicios/eventos | `references/official-docs/docs/subsystems/` y `docs/cordis-api/` |
+## Tools & surfaces
 
-## 🧭 Contenido
+| Surface | Kind | Notes |
+|---|---|---|
+| `dsh-plugin-guide` | skill | Registrada vía `ctx.skills`; carga `SKILL.md` + `./guide/` + `./references/` bajo demanda |
 
-| Ruta | Qué es |
-|---|---|
-| `SKILL.md` | El skill `dsh-plugin-guide`: reglas estrictas + rutas de desarrollo por tipo de tarea |
-| `guide/plugin-dev-guide.md` | La guía de desarrollo completa (10 capítulos) |
-| `guide/quick-reference.md` | Chuleta de una página (5 idiomas) |
-| `guide/links.md` | Índice de URLs curado: documentación oficial de desarrollo (sitio ↔ copias locales) + enlaces comunitarios |
-| `references/official-docs/` | Copia textual de la documentación oficial del repo (EN + ZH) |
-| `references/*.md` | Informes de investigación: docs del repo, sitio web, Cordis, el paper, ecosistema comunitario, archivo de 114 repos (15 analizados) |
-| `scripts/` | Scripts de descarga idempotentes + verificador de integridad + generador de censo del topic |
-| `downloads/` | Instantáneas crudas — generadas por `scripts/`, no versionadas |
+## Permissions & data
 
-## ✨ Destacados
+- **Permissions**: declara `filesystem:read` en su manifiesto de workshop.
+- **Data**: solo lectura — lee sus propios archivos empaquetados `guide/` y `references/`. Sin solicitudes de red, sin escrituras, sin llamadas al modelo.
 
-- 📜 **Contrato del plugin y reglas estrictas** — efectos/disposers, `next()` en waterfall, visible-para-el-modelo ⇔ registrado, configuración Schemastery.
-- 🕰️ **Línea de tiempo de mecanismos** — repository-plugin introducido el 0809, eliminado el 0811; los dos canales de instalación (bundle vs plugin cordis simple).
-- 🕳️ **Más de 20 errores reales** con causa y solución: copias dobles de cordis, trío de tsconfig, `tsc` que emite pese a errores, junctions de Windows, sesiones zstd multiframe, variables `DSH_*`, `latest` de npm obsoleto…
-- 🔬 **114 repositorios comunitarios archivados** (15 analizados) — plantillas, andamiajes, archivos de errores, reglas de plugin-check, capa Fabric, puente MCP, más una guía en 15 idiomas, un curso s01–s23, manuales, SDKs TS/Rust y el lote 08-15 (shells de escritorio, puente QQ, PoCs de seguridad, port a Python).
-- 🔗 **Índice de fuentes completo** — cada hecho enlaza a su origen (docs oficiales, repos upstream, repos comunitarios).
-- 🗃️ **1654 Discussions oficiales archivadas** (con comentarios de hilos seleccionados) + más de 100 artículos comunitarios (zh/en/HN) — refresca con `scripts/archive-discussions.ps1` / `scripts/download-community-articles.ps1`.
-- 🆕 **Sello de actualidad** — re-verificado contra `master` upstream, npm y el topic `dsh-plugin` en vivo el 2026-08-15.
+## Security boundaries
 
-## 🔄 Mantenerlo fresco
+- **Base de conocimiento de solo lectura.** El bundle solo lee sus propios archivos; nunca escribe, nunca usa la red y nunca invoca un modelo.
+- **La documentación oficial son copias textuales.** `references/official-docs/` nunca se edita aquí; reporta problemas al upstream y vuelve a sincronizar solo con `scripts/sync-official-docs.ps1`.
+- **Límites de distribución.** El contenido de terceros empaquetado conserva su licencia de upstream; consulta [NOTICE.md](NOTICE.md) (p. ej. `downloads/` es solo local; `awesome-dsh-plugins` no debe redistribuirse).
+
+## Known limitations
+
+- **La documentación oficial es una instantánea.** Vuelve a sincronizar con `scripts/sync-official-docs.ps1` cuando el upstream se mueva; el sello de frescura y el hash de commit referencian `references/official-docs/SNAPSHOT.md`.
+- **`downloads/` es generado, no confirmado.** Las instantáneas crudas (archivos de repos de la comunidad, Discussions, artículos) deben generarse con los scripts antes de usarse.
+- **El contenido de `awesome-dsh-plugins` es solo local.** Su upstream declara una restricción de uso interno, por lo que no se redistribuye con el repo.
+
+## Keeping it fresh
 
 ```sh
-pwsh -File scripts/sync-official-docs.ps1                     # copia textual de docs desde un checkout local (solo origin/master)
+pwsh -File scripts/sync-official-docs.ps1                     # copia textual de docs desde un checkout local
 pwsh -File scripts/download-sources.ps1                       # sitio/docs oficiales, Cordis, paper
-pwsh -File scripts/download-community-repos.ps1               # 114 repositorios comunitarios (tarballs codeload, refresco por ETag)
-pwsh -File scripts/download-community-articles.ps1            # artículos comunitarios zh/en/HN (instantáneas HTML)
-pwsh -File scripts/archive-discussions.ps1                    # Discussions oficiales (requiere $env:GH_TOKEN)
-pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <dir>       # censo del topic dsh-plugin
-pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # rutas críticas + enlaces rotos + informe de deriva de docs
+pwsh -File scripts/download-community-repos.ps1               # repositorios de la comunidad (tarballs codeload)
+pwsh -File scripts/download-community-articles.ps1            # artículos de la comunidad zh/en/HN
+pwsh -File scripts/archive-discussions.ps1                    # Discussions oficiales (necesita $env:GH_TOKEN)
+pwsh -File scripts/gen-topic-snapshot.ps1 -OutDir <dir>       # censo del tema dsh-plugin
+pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # rutas críticas + escaneo de enlaces + deriva de docs
 ```
 
-CI ejecuta `verify-kit` en cada push y pull request.
+## Development
 
-## 🏷️ Topics
+El bundle es ESM plano — sin paso de build. CI ejecuta la puerta de integridad en cada push y pull request:
 
-Este repositorio es visible bajo los topics de GitHub **[`dsh`](https://github.com/topics/dsh)** y **[`dsh-plugin`](https://github.com/topics/dsh-plugin)** — navega ambas páginas de topic para encontrar cientos de plugins y recursos para desarrolladores.
+```sh
+pwsh -File scripts/verify-kit.ps1   # rutas críticas + escaneo de enlaces (+ deriva de docs con -Checkout <checkout>)
+```
 
-## 🤝 Participa
+## Topics
 
-- ⭐ **Dale una estrella** — ayuda a que otros autores de plugins DSH lo encuentren.
-- ¿Encontraste un error, una nueva trampa o un repo que merece análisis? Abre un [issue](https://github.com/PerryLink/dsh-plugin-guide/issues) o un pull request — consulta [CONTRIBUTING.md](CONTRIBUTING.md).
-- Únete a la comunidad: [Discord de DeepSeek Harness](https://discord.gg/Ycq5dCaS4) · [discusiones oficiales](https://github.com/deepseek-ai/deepseek-harness/discussions) · [topic `dsh-plugin`](https://github.com/topics/dsh-plugin).
+`dsh`, `deepseek-harness`, `dsh-plugin`, `cordis`, `agent-skill`, `plugin-development`, `knowledge-base`
 
-## 💛 Contribuidores
+## Contributors
 
-- [PerryLink](https://github.com/PerryLink) — creador y mantenedor: contenido de la base de conocimiento, la transformación a bundle instalable, las contribuciones al ecosistema y la ingeniería comunitaria.
-- El mantenimiento diario cuenta con la asistencia de agentes de DeepSeek Harness (no tienen cuenta de GitHub y se listan aquí solo por transparencia, no como contribuidores).
+- [PerryLink](https://github.com/PerryLink) — creador y mantenedor: contenido de la base de conocimiento, la transformación a bundle instalable, envíos al ecosistema e ingeniería de comunidad.
+- El mantenimiento diario está asistido por agentes de DeepSeek Harness (no tienen cuenta de GitHub y se listan aquí por transparencia, no como contribuyentes).
 
+## PerryLink DSH Plugin Family
 
-## 📄 Licencia y atribución
+Este proyecto es uno de los [15 plugins de DeepSeek Harness](https://github.com/PerryLink) mantenidos por [PerryLink](https://github.com/PerryLink). Si este te ayuda, los demás probablemente también:
 
-- Texto propio (`SKILL.md`, `guide/`, informes de `references/`, `scripts/`, este README): **Apache-2.0** — véase [LICENSE](LICENSE).
-- El contenido de terceros incluido está documentado en [NOTICE.md](NOTICE.md), con sus límites de distribución
-  (p. ej. `downloads/` es solo local; `awesome-dsh-plugins` no debe redistribuirse).
+| Plugin | One-liner |
+|---|---|
+| [dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel) | Read-only MCP runtime panel: /mcp command + Settings tab with status, tools and errors |
+| [dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck) | Engineering-discipline guard: requirements grill, test gates, adversary review |
+| [dsh-background-agents](https://github.com/PerryLink/dsh-background-agents) | Durable background child agents with a Web UI sidebar, messaging and interrupt |
+| [dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions) | LSP diagnostics, formatting, completion, code actions and rename over language servers |
+| [dsh-output-styles](https://github.com/PerryLink/dsh-output-styles) | Claude Code outputStyles-equivalent runtime style switching |
+| [dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind) | Claude Code /rewind-equivalent: snapshots, session forks, one-shot restore |
+| [dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules) | Claude Code-style declarative allow/deny/ask permission rules with audit |
+| [dsh-auto-review](https://github.com/PerryLink/dsh-auto-review) | Second-model auto-review on the approval chain, fail-closed by default |
+| [dsh-memento](https://github.com/PerryLink/dsh-memento) | Approval-gated cross-session memory: ctx.memory seam + SQLite + memory tool |
+| [dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security) | Security-audit skill pack: secret scan, dependency and supply-chain review |
+| [dsh-session-pin](https://github.com/PerryLink/dsh-session-pin) | Pin sessions in the Web sidebar with durable ordering |
+| [dsh-composer-history](https://github.com/PerryLink/dsh-composer-history) | Terminal-style input history for the web composer: arrows, Ctrl+R search |
+| [dsh-github](https://github.com/PerryLink/dsh-github) | GitHub PR/issues integration for DSH, every write gated by approval |
+| **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** | Plugin-development knowledge base as an on-demand agent skill |
+| [dsh-claude-move](https://github.com/PerryLink/dsh-claude-move) | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH |
 
-## ⚖️ Aviso legal
+## Disclaimer
 
-Mantenido por la comunidad; **no** es un producto oficial de DeepSeek. DeepSeek Harness está en vista previa de
-desarrollador y publica cambios incompatibles; ante la duda, la documentación oficial en `references/official-docs/`
-es la fuente de verdad.
+Mantenido por la comunidad, **no** es un producto oficial de DeepSeek. DeepSeek Harness está en vista previa de desarrollador y publica cambios rompedores; ante la duda, la documentación oficial en `references/official-docs/` es la fuente de verdad.
+
+## License
+
+[Apache License 2.0](LICENSE) © 2026 dsh-plugin-guide contributors — nuestro propio texto (`SKILL.md`, `guide/`, `references/`, `scripts/`, este README) es Apache-2.0; el contenido de terceros empaquetado se documenta en [NOTICE.md](NOTICE.md).

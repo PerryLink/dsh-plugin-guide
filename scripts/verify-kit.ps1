@@ -10,7 +10,7 @@ $info = New-Object System.Collections.Generic.List[string]
 
 # ---- 1) 关键路径 ----
 $critical = @(
-  'SKILL.md','README.md','README.zh-CN.md','README.es.md','README.pt.md','README.hi.md','LICENSE','NOTICE.md','.gitignore',
+  'SKILL.md','README.md','README.zh.md','README.es.md','README.pt.md','README.hi.md','LICENSE','NOTICE.md','.gitignore',
   'CONTRIBUTING.md','SECURITY.md','.github/ISSUE_TEMPLATE/bug_report.yml','.github/ISSUE_TEMPLATE/feature_request.yml','.github/PULL_REQUEST_TEMPLATE.md',
   'guide/plugin-dev-guide.md','guide/quick-reference.md','guide/links.md','guide/quick-reference.zh-CN.md','guide/quick-reference.es.md','guide/quick-reference.pt.md','guide/quick-reference.hi.md',
   'references/sources.md','references/harness-repo.md','references/website-pages.md',
