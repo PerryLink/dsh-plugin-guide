@@ -34,7 +34,7 @@
     "url": "git+https://github.com/PerryLink/dsh-plugin-guide.git"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": "0.1.0-rc.6"
+    "@deepseek-ai/dsh": ">=0.1.0-rc.8 <0.2.0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {
@@ -65,7 +65,7 @@
     },
     "permissions": ["filesystem:read"],
     "compatibility": {
-      "dshVersions": ["0.1.0-rc.6"]
+      "dshVersions": ["0.1.0-rc.8"]
     },
     "capability": {
       "id": "dsh-plugin-guide",
