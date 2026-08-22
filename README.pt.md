@@ -24,7 +24,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `0.1.0-rc.8` |
+| Harness | DeepSeek Harness `0.1.1-rc.2` |
 | Node | `^22.19.0 || >=24.0.0` (runtime do DeepSeek Harness) |
 | Platforms | Todas (bundle ESM puro; sem código nativo, sem rede) |
 | Model | Qualquer (sem interação com o modelo) |
