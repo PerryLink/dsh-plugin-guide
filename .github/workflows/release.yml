@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Gate
+        shell: pwsh
+        run: ./scripts/verify-kit.ps1
+
+      - name: Verify the changelog names this version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          grep -q "## \[${VERSION}\]" CHANGELOG.md || { echo "CHANGELOG.md has no '## [${VERSION}]' section"; exit 1; }
+
+      - name: Publish to npm
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "NPM_TOKEN secret is not set; skipping npm publish"
+            exit 0
+          fi
+          if npm view "dsh-plugin-guide@${version}" version >/dev/null 2>&1; then
+            echo "dsh-plugin-guide@${version} is already published; skipping npm publish"
+          else
+            npm publish --provenance --access public
+          fi
+
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
+            echo "release ${{ github.ref_name }} already exists; skipping"
+            exit 0
+          fi
+          gh release create "${{ github.ref_name }}" --generate-notes
