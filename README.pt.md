@@ -192,7 +192,7 @@ pwsh -File scripts/verify-kit.ps1   # caminhos críticos + varredura de links (+
 
 ## Topics
 
-`dsh`, `deepseek-harness`, `dsh-plugin`, `cordis`, `agent-skill`, `plugin-development`, `knowledge-base`
+`dsh`, `deepseek-harness`, `dsh-plugin`, `cordis`, `agent-skill`, `plugin-development`, `knowledge-base`, `cli`, `scaffold`, `checker`
 
 ## Contributors
 

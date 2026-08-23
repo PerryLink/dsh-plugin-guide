@@ -192,7 +192,7 @@ pwsh -File scripts/verify-kit.ps1   # rutas críticas + escaneo de enlaces (+ de
 
 ## Topics
 
-`dsh`, `deepseek-harness`, `dsh-plugin`, `cordis`, `agent-skill`, `plugin-development`, `knowledge-base`
+`dsh`, `deepseek-harness`, `dsh-plugin`, `cordis`, `agent-skill`, `plugin-development`, `knowledge-base`, `cli`, `scaffold`, `checker`
 
 ## Contributors
 
