@@ -1,11 +1,21 @@
 {
   "name": "dsh-plugin-guide",
   "version": "0.1.2",
-  "description": "The dsh-plugin-guide knowledge base as an installable DeepSeek Harness plugin: official docs, Cordis primer, community deep-dives, and battle-tested pitfalls registered as an on-demand agent skill.",
+  "description": "The dsh-plugin-guide knowledge base plus the dsh-plugin-dev CLI toolchain: official docs, Cordis primer, community deep-dives, and battle-tested pitfalls registered as an on-demand agent skill, with a scaffolder, static checker, and pack verifier for building DSH plugins.",
   "type": "module",
   "main": "index.js",
+  "bin": {
+    "dsh-plugin-dev": "./bin/dsh-plugin-dev.js"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "files": [
     "index.js",
+    "bin",
+    "dist",
+    "templates",
     "cordis.patch.yml",
     "SKILL.md",
     "guide",
@@ -26,12 +36,34 @@
     "cordis",
     "agent-skill",
     "plugin-development",
-    "knowledge-base"
+    "knowledge-base",
+    "cli",
+    "scaffold",
+    "checker"
   ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PerryLink/dsh-plugin-guide.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "typecheck:ci": "tsc --noEmit --pretty false",
+    "test": "vitest run",
+    "check:kit": "pwsh -File scripts/verify-kit.ps1",
+    "verify:artifacts": "node scripts/verify-artifacts.mjs",
+    "verify:self-contained": "pnpm run build && node dist/dsh-plugin-dev.js verify",
+    "prepare": "tsdown",
+    "prepack": "tsdown"
+  },
+  "dependencies": {
+    "tsdown": "^0.22.14",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "vitest": "^3.2.7"
   },
   "peerDependencies": {
     "@deepseek-ai/dsh": ">=0.1.0-rc.8 <0.2.0"
@@ -46,6 +78,10 @@
       "patch": "./cordis.patch.yml"
     }
   },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "packageManager": "pnpm@11.7.0",
   "dshWorkshop": {
     "schema": "omdsh-workshop-package/v1",
     "type": "plugin",

@@ -1,10 +1,17 @@
 # 原始下载物(38MB 第三方快照)不入版本库,由 scripts/*.ps1 再生
 downloads/
 
+# 构建产物(由 tsdown 生成,发布时经 prepack 重建)
+dist/
+
+# 测试覆盖率
+coverage/
+
 # 临时/备份
 *.bak
 _check/
 *.tar.gz
+*.tgz
 *.tmp
 
 # 系统

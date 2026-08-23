@@ -1,0 +1,44 @@
+{
+  "name": "{{pkgName}}",
+  "version": "{{version}}",
+  "description": "A DeepSeek Harness (DSH) plugin scaffolded by dsh-plugin-dev.",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepare": "tsdown"
+  },
+  "dependencies": {
+    "tsdown": "^0.22.14",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.1.0-rc.8 <0.2.0",
+    "@deepseek-ai/schemastery": "^3.18.0",
+    "@types/node": "^22.20.1",
+    "vitest": "^3.2.7"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.1.0-rc.8 <0.2.0",
+    "@deepseek-ai/schemastery": "^3.18.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "packageManager": "pnpm@11.7.0",
+  "license": "Apache-2.0"
+}

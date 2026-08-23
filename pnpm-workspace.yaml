@@ -1,0 +1,16 @@
+# Single-package workspace root. Isolates this plugin repo from the parent
+# deepseek-harness workspace checkout so `pnpm install` resolves only this
+# package's own dependencies and generates a self-contained lockfile.
+packages:
+  - .
+
+# The optional `@deepseek-ai/dsh` peer is metadata-only (the bundle imports no
+# harness code), so do not auto-install it here; the compat smoke installs the
+# exact pinned version into a scratch profile instead.
+autoInstallPeers: false
+
+# esbuild's postinstall only downloads a fallback binary (vitest's bundler); the
+# platform binary ships as an optional dependency. Allow it explicitly so install
+# stays green.
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,10 @@
+# {{pkgName}} bundle layer: register the scaffolded plugin as a bundle row.
+# This file is the `dsh.bundle.patch` layer (see package.json#dsh.bundle.patch).
+# Layer semantics: a YAML array of row verbs; `insert` adds plugin rows to the
+# composed config. A row's `id` must be unique within the layer stack; `name`
+# resolves the plugin module through the installed package (package.json#main).
+- insert:
+    # `id`: stable row identifier used by later layers to override this row.
+    - id: {{pkgName}}
+      # `name`: the module the loader imports; resolves to this package entry.
+      name: {{pkgName}}
