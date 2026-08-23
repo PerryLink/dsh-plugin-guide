@@ -4,7 +4,7 @@
 
 **[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) प्लगइन बनाने के लिए आपकी ज़रूरत की हर चीज़।**
 
-*आधिकारिक दस्तावेज़ संग्रह · Cordis प्राइमर · सामुदायिक गहन-विश्लेषण · युद्ध-परीक्षित नुकसान · agent skill*
+*आधिकारिक दस्तावेज़ संग्रह · Cordis प्राइमर · सामुदायिक गहन-विश्लेषण · युद्ध-परीक्षित नुकसान · agent skill · CLI टूलचेन*
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/dsh-plugin-✅-green)](https://github.com/topics/dsh-plugin)
@@ -38,6 +38,7 @@
 - **Cordis प्राइमर** — पाँच अवधारणाएँ और तंत्र समयरेखा (repository-plugin 0809 को जोड़ा, 0811 को हटाया; दो इंस्टॉल चैनल)।
 - **20+ वास्तविक-दुनिया नुकसान** मूल कारण + समाधान सहित (cordis दोहरी प्रतियाँ, tsconfig त्रयी, बहु-फ़्रेम zstd सत्र, Windows junction, पुराना npm `latest`, …)।
 - **सामुदायिक गहन-विश्लेषण** — 114 सामुदायिक रिपॉज़िटरी संग्रहीत (15 गहन-विश्लेषित), साथ ही पूर्ण स्रोत सूची जहाँ हर तथ्य अपने मूल से जुड़ा है।
+- **CLI टूलचेन** — `dsh-plugin-dev new / check / verify`: DSH प्लगइन स्कैफ़ोल्ड करना, स्थैतिक जाँच और पैक-सत्यापन; हर जाँच उस skill अनुभाग से जुड़ती है जिसे वह लागू करती है।
 
 ## Knowledge base
 
@@ -51,7 +52,41 @@
 | `references/official-docs/` | आधिकारिक रेपो दस्तावेज़ों की शब्दशः प्रति (EN + ZH) |
 | `references/*.md` | शोध रिपोर्ट: रेपो दस्तावेज़, वेबसाइट, Cordis, पेपर, सामुदायिक पारिस्थितिकी, 114-रेपो संग्रह (15 गहन-विश्लेषित) |
 | `scripts/` | इडेम्पोटेंट डाउनलोड स्क्रिप्ट + अखंडता जाँचकर्ता + विषय स्नैपशॉट जनरेटर |
+| `bin/` · `src/cli/` · `dist/` | `dsh-plugin-dev` CLI: स्कैफ़ोल्डर, जाँचकर्ता, सत्यापक (TypeScript, tsdown-बंडल) |
+| `templates/` | TS + JS स्कैफ़ोल्ड कंकाल: अनुबंध टेम्प्लेट, Config, टेस्ट, cordis.patch.yml, पाँच-भाषा README |
 | `downloads/` | कच्चे स्नैपशॉट — `scripts/` से उत्पन्न, कमिट नहीं |
+
+## CLI toolchain
+
+बंडल शून्य-रनटाइम-निर्भरता `dsh-plugin-dev` CLI लेकर आता है (`bin/` → tsdown-बंडल `dist/dsh-plugin-dev.js`). हर जाँच उस skill अनुभाग को उद्धृत करती है जिसे वह लागू करती है, ताकि एजेंट मैन्युअल ऑडिट जारी रख सके।
+
+```sh
+dsh-plugin-dev new <name> [--lang ts|js] [--dir <path>] [--force] [--git]
+dsh-plugin-dev check [--cwd <dir>] [--json] [--strict]
+dsh-plugin-dev verify [--cwd <dir>] [--dsh <bin>] [--pnpm <bin>]
+```
+
+| उप-कमांड | क्या करता है |
+|---|---|
+| `new <name>` | TS या JS प्लगइन रेपो स्कैफ़ोल्ड करता है: `src/index.ts` अनुबंध टेम्प्लेट, Schemastery Config, टेस्ट, tsdown/vitest, टिप्पणी-युक्त `cordis.patch.yml`, पाँच-भाषा README। इडेम्पोटेंट; `--force` के बिना गैर-खाली लक्ष्य को अस्वीकार करता है। |
+| `check` | स्थैतिक जाँच: `cordis.patch.yml` वैधता, `package.json` मेटाडेटा (`dsh.bundle.patch` पॉइंटर, peer deps, engines, files श्वेतसूची), पाँच-भाषा README संगति, इंजीनियरिंग रेड-लाइन पैटर्न। CI-उपभोज्य JSON उत्सर्जित करता है। |
+| `verify` | `pnpm pack`, फिर साफ़ mkdtemp `DSH_HOME` प्रोफ़ाइल में बंडल को इंस्टॉल/स्टार्ट/अनइंस्टॉल स्मोक (आधिकारिक `verify:self-contained` से संरेखित)। विफलता लॉग टेल + सुझाव देती है। |
+
+### CLI configuration
+
+CLI में कोई हार्डकोडेड ट्यूनेबल नहीं — हर एक flag या पर्यावरण चर है।
+
+| ट्यूनेबल | Flag | Env | डिफ़ॉल्ट |
+|---|---|---|---|
+| टेम्प्लेट निर्देशिका | — | `DSH_PLUGIN_DEV_TEMPLATES` | `<package>/templates` |
+| dsh बाइनरी | `--dsh` | `DSH_PLUGIN_DEV_DSH` | `dsh` |
+| pnpm बाइनरी | `--pnpm` | `DSH_PLUGIN_DEV_PNPM` | `pnpm` |
+| इंस्टॉल/पैक टाइमआउट | `--timeout` | `DSH_PLUGIN_DEV_TIMEOUT` | `300000` ms |
+| हेडलेस स्मोक टाइमआउट | `--smoke-timeout` | `DSH_PLUGIN_DEV_SMOKE_TIMEOUT` | `120000` ms |
+
+### Upstream roadmap
+
+`dsh-plugin-dev` आधिकारिक प्लगइन-विकास CLI (नियोजित आइटम C12) का अपस्ट्रीम उम्मीदवार है: स्कैफ़ोल्डर/जाँचकर्ता/सत्यापक यांत्रिक परतें हैं, जबकि `SKILL.md` + `guide/` संज्ञानात्मक परत बने रहते हैं।
 
 ## Quick start
 
@@ -67,6 +102,14 @@ dsh --profile web --dump-config | grep -A3 'id: dsh-plugin-guide'
 ```
 
 फिर बस अपने एजेंट से पूछें: *"मुझे … प्लगइन बनाने के लिए dsh-plugin-guide skill का उपयोग करो।"*
+
+या सीधे CLI चलाएँ:
+
+```sh
+npx dsh-plugin-guide new hello-plugin            # TS प्लगइन रेपो स्कैफ़ोल्ड करें
+npx dsh-plugin-guide check --json                # स्थैतिक जाँच
+npx dsh-plugin-guide verify                      # पैक + साफ़ प्रोफ़ाइल स्मोक
+```
 
 ## Install & uninstall
 
@@ -94,13 +137,14 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 
 ## Configuration
 
-`dsh-plugin-guide` कोई Schemastery `Config` उजागर नहीं करता — यह ज्ञान-आधार को बिना किसी ट्यूनेबल कुंजी के एक agent skill के रूप में पंजीकृत करता है।
+skill बंडल कोई Schemastery `Config` उजागर नहीं करता — यह ज्ञान-आधार को बिना किसी ट्यूनेबल कुंजी के एक agent skill के रूप में पंजीकृत करता है। `dsh-plugin-dev` CLI अपने ट्यूनेबल flags और `DSH_PLUGIN_DEV_*` पर्यावरण चरों से पढ़ता है ([CLI toolchain](#cli-toolchain) देखें)।
 
 ## Tools & surfaces
 
 | Surface | Kind | Notes |
 |---|---|---|
 | `dsh-plugin-guide` | skill | `ctx.skills` से पंजीकृत; माँग पर `SKILL.md` + `./guide/` + `./references/` लोड करता है |
+| `dsh-plugin-dev` | bin (CLI) | `new` / `check` / `verify` उप-कमांड; DSH प्लगइन पंक्ति नहीं |
 
 ## Permissions & data
 
@@ -133,9 +177,16 @@ pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # महत्व�
 
 ## Development
 
-बंडल सादा ESM है — कोई बिल्ड चरण नहीं। CI हर push और pull request पर अखंडता द्वार चलाता है:
+skill बंडल (`index.js`) सादा ESM है, कोई बिल्ड चरण नहीं; `dsh-plugin-dev` CLI TypeScript है, tsdown से बिल्ट। द्वार:
 
 ```sh
+pnpm install --frozen-lockfile
+pnpm run typecheck && pnpm run typecheck:ci
+pnpm test
+pnpm run build
+pnpm run verify:artifacts        # आत्म-जाँच + स्कैफ़ोल्ड स्मोक (कोई नेटवर्क नहीं)
+pnpm run verify:self-contained   # पैक + साफ़ प्रोफ़ाइल इंस्टॉल/स्टार्ट/अनइंस्टॉल स्मोक
+pnpm pack
 pwsh -File scripts/verify-kit.ps1   # महत्वपूर्ण पथ + लिंक स्कैन (-Checkout <checkout> से दस्तावेज़ विचलन)
 ```
 

@@ -4,7 +4,7 @@
 
 **Todo lo que necesitas para construir plugins de [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).**
 
-*Archivo de documentación oficial · primer de Cordis · deep-dives de la comunidad · trampas probadas en batalla · agent skill*
+*Archivo de documentación oficial · primer de Cordis · deep-dives de la comunidad · trampas probadas en batalla · agent skill · toolchain CLI*
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/dsh-plugin-✅-green)](https://github.com/topics/dsh-plugin)
@@ -38,6 +38,7 @@
 - **Primer de Cordis** — los cinco conceptos y la línea de tiempo de mecanismos (repository-plugin introducido 0809, eliminado 0811; los dos canales de instalación).
 - **20+ trampas del mundo real** con causa raíz + arreglo (copias duales de cordis, trío tsconfig, sesiones zstd multi-frame, junctions de Windows, `latest` obsoleto de npm, …).
 - **Deep-dives de la comunidad** — 114 repositorios de la comunidad archivados (15 con deep-dive), más un índice fuente completo donde cada hecho enlaza a su origen.
+- **Toolchain CLI** — `dsh-plugin-dev new / check / verify`: genera, verifica estáticamente y valida el empaquetado de plugins DSH; cada check enlaza a la sección de la skill que aplica.
 
 ## Knowledge base
 
@@ -51,7 +52,41 @@
 | `references/official-docs/` | Copia textual de la documentación oficial del repo (EN + ZH) |
 | `references/*.md` | Informes de investigación: documentación del repo, sitio web, Cordis, el paper, ecosistema de la comunidad, archivo de 114 repos (15 con deep-dive) |
 | `scripts/` | Scripts de descarga idempotentes + verificador de integridad + generador de instantáneas de tema |
+| `bin/` · `src/cli/` · `dist/` | El CLI `dsh-plugin-dev`: scaffolder, checker, verifier (TypeScript, empaquetado con tsdown) |
+| `templates/` | Esqueletos TS + JS: plantilla de contrato, Config, tests, cordis.patch.yml, READMEs en cinco idiomas |
 | `downloads/` | Instantáneas crudas — generadas por `scripts/`, no confirmadas |
+
+## CLI toolchain
+
+El bundle incluye el CLI `dsh-plugin-dev` sin dependencias de runtime (`bin/` → `dist/dsh-plugin-dev.js` empaquetado con tsdown). Cada check cita la sección de la skill que aplica, para que un agente pueda seguir auditando manualmente.
+
+```sh
+dsh-plugin-dev new <name> [--lang ts|js] [--dir <path>] [--force] [--git]
+dsh-plugin-dev check [--cwd <dir>] [--json] [--strict]
+dsh-plugin-dev verify [--cwd <dir>] [--dsh <bin>] [--pnpm <bin>]
+```
+
+| Subcomando | Qué hace |
+|---|---|
+| `new <name>` | Genera un repo de plugin TS o JS: plantilla de contrato `src/index.ts`, Config de Schemastery, tests, tsdown/vitest, `cordis.patch.yml` comentado, READMEs en cinco idiomas. Idempotente; rechaza destinos no vacíos sin `--force`. |
+| `check` | Checks estáticos: validez de `cordis.patch.yml`, metadatos de `package.json` (puntero `dsh.bundle.patch`, peer deps, engines, lista blanca de files), consistencia de READMEs en cinco idiomas, patrones de línea roja de ingeniería. Emite JSON consumible por CI. |
+| `verify` | `pnpm pack`, luego instala/inicia/desinstala el bundle en un perfil `DSH_HOME` mkdtemp limpio (alineado con `verify:self-contained`). Los fallos reportan la cola del log más sugerencias. |
+
+### CLI configuration
+
+El CLI no tiene ajustes hardcodeados — cada uno es un flag o una variable de entorno.
+
+| Ajuste | Flag | Env | Por defecto |
+|---|---|---|---|
+| Directorio de plantillas | — | `DSH_PLUGIN_DEV_TEMPLATES` | `<package>/templates` |
+| Binario dsh | `--dsh` | `DSH_PLUGIN_DEV_DSH` | `dsh` |
+| Binario pnpm | `--pnpm` | `DSH_PLUGIN_DEV_PNPM` | `pnpm` |
+| Timeout de instalación/pack | `--timeout` | `DSH_PLUGIN_DEV_TIMEOUT` | `300000` ms |
+| Timeout de smoke headless | `--smoke-timeout` | `DSH_PLUGIN_DEV_SMOKE_TIMEOUT` | `120000` ms |
+
+### Upstream roadmap
+
+`dsh-plugin-dev` es un candidato upstream para el CLI oficial de desarrollo de plugins (ítem C12): el scaffolder/checker/verifier son las capas mecánicas, mientras que `SKILL.md` + `guide/` siguen siendo la capa cognitiva.
 
 ## Quick start
 
@@ -67,6 +102,14 @@ dsh --profile web --dump-config | grep -A3 'id: dsh-plugin-guide'
 ```
 
 Luego pídele a tu agente: *"Usa la skill dsh-plugin-guide para construirme un plugin de …."*
+
+O maneja el CLI directamente:
+
+```sh
+npx dsh-plugin-guide new hello-plugin            # genera un repo de plugin TS
+npx dsh-plugin-guide check --json                # check estático
+npx dsh-plugin-guide verify                      # pack + smoke de perfil limpio
+```
 
 ## Install & uninstall
 
@@ -94,13 +137,14 @@ El instalador omite `downloads/` (generado) y `.github/`, y luego verifica cada 
 
 ## Configuration
 
-`dsh-plugin-guide` no expone ningún `Config` de Schemastery — registra la base de conocimiento como una skill de agente sin claves ajustables.
+El bundle de skill no expone ningún `Config` de Schemastery — registra la base de conocimiento como una skill de agente sin claves ajustables. El CLI `dsh-plugin-dev` lee sus ajustes de flags y variables de entorno `DSH_PLUGIN_DEV_*` (ver [CLI toolchain](#cli-toolchain)).
 
 ## Tools & surfaces
 
 | Surface | Kind | Notes |
 |---|---|---|
 | `dsh-plugin-guide` | skill | Registrada vía `ctx.skills`; carga `SKILL.md` + `./guide/` + `./references/` bajo demanda |
+| `dsh-plugin-dev` | bin (CLI) | Subcomandos `new` / `check` / `verify`; no es una fila de plugin DSH |
 
 ## Permissions & data
 
@@ -133,9 +177,16 @@ pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # rutas críticas 
 
 ## Development
 
-El bundle es ESM plano — sin paso de build. CI ejecuta la puerta de integridad en cada push y pull request:
+El bundle de skill (`index.js`) es ESM plano, sin paso de build; el CLI `dsh-plugin-dev` es TypeScript compilado con tsdown. Puertas:
 
 ```sh
+pnpm install --frozen-lockfile
+pnpm run typecheck && pnpm run typecheck:ci
+pnpm test
+pnpm run build
+pnpm run verify:artifacts        # auto-check + smoke de scaffold (sin red)
+pnpm run verify:self-contained   # pack + smoke de instalación/inicio/desinstalación en perfil limpio
+pnpm pack
 pwsh -File scripts/verify-kit.ps1   # rutas críticas + escaneo de enlaces (+ deriva de docs con -Checkout <checkout>)
 ```
 

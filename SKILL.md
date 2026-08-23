@@ -62,8 +62,18 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 - 安装/刷新 agent 技能副本：`pwsh -File ./scripts/install-skill.ps1 -Target <skill目录>`（跳过 downloads/ 与 .github/，逐字节校验）。
 - 冲突裁决：与官方文档冲突时以 `references/official-docs/`（官方仓库原文）为准。
 
+## CLI 工具链（dsh-plugin-dev）
+
+本仓库随 bundle 附带零依赖 CLI `dsh-plugin-dev`，把机械检查自动化（知识库仍是认知层，CLI 是机械层）：
+
+- `dsh-plugin-dev new <name>`：参数化脚手架，生成 TS 或 JS 插件仓库骨架（`src/index.ts` 契约模板、Schemastery Config、tests、tsdown/vitest、注释齐全的 `cordis.patch.yml`、五语 README），模板与 `references/official-docs` 同步更新。
+- `dsh-plugin-dev check [--json] [--strict]`：静态检查（`cordis.patch.yml` 合法性、`package.json` 元数据（`dsh.bundle.patch` 指向/peer 依赖/engines/files 白名单）、五语 README 一致性、工程红线模式），输出 CI 可消费的结构化 JSON；每个检查项在输出里引用本知识库对应章节（skill 联动），agent 可继续人工审计。
+- `dsh-plugin-dev verify`：`pnpm pack` 后装入干净临时 `DSH_HOME` profile 做安装+启动+卸载冒烟（对齐官方 verify:self-contained）；失败给出日志尾部与建议。
+
+三个子命令均可逆/幂等；网络/子进程尊重超时与 AbortSignal；只清理自己 mkdtemp 的目录。CLI 零运行时依赖，构建产物经 tsdown 打包为单文件 `dist/dsh-plugin-dev.js`。
+
 ## 边界
 
-- 本技能是"指引 + 约束 + 资料索引"，不是脚本/清单的机械执行；精确 API 以生成式参考为准。
+- 本技能是"指引 + 约束 + 资料索引"；机械检查由 `dsh-plugin-dev check` 承担，精确 API 以生成式参考为准。
 - 不得修改知识库外的 harness 仓库文件，除非用户明确要求；vendor/ 与 `.agents/notes/archived/` 只读。
 - 引用 `downloads/` 内容前先确认其存在（该目录不入 git，需按上文脚本生成）；`awesome-dsh-plugins` 的归档仅供本地参考，**不得随仓库再分发**（其上游声明内部使用约束，见 NOTICE.md）。

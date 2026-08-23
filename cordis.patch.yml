@@ -1,4 +1,9 @@
 # dsh-plugin-guide bundle layer: register the packaged knowledge base as an agent skill.
+# This file is the `dsh.bundle.patch` layer (see package.json#dsh.bundle.patch).
+# Layer semantics: a YAML array of row verbs; `insert` adds plugin rows to the
+# composed config. Later layers override a row by `id` (whole-config replacement).
 - insert:
+    # `id`: stable row identifier used by later layers to override this row.
     - id: dsh-plugin-guide
+      # `name`: the module the loader imports; resolves to this package's entry (package.json#main → index.js).
       name: dsh-plugin-guide

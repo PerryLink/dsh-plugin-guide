@@ -4,7 +4,7 @@
 
 **构建 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 插件所需的一切。**
 
-*官方文档档案 · Cordis 入门 · 社区深读 · 实战踩坑 · agent 技能*
+*官方文档档案 · Cordis 入门 · 社区深读 · 实战踩坑 · agent 技能 · CLI 工具链*
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/dsh-plugin-✅-green)](https://github.com/topics/dsh-plugin)
@@ -31,13 +31,14 @@
 
 ## What you get
 
-`dsh-plugin-guide` 是 DSH 插件开发知识库，打包为可安装 bundle，把整份内容注册为 `dsh-plugin-guide` agent 技能。该技能在每个会话目录中都可见，并按需加载其工作流步骤、官方文档与社区深读。
+`dsh-plugin-guide` 是 DSH 插件开发知识库加 CLI 工具链，打包为一个可安装 bundle。知识库注册为 `dsh-plugin-guide` agent 技能（在每个会话目录可见，按需加载工作流步骤、官方文档与社区深读）；`dsh-plugin-dev` CLI 在其之上提供三个机械层。
 
 - **插件契约与红线** —— effect/disposer、waterfall `next()`、模型可见 ⟺ 已记录、Schemastery 配置。
 - **官方文档档案** —— 官方仓库文档（英 + 中）逐字副本，在最近核验快照处与上游逐字节一致。
 - **Cordis 入门** —— 五个概念与机制时间线（repository-plugin 0809 引入、0811 移除；两条安装通道）。
 - **20+ 个实战踩坑** —— 附根因 + 修法（cordis 双副本、tsconfig 三件套、多帧 zstd 会话、Windows junction、过期 npm `latest`…）。
 - **社区深读** —— 归档 114 个社区仓库（15 个深读），外加每条事实都链回出处的完整来源索引。
+- **CLI 工具链** —— `dsh-plugin-dev new / check / verify`：脚手架、静态检查、打包验证 DSH 插件；每个检查项都链回它强制执行的技能章节。
 
 ## Knowledge base
 
@@ -51,7 +52,41 @@
 | `references/official-docs/` | 官方仓库文档逐字副本（英 + 中） |
 | `references/*.md` | 调研报告：仓库文档、网站、Cordis、论文、社区生态、114 仓库归档（15 个深读） |
 | `scripts/` | 幂等下载脚本 + 完整性检查器 + 话题快照生成器 |
+| `bin/` · `src/cli/` · `dist/` | `dsh-plugin-dev` CLI：脚手架、检查器、验证器（TypeScript，tsdown 打包） |
+| `templates/` | TS + JS 脚手架骨架：契约模板、Config、tests、cordis.patch.yml、五语 README |
 | `downloads/` | 原始快照 —— 由 `scripts/` 生成、不入库 |
+
+## CLI toolchain
+
+bundle 附带零运行时依赖的 `dsh-plugin-dev` CLI（`bin/` → tsdown 打包的 `dist/dsh-plugin-dev.js`）。每个检查项都引用它强制执行的技能章节，agent 可继续人工审计。
+
+```sh
+dsh-plugin-dev new <name> [--lang ts|js] [--dir <path>] [--force] [--git]
+dsh-plugin-dev check [--cwd <dir>] [--json] [--strict]
+dsh-plugin-dev verify [--cwd <dir>] [--dsh <bin>] [--pnpm <bin>]
+```
+
+| 子命令 | 作用 |
+|---|---|
+| `new <name>` | 脚手架生成 TS 或 JS 插件仓库：`src/index.ts` 契约模板、Schemastery Config、tests、tsdown/vitest、注释齐全的 `cordis.patch.yml`、五语 README。幂等；无 `--force` 时拒绝覆盖非空目录。 |
+| `check` | 静态检查：`cordis.patch.yml` 合法性、`package.json` 元数据（`dsh.bundle.patch` 指向、peer 依赖、engines、files 白名单）、五语 README 一致性、工程红线模式。输出 CI 可消费的 JSON。 |
+| `verify` | `pnpm pack` 后装入干净 mkdtemp `DSH_HOME` profile 做安装/启动/卸载冒烟（对齐 `verify:self-contained`）。失败给出日志尾部与建议。 |
+
+### CLI configuration
+
+CLI 无硬编码可调参数——每个都是 flag 或环境变量。
+
+| 可调项 | Flag | 环境变量 | 默认 |
+|---|---|---|---|
+| 模板目录 | — | `DSH_PLUGIN_DEV_TEMPLATES` | `<package>/templates` |
+| dsh 二进制 | `--dsh` | `DSH_PLUGIN_DEV_DSH` | `dsh` |
+| pnpm 二进制 | `--pnpm` | `DSH_PLUGIN_DEV_PNPM` | `pnpm` |
+| 安装/打包超时 | `--timeout` | `DSH_PLUGIN_DEV_TIMEOUT` | `300000` ms |
+| headless 冒烟超时 | `--smoke-timeout` | `DSH_PLUGIN_DEV_SMOKE_TIMEOUT` | `120000` ms |
+
+### Upstream roadmap
+
+`dsh-plugin-dev` 是官方插件开发 CLI（规划项 C12）的上游候选：脚手架/检查器/验证器是机械层，`SKILL.md` + `guide/` 仍是认知层。
 
 ## Quick start
 
@@ -67,6 +102,14 @@ dsh --profile web --dump-config | grep -A3 'id: dsh-plugin-guide'
 ```
 
 然后直接问你的 agent：*"用 dsh-plugin-guide 技能帮我构建一个 … 插件。"*
+
+或者直接驱动 CLI：
+
+```sh
+npx dsh-plugin-guide new hello-plugin            # 脚手架生成 TS 插件仓库
+npx dsh-plugin-guide check --json                # 静态检查
+npx dsh-plugin-guide verify                      # 打包 + 干净 profile 冒烟
+```
 
 ## Install & uninstall
 
@@ -94,13 +137,14 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 
 ## Configuration
 
-`dsh-plugin-guide` 不暴露任何 Schemastery `Config` —— 它把知识库注册为 agent 技能，无可调键。
+技能 bundle 不暴露任何 Schemastery `Config` —— 它把知识库注册为 agent 技能，无可调键。`dsh-plugin-dev` CLI 从 flag 与 `DSH_PLUGIN_DEV_*` 环境变量读取可调项（见 [CLI toolchain](#cli-toolchain)）。
 
 ## Tools & surfaces
 
 | Surface | Kind | Notes |
 |---|---|---|
 | `dsh-plugin-guide` | skill | 经 `ctx.skills` 注册；按需加载 `SKILL.md` + `./guide/` + `./references/` |
+| `dsh-plugin-dev` | bin (CLI) | `new` / `check` / `verify` 子命令；非 DSH 插件行 |
 
 ## Permissions & data
 
@@ -133,9 +177,16 @@ pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>        # 关键路径 + �
 
 ## Development
 
-bundle 是纯 ESM —— 无构建步骤。CI 在每次 push 与 pull request 运行完整性门禁：
+技能 bundle（`index.js`）是纯 ESM、无构建步骤；`dsh-plugin-dev` CLI 是 TypeScript，经 tsdown 构建。门禁：
 
 ```sh
+pnpm install --frozen-lockfile
+pnpm run typecheck && pnpm run typecheck:ci
+pnpm test
+pnpm run build
+pnpm run verify:artifacts        # 自检 + 脚手架冒烟（无网络）
+pnpm run verify:self-contained   # 打包 + 干净 profile 安装/启动/卸载冒烟
+pnpm pack
 pwsh -File scripts/verify-kit.ps1   # 关键路径 + 链接扫描（加 -Checkout <checkout> 做文档漂移）
 ```
 
