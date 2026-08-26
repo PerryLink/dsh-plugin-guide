@@ -1,0 +1,37 @@
+name: docs-drift-check
+
+# Periodic freshness probe: detect when the KB's verbatim official-docs mirror
+# (references/official-docs) falls behind the upstream deepseek-harness repo.
+# The probe compares the upstream branch tip SHA against the SHA pinned in
+# references/official-docs/SNAPSHOT.md; on drift it opens an issue. It never
+# modifies the mirror content (refresh stays a human/maintainer action via
+# scripts/sync-official-docs.ps1).
+on:
+  schedule:
+    # Weekly (Mon 03:17 UTC).
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe official-docs drift
+        id: drift
+        shell: pwsh
+        run: ./scripts/check-docs-drift.ps1
+
+      - name: Open drift issue
+        if: steps.drift.outputs.drift == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "docs drift: references/official-docs is stale" \
+            --body "Upstream \`deepseek-ai/deepseek-harness\` (\`master\`) has moved while the KB mirror at \`references/official-docs\` is pinned to an older commit. Run \`pwsh -File scripts/sync-official-docs.ps1\` to refresh the mirror; do not hand-edit the mirror."
