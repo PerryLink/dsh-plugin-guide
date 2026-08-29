@@ -1,6 +1,7 @@
 <div align="center">
 
 # 🐳 dsh-plugin-guide
+- **1024 商店渠道**：先 `npm i -g dsh1024`，再 `dsh1024 plugin --profile web add dsh-plugin-guide`（计入 [deepseek1024.com](https://deepseek1024.com) 安装排行）。
 
 **构建 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 插件所需的一切。**
 

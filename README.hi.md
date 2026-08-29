@@ -1,6 +1,7 @@
 <div align="center">
 
 # 🐳 dsh-plugin-guide
+- **1024 स्टोर चैनल**: एक बार `npm i -g dsh1024`, फिर `dsh1024 plugin --profile web add dsh-plugin-guide` ([deepseek1024.com](https://deepseek1024.com) इंस्टॉल रैंकिंग में गिना जाता है)।
 
 **[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) प्लगइन बनाने के लिए आपकी ज़रूरत की हर चीज़।**
 
