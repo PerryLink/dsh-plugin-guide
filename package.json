@@ -99,9 +99,13 @@
       "activation": "restart-profile",
       "dispose": "supported"
     },
-    "permissions": ["filesystem:read"],
+    "permissions": [
+      "filesystem:read"
+    ],
     "compatibility": {
-      "dshVersions": ["0.1.1-rc.2"]
+      "dshVersions": [
+        "0.1.1-rc.2"
+      ]
     },
     "capability": {
       "id": "dsh-plugin-guide",
@@ -115,5 +119,9 @@
       "hotReload": null,
       "remove": null
     }
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/PerryLink"
   }
 }
