@@ -138,7 +138,7 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 5. स्वतंत्र प्लगइन पैकेज: cordis peerDependency है और होस्ट पहचान से मेल खाना चाहिए (scoped `@deepseek-ai/cordis` और unscoped मिलाना पहचान बाँट देता है); ESM; `dsh.bundle` मैनिफ़ेस्ट; git इंस्टॉल को `prepare` + `allowBuilds` चाहिए; `lib/` या tarball प्रकाशित करें।
 6. दस्तावेज़ द्विभाषी जोड़ों में; टूल विवरण/प्रॉम्प्ट ही व्यवहार हैं; गैर-तुच्छ बदलाव में Agent Note चाहिए; पुश से पहले न्यूनतम जाँच सेट चलाएँ (dsh-pre-push-checks)।
 7. सीमाओं के पार अपारदर्शी ids branded होते हैं (`Branded<B>` from `dsh-brand`), कभी भी नंगे `string` नहीं।
-8. `SessionEventMap` सदस्य required-on-read हैं: अज्ञात प्रकार के इवेंट पर `ignorable: true` होना चाहिए (वरना log अस्वीकृत); केवल संरचनात्मक प्रारूप बदलाव ही `SESSION_FORMAT_VERSION` bump करते हैं। `SessionEvent` पर switch दस्तावेज़ित `default` में गिरता है — `assertNever` नहीं (merge-extensible union)।
+8. `SessionEventMap` सदस्य required-on-read हैं: 0.1.2-alpha.1 में `ignorable` लिफ़ाफ़ा हट गया है (पठन विफल-बंद है — जो build किसी इवेंट प्रकार को नहीं जानता वह log अस्वीकार करता है), और plugins के अपने इवेंट के append एक अनुकूली द्वार से चलते हैं जो बिना-लिफ़ाफ़े वाले hosts पर लिखना रोक देता है; केवल संरचनात्मक प्रारूप बदलाव ही `SESSION_FORMAT_VERSION` bump करते हैं। `SessionEvent` पर switch दस्तावेज़ित `default` में गिरता है — `assertNever` नहीं (merge-extensible union)।
 
 ## समुदाय की त्वरित समस्या-सूची (विवरण: गाइड §7.3 / community-repo-deep-dive.md)
 

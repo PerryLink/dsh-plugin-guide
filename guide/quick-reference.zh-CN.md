@@ -137,7 +137,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 5. 独立插件包：cordis 是 peerDependency（与宿主同身份：scoped `@deepseek-ai/cordis` 与 unscoped 混用会"双 Cordis 分裂"）；ESM；`dsh.bundle` 清单；git 安装配 `prepare` + `allowBuilds`；发布带 `lib/` 或 tarball。
 6. 文档双语成对；工具描述/提示词即行为；非平凡变更加 Agent Note；提交前跑最小检查集（dsh-pre-push-checks）。
 7. 跨边界 opaque id 用 branded（`Branded<B>` from `dsh-brand`），从不裸 `string`。
-8. `SessionEventMap` 成员默认 required-on-read：不认识类型的会话事件必须带 `ignorable: true`（否则日志被拒读）；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。对 `SessionEvent` 的 switch 落入文档化 `default`——**禁用 `assertNever`**（merge-extensible union）。
+8. `SessionEventMap` 成员默认 required-on-read：`ignorable` 信封在 0.1.2-alpha.1 已移除（读路径 fail-closed——不认识该事件类型的 build 一律拒绝日志），插件自定义事件的追加走自适应门、在无信封宿主上停写；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。对 `SessionEvent` 的 switch 落入文档化 `default`——**禁用 `assertNever`**（merge-extensible union）。
 
 ## 社区实测坑速查（详见 guide §7.3 / community-repo-deep-dive.md）
 

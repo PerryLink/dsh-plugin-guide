@@ -138,7 +138,7 @@ Protocolo de chunks: `block-start` → `text-delta*` → `block-end` (bloco comp
 5. Pacotes de plugin independentes: cordis é peerDependency com a mesma identidade do host (misturar scoped `@deepseek-ai/cordis` e unscoped divide identidades); ESM; manifesto `dsh.bundle`; instalações git precisam de `prepare` + `allowBuilds`; publique `lib/` ou um tarball.
 6. Documentação bilíngue em pares; descrições/prompts são comportamento; mudanças não triviais levam Agent Note; rode o conjunto mínimo de verificações antes de empurrar (dsh-pre-push-checks).
 7. IDs opacos entre limites são branded (`Branded<B>` de `dsh-brand`), nunca `string` crua.
-8. Membros de `SessionEventMap` são required-on-read: eventos de tipo desconhecido devem levar `ignorable: true` (ou o log é recusado); apenas mudanças de formato estrutural bumpam `SESSION_FORMAT_VERSION`. O switch sobre `SessionEvent` cai num `default` documentado — sem `assertNever` (união merge-extensible).
+8. Membros de `SessionEventMap` são required-on-read: o envelope `ignorable` desaparece no 0.1.2-alpha.1 (a leitura falha fechada — um build que não conhece um tipo de evento recusa o log), e appends de eventos próprios de plugins cruzam uma porta adaptativa que para de gravar em hosts sem envelope; apenas mudanças de formato estrutural bumpam `SESSION_FORMAT_VERSION`. O switch sobre `SessionEvent` cai num `default` documentado — sem `assertNever` (união merge-extensible).
 
 ## Lista rápida de armadilhas da comunidade (detalhes: guia §7.3 / community-repo-deep-dive.md)
 

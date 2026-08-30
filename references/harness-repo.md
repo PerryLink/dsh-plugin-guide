@@ -489,7 +489,7 @@ skill 目录结构：`packages/skill/` 下有 `skill`（registry/Service Definit
 - `strict: true` + `noImplicitAny`；每个残留 `any` 解释为何无法收窄。
 - 每个 module/export 有简洁 JSDoc（`@param`/`@returns`），由 `verify-export-jsdoc` 强制。
 - typed events 用 declaration merging + merge-extensible maps；event JSDoc 需 `@mode` 和 payload `@param`；scoped keys 缺 payload 需 `@dshScopeScan unsupported`。
-- `SessionEventMap` 成员默认 required-on-read；不认其类型的 build 拒绝该 log，除非 event 带 envelope 的 `ignorable: true`；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。
+- `SessionEventMap` 成员默认 required-on-read，无信封豁免：不认其类型的 build 一律拒绝该 log；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。
 - switch 用 discriminant tags：closed union 结尾 `assertNever`；merge-extensible union 走文档化 default。
 - opaque 跨边界 id 用 branded（`Branded<B>` from `dsh-brand`），从不裸 `string`。
 - 每个包拥有 `./invariant`（注册 manifest 名；检查 event/data 关系或给空 installer 一个包特定 `No runtime invariant:` 理由），由 `verify-package-invariants` 强制（`packages/AGENTS.md` L18）。
