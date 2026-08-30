@@ -51,6 +51,7 @@
     "typecheck": "tsc --noEmit",
     "typecheck:ci": "tsc --noEmit --pretty false",
     "test": "vitest run",
+    "check:readmes": "node scripts/check-readme-sync.mjs",
     "check:kit": "pwsh -File scripts/verify-kit.ps1",
     "verify:artifacts": "node scripts/verify-artifacts.mjs",
     "verify:self-contained": "pnpm run build && node dist/dsh-plugin-dev.js verify",
