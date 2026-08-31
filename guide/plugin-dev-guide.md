@@ -185,7 +185,7 @@ export function apply(ctx: Context, config: Config) { /* config 已校验+补默
 2. **waterfall 监听器必须调 `next()`**。
 3. **模型可见 ⟺ 已记录**（Model-visible ⟺ logged）：任何进入模型请求的内容必须能从会话日志重建；新增模型可见输入必须新增会话事件。运行时不变式会断言这一点。
 4. **跨边界 opaque id 用 branded**：`Branded<B>`（`dsh-brand`，纯类型、零运行时依赖），从不裸 `string`；构造走 per-type factory（`SessionId` / `CallId` / `JobId` / `GoalId` 等），防止不同 id 在类型层互换。
-5. **会话事件版本规则**：`SessionEventMap` 成员默认 required-on-read，无信封豁免——`0.1.2-alpha.1` 已移除 `ignorable` 信封、读路径 fail-closed，不认识该事件类型的 build 一律拒绝日志；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。插件新增会话事件时按此契约设计：下游插件事件目前无注册面，写自定义事件的插件用自适应门在无信封宿主上停写（新增模型可见输入见红线 3）。
+5. **会话事件版本规则**：`SessionEventMap` 成员默认 required-on-read，无信封豁免——`0.1.2-alpha.1` 已移除 `ignorable` 信封、读路径 fail-closed，不认识该事件类型的 build 一律拒绝日志；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。`0.1.2-alpha.2` 恢复信封 `ignorable?: true` 字段但仅用于存量日志读取兼容——其 `Session.append` 第三参为仅 surface 事件的 `SurfaceIntent`，仍无法盖章标记，故自适应门在该线上继续停写（行为不变）。插件新增会话事件时按此契约设计：下游插件事件目前无注册面，写自定义事件的插件用自适应门在无信封宿主上停写（新增模型可见输入见红线 3）。
 
 ---
 
