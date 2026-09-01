@@ -1,4 +1,4 @@
-# DeepSeek Harness 插件开发资料全量下载脚本
+﻿# DeepSeek Harness 插件开发资料全量下载脚本
 # 输出: dsh-plugin-guide/downloads/{web,github,community} + manifest.tsv
 # 参数: -DocRoot <路径> 官方 checkout 的 docs 目录(Phase D 站点路由来源),默认本机 checkout。
 param([string]$DocRoot = 'D:\deepseek-harness\docs')

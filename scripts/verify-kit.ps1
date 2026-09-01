@@ -1,4 +1,4 @@
-# dsh-plugin-guide 完整性检查器
+﻿# dsh-plugin-guide 完整性检查器
 # 用法: pwsh -File scripts/verify-kit.ps1 -Root <路径>
 # 校验范围: 本知识库自有文档(SKILL/README/NOTICE/guide/references 顶层);
 # 官方文档副本(references/official-docs)是逐字副本,其内部链接指向 deepseek-harness checkout,不在校验范围。
