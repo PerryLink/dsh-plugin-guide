@@ -14,3 +14,8 @@ autoInstallPeers: false
 # stays green.
 allowBuilds:
   esbuild: true
+
+verifyDepsBeforeRun: false
+
+minimumReleaseAgeExclude:
+  - '@deepseek-ai/dsh-attachment@0.1.2-alpha.2'
