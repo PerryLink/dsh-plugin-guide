@@ -1,4 +1,4 @@
-﻿# dsh-plugin-guide official-docs sync script.
+# dsh-plugin-guide official-docs sync script.
 # Purpose: sync the deepseek-harness checkout's official docs into references/official-docs/ (verbatim copy).
 # Source is pinned to origin/master (HEAD fallback): untracked drafts and unpushed commits in the checkout never enter the KB.
 # Output: references/official-docs/SNAPSHOT.md (source ref/SHA, sync time, file counts - the freshness authority for READMEs).
@@ -28,7 +28,7 @@ $zhCount = 0
 # Sync scope: docs/, root AGENTS.md/BENCHMARK.md/CLAUDE.md/CONTRIBUTING.*/README.zh.md/README.i18n.yaml/THIRD_PARTY_NOTICES.md/LICENSE, packages/AGENTS.md, examples/AGENTS.md, packages/README.md, vendor/README.md, website/docs.ts
 # 上游 root README.md 不在此列：official-docs/README.md 是 KB 自有索引（上游英文 README 快照在 downloads/github/harness/README.md）。
 # pathspec 全部用 :(top) 锚定，避免 git 的 basename 全局匹配把仓库深处的同名 symlink（如各处 CLAUDE.md）误收进归档。
-$paths = @(':(top)docs', ':(top)AGENTS.md', ':(top)BENCHMARK.md', ':(top)CONTRIBUTING.md', ':(top)CONTRIBUTING.zh.md', ':(top)CONTRIBUTING.i18n.yaml', ':(top)README.zh.md', ':(top)README.i18n.yaml', ':(top)THIRD_PARTY_NOTICES.md', ':(top)LICENSE', ':(top)packages/AGENTS.md', ':(top)examples/AGENTS.md', ':(top)packages/README.md', ':(top)vendor/README.md', ':(top)website/docs.ts')
+$paths = @(':(top)docs', ':(top)AGENTS.md', ':(top)BENCHMARK.md', ':(top)CONTRIBUTING.md', ':(top)CONTRIBUTING.zh.md', ':(top)CONTRIBUTING.i18n.yaml', ':(top)README.zh.md', ':(top)README.i18n.yaml', ':(top)THIRD_PARTY_NOTICES.md', ':(top)LICENSE', ':(top)packages/AGENTS.md', ':(top)packages/README.md', ':(top)vendor/README.md', ':(top)website/docs.ts')
 
 if ($gitOk) {
   # Prefer origin/master, fall back to HEAD - never the working tree (may contain untracked/unpushed content).

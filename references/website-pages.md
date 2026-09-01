@@ -489,7 +489,7 @@
 #### `/reference/capability-seams` —— 能力服务（生成，`docs/capability-seams.md`）
 
 - 一份 **Mermaid 图 + 表格**，列出全部 `ctx.*` 服务：Role（`core` / `seam` / `bundle`）、Owner 包、实现包、直接消费者、companion 插件与说明。
-- 关键 seam 举例（表格行）：`ctx.llm`（seam；`llm-deepseek`/`llm-pi-ai`/`llm-replay` 实现）、`ctx.shell`（seam；`bash-local`/`bash-sandbox`/`pwsh-local`）、`ctx.fs`（seam；`fs-local`/`fs-sandbox`/`fs-e2b`）、`ctx.subprocess`、`ctx.sandbox`、`ctx.terminals`、`ctx.web`（`web-search-exa/perplexity/deepseek` + `web-fetch-http`）、`ctx.compaction`、`ctx.subagents`、`ctx.skills`、`ctx.sessionPersistence`（`jsonl`/`sqlite`）、`ctx.sessionQuery`、`ctx.storage`、`ctx.settings`、`ctx.credentials`、`ctx.workflowEngine`、`ctx.lsp`、`ctx.jobs` 等。core 服务如 `ctx.tools`、`ctx.sessions`、`ctx.systemPrompt`、`ctx.agents`、`ctx.agentLoop`（bundle）。
+- 关键 seam 举例（表格行）：`ctx.llm`（seam；`llm-deepseek`/`llm-pi-ai`/`llm-replay` 实现）、`ctx.shell`（seam；`bash-local`/`bash-sandbox`/`pwsh-local`）、`ctx.fs`（seam；`fs-local`/`fs-sandbox`/`fs-e2b`）、`ctx.subprocess`、`ctx.sandbox`、`ctx.terminals`、`ctx.web`（`web-search-exa/perplexity/deepseek` + `web-fetch-http`）、`ctx.compaction`、`ctx.subagents`、`ctx.skills`、`ctx.sessionPersistence`（`jsonl`）、`ctx.sessionQuery`、`ctx.storage`、`ctx.settings`、`ctx.credentials`、`ctx.workflowEngine`、`ctx.lsp`、`ctx.jobs` 等。core 服务如 `ctx.tools`、`ctx.sessions`、`ctx.systemPrompt`、`ctx.agents`、`ctx.agentLoop`（bundle）。
 - 完整消费者/实现关系图可作插件开发者的"服务地图"。
 
 #### `/reference/config-catalog` —— 插件配置目录（生成，`docs/config-catalog.md`，约 3151 行）

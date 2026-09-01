@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-09-01
+
+### Changed
+
+- Upgrade the harness pin to `0.1.2-alpha.3`: the `dsh-attachment` dev dependency and `dshWorkshop.compatibility.dshVersions` move to `0.1.2-alpha.3` (peer range unchanged at `>=0.1.0-rc.8 <0.2.0`), the compat workflow and the CLI verify defaults repoint to the alpha.3 CLI/base/headless, the CLI checker expects `cordis ^4.0.2` / `schemastery ^3.18.2` (both skeletons and the check/template tests updated), the five-language READMEs and guides carry the alpha.3 narrative, and the official-docs snapshot re-syncs to `dd6322d604`.
+
 ## [0.3.1] - 2026-08-30
 
 ### Changed

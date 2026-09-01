@@ -1,4 +1,4 @@
-# DeepSeek Harness  0.1.2-alpha.2 恢复信封 ignorable?: true 字段但仅用于存量日志读取兼容（其 Session.append 仍无法盖章），门控行为不变。 插件开发速查表
+# DeepSeek Harness  0.1.2-alpha.3 恢复信封 ignorable?: true 字段但仅用于存量日志读取兼容（其 Session.append 仍无法盖章），门控行为不变。 插件开发速查表
 
 > 一页式速查。细节回到 [plugin-dev-guide.md](plugin-dev-guide.md) 与 [references](../references/)。
 
