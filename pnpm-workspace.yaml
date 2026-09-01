@@ -19,3 +19,4 @@ verifyDepsBeforeRun: false
 
 minimumReleaseAgeExclude:
   - '@deepseek-ai/dsh-attachment@0.1.2-alpha.2'
+  - '@deepseek-ai/dsh-attachment@0.1.2-alpha.3'
