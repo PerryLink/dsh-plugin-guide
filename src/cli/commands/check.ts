@@ -266,8 +266,8 @@ function checkManifestPeers(root: string, pkg?: PackageJson): CheckResult {
   }
   const expected: Record<string, string> = {}
   for (const imp of harnessImports) {
-    if (imp === '@deepseek-ai/cordis') expected[imp] = '^4.0.1'
-    else if (imp === '@deepseek-ai/schemastery') expected[imp] = '^3.18.0'
+    if (imp === '@deepseek-ai/cordis') expected[imp] = '^4.0.2'
+    else if (imp === '@deepseek-ai/schemastery') expected[imp] = '^3.18.2'
     else if (imp.startsWith('@deepseek-ai/dsh-')) expected[imp] = '>=0.1.0-rc.8 <0.2.0'
   }
   const problems: string[] = []

@@ -33,7 +33,7 @@ function goodFixture(root: string): void {
     files: ['index.js', 'cordis.patch.yml', 'lib'],
     engines: { node: '^22.19.0 || >=24.0.0' },
     packageManager: 'pnpm@11.7.0',
-    peerDependencies: { '@deepseek-ai/cordis': '^4.0.1', '@deepseek-ai/schemastery': '^3.18.0' },
+    peerDependencies: { '@deepseek-ai/cordis': '^4.0.2', '@deepseek-ai/schemastery': '^3.18.2' },
     dsh: { bundle: { patch: './cordis.patch.yml' } },
   }))
   write(root, 'index.js', "export const name = 'dsh-demo'\n")

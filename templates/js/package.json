@@ -12,15 +12,15 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/cordis": "^4.0.2",
     "@deepseek-ai/dsh-tools": ">=0.1.0-rc.8 <0.2.0",
-    "@deepseek-ai/schemastery": "^3.18.0",
+    "@deepseek-ai/schemastery": "^3.18.2",
     "vitest": "^3.2.7"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/cordis": "^4.0.2",
     "@deepseek-ai/dsh-tools": ">=0.1.0-rc.8 <0.2.0",
-    "@deepseek-ai/schemastery": "^3.18.0"
+    "@deepseek-ai/schemastery": "^3.18.2"
   },
   "dsh": {
     "bundle": {

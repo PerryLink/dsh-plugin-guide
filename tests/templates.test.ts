@@ -21,8 +21,8 @@ describe('scaffold templates', () => {
       const pkg = JSON.parse(files(lang).get('package.json') ?? '{}')
       expect(pkg.engines.node).toBe('^22.19.0 || >=24.0.0')
       expect(pkg.packageManager).toBe('pnpm@11.7.0')
-      expect(pkg.peerDependencies['@deepseek-ai/cordis']).toBe('^4.0.1')
-      expect(pkg.peerDependencies['@deepseek-ai/schemastery']).toBe('^3.18.0')
+      expect(pkg.peerDependencies['@deepseek-ai/cordis']).toBe('^4.0.2')
+      expect(pkg.peerDependencies['@deepseek-ai/schemastery']).toBe('^3.18.2')
       expect(pkg.peerDependencies['@deepseek-ai/dsh-tools']).toBe('>=0.1.0-rc.8 <0.2.0')
       expect(pkg.dsh.bundle.patch).toBe('./cordis.patch.yml')
     }
