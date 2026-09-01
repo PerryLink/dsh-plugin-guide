@@ -166,7 +166,7 @@ Documentación comunitaria de desarrollo — plantillas/tutoriales/errores, list
 ## Índice de fuentes clave
 
 - Documentación oficial textual: `references/official-docs/docs/**` (215 páginas, incluye pares `.zh.md`)
-- Restricciones raíz del repo: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/examples/AGENTS.md`, `references/official-docs/vendor/README.md`; estado de sincronización en `references/official-docs/SNAPSHOT.md`
+- Restricciones raíz del repo: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/vendor/README.md`; estado de sincronización en `references/official-docs/SNAPSHOT.md`
 - HTML del sitio: `downloads/web/site/**` (sitio completo EN+ZH) + `downloads/manifest.tsv`
 - Cordis upstream: `downloads/github/cordis/**` + investigación `references/upstream-cordis.md`
 - Paper de Cordis: `downloads/github/paper/**` + investigación `references/cordis-paper-and-community.md`

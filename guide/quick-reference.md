@@ -166,7 +166,7 @@ Community dev docs — templates/tutorials/pitfalls, full list in [references/co
 ## Key source index
 
 - Official docs verbatim: `references/official-docs/docs/**` (215 pages, all `.zh.md` pairs included)
-- Repo-root constraints: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/examples/AGENTS.md`, `references/official-docs/vendor/README.md`; sync state in `references/official-docs/SNAPSHOT.md`
+- Repo-root constraints: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/vendor/README.md`; sync state in `references/official-docs/SNAPSHOT.md`
 - Site crawl HTML: `downloads/web/site/**` (EN+ZH full site) + `downloads/manifest.tsv` (download ledger)
 - Upstream Cordis: `downloads/github/cordis/**` + research `references/upstream-cordis.md`
 - Cordis paper: `downloads/github/paper/**` + research `references/cordis-paper-and-community.md`

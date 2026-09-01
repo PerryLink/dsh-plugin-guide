@@ -26,7 +26,7 @@
 - `/reference/`（架构）、`/reference/cordis-primer`、`/reference/capability-seams`、`/reference/agent-lifecycle`、`/reference/tool-execution-pipeline`
 - `/reference/config-catalog`、`/reference/tool-catalog`、`/reference/persistence-catalog`
 - `/reference/cordis-api/context|events|fiber|registry|service|inherited`
-- `/reference/cookbook/adding-a-package|adding-a-tool|adding-an-llm-adapter|extension-cookbook|adding-a-conversation-node`
+- `/reference/cookbook/adding-a-package|adding-a-tool|adding-an-llm-adapter|extension-cookbook`
 - `/reference/subsystems/` + 全部子系统页（core、llm-streaming、token-meter、scope、typert、goal、schedule、commands、session、persistence、settings、credentials、session-query、feedback、session-title、session-reference、system-prompt、tools、user-questions、approval、attachment、shell、subprocess、terminal、sandbox、code-runtime、extensions、filesystem、lsp、skills、compaction、subagent、web、spill、workflow、jobs、permission-presets、plan、invariants、web-server、storage、workspace、client-modules、session-projection、session-telemetry）
 - 站点投影清单源文件：`references/official-docs/website-docs.ts`（= 仓库 `website/docs.ts`）
 - **08-14 晚复核**：上游 master 仍为 47f9438（站点随仓库构建，无新增路由）；此前 404 的 `/reference/subsystems/{attachment,extensions,feedback}` 仍为 404（已确认），sitemap.xml 仍不存在。
@@ -35,7 +35,7 @@
 
 - `docs/**`（215 个 md，含全部 `.zh.md` 双语对）— 教程/架构/子系统/API/cookbook 全量
 - 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README.zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
-- `packages/AGENTS.md` · `examples/AGENTS.md` · `packages/README.md` · `vendor/README.md`
+- `packages/AGENTS.md` · `packages/README.md` · `vendor/README.md`
 - `website-docs.ts`（站点投影清单）
 - 上游英文 `README.md` 不进入本目录（与 KB 索引同名），线上快照在 `downloads/github/harness/README.md`
 - 同步脚本本次加固：pathspec 全部 `:(top)` 锚定（避免 basename 全局匹配误收仓库深处 symlink）；Windows 下无法解出的 symlink 按其 blob 目标文本落地；目的目录只保留范围内条目（曾因一次失败抽取残留污染，已由脚本自动修剪 107 项）。

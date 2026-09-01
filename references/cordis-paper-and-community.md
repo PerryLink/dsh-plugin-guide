@@ -135,7 +135,7 @@ vendored `cordis` README 开宗明义：
 - 架构总览（中/英）：`docs/architecture.md` / `architecture.zh.md` — 插件树、profile/bundle、turn flow、capability seam、事件地图、"新行为往哪挂"速查表。https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md
 - Cordis 入门（中/英）：`docs/cordis-primer.md` / `.zh.md` — 五个核心概念、分发模式、waterfall 语义、loader 配置。https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md
 - Cordis 教程（7 课，中英双语）：`01-first-plugin` → `02-lifecycle-and-effects` → `03-services` → `04-events` → `05-config` → `06-composition-and-hmr` → `07-into-the-harness`。https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/cordis-tutorial
-- Cookbook（如何加功能）：`adding-a-package` / `adding-a-tool` / `adding-an-llm-adapter` / `adding-a-conversation-node` / `adding-a-vendored-package` / `extension-cookbook`。https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-package.md 、https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md
+- Cookbook（如何加功能）：`adding-a-package` / `adding-a-tool` / `adding-an-llm-adapter` / `adding-a-vendored-package` / `extension-cookbook`（`adding-a-conversation-node` 已在 alpha.3 上游移除）。https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-package.md 、https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md
 - 用户开发指引：`docs/user/develop/basic/index.md`。https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md
 
 ### 2.3 第三方聚合目录（awesome lists）

@@ -121,7 +121,7 @@
 | `/reference/cookbook/adding-a-tool` | 新增 Tool | `docs/cookbook/adding-a-tool.md` |
 | `/reference/cookbook/adding-an-llm-adapter` | 新增 LLM Adapter | `docs/cookbook/adding-an-llm-adapter.md` |
 | `/reference/cookbook/extension-cookbook` | 扩展模式 | `docs/cookbook/extension-cookbook.md` |
-| `/reference/cookbook/adding-a-conversation-node` | 新增 Conversation Node | `docs/cookbook/adding-a-conversation-node.md` |
+| ~~`/reference/cookbook/adding-a-conversation-node`~~ | （alpha.3 上游已移除该页） | 原 `docs/cookbook/adding-a-conversation-node.md` 已删除 |
 | `/reference/subsystems/` | 子系统 / Subsystems | `docs/subsystems/README.md` |
 
 **子系统页**（`/reference/subsystems/<name>`，共约 40 页，按侧栏分组）：
@@ -617,7 +617,7 @@
 - `/develop/cordis-tutorial/`、`/develop/cordis-tutorial/01-first-plugin`、`/develop/cordis-tutorial/02-lifecycle-and-effects`、`/develop/cordis-tutorial/03-services`、`/develop/cordis-tutorial/04-events`、`/develop/cordis-tutorial/05-config`、`/develop/cordis-tutorial/06-composition-and-hmr`、`/develop/cordis-tutorial/07-into-the-harness`
 - `/reference/`、`/reference/cordis-primer`、`/reference/capability-seams`、`/reference/agent-lifecycle`、`/reference/tool-execution-pipeline`、`/reference/config-catalog`、`/reference/tool-catalog`、`/reference/persistence-catalog`
 - `/reference/cordis-api/context`、`/reference/cordis-api/events`、`/reference/cordis-api/fiber`、`/reference/cordis-api/registry`、`/reference/cordis-api/service`、`/reference/cordis-api/inherited`
-- `/reference/cookbook/adding-a-package`、`/reference/cookbook/adding-a-tool`、`/reference/cookbook/adding-an-llm-adapter`、`/reference/cookbook/extension-cookbook`、`/reference/cookbook/adding-a-conversation-node`
+- `/reference/cookbook/adding-a-package`、`/reference/cookbook/adding-a-tool`、`/reference/cookbook/adding-an-llm-adapter`、`/reference/cookbook/extension-cookbook`
 - `/reference/subsystems/` + 子系统（core, scope, invariants, session, session-query, session-reference, session-title, session-projection, persistence, spill, session-telemetry, llm-streaming, token-meter, system-prompt, compaction, tools, shell, subprocess, terminal, jobs, filesystem, lsp, code-runtime, web, skills, workflow, subagent, approval, permission-presets, sandbox, plan, user-questions, commands, goal, schedule, web-server, typert, client-modules, storage, workspace, settings, credentials）
 
 ### 5.3 GitHub 仓库文档源文件（web_search 命中，均在 `github.com/deepseek-ai/deepseek-harness`）

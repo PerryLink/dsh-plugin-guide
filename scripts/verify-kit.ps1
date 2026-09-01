@@ -1,4 +1,4 @@
-﻿# dsh-plugin-guide 完整性检查器
+# dsh-plugin-guide 完整性检查器
 # 用法: pwsh -File scripts/verify-kit.ps1 -Root <路径>
 # 校验范围: 本知识库自有文档(SKILL/README/NOTICE/guide/references 顶层);
 # 官方文档副本(references/official-docs)是逐字副本,其内部链接指向 deepseek-harness checkout,不在校验范围。
@@ -28,7 +28,6 @@ $critical = @(
   'references/official-docs/docs/architecture.md',
   'references/official-docs/docs/cookbook/extension-cookbook.md',
   'references/official-docs/docs/cookbook/adding-a-tool.md',
-  'references/official-docs/docs/cookbook/adding-a-conversation-node.md',
   'references/official-docs/docs/event-producer-consumer.md',
   'references/official-docs/docs/user/develop/basic/index.md',
   'references/official-docs/docs/user/develop/basic/tool.md',
@@ -44,7 +43,6 @@ $critical = @(
   'references/official-docs/AGENTS.md',
   'references/official-docs/SNAPSHOT.md',
   'references/official-docs/packages/AGENTS.md',
-  'references/official-docs/examples/AGENTS.md',
   'references/official-docs/packages/README.md',
   'references/official-docs/vendor/README.md',
   'scripts/download-sources.ps1','scripts/download-community-repos.ps1','scripts/gen-topic-snapshot.ps1','scripts/sync-official-docs.ps1','scripts/install-skill.ps1','scripts/verify-kit.ps1','scripts/archive-discussions.ps1','scripts/download-community-articles.ps1'
@@ -61,7 +59,6 @@ function Assert-FirstLine([string]$rel, [string]$pattern, [string]$expect) {
 }
 Assert-FirstLine 'references/official-docs/AGENTS.md'           '# AGENTS.md'                     "仓库根 AGENTS.md 标题"
 Assert-FirstLine 'references/official-docs/packages/AGENTS.md' '# AGENTS.md*Harness Packages*'  "packages/AGENTS.md 标题"
-Assert-FirstLine 'references/official-docs/examples/AGENTS.md' '# AGENTS.md*Examples*'           "examples/AGENTS.md 标题"
 
 # ---- 2) 自有文档相对链接解析 ----
 # 只检查 markdown 链接目标(读者会点击的);代码块/行内码里的裸词不参与,
@@ -133,7 +130,6 @@ if ($Checkout -and (Test-Path $Checkout)) {
       'THIRD_PARTY_NOTICES.md' = 'THIRD_PARTY_NOTICES.md';
       'LICENSE'                = 'LICENSE';
       'packages/AGENTS.md'     = 'packages\AGENTS.md';
-      'examples/AGENTS.md'     = 'examples\AGENTS.md';
       'packages/README.md'     = 'packages\README.md';
       'vendor/README.md'       = 'vendor\README.md';
       'website/docs.ts'        = 'website-docs.ts'

@@ -14,7 +14,7 @@
 | 三方声明 | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | `THIRD_PARTY_NOTICES.md` |
 | 许可证 | [`LICENSE`](LICENSE) | `LICENSE` |
 | packages 组红线 | [`packages/AGENTS.md`](packages/AGENTS.md) | `packages/AGENTS.md` |
-| examples 红线 | [`examples/AGENTS.md`](examples/AGENTS.md) | `examples/AGENTS.md` |
+| examples 红线 | （alpha.3 上游已移除 `examples/AGENTS.md`，本快照不再收录） | 原 `examples/AGENTS.md` |
 | 包分组总览 | [`packages/README.md`](packages/README.md) | `packages/README.md` |
 | Cordis vendoring 清单与同步流程 | [`vendor/README.md`](vendor/README.md) | `vendor/README.md` |
 | 文档站投影清单 | [`website-docs.ts`](website-docs.ts) | `website/docs.ts` |

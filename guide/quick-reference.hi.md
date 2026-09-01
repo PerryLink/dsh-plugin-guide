@@ -166,7 +166,7 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 ## मुख्य स्रोत सूची
 
 - आधिकारिक दस्तावेज़ हूबहू: `references/official-docs/docs/**` (215 पृष्ठ, `.zh.md` जोड़े सहित)
-- रिपो-रूट बाधाएँ: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/examples/AGENTS.md`, `references/official-docs/vendor/README.md`; सिंक स्थिति `references/official-docs/SNAPSHOT.md` में
+- रिपो-रूट बाधाएँ: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/vendor/README.md`; सिंक स्थिति `references/official-docs/SNAPSHOT.md` में
 - साइट क्रॉल HTML: `downloads/web/site/**` (EN+ZH पूर्ण साइट) + `downloads/manifest.tsv`
 - अपस्ट्रीम Cordis: `downloads/github/cordis/**` + शोध `references/upstream-cordis.md`
 - Cordis पेपर: `downloads/github/paper/**` + शोध `references/cordis-paper-and-community.md`

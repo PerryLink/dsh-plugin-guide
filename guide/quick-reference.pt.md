@@ -166,7 +166,7 @@ Documentação comunitária de desenvolvimento — modelos/tutoriais/armadilhas,
 ## Índice de fontes principais
 
 - Documentação oficial textual: `references/official-docs/docs/**` (215 páginas, inclui pares `.zh.md`)
-- Restrições da raiz do repo: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/examples/AGENTS.md`, `references/official-docs/vendor/README.md`; estado de sincronização em `references/official-docs/SNAPSHOT.md`
+- Restrições da raiz do repo: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/vendor/README.md`; estado de sincronização em `references/official-docs/SNAPSHOT.md`
 - HTML do site: `downloads/web/site/**` (site completo EN+ZH) + `downloads/manifest.tsv`
 - Cordis upstream: `downloads/github/cordis/**` + pesquisa `references/upstream-cordis.md`
 - Paper do Cordis: `downloads/github/paper/**` + pesquisa `references/cordis-paper-and-community.md`

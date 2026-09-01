@@ -165,7 +165,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 ## 关键源索引
 
 - 本地官方文档全文：`references/official-docs/docs/**`（215 篇，含全部 `.zh.md`）
-- 仓库根约束：`references/official-docs/AGENTS.md`、`references/official-docs/packages/AGENTS.md`、`references/official-docs/examples/AGENTS.md`、`references/official-docs/vendor/README.md`；同步状态见 `references/official-docs/SNAPSHOT.md`
+- 仓库根约束：`references/official-docs/AGENTS.md`、`references/official-docs/packages/AGENTS.md`、`references/official-docs/vendor/README.md`；同步状态见 `references/official-docs/SNAPSHOT.md`
 - 站点爬取 HTML：`downloads/web/site/**`（中英双语全站）+ `downloads/manifest.tsv`（下载清单）
 - 上游 Cordis：`downloads/github/cordis/**` + 调研 `references/upstream-cordis.md`
 - Cordis 论文：`downloads/github/paper/**` + 调研 `references/cordis-paper-and-community.md`
