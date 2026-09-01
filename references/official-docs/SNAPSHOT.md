@@ -7,10 +7,10 @@
 |---|---|
 | Source checkout | `D:\deepseek-harness` |
 | Source ref | `origin/master` |
-| Source commit | `47f943859bef60e4160492346772ded9b24f765a` |
-| Synced at (UTC) | 2026-08-14T15:13:50Z |
-| Scope | tracked files at the ref: `docs/`, root `AGENTS.md`, `BENCHMARK.md`, `CLAUDE.md`(symlink 目标文本), `CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`, `README.zh.md`/`.i18n.yaml`（上游英文 `README.md` 不在本目录，快照见 `downloads/github/harness/README.md`）, `THIRD_PARTY_NOTICES.md`, `LICENSE`, `packages/AGENTS.md`, `examples/AGENTS.md`, `packages/README.md`, `vendor/README.md`, `website/docs.ts` |
-| File counts | docs/: 215 md files (105 .zh.md pairs) |
-| Pruned this run | 107 个不在范围内/上游已删除的条目 |
+| Source commit | `dd6322d604e00eec1ba5e0c8541159906a21094a` |
+| Synced at (UTC) | 2026-09-01T15:17:06Z |
+| Scope | tracked files at the ref: `docs/`, root `AGENTS.md`, `BENCHMARK.md`, `CLAUDE.md` (symlink target text), `CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`, `README.zh.md`/`.i18n.yaml` (the upstream English `README.md` is not in this dir; its snapshot lives in `downloads/github/harness/README.md`), `THIRD_PARTY_NOTICES.md`, `LICENSE`, `packages/AGENTS.md`, `packages/README.md`, `vendor/README.md`, `website/docs.ts` |
+| File counts | docs/: 239 md files (117 .zh.md pairs) |
+| Pruned this run | 17 out-of-scope/upstream-deleted entries |
 
 Drift check: `pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>` (tracked files only).
