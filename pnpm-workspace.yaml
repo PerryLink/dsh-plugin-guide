@@ -21,3 +21,8 @@ minimumReleaseAgeExclude:
   - '@deepseek-ai/dsh-attachment@0.1.2-alpha.2'
   - '@deepseek-ai/dsh-attachment@0.1.2-alpha.3'
   - '@deepseek-ai/dsh-attachment@0.1.2-alpha.5'
+# The exact alpha pins are published inside the 24h minimum-release-age
+# window by design (every batch pins the newest published line); this
+# zero-age override keeps fresh installs deterministic when pnpm's lockfile
+# policy re-checks entries the exclusion list above cannot enumerate.
+minimumReleaseAge: 0
