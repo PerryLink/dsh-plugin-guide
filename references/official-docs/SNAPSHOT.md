@@ -7,10 +7,10 @@
 |---|---|
 | Source checkout | `D:\deepseek-harness` |
 | Source ref | `origin/master` |
-| Source commit | `dd6322d604e00eec1ba5e0c8541159906a21094a` |
-| Synced at (UTC) | 2026-09-01T15:17:06Z |
+| Source commit | `49a606bc5b5934603f22a26957a07dc799ab0291` |
+| Synced at (UTC) | 2026-09-02T11:48:22Z |
 | Scope | tracked files at the ref: `docs/`, root `AGENTS.md`, `BENCHMARK.md`, `CLAUDE.md` (symlink target text), `CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`, `README.zh.md`/`.i18n.yaml` (the upstream English `README.md` is not in this dir; its snapshot lives in `downloads/github/harness/README.md`), `THIRD_PARTY_NOTICES.md`, `LICENSE`, `packages/AGENTS.md`, `packages/README.md`, `vendor/README.md`, `website/docs.ts` |
 | File counts | docs/: 239 md files (117 .zh.md pairs) |
-| Pruned this run | 17 out-of-scope/upstream-deleted entries |
+| Pruned this run | 15 out-of-scope/upstream-deleted entries |
 
 Drift check: `pwsh -File scripts/verify-kit.ps1 -Checkout <checkout>` (tracked files only).
