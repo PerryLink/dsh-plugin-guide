@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-09-04
+
+### Changed
+
+- Align the devDependency pins to the published dsh `0.1.2-rc.1` line and re-sync the official-docs snapshot to the `dsh-v0.1.3-alpha.1` master commit (`d347e703908d0406b7a7ef80e3a0e594d86b2215`, 74-file delta over the previous snapshot); the five-language READMEs and the guide record the rc.1 facts. The shipped verify/check faces keep working against the 0.1.3-alpha.1 checkout (the four smoke surfaces the CLI verifies are unchanged).
+
 ## [0.3.3] - 2026-09-02
 
 ### Changed
