@@ -6,7 +6,7 @@ A DeepSeek Harness (DSH) plugin scaffolded by [`dsh-plugin-dev new`](https://git
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `0.1.2-alpha.5` |
+| Harness | DeepSeek Harness `0.1.2-rc.1` |
 | Node | `^22.19.0 || >=24.0.0` |
 | Platforms | All (plain ESM; no native code, no network) |
 

@@ -6,7 +6,7 @@
 
 | 项目 | 状态 |
 |---|---|
-| Harness | DeepSeek Harness `0.1.2-alpha.5` |
+| Harness | DeepSeek Harness `0.1.2-rc.1` |
 | Node | `^22.19.0 || >=24.0.0` |
 | 平台 | 全部（纯 ESM；无原生代码、无网络） |
 

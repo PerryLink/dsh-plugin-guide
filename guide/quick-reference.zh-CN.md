@@ -1,4 +1,4 @@
-# DeepSeek Harness  0.1.2-alpha.5 恢复信封 ignorable?: true 字段但仅用于存量日志读取兼容（其 Session.append 仍无法盖章），门控行为不变。 插件开发速查表
+# DeepSeek Harness  0.1.2-rc.1 恢复信封 ignorable?: true 字段但仅用于存量日志读取兼容（其 Session.append 仍无法盖章），门控行为不变。 插件开发速查表
 
 > 一页式速查。细节回到 [plugin-dev-guide.md](plugin-dev-guide.md) 与 [references](../references/)。
 
@@ -146,7 +146,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 - Windows junction 用 PowerShell `New-Item -ItemType Junction`；vitest 盘符大写 `C:/`。
 - `DSH_PERMISSION_MODE=danger-full-access` 高风险（Windows 无沙箱后端、禁用审批）；`DSH_*` 放 `~/.dsh/.env` 会报错。
 - 会话文件多帧 zstd：用 `scanZstdFrames`/`createZstdFrameDecoder`（`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`）。
-- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`；`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 是过期版本（0.0.1-rc.1），要钉 `next`（0.1.0-rc.6）；`create-dsh-plugin` 已发布（0.1.1，2026-08-13）；dsh-core/dsh-sdk 仍未发布（2026-08-14 复核）。
+- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`（latest=0.1.2-rc.1）；`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 是过期版本（0.0.1-rc.1），要钉 `next`（0.1.2-rc.1）；`create-dsh-plugin` latest=0.2.1；dsh-core/dsh-sdk 仍未发布（2026-09-04 复核）。
 - 路径比较前两侧都 `resolve()`（Windows 反斜杠陷阱）。
 
 ## 文档链接

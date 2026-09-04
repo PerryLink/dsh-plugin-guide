@@ -6,7 +6,7 @@ Um plugin do DeepSeek Harness (DSH) gerado com [`dsh-plugin-dev new`](https://gi
 
 | Superfície | Estado |
 |---|---|
-| Harness | DeepSeek Harness `0.1.2-alpha.5` |
+| Harness | DeepSeek Harness `0.1.2-rc.1` |
 | Node | `^22.19.0 || >=24.0.0` |
 | Plataformas | Todas (ESM puro; sem código nativo, sem rede) |
 

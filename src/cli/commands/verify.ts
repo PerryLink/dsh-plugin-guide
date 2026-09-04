@@ -165,7 +165,7 @@ function suggestionsFor(step: string, result: RunResult): string[] {
   const base = [`tail of "${step}":\n${tailOf(result)}`]
   if (result.timedOut) base.push(`command timed out; raise --timeout or --smoke-timeout`)
   if (step === 'install') {
-    base.push('ensure the dsh CLI is @deepseek-ai/dsh@0.1.2-alpha.5 (older rc.6 PATH builds do not satisfy the compat pin)')
+    base.push('ensure the dsh CLI is @deepseek-ai/dsh@0.1.2-rc.1 (older builds such as the rc.6 line do not satisfy the compat pin)')
     base.push('confirm the profile allowlist matches the repo compat workflow (native builds allowlisted)')
   }
   if (step === 'headless') {

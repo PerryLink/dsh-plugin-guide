@@ -147,7 +147,7 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 - Windows junctions PowerShell `New-Item -ItemType Junction` से; vitest ड्राइव अक्षर बड़ा `C:/`।
 - `DSH_PERMISSION_MODE=danger-full-access` उच्च जोखिम है (Windows पर सैंडबॉक्स बैकएंड नहीं, अनुमोदन बंद); `~/.dsh/.env` में `DSH_*` स्टार्टअप तोड़ता है।
 - सत्र फ़ाइलें मल्टी-फ़्रेम zstd हैं: `scanZstdFrames`/`createZstdFrameDecoder` उपयोग करें (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`)।
-- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें; `@deepseek-ai/dsh-tools` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` पुराना है (0.0.1-rc.1), `next` (0.1.0-rc.6) पिन करें; `create-dsh-plugin` अब प्रकाशित है (0.1.1, 2026-08-13); dsh-core/dsh-sdk अभी भी अप्रकाशित (2026-08-14 को सत्यापित)।
+- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें (latest=0.1.2-rc.1); `@deepseek-ai/dsh-tools` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` पुराना है (0.0.1-rc.1), `next` (0.1.2-rc.1) पिन करें; `create-dsh-plugin` latest=0.2.1; dsh-core/dsh-sdk अभी भी अप्रकाशित (2026-09-04 को सत्यापित)।
 - पथ तुलना से पहले दोनों ओर `resolve()` करें (Windows बैकस्लैश जाल)।
 
 ## दस्तावेज़ लिंक

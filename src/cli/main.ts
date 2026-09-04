@@ -98,8 +98,8 @@ export async function main(argv: string[], cwd: string = process.cwd()): Promise
           dshBin: resolveDsh(flagString(flags, 'dsh')),
           pnpmBin: resolvePnpm(flagString(flags, 'pnpm')),
           profile: flagString(flags, 'profile', 'compat') ?? 'compat',
-          base: flagString(flags, 'base', '@deepseek-ai/dsh-base@0.1.2-alpha.5') ?? '@deepseek-ai/dsh-base@0.1.2-alpha.5',
-          headless: flagString(flags, 'headless', '@deepseek-ai/dsh-headless@0.1.2-alpha.5') ?? '@deepseek-ai/dsh-headless@0.1.2-alpha.5',
+          base: flagString(flags, 'base', '@deepseek-ai/dsh-base@0.1.2-rc.1') ?? '@deepseek-ai/dsh-base@0.1.2-rc.1',
+          headless: flagString(flags, 'headless', '@deepseek-ai/dsh-headless@0.1.2-rc.1') ?? '@deepseek-ai/dsh-headless@0.1.2-rc.1',
           timeoutMs: timeoutMs(flags, 'timeout', 'DSH_PLUGIN_DEV_TIMEOUT', DEFAULT_TIMEOUT_MS),
           smokeTimeoutMs: timeoutMs(flags, 'smoke-timeout', 'DSH_PLUGIN_DEV_SMOKE_TIMEOUT', DEFAULT_SMOKE_TIMEOUT_MS),
         })
