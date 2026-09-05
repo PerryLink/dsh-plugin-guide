@@ -67,7 +67,7 @@
     "vitest": "^3.2.7"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": ">=0.1.0-rc.8 <0.2.0"
+    "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.2.0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {
