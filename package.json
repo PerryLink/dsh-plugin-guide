@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "The dsh-plugin-guide knowledge base plus the dsh-plugin-dev CLI toolchain: official docs, Cordis primer, community deep-dives, and battle-tested pitfalls registered as an on-demand agent skill, with a scaffolder, static checker, and pack verifier for building DSH plugins.",
   "type": "module",
   "main": "index.js",
@@ -62,7 +62,8 @@
     "tsdown": "^0.22.14",
     "typescript": "^5.9.3"
   },
-  "devDependencies": {"@deepseek-ai/dsh-attachment": "0.1.2-rc.1", 
+  "devDependencies": {
+    "@deepseek-ai/dsh-attachment": "0.1.2-rc.1",
     "@types/node": "^22.20.1",
     "vitest": "^3.2.7"
   },
