@@ -41,7 +41,7 @@ describe('runNew', () => {
     expect(existsSync(join(dir, 'demo-plugin', 'src', 'config.ts'))).toBe(true)
     expect(existsSync(join(dir, 'demo-plugin', 'cordis.patch.yml'))).toBe(true)
     expect(existsSync(join(dir, 'demo-plugin', 'tests', 'index.test.ts'))).toBe(true)
-    const readmeNames = readdirSync(join(dir, 'demo-plugin')).filter((f) => /^README(\.\w{2})?\.md$/.test(f))
+    const readmeNames = readdirSync(join(dir, 'demo-plugin')).filter((f) => /^README(-\w{2})?\.md$/.test(f))
     expect(readmeNames).toHaveLength(5)
     const pkg = readFileSync(join(dir, 'demo-plugin', 'package.json'), 'utf8')
     expect(pkg).toContain('"name": "dsh-demo-plugin"')

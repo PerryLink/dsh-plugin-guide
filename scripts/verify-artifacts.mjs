@@ -55,7 +55,7 @@ try {
     const result = runNode(['dist/dsh-plugin-dev.js', 'new', 'demo-plugin', '--lang', lang, '--dir', target])
     const hasEntry = lang === 'ts' ? existsSync(join(target, 'src', 'index.ts')) : existsSync(join(target, 'index.js'))
     const hasPatch = existsSync(join(target, 'cordis.patch.yml'))
-    const readmeCount = readdirSync(target).filter((f) => /^README(\.\w{2})?\.md$/.test(f)).length
+    const readmeCount = readdirSync(target).filter((f) => /^README(-\w{2})?\.md$/.test(f)).length
     check(result.status === 0 && hasEntry && hasPatch, `${lang} scaffold produces entry + cordis.patch.yml (exit ${result.status})`)
     check(readmeCount === 5, `${lang} scaffold produces 5 README languages (${readmeCount})`)
   }

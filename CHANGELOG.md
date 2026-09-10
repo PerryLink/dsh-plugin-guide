@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- The scaffold skeletons now ship `README-<lang>.md` like the rest of the family. Their translations live under `templates/js/` and `templates/ts/` rather than at the package root, so the rename that moved the references did not move the files, and two assertions that spelled the old set with a regex (`/^README(\.\w{2})?\.md$/`) counted one README instead of five — `tests/new.test.ts` and `verify:artifacts` both went red. Both now match the hyphen form, which also makes them a tripwire against a dotted regression. A generated plugin starts out in the layout npm serves correctly.
+
 ### Changed
 
 - Rename the four translated READMEs to `README-<lang>.md`. npm selects the package-page readme as the first markdown file matching its `{README,README.*}` glob (`@npmcli/package-json`, publish path), and that glob order puts `README.<lang>.md` ahead of `README.md` — so npm was serving the Simplified-Chinese file for this package too (measured on 15/15 sampled packages of the family). The new names sit outside the glob, so the English source is served again. No content changed apart from the language-switcher link each translation holds to its siblings, and the repo readme gate still passes. Takes effect with the next release; an already-published version cannot gain a corrected readme retroactively.
