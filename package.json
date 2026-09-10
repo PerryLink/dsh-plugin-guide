@@ -63,12 +63,12 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-attachment": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-attachment": "0.1.5-rc.1",
     "@types/node": "^22.20.1",
     "vitest": "^3.2.7"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.2.0"
+    "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {
@@ -105,7 +105,7 @@
       "filesystem:read"
     ],
     "compatibility": {
-      "dshVersions": ["0.1.2-rc.1","0.1.5-alpha.1"]
+      "dshVersions": ["0.1.2-rc.1","0.1.5-rc.1"]
     },
     "capability": {
       "id": "dsh-plugin-guide",
