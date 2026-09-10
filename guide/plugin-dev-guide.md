@@ -3,6 +3,7 @@
 > 本文档是 `dsh-plugin-guide` 的核心成果之一：把官方文档、上游 Cordis 资料与社区经验汇总成一条完整的插件开发路径。
 > 事实来源全部记录在 [sources.md](../references/sources.md)；官方原文全文副本在 [references/official-docs/](../references/official-docs/)。
 > 本文档为"指引"，不是"替代品"：开发中遇到精确签名/字段，永远以官方文档副本与生成式参考（subsystems 页、cordis-api 页）为准。
+> 组合级运营（多仓版本编排、发布流水线、宿主破坏兼容时的迁移波）见 [release-engineering.md](release-engineering.md)；中文稿：[release-engineering.zh-CN.md](release-engineering.zh-CN.md)。
 
 ---
 
