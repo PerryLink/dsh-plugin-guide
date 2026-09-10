@@ -27,7 +27,7 @@ interface PackageJson {
   dsh?: { bundle?: { patch?: string } }
 }
 
-const README_LANGS = ['README.md', 'README.zh.md', 'README.es.md', 'README.pt.md', 'README.hi.md']
+const README_LANGS = ['README.md', 'README-zh.md', 'README-es.md', 'README-pt.md', 'README-hi.md']
 
 const EXCLUDED_DIRS = new Set(['node_modules', '.git', 'dist', 'coverage', 'downloads', '_check'])
 

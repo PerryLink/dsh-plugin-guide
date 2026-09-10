@@ -20,7 +20,7 @@ interface Config {
 }
 ```
 
-一个包被选中的条件是：服务已启用，允许列表为空或至少一个模式匹配其完整 npm 名称，且没有任何阻止列表模式匹配；阻止列表匹配优先于允许列表匹配。条目用 `new RegExp(source)` 编译：除非模式自带 `^` 和 `$`，匹配不锚定；`/pattern/flags` 语法不被解析。校验在服务启动时明确报错：空白、首尾带空白、重复或无效的条目会抛出异常，而不是被跳过。有效模式可以不匹配任何当前已加载的包，因此后续加载与 HMR（热模块替换）保持确定性；过滤器在服务生命周期内固定不变（[README](../../packages/runtime-diagnostics/invariants/README.zh.md)）。
+一个包被选中的条件是：服务已启用，允许列表为空或至少一个模式匹配其完整 npm 名称，且没有任何阻止列表模式匹配；阻止列表匹配优先于允许列表匹配。条目用 `new RegExp(source)` 编译：除非模式自带 `^` 和 `$`，匹配不锚定；`/pattern/flags` 语法不被解析。校验在服务启动时明确报错：空白、首尾带空白、重复或无效的条目会抛出异常，而不是被跳过。有效模式可以不匹配任何当前已加载的包，因此后续加载与 HMR（热模块替换）保持确定性；过滤器在服务生命周期内固定不变（[README](../../packages/runtime-diagnostics/invariants/README-zh.md)）。
 
 ## 安装器
 
@@ -56,7 +56,7 @@ interface InvariantInstaller {
 
 ## 配套插件约定
 
-每个工作区包都拥有一个 `./invariant` 配套插件（[包约定](../../packages/AGENTS.md)）；发布与注册是穷尽式的，但刻意不合成断言。只有当包拥有某个可观察事件或某种可变数据关系时，配套插件才安装检查；否则它导出一个空安装器，其起始注释以 `No runtime invariant:` 开头，针对该包具体解释为什么没有可检查项。`pnpm run verify-package-invariants` 机械地拒绝「生成文件」标记、无解释的空安装器、遗漏或忽略报告器的非空安装器、错误的注册名称，以及不完整的导出、发布、依赖或打包接线（[机械规则 Agent Note](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.zh.md)）。可执行配套插件的目录与标准组合方式见[包 README](../../packages/runtime-diagnostics/invariants/README.zh.md)。
+每个工作区包都拥有一个 `./invariant` 配套插件（[包约定](../../packages/AGENTS.md)）；发布与注册是穷尽式的，但刻意不合成断言。只有当包拥有某个可观察事件或某种可变数据关系时，配套插件才安装检查；否则它导出一个空安装器，其起始注释以 `No runtime invariant:` 开头，针对该包具体解释为什么没有可检查项。`pnpm run verify-package-invariants` 机械地拒绝「生成文件」标记、无解释的空安装器、遗漏或忽略报告器的非空安装器、错误的注册名称，以及不完整的导出、发布、依赖或打包接线（[机械规则 Agent Note](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.zh.md)）。可执行配套插件的目录与标准组合方式见[包 README](../../packages/runtime-diagnostics/invariants/README-zh.md)。
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

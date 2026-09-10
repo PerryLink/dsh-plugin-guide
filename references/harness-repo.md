@@ -598,7 +598,7 @@ Agent Notes 的生命周期/分类/格式见 `.agents/notes/README.md`：路径 
 公开仓库 URL（经 web_search 核实存在）：
 
 - 仓库首页：https://github.com/deepseek-ai/deepseek-harness （标题 "DeepSeek Harness: Everything is a Plugin."）
-- README：https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md 与 `README.zh.md`
+- README：https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md 与 `README-zh.md`
 - 架构文档：https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md （及 `.zh.md`）
 - 配置目录：https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md
 - 发布教程：https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md
@@ -644,7 +644,7 @@ Agent Notes 的生命周期/分类/格式见 `.agents/notes/README.md`：路径 
 **Web（web_search）：**
 - https://github.com/deepseek-ai/deepseek-harness
 - https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md
-- https://github.com/deepseek-ai/deepseek-harness/blob/master/README.zh.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/master/README-zh.md
 - https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md
 - https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md
 - https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md

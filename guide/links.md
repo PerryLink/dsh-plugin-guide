@@ -47,7 +47,7 @@
   - [docs/defensive-patterns.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/defensive-patterns.md) — 防御性模式
   - [docs/glossary.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md) — 术语表
   - [docs/testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) — 测试政策
-- 仓库根文件（本地副本 references/official-docs/）：BENCHMARK.md、CLAUDE.md（symlink→AGENTS.md）、CONTRIBUTING.md/.zh.md/.i18n.yaml、README.zh.md/.i18n.yaml、THIRD_PARTY_NOTICES.md、LICENSE
+- 仓库根文件（本地副本 references/official-docs/）：BENCHMARK.md、CLAUDE.md（symlink→AGENTS.md）、CONTRIBUTING.md/.zh.md/.i18n.yaml、README-zh.md/.i18n.yaml、THIRD_PARTY_NOTICES.md、LICENSE
 - 上游 Cordis 框架：https://github.com/cordiverse/cordis · Cordis 论文：https://github.com/cordiverse/paper · **Cordis 文档站源：https://github.com/cordiverse/docs（60+ md，本地 `downloads/github/cordis/docs/`）**
 
 ## 4. 社区开发文档（常用入口）

@@ -34,7 +34,7 @@ describe('scaffold templates', () => {
       const headingsOf = (f: string) => (set.get(f) ?? '').split(/\r?\n/).filter((l) => l.startsWith('## ')).map((l) => l.trim()).sort()
       const base = headingsOf('README.md')
       expect(base.length).toBeGreaterThanOrEqual(5)
-      for (const readme of ['README.zh.md', 'README.es.md', 'README.pt.md', 'README.hi.md']) {
+      for (const readme of ['README-zh.md', 'README-es.md', 'README-pt.md', 'README-hi.md']) {
         expect(headingsOf(readme)).toEqual(base)
       }
     }

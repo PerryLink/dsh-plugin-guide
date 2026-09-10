@@ -34,7 +34,7 @@
 ## C. 本地 checkout 文档副本（references/official-docs/）
 
 - `docs/**`（215 个 md，含全部 `.zh.md` 双语对）— 教程/架构/子系统/API/cookbook 全量
-- 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README.zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
+- 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README-zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
 - `packages/AGENTS.md` · `packages/README.md` · `vendor/README.md`
 - `website-docs.ts`（站点投影清单）
 - 上游英文 `README.md` 不进入本目录（与 KB 索引同名），线上快照在 `downloads/github/harness/README.md`
@@ -130,7 +130,7 @@
 
 本项目同时改造为可安装的 DSH bundle（`package.json#dsh.bundle` + 根 `cordis.patch.yml` + `index.js` 注册 `dsh-plugin-guide` 技能），并按各收录入口的专属规则投递：
 
-- 榜单 PR：awesome-dsh-plugin [PR #465](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/465)（README.md/README.zh.md Skills 各 +1 行；#461 因 fork 分支被共享 fork 覆盖而自动关闭，已由 #465 取代）、AdamPlatin123/awesome-dsh-plugins [PR #151](https://github.com/AdamPlatin123/awesome-dsh-plugins/pull/151)（PLUGINS.md「🎓 技能」表 +1 行，运行级如实填「待测」）、0xsline/awesome-deepseek-harness [PR #183](https://github.com/0xsline/awesome-deepseek-harness/pull/183)（README.md/README.zh-CN.md Infrastructure & Development 各 +1）、bruc3van/awesome-dsh-plugin [PR #42](https://github.com/bruc3van/awesome-dsh-plugin/pull/42)（作者自荐区中英各 +1 行，`validate-curated.mjs` 本地通过）。
+- 榜单 PR：awesome-dsh-plugin [PR #465](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/465)（README.md/README-zh.md Skills 各 +1 行；#461 因 fork 分支被共享 fork 覆盖而自动关闭，已由 #465 取代）、AdamPlatin123/awesome-dsh-plugins [PR #151](https://github.com/AdamPlatin123/awesome-dsh-plugins/pull/151)（PLUGINS.md「🎓 技能」表 +1 行，运行级如实填「待测」）、0xsline/awesome-deepseek-harness [PR #183](https://github.com/0xsline/awesome-deepseek-harness/pull/183)（README.md/README.zh-CN.md Infrastructure & Development 各 +1）、bruc3van/awesome-dsh-plugin [PR #42](https://github.com/bruc3van/awesome-dsh-plugin/pull/42)（作者自荐区中英各 +1 行，`validate-curated.mjs` 本地通过）。
 - DSH Hub Workshop（omdsh-dev）：`package.json#dshWorkshop`（`omdsh-workshop-package/v1`）已提交（固定 commit `9447366f63a02229031af1e0bed2afedeff44860`）；v2 投稿经 `scripts/intake.mjs validate` 通过（"submission accepted for pending review"）；申请 [Issue #20](https://github.com/omdsh-dev/dsh-hub-workshop/issues/20)，pending-review 审核 PR 由 hub 自动化生成（异步）。
 - 官方展示：deepseek-harness Discussions [Show and tell #1824](https://github.com/deepseek-ai/deepseek-harness/discussions/1824)。
 - 自动聚合（预期延迟，复核命令）：Oh-My-DSH `PLUGINS.md`（每 4 小时）、wangshunnn/oh-my-dsh `registry/plugins.json`（根 package.json 已声明 `dsh.bundle.patch`）、YELEBAI/dsh-plugin-marketplace `registry/plugins.json`（每 2 小时扫描 + manifest 验证）、AdamPlatin123 雷达（≤8 小时）、bruc3van 每日快照、dshfind 与 Noob-stupid/yyyyukari（topic 实时聚合，无需动作）。复核：`curl -s https://raw.githubusercontent.com/<repo>/main/<文件> | grep dsh-plugin-guide`（本机直连 raw 失败时经 api.github.com/contents 取）。

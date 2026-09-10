@@ -1,6 +1,6 @@
 # Post-mortems
 
-English | [中文](README.zh.md)
+English | [中文](README-zh.md)
 
 Incident write-ups: a bug reached a place it shouldn't have (a real user, a merged PR, a release), and the interesting part is *why our process let it through*, not just the one-line fix.
 

@@ -10,7 +10,7 @@
 | CLAUDE 入口（上游为 symlink，此处为其目标文本） | [`CLAUDE.md`](CLAUDE.md) | `CLAUDE.md` → `AGENTS.md` |
 | 基准测试说明 | [`BENCHMARK.md`](BENCHMARK.md) | `BENCHMARK.md` |
 | 贡献指引（中英 + i18n 元数据） | [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`CONTRIBUTING.zh.md`](CONTRIBUTING.zh.md) · [`CONTRIBUTING.i18n.yaml`](CONTRIBUTING.i18n.yaml) | `CONTRIBUTING.*` |
-| 上游中文 README 与 i18n 元数据 | [`README.zh.md`](README.zh.md) · [`README.i18n.yaml`](README.i18n.yaml) | `README.zh.md` · `README.i18n.yaml` |
+| 上游中文 README 与 i18n 元数据 | [`README-zh.md`](README-zh.md) · [`README.i18n.yaml`](README.i18n.yaml) | `README-zh.md` · `README.i18n.yaml` |
 | 三方声明 | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | `THIRD_PARTY_NOTICES.md` |
 | 许可证 | [`LICENSE`](LICENSE) | `LICENSE` |
 | packages 组红线 | [`packages/AGENTS.md`](packages/AGENTS.md) | `packages/AGENTS.md` |

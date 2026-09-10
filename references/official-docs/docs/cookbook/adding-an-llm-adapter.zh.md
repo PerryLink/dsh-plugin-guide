@@ -36,7 +36,7 @@ export function apply(ctx: Context, config: Config) {
 
 ## 实现结构
 
-让协议格式（wire format）类型、请求序列化、传输解析、分片转换和适配器类分别承担独立职责；[`llm-deepseek`](../../packages/llm/llm-deepseek/README.zh.md) 是参考布局。
+让协议格式（wire format）类型、请求序列化、传输解析、分片转换和适配器类分别承担独立职责；[`llm-deepseek`](../../packages/llm/llm-deepseek/README-zh.md) 是参考布局。
 
 ## 验证
 

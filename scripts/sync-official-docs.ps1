@@ -25,10 +25,10 @@ $pruned = 0
 $mdCount = 0
 $zhCount = 0
 
-# Sync scope: docs/, root AGENTS.md/BENCHMARK.md/CLAUDE.md/CONTRIBUTING.*/README.zh.md/README.i18n.yaml/THIRD_PARTY_NOTICES.md/LICENSE, packages/AGENTS.md, packages/README.md, vendor/README.md, website/docs.ts
+# Sync scope: docs/, root AGENTS.md/BENCHMARK.md/CLAUDE.md/CONTRIBUTING.*/README-zh.md/README.i18n.yaml/THIRD_PARTY_NOTICES.md/LICENSE, packages/AGENTS.md, packages/README.md, vendor/README.md, website/docs.ts
 # Upstream root README.md is out of scope: official-docs/README.md is the KB-owned index (the upstream English README snapshot lives in downloads/github/harness/README.md).
 # Every pathspec uses the :(top) anchor so git's basename-wide matching cannot sweep in same-named symlinks (e.g. the various CLAUDE.md files).
-$paths = @(':(top)docs', ':(top)AGENTS.md', ':(top)BENCHMARK.md', ':(top)CONTRIBUTING.md', ':(top)CONTRIBUTING.zh.md', ':(top)CONTRIBUTING.i18n.yaml', ':(top)README.zh.md', ':(top)README.i18n.yaml', ':(top)THIRD_PARTY_NOTICES.md', ':(top)LICENSE', ':(top)packages/AGENTS.md', ':(top)packages/README.md', ':(top)vendor/README.md', ':(top)website/docs.ts')
+$paths = @(':(top)docs', ':(top)AGENTS.md', ':(top)BENCHMARK.md', ':(top)CONTRIBUTING.md', ':(top)CONTRIBUTING.zh.md', ':(top)CONTRIBUTING.i18n.yaml', ':(top)README-zh.md', ':(top)README.i18n.yaml', ':(top)THIRD_PARTY_NOTICES.md', ':(top)LICENSE', ':(top)packages/AGENTS.md', ':(top)packages/README.md', ':(top)vendor/README.md', ':(top)website/docs.ts')
 
 if ($gitOk) {
   # Prefer origin/master, fall back to HEAD - never the working tree (may contain untracked/unpushed content).
@@ -68,7 +68,7 @@ if ($gitOk) {
 
   # Keep only in-scope entries at the destination root (drops stale extraction residue and
   # upstream-deleted root files so the copy stays verbatim).
-  $rootKeep = @('docs','examples','packages','vendor','AGENTS.md','BENCHMARK.md','CLAUDE.md','CONTRIBUTING.md','CONTRIBUTING.zh.md','CONTRIBUTING.i18n.yaml','LICENSE','README.zh.md','README.i18n.yaml','THIRD_PARTY_NOTICES.md','SNAPSHOT.md','README.md','website-docs.ts')
+  $rootKeep = @('docs','examples','packages','vendor','AGENTS.md','BENCHMARK.md','CLAUDE.md','CONTRIBUTING.md','CONTRIBUTING.zh.md','CONTRIBUTING.i18n.yaml','LICENSE','README-zh.md','README.i18n.yaml','THIRD_PARTY_NOTICES.md','SNAPSHOT.md','README.md','website-docs.ts')
   Get-ChildItem -Force $dest | Where-Object { $rootKeep -notcontains $_.Name } | ForEach-Object {
     Remove-Item $_.FullName -Recurse -Force; $pruned++
   }
@@ -127,7 +127,7 @@ $L = @(
   "| Source ref | ``$ref`` |",
   "| Source commit | ``$sha`` |",
   "| Synced at (UTC) | $utc |",
-  '| Scope | tracked files at the ref: `docs/`, root `AGENTS.md`, `BENCHMARK.md`, `CLAUDE.md` (symlink target text), `CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`, `README.zh.md`/`.i18n.yaml` (the upstream English `README.md` is not in this dir; its snapshot lives in `downloads/github/harness/README.md`), `THIRD_PARTY_NOTICES.md`, `LICENSE`, `packages/AGENTS.md`, `packages/README.md`, `vendor/README.md`, `website/docs.ts` |',
+  '| Scope | tracked files at the ref: `docs/`, root `AGENTS.md`, `BENCHMARK.md`, `CLAUDE.md` (symlink target text), `CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`, `README-zh.md`/`.i18n.yaml` (the upstream English `README.md` is not in this dir; its snapshot lives in `downloads/github/harness/README.md`), `THIRD_PARTY_NOTICES.md`, `LICENSE`, `packages/AGENTS.md`, `packages/README.md`, `vendor/README.md`, `website/docs.ts` |',
   "| File counts | docs/: $mdCount md files ($zhCount .zh.md pairs) |",
   "| Pruned this run | $pruned out-of-scope/upstream-deleted entries |",
   '',

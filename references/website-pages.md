@@ -623,7 +623,7 @@
 ### 5.3 GitHub 仓库文档源文件（web_search 命中，均在 `github.com/deepseek-ai/deepseek-harness`）
 
 - `https://github.com/deepseek-ai/deepseek-harness`（主仓库）
-- `https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md` / `README.zh.md`
+- `https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md` / `README-zh.md`
 - `https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md` / `.zh.md`
 - `.../docs/development.md` / `.zh.md`
 - `.../docs/cordis-primer.md` / `.zh.md`
@@ -634,7 +634,7 @@
 - `.../docs/user/guide/index.md`
 - `.../docs/user/develop/basic/index.md`、`config.md`、`publish.md`
 - `.../packages/mcp/mcp-client/README.md`、`.../packages/llm/llm-deepseek/README.md`、`.../packages/llm/llm-pi-ai/README.md`、`.../packages/bundle/base/README.md`、`.../packages/README.md`、`.../packages/skill/SKILL.md`、`.../packages/hooks/hooks-codex/README.md`
-- `.../apps/cli/reference/README.zh.md`
+- `.../apps/cli/reference/README-zh.md`
 
 ### 5.4 第三方报道 / 生态（web_search 命中，非官方，内容 [unverified]）
 

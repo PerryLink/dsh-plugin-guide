@@ -39,7 +39,7 @@ function goodFixture(root: string): void {
   write(root, 'index.js', "export const name = 'dsh-demo'\n")
   write(root, 'cordis.patch.yml', '- insert:\n    - id: dsh-demo\n      name: dsh-demo\n')
   write(root, 'src/index.ts', "import type { Context } from '@deepseek-ai/cordis'\nimport Schema from '@deepseek-ai/schemastery'\nexport const Config = Schema.object({ greeting: Schema.string().default('Hi') })\n")
-  for (const lang of ['README.md', 'README.zh.md', 'README.es.md', 'README.pt.md', 'README.hi.md']) {
+  for (const lang of ['README.md', 'README-zh.md', 'README-es.md', 'README-pt.md', 'README-hi.md']) {
     write(root, lang, README_BODY)
   }
 }
@@ -95,8 +95,8 @@ describe('check command', () => {
   it('reports warnings for missing five-language READMEs without failing', () => {
     const root = sandbox()
     goodFixture(root)
-    rmSync(join(root, 'README.zh.md'))
-    rmSync(join(root, 'README.hi.md'))
+    rmSync(join(root, 'README-zh.md'))
+    rmSync(join(root, 'README-hi.md'))
     const { report, exitCode } = runCheck({ root, strict: false })
     expect(exitCode).toBe(0)
     expect(statusOf(report.checks, 'readme-five-langs')).toBe('warn')
