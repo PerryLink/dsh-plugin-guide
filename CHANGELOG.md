@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- `guide/release-engineering.md` (+ `.zh-CN`) section 4 now requires the **tag workflow itself** to create the GitHub Release, not a human: it spells out the idempotent guard, the `contents: write` permission, why the step belongs in a job that `needs:` the publish job, and why a missing CHANGELOG section must degrade to generated notes rather than turn a successful publish red. The pre-tag checklist carries the matching item, and the table row no longer offers "manual" as an option.
+- New section 9, **Local tooling that fakes a result**, records four traps that return a confident wrong answer instead of an error: multi-field `npm view` reporting a field that exists as empty, ignore-aware content searches returning false negatives, Windows PowerShell 5.1 writing a BOM from `Set-Content -Encoding utf8`, and `rd /s /q` silently failing to remove a tree that contains a reserved device name. The former section 9 is renumbered to 10; no other section changed.
+
 ## [0.3.8] - 2026-09-10
 
 ### Changed

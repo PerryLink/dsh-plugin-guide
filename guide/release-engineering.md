@@ -93,10 +93,27 @@ Publish once, mirror everywhere, make the mirror idempotent:
 | Surface | Mechanism | Failure mode to watch |
 |---|---|---|
 | npm | tag-triggered workflow | dist-tag lands on the wrong line |
-| GitHub Release | workflow or manual | release notes drift from CHANGELOG |
+| GitHub Release | the same tag-triggered workflow (idempotent) | release notes drift from CHANGELOG |
 | Gitee (mirror) | scheduled sync workflow | mirror HEAD behind upstream after a force-move |
 
 Verify all three before calling a release done. A release that exists on npm but not in the mirror is a half release, and mirror users will report a bug you already fixed.
+
+The GitHub Release is created by the **same tag workflow** that publishes to npm - never by hand. Manual creation is exactly how release notes drift from `CHANGELOG.md`, and the gap is invisible from the registry: a version that exists on npm but has no Release page looks complete to `npm view` and incomplete to anyone reading the repository. Keep the step idempotent, so a re-run, a backfilled tag, or an already-existing Release page cannot fail the job:
+
+```sh
+if gh release view "$TAG" >/dev/null 2>&1; then
+  echo "release $TAG already exists; skipping"
+  exit 0
+fi
+node scripts/changelog-section.mjs "$VERSION" > release-notes.md || true
+if [ -s release-notes.md ]; then
+  gh release create "$TAG" --title "$TAG" --notes-file release-notes.md
+else
+  gh release create "$TAG" --generate-notes
+fi
+```
+
+Three details carry the weight. The job needs `permissions: contents: write` (the publish job's `contents: read` is not enough, and job-level permissions override the workflow's). It belongs in a **separate job that `needs:` the publish job**, so a tag whose `CHANGELOG.md` lacks that section cannot turn a successful npm publish into a red release. And the `|| true` plus the `-s` test is what makes the missing-section case degrade to generated notes instead of failing - a release page with generated notes beats no release page at all.
 
 ---
 
@@ -135,6 +152,7 @@ Before every tag push:
 - [ ] package invariants: the `files` whitelist contains the built entry, and the entry exists
 - [ ] README language parity plus encoding audit (no BOM, no mojibake, no replacement characters)
 - [ ] `CHANGELOG.md` has a section for the version you are about to tag
+- [ ] the tag workflow creates the GitHub Release itself, idempotently, from that section (section 4)
 - [ ] the version bump matches intent (patch = wave, minor = feature, major = breaking)
 - [ ] the tag does not already exist on the remote
 
@@ -158,7 +176,18 @@ Document these once so nobody debugs them twice:
 
 ---
 
-## 9. What this buys you
+## 9. Local tooling that fakes a result
+
+Each of these returns a confident wrong answer rather than an error, and each one cost a real debugging cycle. Written down so the next person recognises the shape:
+
+- **`npm view <pkg>@<ver> A B --json` invents absences.** Asking for two fields at once can report a field that exists as empty, which reads as "the published package lost its `peerDependencies`". Query one field per call; when it matters, unpack the published tarball and read its `package.json` - that is the ground truth. An audit that flagged eight packages this way was wrong about all eight.
+- **A content search that honours `.gitignore` returns false negatives.** Where the workspace root ignores everything (`*` plus a single negation), a search across it finds nothing, and "nothing" reads as proof of absence. Before concluding a pattern is absent, confirm it with a scan that does not consult ignore rules.
+- **Windows PowerShell 5.1's `Set-Content -Encoding utf8` writes a BOM.** A JSON request body beginning `EF BB BF` fails to parse, and the error blames the payload's contents rather than its encoding. Write machine-read files through an explicit encoder: `[System.IO.File]::WriteAllText($path, $text, (New-Object System.Text.UTF8Encoding($false)))`.
+- **On Windows, `rd /s /q` cannot remove a tree containing a reserved device name** (`NUL`, `CON`, `AUX`, `PRN`, `COM1`-`COM9`, `LPT1`-`LPT9`). It reports success and leaves the entire ancestor chain in place. Delete that entry through a `\\?\`-prefixed long path, then assert the directory is actually gone - a zero exit code is not evidence that the tree disappeared.
+
+---
+
+## 10. What this buys you
 
 A portfolio maintained this way behaves like a product: users on any harness line can install any plugin, every version is attested, mirrors agree, and a breaking upstream change costs one wave instead of an outage. It is also the strongest form of ecosystem contribution - the official project asks for exactly this, and explicitly does not rank official packages above community ones.
 

@@ -93,10 +93,27 @@ jobs:
 | 面 | 机制 | 要盯的失败模式 |
 |---|---|---|
 | npm | tag 触发 workflow | dist-tag 落错线 |
-| GitHub Release | workflow 或手工 | release notes 与 CHANGELOG 漂移 |
+| GitHub Release | 同一个 tag 触发的 workflow（幂等） | release notes 与 CHANGELOG 漂移 |
 | Gitee（镜像） | 定时同步 workflow | 强制移动 tag 后镜像 HEAD 落后于上游 |
 
 三面都验过，才算发布完成。只上了 npm 而镜像没有，是半个发布——镜像上的用户会来报一个你早已修好的 bug。
+
+GitHub Release 由**发布 npm 的同一个 tag workflow** 创建，**绝不手工建**。手工建正是 release notes 与 `CHANGELOG.md` 漂移的来源，而且这个缺口在 registry 侧看不见：一个上了 npm 却没有 Release 页的版本，对 `npm view` 看起来是完整的，对任何读仓库的人却是不完整的。这一步必须幂等，这样重跑、补 tag、或 Release 页已存在都不会让 job 失败：
+
+```sh
+if gh release view "$TAG" >/dev/null 2>&1; then
+  echo "release $TAG already exists; skipping"
+  exit 0
+fi
+node scripts/changelog-section.mjs "$VERSION" > release-notes.md || true
+if [ -s release-notes.md ]; then
+  gh release create "$TAG" --title "$TAG" --notes-file release-notes.md
+else
+  gh release create "$TAG" --generate-notes
+fi
+```
+
+三个细节是关键。该 job 需要 `permissions: contents: write`（publish job 的 `contents: read` 不够，且 job 级权限会覆盖 workflow 级）。它应当是**一个 `needs:` 发布 job 的独立 job**，这样一个 `CHANGELOG.md` 缺少该小节的 tag 就不会把已经成功的 npm 发布变成红灯。而 `|| true` 加 `-s` 判断，正是让「缺小节」这一情形退化为生成式 notes 而不是失败的原因——有生成式 notes 的 Release 页，胜过没有 Release 页。
 
 ---
 
@@ -135,6 +152,7 @@ jobs:
 - [ ] 包不变量：`files` 白名单确实包含构建产物，且该产物存在
 - [ ] 多语 README 一致 + 编码审计（无 BOM、无乱码、无替换字符）
 - [ ] `CHANGELOG.md` 有即将打的这个版本的小节
+- [ ] tag workflow 自己创建 GitHub Release，且幂等，正文取自该版本小节（见第 4 节）
 - [ ] 版本号与意图一致（patch = 波，minor = 功能，major = 破坏性）
 - [ ] 远端还没有这个 tag
 
@@ -158,7 +176,18 @@ jobs:
 
 ---
 
-## 9. 这样做换来什么
+## 9. 会伪造结论的本地工具
+
+下面每一条都返回一个自信的错误答案，而不是报错；每一条都真实吃掉过一个排查周期。写下来，好让下一个人认得出这个形状：
+
+- **`npm view <pkg>@<ver> A B --json` 会凭空造出「缺失」。** 一次问两个字段时，它可能把一个实际存在的字段报成空值，读起来就像「已发布的包丢了 `peerDependencies`」。每次只查一个字段；当真要下结论时，解开已发布的 tarball 读它的 `package.json`——那才是地面真相。曾有一次审计据此标出八个仓，八个全错。
+- **遵守 `.gitignore` 的内容检索会返回假阴性。** 当工作区根目录忽略一切（`*` 加一条例外）时，在它上面做检索会一无所获，而「一无所获」会被读成「不存在」的证据。在断言某个模式不存在之前，先用一个不查忽略规则的扫描确认一遍。
+- **Windows PowerShell 5.1 的 `Set-Content -Encoding utf8` 会写 BOM。** 以 `EF BB BF` 开头的 JSON 请求体会解析失败，而报错指向的是载荷内容而不是编码。机器要读的文件一律走显式编码器：`[System.IO.File]::WriteAllText($path, $text, (New-Object System.Text.UTF8Encoding($false)))`。
+- **在 Windows 上，`rd /s /q` 删不掉含保留设备名的目录树**（`NUL`、`CON`、`AUX`、`PRN`、`COM1`-`COM9`、`LPT1`-`LPT9`）。它会报成功，却把整条祖先链原样留下。用 `\\?\` 前缀的长路径删除该条目，然后断言目录确实消失——退出码为 0 不能作为「树已消失」的证据。
+
+---
+
+## 10. 这样做换来什么
 
 按这套方式维护的组合，表现得像一个产品：任何宿主线上的用户都能装到任何插件，每个版本都有凭证，镜像一致，上游的破坏性变更只花掉一波而不是一次事故。这同时也是最强的生态贡献形式——官方要的正是这个，并且明确否认"官方仓的包比社区的包更重要"。
 
