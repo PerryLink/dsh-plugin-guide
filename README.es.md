@@ -26,7 +26,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.5-alpha.1` (adaptado el 2026-09-09): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-09 contra el checkout master dsh-v0.1.5-alpha.1 (cadena completa de gates + smoke de instalación de perfil). |
+| Harness | DeepSeek Harness `dsh-v0.1.5-rc.1` (adaptado el 2026-09-09): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-10 contra el checkout master dsh-v0.1.5-rc.1 (cadena completa de gates + smoke de instalación de perfil). |
 | Node | `^22.19.0 || >=24.0.0` (runtime de DeepSeek Harness) |
 | Platforms | Todas (bundle ESM plano; sin código nativo, sin red) |
 | Model | Cualquiera (sin interacción con el modelo) |
