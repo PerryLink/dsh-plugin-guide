@@ -63,7 +63,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-attachment": "0.1.5-rc.1",
+    "@deepseek-ai/dsh-attachment": "0.1.5-rc.2",
     "@types/node": "^22.20.1",
     "vitest": "^3.2.7"
   },
@@ -105,7 +105,7 @@
       "filesystem:read"
     ],
     "compatibility": {
-      "dshVersions": ["0.1.2-rc.1","0.1.5-rc.1"]
+      "dshVersions": ["0.1.2-rc.1","0.1.5-rc.2"]
     },
     "capability": {
       "id": "dsh-plugin-guide",
