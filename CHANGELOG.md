@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.11] - 2026-09-13
+
+### Added
+
+- New `guide/unfixed-issues.md`: source-verified index of bugs still unfixed on the official master baseline `c291e7961a` (0.1.5-rc.2 era) — 20 primary + 4 secondary items, each with `path:line`, workaround, and links to the original discussions; plus a "fixed on master" section (with fixing commits) and a "by-design / common misconceptions" quick table. Companion to the public summary post [deepseek-ai/deepseek-harness discussion #6520](https://github.com/deepseek-ai/deepseek-harness/discussions/6520).
+- `SKILL.md` development prerequisites and `guide/links.md` §5 now point to the new index and the #6520 summary post.
+
 ## [0.3.10] - 2026-09-12
 
 ### Fixed

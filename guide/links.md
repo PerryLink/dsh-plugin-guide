@@ -80,6 +80,7 @@
 ## 5. 官方与社区渠道
 
 - Discord：https://discord.gg/Ycq5dCaS4 · GitHub 讨论区：https://github.com/deepseek-ai/deepseek-harness/discussions（归档见 §3）
+- **未修复问题清单（社区核实版，2026-09-13）**：官方讨论 [#6520](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)（PerryLink 发布：20+4 项 master 未修复 bug，逐条 path:line + 规避 + 原帖链接）；本地结构化对照见 [unfixed-issues.md](unfixed-issues.md)（含「已修复提交号」与「设计行为对照」两节）
 - 插件话题页：https://github.com/topics/dsh-plugin（08-15 快照在 `downloads/topic-snapshots/dsh-plugin-topic-2026-08-15/`，位置记录见 [sources.md](../references/sources.md) §D.2）
 - awesome 列表（插件发现）：见 [community-ecosystem.md](../references/community-ecosystem.md) §5
 - **中文社群与媒体**：微信公众号「DeepSeek Harness 团队」（黑鲸头像，08-12 注册）、企微小助手群（官方 README 链接）；[V2EX](https://global.v2ex.co/t/1234341) 系列线程（1234203/1234320/1234341/1234424/1234521…）；[Bilibili 教程视频](https://www.bilibili.com/video/BV1WmgF6qEMn/)（速通/安装/实战共 9 支，清单见归档 README）；知乎提问 [2040450519303288568](https://www.zhihu.com/question/2040450519303288568)（403 反爬，需浏览器）

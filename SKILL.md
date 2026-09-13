@@ -20,7 +20,7 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 ## 开发前置（第一步必做）
 
 1. 若未读过 Cordis 概念：读 `references/official-docs/docs/cordis-primer.md`（5 个概念，5 分钟）；需要动手跟练时跑 `references/official-docs/docs/cordis-tutorial/` 01-07（无 API key 可跑）。
-2. 打开 `guide/quick-reference.md`（契约速查）+ `guide/plugin-dev-guide.md`（完整路径）。官方/社区文档 URL 对照见 `guide/links.md`。
+2. 打开 `guide/quick-reference.md`（契约速查）+ `guide/plugin-dev-guide.md`（完整路径）。官方/社区文档 URL 对照见 `guide/links.md`。排查官方运行时行为/未修复 bug 时查 `guide/unfixed-issues.md`（master 基线源码核实的问题清单 + 已修复提交号 + 设计行为对照）。
 3. 确认目标扩展点：读 `references/official-docs/docs/architecture.md` 的「Where new behavior goes」表与 `references/official-docs/docs/cookbook/extension-cookbook.md` 的 feature→mechanism 表——**新行为必须挂到已文档化扩展点，不得改 agent-loop**。
 
 ## 必须遵守的插件契约（官方红线，逐条核对）
