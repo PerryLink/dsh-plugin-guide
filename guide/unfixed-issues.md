@@ -9,7 +9,7 @@
 > - 用法：开发插件/排障时按「症状 → 位置 → 规避」查；条目后附原讨论，官方有新回复时以原帖为准。
 > - 诚实标注：无法在源码复核的环节（依赖未安装的半边）已注明。
 
-## 1. 仍未修复（20 项，按严重度排序）
+## 1. 仍未修复（26 项，按严重度排序）
 
 | # | 问题 | 位置（@c291e7961a） | 临时规避 | 讨论 |
 |---|---|---|---|---|
@@ -33,6 +33,12 @@
 | 18 | grep/read 行预览从列 0 截断，2000 字节外的匹配被隐藏 | `packages/fs/tool-fs-search/src/grep.ts:35`、`search-core.ts:321-326`（kind:'head'）、`packages/fs/tool-fs/src/read-render.ts:11` | 单行大文件改用 shell 提取区间 | #4982 |
 | 19 | dsh-llm 发布类型引用 devDependencies（npm 消费者 TS2724） | `packages/llm/llm/package.json:21-24`（./invariant 是公开子路径）、`:75-79` | 钉 0.1.1-rc.2 或自行声明依赖 | #5913 |
 | 20 | /compact 在 agent 未空闲时一律报「active compaction」，诊断串味 | `packages/core/agent-loop/src/agent.ts:157-158`、`packages/compaction/compaction-basic/src/index.ts:414-419` | 等 turn 完全结束再 /compact | #6223 |
+| 21 | todo 任务栏在回合中断后永久消失 | `packages/todo/tool-todo/src/index.ts:134-145`——投影 apply 在 `turn/start` 无条件返回 null（`:140`）、`stateVersion: 2`（`:144`）；修复需 bump 2→3（投影缓存 ver 不匹配即丢弃，`packages/session/session-projection-cache/README.md:80`） | 无产品内规避（模型自觉重写不可靠） | #6524（已并入汇总帖 #6520） |
+| 22 | 压缩阈值按整窗口算，1M 窗口下高于 provider 实际输入上限（pressure 几乎永不触发） | `packages/compaction/compaction-basic/src/config.ts:20`（DEFAULT_THRESHOLD_RATIO = 0.8）、`:144`（thresholdTokens = floor(contextWindow × ratio)，不减输出预算）；`packages/llm/llm-deepseek/src/adapter.ts:149`（DEFAULT_MAX_TOKENS = 256_000） | 无产品内规避；#5123 有 reservedOutputTokens 补丁建议 | #5123 #5263 #5800（实测证据来自 #6520 条目提交者） |
+| 23 | overflow 分支 retainTokens = 0，一次清掉约 98%（手动 /compact 同源） | `packages/compaction/compaction-basic/src/index.ts:284-292`——overflow 直接 `selectCompactableRange(session, measurement, 0)`（`:289`）；注释 `:252` 写明绕过正常保留尾策略 | 无产品内规避 | #5416 #5650 |
+| 24 | tool-result 剪枝跑在压缩选区之前，摘要器输入已失真 | `packages/compaction/compaction-basic/src/index.ts:285-289`（overflow：prune → select）、`:309-317`（pressure：prune → remeasure → select） | 无产品内规避 | #5766（相关实测 1:1 剪枝标记，来自 #6520 条目提交者） |
+| 25 | 压缩后旧轮推理整段不回传（实测推理占摘要器输入 58.8%） | 压缩交易把选区整体替换为摘要（`packages/compaction/compaction-basic/src/region.ts` compactSurfaceRegion），旧轮 reasoning 位于被替换区间内、不再回传 | 无产品内规避 | #6480 #6510 #3002（实测证据为准，见 #6520） |
+| 26 | token-meter 的 CJK 增量低估（实测 +26% ~ +57%，纯中文样本 1.57×） | `packages/llm/token-meter/src/estimate.ts:13`（CHARS_PER_TOKEN = 4；estimate 只作用于每步增量，总量 provider-anchored） | 无产品内规避；注意按真实用量预算 | #6361 #5632（实测口径见 #6520） |
 
 ## 2. 次级清单（已核实、优先级较低，4 项）
 
@@ -77,7 +83,7 @@
 
 ## 5. 相关资源
 
-- 官方汇总帖（含 20+4 完整清单与维护者说明）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
+- 官方汇总帖（含 26+4 完整清单与维护者说明）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
 - 官方仓库 checkout 路径约定见 [SKILL.md](../SKILL.md)（本知识库以 `D:\deepseek-harness` 为示例）。
 - 每项条目引用的讨论号均可拼为 `https://github.com/deepseek-ai/deepseek-harness/discussions/<编号>` 直接查看原始分析。
 

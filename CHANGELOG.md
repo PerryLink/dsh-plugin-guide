@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.12] - 2026-09-13
+
+### Added
+
+- `guide/unfixed-issues.md` grows from 20 to 26 primary items with the second community batch, all parent-verified against `c291e7961a` and mirrored in [discussion #6520](https://github.com/deepseek-ai/deepseek-harness/discussions/6520): #21 todo panel lost after an interrupted turn (`tool-todo/src/index.ts:134-145`, stateVersion 2→3); #22 compaction threshold computed over the full window (`compaction-basic/src/config.ts:20,144`); #23 overflow compaction retains zero tokens (`compaction-basic/src/index.ts:284-292`); #24 tool-result pruning runs before range selection (`index.ts:285-289,309-317`); #25 pre-compaction reasoning is not re-sent (measured evidence); #26 token-meter CJK underestimate (`llm/token-meter/src/estimate.ts:13`).
+
 ## [0.3.11] - 2026-09-13
 
 ### Added
