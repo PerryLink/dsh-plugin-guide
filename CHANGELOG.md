@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.14] - 2026-09-15
+
+### Changed
+
+- `guide/unfixed-issues.md` re-verified against the newest official master `0d1f50007f9bca3f52b06e1c3074fa14d5fb0720` (2026-09-15, `dsh-v0.1.6-alpha.1` generation; interval = 666 commits / 3123 changed files). The table now counts **31 unfixed + 1 partial + 6 secondary**: #2 (reasoning-only turns) becomes PARTIAL — DeepSeek now defaults to the Messages protocol (`llm-deepseek/src/config.ts:81,207`), so the empty-content 400 needs a real-run retest on both protocols; the old `src/serialize.ts` path moved to `protocols/chat-completions/serialize.ts:196-229`. Secondary #6129 (trajectory-panel first-token time) is **fixed on master** (`e779831f40` via `a85778448a`; `ui-trajectory/src/client/trajectory-assistant-definition.ts:195-203`) and moved into the fixed-on-master section. ~26 positions refreshed for the three big renames/refactors in the interval: the `llm-deepseek` protocol split (`common/request-extensions.ts:20-24`, `common/defaults.ts:6,8`), the `code-runtime-worker-thread` → `ptc-runtime/ptc-runtime-node` package rename (`bootstrap.ts:326-335`, `json-wire.ts`), and in-file shifts (`session/src/index.ts:719-770`, `rpc-host.ts:79-84,178-179`, `fsio.ts:633-638`, `migration.ts:354-357,366-368,390-395`, `format.ts:403,482-484,497-514`, `generation.ts:583/597`, `install.ts:208-220`, `cordis.patch.yml:432-439`, …). #14 now records "still unfixed as of `dsh-v0.1.6-alpha.1`"; the headless misconception row now documents the new `--session-id <id>` resume (`bundle/headless/src/index.ts:279,342`). Mirrored in the public [discussion #6520](https://github.com/deepseek-ai/deepseek-harness/discussions/6520) fifth batch.
+
 ## [0.3.13] - 2026-09-15
 
 ### Added
