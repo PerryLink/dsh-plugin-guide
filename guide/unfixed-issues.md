@@ -9,7 +9,7 @@
 > - 用法：开发插件/排障时按「症状 → 位置 → 规避」查；条目后附原讨论，官方有新回复时以原帖为准。
 > - 诚实标注：无法在源码复核的环节（依赖未安装的半边）已注明。
 
-## 1. 仍未修复（31 项，按严重度排序）
+## 1. 仍未修复（32 项，按严重度排序）
 
 | # | 问题 | 位置（@c291e7961a） | 临时规避 | 讨论 |
 |---|---|---|---|---|
@@ -39,11 +39,12 @@
 | 24 | tool-result 剪枝跑在压缩选区之前，摘要器输入已失真 | `packages/compaction/compaction-basic/src/index.ts:285-289`（overflow：prune → select）、`:309-317`（pressure：prune → remeasure → select） | 无产品内规避 | #5766（相关实测 1:1 剪枝标记，来自 #6520 条目提交者） |
 | 25 | 压缩后旧轮推理整段不回传（实测推理占摘要器输入 58.8%） | 压缩交易把选区整体替换为摘要（`packages/compaction/compaction-basic/src/region.ts` compactSurfaceRegion），旧轮 reasoning 位于被替换区间内、不再回传 | 无产品内规避 | #6480 #6510 #3002（实测证据为准，见 #6520） |
 | 26 | token-meter 的 CJK 增量低估（实测 +26% ~ +57%，纯中文样本 1.57×） | `packages/llm/token-meter/src/estimate.ts:13`（CHARS_PER_TOKEN = 4；estimate 只作用于每步增量，总量 provider-anchored） | 无产品内规避；注意按真实用量预算 | #6361 #5632 #6688（实测口径见 #6520） |
-| 27 | 读路径 `SessionLogScanner` 默认 `recoverable`：seq gap/损坏行被静默截断，直到后续 turn/end 才重抛（"valid aborted-turn 被当作 no more history"） | `packages/session/session-persistence-jsonl/src/index.ts:915`（无 recovery 实参）；`format.ts:401-410`（默认值）、`:497-515`（issue 暂存）、`:366-371`（header 侧实为 strict，但被扫描器默认覆盖）；strict 仅 verify 路径 `generation.ts:581/595` | 备份日志手动修 gap；修复方向=`:915` 传 `'strict'` 或暴露 `format.ts:394` issue | #6562 #3631 |
-| 28 | v0→v3 迁移后三类 stock 投影未守卫 `message.content/source` 读取 → hydrate 崩溃（迁移器有直通分支不保证完整 envelope） | `session-turn-outline/src/projection.ts:110,113,119`；`session-stats/src/projection.ts:174`；`session-telemetry/src/coordinator.ts:270`；直通分支 `session-format-v0-to-v1/src/migration.ts:353-355,365-366,386-388` | 投影侧防御性守卫（最小风险补丁方向） | #6686 |
-| 29 | http-proxy 把 `[::1]` 写进子进程 `no_proxy`/`NO_PROXY` → httpx 系 MCP server 崩溃（undici 专用括号项泄漏到子进程 env） | `packages/util/http-proxy/src/policy.ts:33`（LOOPBACK_NO_PROXY 含 `[::1]`，注释 `:25-32` 自认是为 undici）、`:206-211`；`install.ts:79-92,113-129`；harness 自身匹配器无需括号项（`:279-295` 去括号） | env 写入侧只写裸 `::1`，undici 消费处保留括号项（两处消费者分离） | #6655 |
-| 30 | 粘贴图片惰性持有 File 快照：剪贴板同步（如微信输入法跨设备复制）后提交时 FileReader NotFoundError | `ui-conversation/src/client/service.ts:73-80`（browserDraftAttachment 只存 File+objectURL）、`:124-135`（base64ImageOf）、`:286-291`；对比文件类立即上传 `:308-324` | 粘贴后立即发送，或拖拽/文件选择 | #6673 |
-| 31 | web-fetch NAT64 探测无守卫：无 DNS64 网络（ipv4only.arpa 不解析）下所有双栈主机 fetch 全灭 | `packages/web/web-fetch-http/src/network.ts:90-93`（无 try/catch）、`:113-134`（discoverNat64Prefixes）、`:38`；SSRF 检查独立（`:96-106`） | 无产品内规避；补丁方向=ENOTFOUND/ENODATA 视为无前缀 | #6664 |
+| 27 | 桌面端打包在 prepare:dsh 阶段必败（payload smoke 引用已移除的 fs-ext） | `apps/desktop/scripts/prepare-dsh.ts:142`；smoke `runtime-payload-smoke.mjs:67-83`（`requireRuntime('fs-ext')`）；策略残留 `runtime-file-policy.ts:26-30`、`project-manager.ts:109`；依赖树已无 fs-ext | 打包机在 apps/desktop 下 `pnpm add -D fs-ext` | #6589 #6612 |
+| 28 | 读路径 `SessionLogScanner` 默认 `recoverable`：seq gap/损坏行被静默截断，直到后续 turn/end 才重抛（"valid aborted-turn 被当作 no more history"） | `packages/session/session-persistence-jsonl/src/index.ts:915`（无 recovery 实参）；`format.ts:401-410`（默认值）、`:497-515`（issue 暂存）、`:366-371`（header 侧实为 strict，但被扫描器默认覆盖）；strict 仅 verify 路径 `generation.ts:581/595` | 备份日志手动修 gap；修复方向=`:915` 传 `'strict'` 或暴露 `format.ts:394` issue | #6562 #3631 |
+| 29 | v0→v3 迁移后三类 stock 投影未守卫 `message.content/source` 读取 → hydrate 崩溃（迁移器有直通分支不保证完整 envelope） | `session-turn-outline/src/projection.ts:110,113,119`；`session-stats/src/projection.ts:174`；`session-telemetry/src/coordinator.ts:270`；直通分支 `session-format-v0-to-v1/src/migration.ts:353-355,365-366,386-388` | 投影侧防御性守卫（最小风险补丁方向） | #6686 |
+| 30 | http-proxy 把 `[::1]` 写进子进程 `no_proxy`/`NO_PROXY` → httpx 系 MCP server 崩溃（undici 专用括号项泄漏到子进程 env） | `packages/util/http-proxy/src/policy.ts:33`（LOOPBACK_NO_PROXY 含 `[::1]`，注释 `:25-32` 自认是为 undici）、`:206-211`；`install.ts:79-92,113-129`；harness 自身匹配器无需括号项（`:279-295` 去括号） | env 写入侧只写裸 `::1`，undici 消费处保留括号项（两处消费者分离） | #6655 |
+| 31 | 粘贴图片惰性持有 File 快照：剪贴板同步（如微信输入法跨设备复制）后提交时 FileReader NotFoundError | `ui-conversation/src/client/service.ts:73-80`（browserDraftAttachment 只存 File+objectURL）、`:124-135`（base64ImageOf）、`:286-291`；对比文件类立即上传 `:308-324` | 粘贴后立即发送，或拖拽/文件选择 | #6673 |
+| 32 | web-fetch NAT64 探测无守卫：无 DNS64 网络（ipv4only.arpa 不解析）下所有双栈主机 fetch 全灭 | `packages/web/web-fetch-http/src/network.ts:90-93`（无 try/catch）、`:113-134`（discoverNat64Prefixes）、`:38`；SSRF 检查独立（`:96-106`） | 无产品内规避；补丁方向=ENOTFOUND/ENODATA 视为无前缀 | #6664 |
 
 ## 2. 次级清单（已核实、优先级较低，7 项）
 
@@ -99,7 +100,7 @@
 
 ## 5. 相关资源
 
-- 官方汇总帖（含 31+7 完整清单与维护者说明）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
+- 官方汇总帖（含 32+7 完整清单与维护者说明）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
 - 官方仓库 checkout 路径约定见 [SKILL.md](../SKILL.md)（本知识库以 `D:\deepseek-harness` 为示例）。
 - 每项条目引用的讨论号均可拼为 `https://github.com/deepseek-ai/deepseek-harness/discussions/<编号>` 直接查看原始分析。
 
