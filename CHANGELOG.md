@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.13] - 2026-09-15
+
+### Added
+
+- `guide/unfixed-issues.md` grows from 26+4 to 31+7 items with the third verification batch (all parent-verified against `c291e7961a`): #27 history read path defaults to `recoverable` and silently truncates seq-gapped/corrupt rows (`session-persistence-jsonl/src/index.ts:915`, `format.ts:401-410`; #6562 #3631); #28 unguarded projection reads after v0→v3 migration (`session-turn-outline:110,113,119`, `session-stats:174`, `session-telemetry/coordinator.ts:270`; #6686); #29 http-proxy leaks undici's `[::1]` into child `no_proxy` env, crashing httpx MCP servers (`policy.ts:33`, `install.ts:79-92`; #6655); #30 pasted images hold a lazy File snapshot that dies under cross-device clipboard sync (`service.ts:73-80,124-135`; #6673); #31 web-fetch NAT64 discovery is unguarded when no DNS64 exists (`network.ts:90-93,113-134`; #6664). #14 now carries the 0.1.2→0.1.5 inject regression bisect (tags `dsh-v0.1.2-rc.1`/`dsh-v0.1.5-rc.2`; #6681); #22/#23 gain the #6671/#6672 discussions. Secondary S5–S7: stale `cordis_mount/inspect/unmount` skill names (#6679), no SIGTERM drain / 5s hardcoded grace / no `dsh restart` (#6665), unmerged LLM egress-timeout fix with http-proxy-owned global dispatcher (#5673).
+- `guide/unfixed-issues.md` §4 design/misconception table gains 9 rows: required `description` on bash/run_code (#3874), session-local GUI token accounting with separate subagent logs and no cost fuse (#6688), existing-but-undocumented `skill-filesystem` `watch: false` (#6674), headless one-shot with no resume (#6677), fork-not-rewind semantics (#6652), `reasoningEfforts`→`thinkingLevelMap` for custom providers (#1058), stale-artifact rebuild diagnosis (#5622), and the lifecycle-first compaction node model with a render-only visibility gap (#6675).
+
 ## [0.3.12] - 2026-09-13
 
 ### Added

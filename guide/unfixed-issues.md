@@ -9,7 +9,7 @@
 > - 用法：开发插件/排障时按「症状 → 位置 → 规避」查；条目后附原讨论，官方有新回复时以原帖为准。
 > - 诚实标注：无法在源码复核的环节（依赖未安装的半边）已注明。
 
-## 1. 仍未修复（26 项，按严重度排序）
+## 1. 仍未修复（31 项，按严重度排序）
 
 | # | 问题 | 位置（@c291e7961a） | 临时规避 | 讨论 |
 |---|---|---|---|---|
@@ -26,7 +26,7 @@
 | 11 | Python SDK 跨进程续接旧会话只跑不落盘 | `packages/sdk/server/src/server.ts:259-292`（只查进程内表；恒 create 无 resume） | 同一进程内复用实例循环多轮 | #4591 #5950 #4954（相关 #1414） |
 | 12 | append() 不执行消息身份校验：插件注入缺 id/role 写坏会话 | `packages/core/session/src/index.ts:710-740`（append 只调 validateSessionEventData `:739`）；`assertMessageEventShape` `:328-359` 只挂 adoptSessionEvent/seed | 注入消息必须自带 id、role:'user'、source:{kind} | #6284（相关 #6236 #918） |
 | 13 | `dsh plugin` 子命令无法自愈 profile 依赖（CLI 侧亦缺 windowsHide） | `apps/cli/src/plugin.ts:120-163`（spawnSync 无 healing、`:134-138` 无 windowsHide） | profile 目录手动 pnpm install | #5537（#4024） |
-| 14 | 插件经 `connection.rpc.handle()` 注册的通道静默失效（405） | `packages/client/connection/src/rpc-host.ts:79-86`（owner 取服务自身 ctx）、`:178-181` | 打社区补丁 cb9b6e2；等上游合并 | #6227（同族 #6270 #6289 #6337 #6513） |
+| 14 | 插件经 `connection.rpc.handle()` 注册的通道静默失效（405） | `packages/client/connection/src/rpc-host.ts:79-86`（owner 取服务自身 ctx）、`:178-181`；0.1.5-rc.x 回归实证：`git show dsh-v0.1.2-rc.1` inject=`['webServer','credentials']` → `dsh-v0.1.5-rc.2`=`['credentials']`（`index.ts:69`） | 打社区补丁 cb9b6e2；等上游合并 | #6227（同族 #6270 #6289 #6337 #6513 #6681） |
 | 15 | 文档预览插件钉版 pdfjs-dist 6.3.289 引用全局 `Iterator` → 旧 Safari/WebView 无法启动 | `packages/client/ui-sidebar-documentpreview/package.json:69`；`src/client/index.ts:37,116` | 换 Chrome/Edge 126+ / Firefox 131+ / Safari 18.2+；或注释 :37/:116 重建 | #6507（同类 #3912） |
 | 16 | pwsh 沙箱对临时根未加保护的 realpath（RAM 盘报 EISDIR） | `packages/sandbox/sandbox-windows-acl/src/path-boundary.ts:11-14`（对照 `packages/sandbox/sandbox/src/roots.ts:30-41` 已有回退先例） | TEMP/TMP 指回物理盘或子目录 | #6018 |
 | 17 | 编程式 `agents.create` 缺 model 时静默死轮 | `packages/core/agent-loop/src/index.ts:421-422`（{{model}} 绑原始可选字段无回退）；webhook 已有回退先例 `packages/webhook/webhook/src/session.ts:63-65` | 先 `agentDefaultModel.currentSelection()` 再显式传 provider/model | #4967 |
@@ -34,13 +34,18 @@
 | 19 | dsh-llm 发布类型引用 devDependencies（npm 消费者 TS2724） | `packages/llm/llm/package.json:21-24`（./invariant 是公开子路径）、`:75-79` | 钉 0.1.1-rc.2 或自行声明依赖 | #5913 |
 | 20 | /compact 在 agent 未空闲时一律报「active compaction」，诊断串味 | `packages/core/agent-loop/src/agent.ts:157-158`、`packages/compaction/compaction-basic/src/index.ts:414-419` | 等 turn 完全结束再 /compact | #6223 |
 | 21 | todo 任务栏在回合中断后永久消失 | `packages/todo/tool-todo/src/index.ts:134-145`——投影 apply 在 `turn/start` 无条件返回 null（`:140`）、`stateVersion: 2`（`:144`）；修复需 bump 2→3（投影缓存 ver 不匹配即丢弃，`packages/session/session-projection-cache/README.md:80`） | 无产品内规避（模型自觉重写不可靠） | #6524（已并入汇总帖 #6520） |
-| 22 | 压缩阈值按整窗口算，1M 窗口下高于 provider 实际输入上限（pressure 几乎永不触发） | `packages/compaction/compaction-basic/src/config.ts:20`（DEFAULT_THRESHOLD_RATIO = 0.8）、`:144`（thresholdTokens = floor(contextWindow × ratio)，不减输出预算）；`packages/llm/llm-deepseek/src/adapter.ts:149`（DEFAULT_MAX_TOKENS = 256_000） | 无产品内规避；#5123 有 reservedOutputTokens 补丁建议 | #5123 #5263 #5800（实测证据来自 #6520 条目提交者） |
-| 23 | overflow 分支 retainTokens = 0，一次清掉约 98%（手动 /compact 同源） | `packages/compaction/compaction-basic/src/index.ts:284-292`——overflow 直接 `selectCompactableRange(session, measurement, 0)`（`:289`）；注释 `:252` 写明绕过正常保留尾策略 | 无产品内规避 | #5416 #5650 |
+| 22 | 压缩阈值按整窗口算，1M 窗口下高于 provider 实际输入上限（pressure 几乎永不触发） | `packages/compaction/compaction-basic/src/config.ts:20`（DEFAULT_THRESHOLD_RATIO = 0.8）、`:144`（thresholdTokens = floor(contextWindow × ratio)，不减输出预算）；`packages/llm/llm-deepseek/src/adapter.ts:149`（DEFAULT_MAX_TOKENS = 256_000） | `modelPolicies` 按模型覆盖 thresholdRatio（对 1M/256K 设 ≤0.65）；#5123 有 reservedOutputTokens 补丁建议 | #5123 #5263 #5800 #6671（实测证据来自 #6520 条目提交者） |
+| 23 | overflow 分支 retainTokens = 0，一次清掉约 98%（手动 /compact 同源） | `packages/compaction/compaction-basic/src/index.ts:284-292`——overflow 直接 `selectCompactableRange(session, measurement, 0)`（`:289`）；注释 `:252` 写明绕过正常保留尾策略 | 无产品内规避；先确认 preset 隔离域挂载了 compaction-basic（host 树默认禁用，`packages/bundle/web-app/cordis.patch.yml:427-434`） | #5416 #5650 #6672 |
 | 24 | tool-result 剪枝跑在压缩选区之前，摘要器输入已失真 | `packages/compaction/compaction-basic/src/index.ts:285-289`（overflow：prune → select）、`:309-317`（pressure：prune → remeasure → select） | 无产品内规避 | #5766（相关实测 1:1 剪枝标记，来自 #6520 条目提交者） |
 | 25 | 压缩后旧轮推理整段不回传（实测推理占摘要器输入 58.8%） | 压缩交易把选区整体替换为摘要（`packages/compaction/compaction-basic/src/region.ts` compactSurfaceRegion），旧轮 reasoning 位于被替换区间内、不再回传 | 无产品内规避 | #6480 #6510 #3002（实测证据为准，见 #6520） |
-| 26 | token-meter 的 CJK 增量低估（实测 +26% ~ +57%，纯中文样本 1.57×） | `packages/llm/token-meter/src/estimate.ts:13`（CHARS_PER_TOKEN = 4；estimate 只作用于每步增量，总量 provider-anchored） | 无产品内规避；注意按真实用量预算 | #6361 #5632（实测口径见 #6520） |
+| 26 | token-meter 的 CJK 增量低估（实测 +26% ~ +57%，纯中文样本 1.57×） | `packages/llm/token-meter/src/estimate.ts:13`（CHARS_PER_TOKEN = 4；estimate 只作用于每步增量，总量 provider-anchored） | 无产品内规避；注意按真实用量预算 | #6361 #5632 #6688（实测口径见 #6520） |
+| 27 | 读路径 `SessionLogScanner` 默认 `recoverable`：seq gap/损坏行被静默截断，直到后续 turn/end 才重抛（"valid aborted-turn 被当作 no more history"） | `packages/session/session-persistence-jsonl/src/index.ts:915`（无 recovery 实参）；`format.ts:401-410`（默认值）、`:497-515`（issue 暂存）、`:366-371`（header 侧实为 strict，但被扫描器默认覆盖）；strict 仅 verify 路径 `generation.ts:581/595` | 备份日志手动修 gap；修复方向=`:915` 传 `'strict'` 或暴露 `format.ts:394` issue | #6562 #3631 |
+| 28 | v0→v3 迁移后三类 stock 投影未守卫 `message.content/source` 读取 → hydrate 崩溃（迁移器有直通分支不保证完整 envelope） | `session-turn-outline/src/projection.ts:110,113,119`；`session-stats/src/projection.ts:174`；`session-telemetry/src/coordinator.ts:270`；直通分支 `session-format-v0-to-v1/src/migration.ts:353-355,365-366,386-388` | 投影侧防御性守卫（最小风险补丁方向） | #6686 |
+| 29 | http-proxy 把 `[::1]` 写进子进程 `no_proxy`/`NO_PROXY` → httpx 系 MCP server 崩溃（undici 专用括号项泄漏到子进程 env） | `packages/util/http-proxy/src/policy.ts:33`（LOOPBACK_NO_PROXY 含 `[::1]`，注释 `:25-32` 自认是为 undici）、`:206-211`；`install.ts:79-92,113-129`；harness 自身匹配器无需括号项（`:279-295` 去括号） | env 写入侧只写裸 `::1`，undici 消费处保留括号项（两处消费者分离） | #6655 |
+| 30 | 粘贴图片惰性持有 File 快照：剪贴板同步（如微信输入法跨设备复制）后提交时 FileReader NotFoundError | `ui-conversation/src/client/service.ts:73-80`（browserDraftAttachment 只存 File+objectURL）、`:124-135`（base64ImageOf）、`:286-291`；对比文件类立即上传 `:308-324` | 粘贴后立即发送，或拖拽/文件选择 | #6673 |
+| 31 | web-fetch NAT64 探测无守卫：无 DNS64 网络（ipv4only.arpa 不解析）下所有双栈主机 fetch 全灭 | `packages/web/web-fetch-http/src/network.ts:90-93`（无 try/catch）、`:113-134`（discoverNat64Prefixes）、`:38`；SSRF 检查独立（`:96-106`） | 无产品内规避；补丁方向=ENOTFOUND/ENODATA 视为无前缀 | #6664 |
 
-## 2. 次级清单（已核实、优先级较低，4 项）
+## 2. 次级清单（已核实、优先级较低，7 项）
 
 | # | 问题 | 位置 | 规避 | 讨论 |
 |---|---|---|---|---|
@@ -48,6 +53,9 @@
 | S2 | 会话列表 RPC 是一次性全量快照，无分页/懒加载 | `packages/api/session-controller/src/index.ts:223-225`；cursor 仅保留位 `types.ts:245` | 拆分工作区/清理旧会话/ssh -C | #6017 |
 | S3 | 轨迹面板首 token 时间在回放/已结流上不可用 | `packages/client/ui-trajectory/src/client/trajectory-assistant-definition.ts:188-189,261` | 无（仅影响指标展示） | #6129 |
 | S4 | 冷/种子会话列表行回退显示工作区文件夹名 | `packages/api/session-controller/src/client/sessions/service.ts:143-151` | 打开会话一次生成标题投影 | #6316 #6207（相关 #3375 #5368） |
+| S5 | cordis preset 的 SKILL.md 仍在教已废弃工具名（6 处旧名 vs 实现注册 7 个新名） | `packages/preset/agent-presets/presets/cordis/skills/editing-cordis-compositions/SKILL.md:32,34,64,80,118,122`；新名 `packages/extensions/tool-cordis/src/index.ts:45,64,100,152,244,333,355` | 文档修复型 PR；快照测试需重生成 | #6679 |
+| S6 | SIGTERM 无在途 turn 排空路径；5s 宽限硬编码；无 `dsh restart` | `apps/cli/src/process-shutdown.ts:4,69-75`；dispose=cancel+whenIdle `agent-loop/src/index.ts:592-594`；launcher 无 restart（`apps/cli/src/args.ts:145-201`） | 第二信号即强退是固定语义；drain 属 feature request | #6665 |
+| S7 | LLM 出站超时修复未合入；undici 全局 dispatcher 由 http-proxy 独占（>5min prefill 在 ~302s 被 body timeout 终止） | 无 `egress.ts`/`httpBodyTimeoutMs`；`llm-pi-ai/src/config.ts:46`（300s 空闲看门狗）、`adapter.ts:355`；`util/http-proxy/src/install.ts:209-217` | 每请求新建 fetch 绕过共享 socket 记账 | #5673 |
 
 ## 3. 已在 master 修复（旧帖一律更新即可，无需改代码）
 
@@ -80,10 +88,18 @@
 | `--host 0.0.0.0` 被拒绝 | 刻意不支持（远程代码执行风险）；用 LAN IP + `--trusted-host` 或 SSH 隧道 | `packages/bundle/web-app/src/startup.ts:74-75` |
 | 工具定义每轮都发 | 无「每 N 轮」开关；工具集不变时前缀缓存复用（逻辑 prompt 体积 ≠ 全价计费） | `packages/core/agent-loop/src/agent.ts:262-265,556,613` |
 | 同级权限请求报错 | 见第 1 节 #1；read-only 下升级走审批可正常终止 | `packages/sandbox/sandbox/src/escalation.ts:162-164` |
+| bash/run_code 的 `description` 必填 | 刻意设计（活动列表/UI 展示用）；空串另有执行期拒绝 | `packages/shell/tool-bash/src/index.ts:244-252`；`packages/core/tools/src/ptc.ts:304-311,327-330`（#3874） |
+| 界面 token 远小于计费 | 界面=主会话 usage 之和；子代理独立会话/日志不计入；无费用熔断功能 | `ui-trajectory/src/client/layout.ts:758,952-955`；`subagent-in-process-driver/src/index.ts:113`（#6688） |
+| skill 目录监视挡 Windows 插件更新 | `watch: false` 开关已存在（未文档化）；Windows 可用 `watchUsePolling` | `packages/skill/skill-filesystem/src/index.ts:82-83`（#6674） |
+| headless 每次运行新会话 | 设计如此（一次性）；无 `--resume`；多轮走 Connection RPC/gateway | `packages/bundle/headless/src/index.ts:186,194-212`；`startup.ts:31-40`（#6677） |
+| 想"回退到第 N 轮重跑" | 无原位 rewind；fork 生成新会话继承前缀，边界禁落在开启 turn 内；UI 仅开放已完成轮次末条消息 | `packages/core/session/src/index.ts:1203,1256-1260`；`ui-chat/src/client/locale.ts:71-72`（#6652） |
+| 自定义 provider 想调思考强度 | 模型条目声明 `reasoningEfforts`（off/minimal/low/medium/high/xhigh/max）→ thinkingLevelMap；仅 llm-pi-ai | `packages/llm/llm-pi-ai/src/catalog.ts:607,690-743`；示例 `index.ts:28-53`（#1058） |
+| 编译报错引用不存在的导出（如 PersistenceCoordinator） | 旧产物与源码混装，非配置问题；彻底重建 | 常量已改名搬家 `session-query/src/config.ts:12`（#5622） |
+| 自动压缩"开始"阶段不可见 | 节点模型已按 lifecycle-first（start=compaction/start）；仅渲染层被 checkpoint 门控 | `ui-chat/src/client/conversation-nodes/compaction.ts:39-45,52-53`（#6675） |
 
 ## 5. 相关资源
 
-- 官方汇总帖（含 26+4 完整清单与维护者说明）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
+- 官方汇总帖（含 31+7 完整清单与维护者说明）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
 - 官方仓库 checkout 路径约定见 [SKILL.md](../SKILL.md)（本知识库以 `D:\deepseek-harness` 为示例）。
 - 每项条目引用的讨论号均可拼为 `https://github.com/deepseek-ai/deepseek-harness/discussions/<编号>` 直接查看原始分析。
 
