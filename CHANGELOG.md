@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.15] - 2026-09-19
+
+### Changed
+
+- `guide/unfixed-issues.md` re-verified against `ddefc45fbc7f8e46dd73185e68295696d1297887` (`dsh-v0.1.6-alpha.2`, 2026-09-19; +882 commits over the previous baseline `0d1f5000`). Counts move to **29 unfixed + 2 partial + 1 fixed + 6 secondary**: **#27** (desktop `prepare:dsh` fs-ext payload smoke) is **fixed** by `6b05ed53e9`, contained only in `dsh-v0.1.6-alpha.2`; **#1** (same/narrower `sandbox_permissions`) becomes **partial** — `61c548e200` ("fix(sandbox): accept repeated effective permission modes", PR #4326) short-circuits a repeated mode at `escalation.ts:155` and moves the "not strictly wider" throw to `:160`, with the spec now asserting same-mode success (`tests/escalation.spec.ts:84`), while narrower/unsupported targets still throw. Refreshed positions include `bundle/base/cordis.patch.yml:226` -> `:234`, and the discussion link title in the header now names the alpha.2 baseline. Mirrored in the public [discussion #6520](https://github.com/deepseek-ai/deepseek-harness/discussions/6520).
+
 ## [0.3.14] - 2026-09-15
 
 ### Changed

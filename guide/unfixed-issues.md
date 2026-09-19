@@ -2,19 +2,20 @@
 
 > 本文件是 `dsh-plugin-guide` 知识库对官方仓库社区讨论的**源码级结论收拢**：
 > 每个条目都在基线提交上逐行核实过（read/grep），附 `path:line`、临时规避与原文讨论链接。
-> 汇总帖见官方 Discussions [DSH master (0.1.5-rc.2 / c291e7961a) 仍未修复的问题清单（社区核实版）](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)。
+> 汇总帖见官方 Discussions [DSH master (0.1.6-alpha.2 / ddefc45fbc) 仍未修复的问题清单（社区核实版）](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)。
 >
 > - 初版基线：`c291e7961a515f6d7af9304e7fd1d257929aef26`（2026-09-10 快照，0.1.5-rc.2 世代）
 > - **复核基线：`0d1f50007f9bca3f52b06e1c3074fa14d5fb0720`（2026-09-15，0.1.6-alpha.1 世代；区间 666 提交 / 3123 改动文件）——2026-09-15 全表重核：1 项已修复（#6129）、1 项转部分修复（#2）、行号已按新基线刷新**
+> - **复核基线 2：`ddefc45fbc7f8e46dd73185e68295696d1297887`（`dsh-v0.1.6-alpha.2`，2026-09-19；较上一基线 +882 提交）——2026-09-19 再核：#27 已修复（`6b05ed53e9`）、#1 转部分修复（`61c548e200`：同级模式已接受，仅更窄/不受支持仍抛错），下表行号已刷新**
 > - 核实人：PerryLink（[dsh-plugin-guide](https://github.com/perrylink/dsh-plugin-guide) 维护者）
 > - 用法：开发插件/排障时按「症状 → 位置 → 规避」查；条目后附原讨论，官方有新回复时以原帖为准。
 > - 诚实标注：无法在源码复核的环节（依赖未安装的半边）已注明。
 
-## 1. 仍未修复（31 项 + 1 项部分修复（#2），按严重度排序）
+## 1. 仍未修复（29 项 + 2 项部分修复（#1、#2）+ 1 项已修复（#27，保留为修复记录），按严重度排序）
 
-| # | 问题 | 位置（@0d1f500，2026-09-15 复核） | 临时规避 | 讨论 |
+| # | 问题 | 位置（@ddefc45，2026-09-19 复核） | 临时规避 | 讨论 |
 |---|---|---|---|---|
-| 1 | 同级/更窄的 `sandbox_permissions` 直接报错，模型整轮循环 | `packages/sandbox/sandbox/src/escalation.ts:163`（schema 恒广告全枚举 `:41`；danger-full-access 变体 `packages/bundle/base/cordis.patch.yml:226` + `packages/fs/fs-sandbox/src/index.ts:65-67` + `packages/fs/tool-fs/src/sandbox.ts:39-45,59-70`；spec 钉死 `tests/escalation.spec.ts:88,90`） | persona 注明「已是该模式就别带 sandbox_permissions」 | #4021 #4481 #4672 #4742 #4763 #4976 #4990 #5570（同族 #5238 #5298 #6215） |
+| 1 | 同级/更窄的 `sandbox_permissions`：**同级自 `61c548e200` 起已接受**，更窄/不受支持的目标仍报错（模型整轮循环只余此半边） | `packages/sandbox/sandbox/src/escalation.ts:160`（同级在 `:155` 短路返回；schema 恒广告全枚举 `:41`；danger-full-access 变体 `packages/bundle/base/cordis.patch.yml:234` + `packages/fs/fs-sandbox/src/index.ts:65-67` + `packages/fs/tool-fs/src/sandbox.ts:39-45,59-70`；spec 钉死 `tests/escalation.spec.ts:88,90`） | persona 注明「已是该模式就别带 sandbox_permissions」 | #4021 #4481 #4672 #4742 #4763 #4976 #4990 #5570（同族 #5238 #5298 #6215） |
 | 2 | 纯推理轮以空 content 落盘 → 之后每轮 400，整会话报废（**PARTIAL**：默认协议已切 Messages，待真机复测） | `packages/llm/llm-deepseek/src/protocols/chat-completions/serialize.ts:196-229`（chat-completions 仍空 content，注释 `:212-219`；旧 `src/serialize.ts` 已随 `6a137ea702` 删除）；默认协议已切 Messages（`src/config.ts:81,207`，`b0641b83fc`），推理走 `thinking` 块（`messages/serialize.ts:29-32`） | 显式 `protocol: chat-completions` 时：备份后解压 session.v3.jsonl.zstd，改占位/删除该条后重压 | #5466（同族 #1850 #6218 #6431） |
 | 3 | windows-acl 沙箱缓存临时目录消失后该会话永久损坏 | `packages/sandbox/sandbox-local/src/index.ts:415-417`（缓存命中无复核）；runner 首检 `packages/sandbox/sandbox-windows-acl/src/runner.ts:110-113` | 重启 dsh host 重建快照 | #6483（同族 #5034） |
 | 4 | read_image 所有预设一调即失败（cannot get property 'fs' without inject） | `packages/fs/tool-fs/src/index.ts:70-71`（inject 收窄 scope）；执行体 `packages/fs/tool-fs/src/read-image.ts:209`（`:265` 同类） | 无产品内规避；走外部视觉路径 | #4612 |
@@ -40,7 +41,7 @@
 | 24 | tool-result 剪枝跑在压缩选区之前，摘要器输入已失真 | `packages/compaction/compaction-basic/src/index.ts:281-285`（overflow：prune → select）、`:305-313`（pressure：prune → remeasure → select） | 无产品内规避 | #5766（相关实测 1:1 剪枝标记，来自 #6520 条目提交者） |
 | 25 | 压缩后旧轮推理整段不回传（实测推理占摘要器输入 58.8%） | 压缩交易把选区整体替换为摘要（`packages/compaction/compaction-basic/src/region.ts:174` compactSurfaceRegion + `commitCompactionBody` `:472-500`），旧轮 reasoning 位于被替换区间内、不再回传 | 无产品内规避 | #6480 #6510 #3002（实测证据为准，见 #6520） |
 | 26 | token-meter 的 CJK 增量低估（实测 +26% ~ +57%，纯中文样本 1.57×） | `packages/llm/token-meter/src/estimate.ts:13`（CHARS_PER_TOKEN = 4；estimate 只作用于每步增量，总量 provider-anchored） | 无产品内规避；注意按真实用量预算 | #6361 #5632 #6688（实测口径见 #6520） |
-| 27 | 桌面端打包在 prepare:dsh 阶段必败（payload smoke 引用已移除的 fs-ext） | `apps/desktop/scripts/prepare-dsh.ts:142`；smoke `apps/desktop/tests/fixtures/runtime-payload-smoke.mjs:67-83`（`requireRuntime('fs-ext')`，调用 `:124`）；策略残留 `runtime-file-policy.ts:26-30`、`project-manager.ts:111`；依赖树已无 fs-ext | 打包机在 apps/desktop 下 `pnpm add -D fs-ext` | #6589 #6612 |
+| 27 | ~~桌面端打包在 prepare:dsh 阶段必败（payload smoke 引用已移除的 fs-ext）~~ **已修复**：`6b05ed53e9` 删除了 smoke 的 `checkFsExt()` 及其调用（只进 `dsh-v0.1.6-alpha.2`，未进 alpha.1） | 原位置 `apps/desktop/scripts/prepare-dsh.ts:142`、`apps/desktop/tests/fixtures/runtime-payload-smoke.mjs:67-83` | 不再需要 | #6589 #6612 |
 | 28 | 读路径 `SessionLogScanner` 默认 `recoverable`：seq gap/损坏行被静默截断，直到后续 turn/end 才重抛（"valid aborted-turn 被当作 no more history"） | `packages/session/session-persistence-jsonl/src/index.ts:915`（无 recovery 实参）；`format.ts:403`（默认值）、`:482-484`/`:497-514`（issue 暂存）、`:369`（header 侧实为 strict，但被扫描器默认覆盖）；strict 仅 verify 路径 `generation.ts:583/597` | 备份日志手动修 gap；修复方向=`:915` 传 `'strict'` 或暴露 `format.ts:394` issue | #6562 #3631 |
 | 29 | v0→v3 迁移后三类 stock 投影未守卫 `message.content/source` 读取 → hydrate 崩溃（迁移器有直通分支不保证完整 envelope） | `session-turn-outline/src/projection.ts:110,113,119`；`session-stats/src/projection.ts:174`；`session-telemetry/src/coordinator.ts:270`；直通分支 `session-format-v0-to-v1/src/migration.ts:354-357,366-368,390-395` | 投影侧防御性守卫（最小风险补丁方向） | #6686 |
 | 30 | http-proxy 把 `[::1]` 写进子进程 `no_proxy`/`NO_PROXY` → httpx 系 MCP server 崩溃（undici 专用括号项泄漏到子进程 env） | `packages/util/http-proxy/src/policy.ts:33`（LOOPBACK_NO_PROXY 含 `[::1]`，注释 `:25-32` 自认是为 undici）、`:206-210`；`install.ts:79-92,113-129`；harness 自身匹配器无需括号项（`:279-295` 去括号） | env 写入侧只写裸 `::1`，undici 消费处保留括号项（两处消费者分离） | #6655 |
@@ -89,7 +90,7 @@
 | `dsh --profile tui` 不存在 | tui 非内置；README 中为示例（"assuming the tui profile is installed"），社区方案 `dsh plugin --profile tui add github:deepseek-harness/turtle-ui` | `apps/cli/README.md:28`、`apps/cli/reference/README.md:70-72` |
 | `--host 0.0.0.0` 被拒绝 | 刻意不支持（远程代码执行风险）；用 LAN IP + `--trusted-host` 或 SSH 隧道 | `packages/bundle/web-app/src/startup.ts:74-75` |
 | 工具定义每轮都发 | 无「每 N 轮」开关；工具集不变时前缀缓存复用（逻辑 prompt 体积 ≠ 全价计费） | `packages/core/agent-loop/src/agent.ts:262-265,556,613` |
-| 同级权限请求报错 | 见第 1 节 #1；read-only 下升级走审批可正常终止 | `packages/sandbox/sandbox/src/escalation.ts:163` |
+| 同级权限请求报错 | 见第 1 节 #1（**同级自 `61c548e200` 起已接受**，只剩更窄/不受支持的目标抛错）；read-only 下升级走审批可正常终止 | `packages/sandbox/sandbox/src/escalation.ts:155,160` |
 | bash/run_code 的 `description` 必填 | 刻意设计（活动列表/UI 展示用）；空串另有执行期拒绝 | `packages/shell/tool-bash/src/index.ts:244-252`；`packages/core/tools/src/ptc.ts:304-311,327-330`（#3874） |
 | 界面 token 远小于计费 | 界面=主会话 usage 之和；子代理独立会话/日志不计入；无费用熔断功能 | `ui-trajectory/src/client/layout.ts:758,952-955`；`subagent-in-process-driver/src/index.ts:113`（#6688） |
 | skill 目录监视挡 Windows 插件更新 | `watch: false` 开关已存在（未文档化）；Windows 可用 `watchUsePolling` | `packages/skill/skill-filesystem/src/index.ts:82-83`（#6674） |
