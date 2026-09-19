@@ -14,9 +14,14 @@ This tutorial installs the published Python SDK, runs the shipped standalone min
 
 ## Install the SDK
 
-### Linux and macOS
+<div>
+<a id="linux-and-macos"></a>
+<a id="windows-powershell"></a>
+</div>
 
-```sh
+::: code-group
+
+```sh [Linux/macOS]
 git clone https://github.com/deepseek-ai/deepseek-harness.git
 cd deepseek-harness
 python -m venv .venv
@@ -24,9 +29,7 @@ python -m venv .venv
 python -m pip install deepseek-harness-sdk
 ```
 
-### Windows PowerShell
-
-```powershell
+```powershell [Windows PowerShell]
 git clone https://github.com/deepseek-ai/deepseek-harness.git
 Set-Location deepseek-harness
 py -3.10 -m venv .venv
@@ -34,31 +37,43 @@ py -3.10 -m venv .venv
 python -m pip install deepseek-harness-sdk
 ```
 
+:::
+
 The installation includes a matching native runtime wheel and the `dsh` command. Normal SDK execution needs no system Node.js. Repository contributors who build the artifacts should use the [Python contributor workflow](../../../python/development.md).
 
 ## Run the checked-in example
 
 Export the credential and, when needed, a compatible proxy endpoint:
 
-### Linux and macOS
+<div>
+<a id="linux-and-macos-1"></a>
+<a id="windows-powershell-1"></a>
+</div>
 
-```sh
+::: code-group
+
+```sh [Linux/macOS]
 export DEEPSEEK_API_KEY=sk-your-key-here
 # export DEEPSEEK_BASE_URL=http://127.0.0.1:8000/v1
 ```
 
-### Windows PowerShell
-
-```powershell
+```powershell [Windows PowerShell]
 $env:DEEPSEEK_API_KEY = "sk-your-key-here"
 # $env:DEEPSEEK_BASE_URL = "http://127.0.0.1:8000/v1"
 ```
 
+:::
+
 Run one task with explicit workspace and home paths:
 
-### Linux and macOS
+<div>
+<a id="linux-and-macos-2"></a>
+<a id="windows-powershell-2"></a>
+</div>
 
-```sh
+::: code-group
+
+```sh [Linux/macOS]
 python python/sdk/examples/minimal.py \
   --workspace /absolute/path/to/disposable-workspace \
   --dsh-home /absolute/path/to/example-dsh-home \
@@ -66,15 +81,15 @@ python python/sdk/examples/minimal.py \
   "Inspect the repository and fix the failing tests."
 ```
 
-### Windows PowerShell
-
-```powershell
+```powershell [Windows PowerShell]
 python python/sdk/examples/minimal.py `
   --workspace C:\work\disposable-workspace `
   --dsh-home C:\work\example-dsh-home `
   --session-id example-001 `
   "Inspect the repository and fix the failing tests."
 ```
+
+:::
 
 The script prints the final assistant response. The selected home receives the generated `sdk-minimal` profile, installed plugins, and uncompressed JSONL session logs under `sessions/`. The example and SDK never silently read `~/.dsh`.
 
@@ -109,25 +124,47 @@ The SDK starts the bundled `dsh --profile sdk-minimal` process lazily and reuses
 
 Use `dsh plugin` for dependencies and bundle layers that should persist in this home:
 
-### Linux and macOS
+<div>
+<a id="linux-and-macos-3"></a>
+<a id="windows-powershell-3"></a>
+</div>
 
-```sh
+::: code-group
+
+```sh [Linux/macOS]
 export DSH_HOME=/absolute/path/to/example-dsh-home
 dsh --profile sdk-minimal --dump-default-config >/dev/null
 dsh plugin --profile sdk-minimal add file:/absolute/path/to/my-plugin-bundle
 ```
 
-### Windows PowerShell
-
-```powershell
+```powershell [Windows PowerShell]
 $env:DSH_HOME = "C:\work\example-dsh-home"
 dsh --profile sdk-minimal --dump-default-config | Out-Null
 dsh plugin --profile sdk-minimal add file:C:/work/my-plugin-bundle
 ```
 
+:::
+
 The first command initializes the shipped standalone profile. The second forwards package management to `pnpm`, then records any installed package that exports a `dsh.bundle` layer. Install `pnpm` only for this management command; launching the installed SDK does not need it. Edit `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml` for persistent row changes, or pass patch files from Python for per-launch changes.
 
 Another `profile` is valid when it includes `@deepseek-ai/dsh-sdk-app` or another JSON-RPC server row. Missing server rows, unresolved plugins, and invalid patches fail during startup instead of falling back to another composition.
+
+<a id="opt-in-to-str_replace_editor"></a>
+### Opt in to `str_replace_editor`
+
+The bundled runtime includes `str_replace_editor`, but `sdk-minimal` omits it from the default Cordis tree. To use it, save this configuration as `editor.patch.yml`; `insert` adds both the editor and the filesystem provider that the minimal profile lacks:
+
+```yaml
+- insert:
+    - id: fs-local
+      name: '@deepseek-ai/dsh-fs-local'
+      config:
+        cwd: !!js process.cwd()
+    - id: tool-str-replace-editor
+      name: '@deepseek-ai/dsh-tool-str-replace-editor'
+```
+
+Pass `patches=("/absolute/path/to/editor.patch.yml",)` when constructing `DeepSeekHarness(profile="sdk-minimal", ...)`, or put the patch in `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml` for persistent configuration. On the next runtime launch, model requests include `str_replace_editor` beside the persistent shell. The local filesystem provider uses the runtime working directory for relative paths; like the minimal shell, it does not confine access to that directory. For the standard `sdk` profile, insert only the editor row so it uses the existing filesystem provider and policies.
 
 ## Understand the minimal profile
 
@@ -135,13 +172,12 @@ Another `profile` is valid when it includes `@deepseek-ai/dsh-sdk-app` or anothe
 |---|---|
 | System prompt | `DSH_SYSTEM_PROMPT`, falling back to `You are a helpful software engineer assistant.` |
 | Model in `minimal.py` | `--model`, then `DSH_MODEL`, then `deepseek-v4-flash` |
-| Model-facing tools | Persistent `bash` on Linux/macOS or `pwsh` on Windows, plus `str_replace_editor` |
+| Model-facing tool | Persistent `bash` on Linux/macOS or `pwsh` on Windows |
 | Shell timeout | 300 seconds |
-| Editor output limit | 16,000 characters |
 | Runtime context and compaction | Absent |
 | Session persistence | Uncompressed JSONL under `<dsh_home>/sessions` |
 
-The profile's sole bundle inserts the complete tree over an empty root and does not include `dsh-base`; later base-profile tools therefore cannot appear implicitly. It contains the SDK protocol, one environment-configured DeepSeek adapter, local execution, and persistence, while settings, managed credentials, telemetry, Web tools, subagents, local instruction discovery, and compaction are absent. It pins `danger-full-access`, so the platform-selected persistent shell and editor can modify any path visible to the runtime; use a disposable checkout or container.
+The profile's sole bundle inserts the complete tree over an empty root and does not include `dsh-base`; later base-profile tools therefore cannot appear implicitly. It contains the SDK protocol, one environment-configured DeepSeek adapter, local execution, and persistence, while filesystem tools, settings, managed credentials, OTel telemetry, Web tools, subagents, local instruction discovery, and compaction are absent. The [DeepSeek session-log contributor](../../../packages/session/session-log-deepseek/README.md) uploads complete unaccepted log suffixes with DeepSeek requests by default; set `session-log-deepseek.enabled: false` in a profile patch to disable it. It pins `danger-full-access`, so the platform-selected persistent shell can modify any path visible to the runtime; use a disposable checkout or container.
 
 The installed wheel still packages the full `web` profile and frontend assets. Run `dsh web` against an explicit `DSH_HOME` when a Python SDK deployment also needs the browser application; `web` is a separate CLI application and cannot serve a Python SDK client.
 

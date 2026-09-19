@@ -34,7 +34,7 @@ interface SessionReferenceInput {
 }
 ```
 
-`SessionReferenceCandidate` 是面向宿主的发现输出。存在最新会话标题时，它的 label 使用该标题；筛选搜索该 label 以及 session id 和 cwd，绝不搜索 transcript（文本记录）。
+`SessionReferenceCandidate` 是面向宿主的发现输出。存在最新 Session 标题时，它的 `label` 使用该标题；可选显示文本则优先使用 subagent 的持久创建 label。筛选会同时搜索两者、Session id 与 cwd，绝不搜索 transcript（文本记录）。Remote 候选在 `displayTitle` 存在时用它标记规范 mention。
 
 ```ts type-equiv
 /** One host-facing candidate from exact session metadata. */
@@ -43,6 +43,8 @@ interface SessionReferenceCandidate {
   sessionId: SessionId
   /** Latest log-backed title, falling back to the opaque session id. */
   label: string
+  /** Display and canonical-mention text, preferring a subagent's durable creation label over {@link label}. */
+  displayTitle?: string
   /** Source session working directory, when recorded. */
   cwd?: string
   /**
@@ -180,14 +182,13 @@ Exact-read consumer that prepares immutable cross-session message context.
 /**
  * List reference candidates, ranked by working-directory affinity.
  *
- * Discovery runs at keystroke rate, so a title only ever comes from a
- * projection read: see {@link SessionReferenceResolver.projectedTitle} for
- * which sessions can answer one and which fall back to their id.
+ * Discovery runs at keystroke rate, so titles and subagent labels only ever
+ * come from projection reads; sessions without either fall back to their id.
  * @param agent - target agent; self is excluded and its cwd drives ranking.
- * @param query - optional case-insensitive session-id/cwd/title substring.
+ * @param query - optional case-insensitive session-id/cwd/title/display-title substring.
  * @param limit - optional positive result cap.
  * @param signal - optional cancellation boundary for host autocomplete teardown.
- * @returns candidates labeled by latest title or, when absent, session id.
+ * @returns candidates with canonical mention labels and presentation titles.
  */
 async listCandidates( agent: Agent, query: string = '', limit: number = this.config.candidateLimit, signal?: AbortSignal, ): Promise<SessionReferenceCandidate[]>
 
@@ -204,6 +205,10 @@ async listCandidates( agent: Agent, query: string = '', limit: number = this.con
 
 /**
  * Snapshot all references for one accepted direct message and return one aggregated durable context.
+ * Automatic budgets use the last assembled route, or agent options before any assembly.
+ * Missing model capacity or adapter uses 64 KiB; other metadata lookup failures and cancellation reject preparation.
+ * Truncated previews include omission facts and a full-snapshot spill locator, or an explicit unavailable notice.
+ * Cancellation prevents context publication, including when storage completes after cancellation.
  * @param agent - target agent; references to it are rejected.
  * @param content - already host-normalized readable message content.
  * @param references - structured source sessions in mention order.

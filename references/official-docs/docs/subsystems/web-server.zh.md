@@ -50,7 +50,7 @@ interface Config {
 
 `WebServer`（`ctx.webServer`）在激活时立即监听；监听失败（EADDRINUSE 等）会使初始化被拒绝，启动进程会报告失败的 fiber。`register(route)` 添加一条具名路由并返回其 disposer；重复的 `(kind, path)` 抛出异常，因为路由模式是组合层约定，冲突即配置错误。Gzip 在服务器内部包装符合条件且基于 socket 的响应，因此 route handler 继续直接持有 `ServerResponse`，服务也不新增响应写出 API。已有内容编码、`Cache-Control: no-transform`、范围响应、SSE、ZIP 与打包后的 `.gz` Worker 镜像均保持 identity 响应。`collectIndexInjections()` 经一次 `webserver/index-inject` emit 收集结构化 `IndexInjection` 行，`renderIndex(html)` 把它们渲染进成功的根路径和配置 index 响应，随后再按注册顺序应用原始的 `tapIndex(transform)` 逃生口转换；[dsh-client-modules](../../packages/client/modules) 以启动 manifest（元数据清单）行回应该事件。`port` 读取监听端口，包括 `config.port` 为 0 时操作系统分配的端口。
 
-处理过程中抛出异常的请求（畸形的 % 转义撞上 `decodeURIComponent`、客户端在请求体中途断开）会记录为警告并应答 400（响应头已发出时则销毁 socket），绝不导致进程退出。dispose（资源释放）把 `close()` 与 `closeAllConnections()` 配对使用，因为处理器可能像 SSE（Server-Sent Events）那样保持响应打开，而这类连接永远不会自行结束；没有强制关闭，拆卸就会挂起。该包从不打印输出：URL 行归 shell 所有。逐包运维细节（含开发模式的 bundle 监视流水线）留在 [README](../../packages/host/webserver/README-zh.md) 中。
+处理过程中抛出异常的请求（畸形的 % 转义撞上 `decodeURIComponent`、客户端在请求体中途断开）会记录为警告并应答 400（响应头已发出时则销毁 socket），绝不导致进程退出。dispose（资源释放）把 `close()` 与 `closeAllConnections()` 配对使用，因为处理器可能像 SSE（Server-Sent Events）那样保持响应打开，而这类连接永远不会自行结束；没有强制关闭，拆卸就会挂起。该包从不打印输出：URL 行归 shell 所有。逐包运维细节（含开发模式的 bundle 监视流水线）留在 [README](../../packages/host/webserver/README.zh.md) 中。
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 
@@ -59,6 +59,46 @@ interface Config {
 ## Cordis API
 
 Generated from source by `scripts/gen-cordis-catalog.ts` (verified fresh by `pnpm run verify-cordis-catalog` in doc-sync; regenerate with `pnpm run gen-cordis-catalog`) — the language sides differ only in locale-specific paired document paths. Signature blocks use a `ts cordis-catalog` fence and keep the original source JSDoc; dispatch modes are defined in the [primer](../cordis-primer.zh.md#dispatch-modes), and the framework-inherited `ctx` API lives in [cordis-api/inherited.md](../cordis-api/inherited.md).
+
+<a id="ctxconnection--hostconnectionhandle"></a>
+
+### `ctx.connection` — `HostConnectionHandle`
+
+Host `ctx.connection` shape consumed by transport-independent adapters.
+
+```ts cordis-catalog
+/**
+ * Compose exact Fetch routes and the shared-channel RPC interceptor.
+ * @param channel - shared channel mounted by Connection.
+ * @returns Fetch handler for trusted, authenticated requests.
+ */
+createSharedFetchHandler(channel: '/api'): ConnectionFetchHandler
+
+/**
+ * Apply Connection's Host/Origin checks and browser authentication to
+ * another Web route.
+ * @param request - request headers from the HTTP or upgrade request.
+ * @returns rejection status, or undefined when the route may accept the request.
+ */
+requestRejection(request: ConnectionTrustRequest): ConnectionRequestRejection
+
+/**
+ * Authenticate one frontend index request, owning a token redirect or 401.
+ * @param request - root or configured-index HTTP request.
+ * @param response - response owned when the result is false.
+ * @returns true only when the frontend may serve index.html.
+ */
+authorizeIndex(request: ConnectionIndexRequest, response: ConnectionIndexResponse): boolean
+
+/**
+ * Add the fresh process token to an ordinary Web application URL.
+ * @param baseUrl - clean canonical browser origin.
+ * @returns root URL accepted by {@link authorizeIndex} for initial login.
+ */
+authenticatedUrl(baseUrl: string): string
+```
+
+Source: [`packages/client/connection/src/rpc.ts`](../../packages/client/connection/src/rpc.ts)
 
 <a id="ctxwebserver--webserver"></a>
 
@@ -128,6 +168,30 @@ renderIndex(html: string): string
 ```
 
 Source: [`packages/host/webserver/src/index.ts`](../../packages/host/webserver/src/index.ts)
+
+<a id="connection-events"></a>
+
+### `connection/*` events
+
+<a id="connectionrequest--waterfall"></a>
+
+#### `connection/request` — waterfall
+
+Admit or wrap an authenticated shared API request, including body transfer. Existing requests continue when a listener refuses subsequent requests.
+
+```ts cordis-catalog
+/**
+ * Admit or wrap an authenticated shared API request, including body transfer.
+ * Existing requests continue when a listener refuses subsequent requests.
+ * @param request - Authenticated incoming HTTP request.
+ * @param response - Response owned until the delegated bridge settles.
+ * @param next - Delegate to the next listener or the shared API bridge.
+ * @mode waterfall
+ */
+'connection/request'(request: IncomingMessage, response: ServerResponse, next: () => Promise<void>): Promise<void>
+```
+
+Source: [`packages/client/connection/src/index.ts`](../../packages/client/connection/src/index.ts)
 
 <a id="webserver-events"></a>
 

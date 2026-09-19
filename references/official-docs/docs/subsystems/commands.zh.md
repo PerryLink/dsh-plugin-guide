@@ -2,7 +2,7 @@
 
 [English](commands.md) | 中文
 
-[`dsh-commands`](../../packages/interaction/commands) 提供的用户命令注册表服务。交互式适配器用它发现插件拥有的命令，并针对确切的 agent（智能体）直接执行这些命令，而不创建模型消息。[命令 Agent Note](../../.agents/notes/implemented/feature/2026-07-19-plugin-command-registration.zh.md) 负责分发与生命周期的决策依据；[包 README](../../packages/interaction/commands/README-zh.md) 负责组合方式与限制。
+[`dsh-commands`](../../packages/interaction/commands) 提供的用户命令注册表服务。交互式适配器用它发现插件拥有的命令，并针对确切的 agent（智能体）直接执行这些命令，而不创建模型消息。[命令 Agent Note](../../.agents/notes/implemented/feature/2026-07-19-plugin-command-registration.zh.md) 负责分发与生命周期的决策依据；[包 README](../../packages/interaction/commands/README.zh.md) 负责组合方式与限制。
 
 来源：[`packages/interaction/commands/src/index.ts`](../../packages/interaction/commands/src/index.ts)
 
@@ -33,6 +33,8 @@ interface CommandInputDescriptor {
 ```ts type-equiv
 /** Plugin-owned command registration. */
 interface CommandDefinition {
+  /** Stable plugin-owned identity; absent for definitions without identity-based client behavior. */
+  readonly definitionId?: CommandDefinitionId
   /** Lowercase command name without the leading slash. */
   readonly name: string
   /** Human-readable summary used in discovery UI. */
@@ -97,6 +99,8 @@ type CommandResult =
 ```ts type-equiv
 /** Handler-free immutable command view returned to UI adapters. */
 interface CommandDescriptor {
+  /** Stable plugin-owned identity; absent for definitions without identity-based client behavior. */
+  readonly definitionId?: CommandDefinitionId
   /** Lowercase command name without the leading slash. */
   readonly name: string
   /** Human-readable summary used in discovery UI. */

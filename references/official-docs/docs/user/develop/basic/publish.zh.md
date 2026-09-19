@@ -4,7 +4,7 @@
 
 前几篇教程通过 `--patch` overlay 加载本地插件。本教程把它打包成可安装的**组合包**（bundle），用 `dsh plugin add` 安装进一个 **profile**，并解释决定组合后配置的层顺序。本文假设 `dsh` CLI 已安装。请先完成[插件配置](./config.zh.md)。
 
-如果改用全新的源码 checkout，请先按照[从源码运行章节](../../../../README-zh.md#run-from-source)完成准备，将本教程的 `hello-plugin` 目录放在仓库根目录，并从该目录把下文的 `dsh ...` 命令改为 `pnpm dsh ...`。构建与启动器行为见[源码执行](../../../../apps/cli/reference/README-zh.md#source-execution)。
+如果改用全新的源码 checkout，请先按照[从源码运行章节](../../../../README.zh.md#run-from-source)完成准备，将本教程的 `hello-plugin` 目录放在仓库根目录，并从该目录把下文的 `dsh ...` 命令改为 `pnpm dsh ...`。构建与启动器行为见[源码执行](../../../../apps/cli/reference/README.zh.md#source-execution)。
 
 ## 两个概念，两种 manifest
 
@@ -70,7 +70,7 @@ profile 目录包含两个文件：
 - `package.json` — profile 的树外插件依赖（由 pnpm 管理），加上 `dsh.profile` manifest 及其有序的 `bundles` 列表。
 - `cordis.patch.yml` — 用户自己的 patch 层，在每个组合包层之后应用。
 
-profile manifest 从不需要手写：`dsh plugin` 负责创建和维护它。下一节展示其结果。
+profile manifest 从不需要手写：`dsh --profile <name> --from-default-profile <template>` 可以从随附应用模板创建 profile，`dsh plugin` 则创建一个以 base 为基础的 profile，并维护其中已安装的 bundle 列表。创建规则以 [CLI（命令行界面）行为参考](../../../../apps/cli/reference/README.zh.md#profile-boot)为准；下一节展示插件路径。
 
 ## 安装进 profile
 
@@ -136,7 +136,7 @@ dsh --profile demo
   name: 'dsh-hello-plugin/startup'
 ```
 
-该插件导出 `inject = ['cmdlineArgs']`，使用自己的 commander program 调用 [`@deepseek-ai/dsh-cmdline`](../../../../packages/boot/cmdline/README-zh.md) 中的 `parseCmdline`，再在 program 自己的 action 中把应用自有服务提供出去。启动器把自身 flag 之后的同一份不可变参数交给每个插件，因此添加应用专属 flag 无需修改启动器，多个插件也可以解析该快照。Loader 行不需要启动器标记或特殊类型。
+该插件导出 `inject = ['cmdlineArgs']`，使用自己的 commander program 调用 [`@deepseek-ai/dsh-cmdline`](../../../../packages/boot/cmdline/README.zh.md) 中的 `parseCmdline`，再在 program 自己的 action 中把应用自有服务提供出去。启动器把自身 flag 之后的同一份不可变参数交给每个插件，因此添加应用专属 flag 无需修改启动器，多个插件也可以解析该快照。Loader 行不需要启动器标记或特殊类型。
 
 受这些参数配置的行会注入提供方服务，并在自己的 `!!js` 选项中读取它，同时把部署取值写在旁边作为回退：
 
@@ -160,7 +160,7 @@ dsh plugin --profile demo add github:you/hello-plugin
 
 但 git 安装拉取的是**源码，不是构建产物**：没有任何环节运行你的 `build` 脚本，因此 TypeScript 包到手时没有 `lib/` 输出，加载会失败。必须两边各做一件事：
 
-- **作者**提供一个 `prepare` 脚本——pnpm 在 git 安装后运行它——从源码构建出发布入口，且必须自包含：不能假设仅开发环境才有的上下文，例如旁边有一份 monorepo checkout。[turtle-ui](https://github.com/deepseek-harness/turtle-ui) 是一个可用的例子：它的 `prepare` 运行一份专用的 tsdown 配置，直接转译 `src/`，不用项目引用，也不做类型检查。
+- **作者**提供一个 `prepare` 脚本——pnpm 在 git 安装后运行它——从源码构建出发布入口，且必须自包含：不能假设仅开发环境才有的上下文，例如旁边有一份 monorepo checkout。专用的 tsdown 配置可以直接转译 `src/`，不用项目引用，也不做类型检查。
 - **用户**为构建授权。pnpm ≥10 在得到显式允许之前拒绝运行 git 依赖的 `prepare` 脚本，所以第一次 `add` 会失败；`dsh` 会指出修法——把 pnpm 打印的确切包键复制进该 profile 的 `pnpm-workspace.yaml`：
 
   ```yaml
@@ -180,4 +180,4 @@ dsh plugin --profile demo add github:you/hello-plugin
 ## 下一步
 
 - [插件与生命周期](../framework/index.zh.md) — 插件的完整生命周期
-- [CLI（命令行界面）行为参考](../../../../apps/cli/reference/README-zh.md) — 确切的层优先级、flag 与 profile 机制
+- [CLI（命令行界面）行为参考](../../../../apps/cli/reference/README.zh.md) — 确切的层优先级、flag 与 profile 机制

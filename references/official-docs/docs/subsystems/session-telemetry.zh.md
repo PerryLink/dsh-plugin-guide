@@ -2,7 +2,7 @@
 
 [English](session-telemetry.md) | 中文
 
-对外的会话上报拆分为一项[能力 seam](../capability-seams.zh.md)：Service Definition 与捕获协调器（[dsh-session-telemetry](../../packages/session/session-telemetry)，`ctx.sessionTelemetry`）拥有完整的权威事件捕获、`session-telemetry/record` 脱敏 waterfall（瀑布式事件）、handoff 游标与最小后端约定；部署方加载的 Service Provider（[dsh-session-telemetry-otel](../../packages/session/session-telemetry-otel)）则是原样配置的 OpenTelemetry JS SDK 日志流水线。它是一项可选能力，不属于 agent loop（智能体循环）主干，这里也没有任何内容会进入模型请求。边界公理（harness 的职责止于 `emit()`；批处理、重试、排队与丢失策略都属于上报 SDK）连同被否决的替代方案，均已在[复活 Agent Note](../../.agents/notes/implemented/feature/2026-07-23-session-telemetry-otel-revival.zh.md)中定案；捕获与游标约定见 [Service Definition README](../../packages/session/session-telemetry/README-zh.md)。
+对外的会话上报拆分为一项[能力 seam](../capability-seams.zh.md)：Service Definition 与捕获协调器（[dsh-session-telemetry](../../packages/session/session-telemetry)，`ctx.sessionTelemetry`）拥有完整的权威事件捕获、`session-telemetry/record` 脱敏 waterfall（瀑布式事件）、handoff 游标与最小后端约定；部署方加载的 Service Provider（[dsh-session-telemetry-otel](../../packages/session/session-telemetry-otel)）则是原样配置的 OpenTelemetry JS SDK 日志流水线。它是一项可选能力，不属于 agent loop（智能体循环）主干，这里也没有任何内容会进入模型请求。边界公理（harness 的职责止于 `emit()`；批处理、重试、排队与丢失策略都属于上报 SDK）连同被否决的替代方案，均已在[复活 Agent Note](../../.agents/notes/implemented/feature/2026-07-23-session-telemetry-otel-revival.zh.md)中定案；捕获与游标约定见 [Service Definition README](../../packages/session/session-telemetry/README.zh.md)。
 
 源码：[`packages/session/session-telemetry/src/index.ts`](../../packages/session/session-telemetry/src/index.ts)
 
@@ -55,21 +55,37 @@ interface SessionTelemetryRecord {
 }
 ```
 
-每条权威[会话事件](session.zh.md)都会完整透传为一条有序 ledger 记录，包括每个携带完整紧凑 stream 的 `assistant/message` 或 `assistant/attempt`，以及该 seam 从未听说过、由插件合并进来的类型。进程本地 `agent/assistant-stream` frame 不进入该持久 feed。新 Session 对象会从 seq 0 回放完整日志，包括构造 seed 历史；重新收养同一对象时会从 handoff 游标之后继续。投递是尽力而为的：游标标记的是「已交接」而非「已送达」，记录可能丢失（崩溃、重载窗口）也可能重复（新对象回放、SDK 重试），因此接收端对 ledger 记录基于 `(session.id, session.format_version, event.seq)` 去重；ops 记录刻意省略这类标识——它们是用于告警的信号，而非用于累加的条目，重复被容忍而非被去重。
+每条权威[会话事件](session.zh.md)都会完整透传为一条有序 ledger 记录，包括每个携带完整紧凑 stream 的 `assistant/message` 或 `assistant/attempt`，以及该 seam 从未听说过、由插件合并进来的类型。进程本地 `agent/assistant-stream` frame 不进入该持久 feed。新 Session 对象从其生命周期边界开始，除非后端选择 `includeHistory`；重新收养同一对象时会从 handoff 游标之后继续。投递是尽力而为的：游标标记的是「已交接」而非「已送达」，记录可能丢失（崩溃、重载窗口）也可能重复（新对象回放、SDK 重试），因此接收端对 ledger 记录基于 `(session.id, session.format_version, event.seq)` 去重；ops 记录刻意省略这类标识——它们是用于告警的信号，而非用于累加的条目，重复被容忍而非被去重。
 
 ## 共享披露
 
-该 seam 的确认契约（归属 [Service Definition README 的共享披露段](../../packages/session/session-telemetry/README-zh.md#the-sharing-disclosure)）：每个后端都通过 `ctx.sessionTelemetry` 上必需的抽象 `sharing` 成员披露其部署级共享策略，消费方只有在未挂载任何遥测服务时才渲染「未配置」。披露只陈述当前策略，绝不承诺投递或留存——交接是非阻塞入队，批处理、重试与丢失策略仍归上报 SDK。
+每个后端都通过 `ctx.sessionTelemetry` 上必需的抽象 `sharing` 成员暴露其部署级模式（[Service Definition README](../../packages/session/session-telemetry/README.zh.md#the-sharing-disclosure)）。它既不是逐 Session 的接纳决定，也不是投递回执。`/feedback` 确认文本不查询它。
 
 ```ts type-equiv
 /**
- * Deployment-selected session-sharing policy disclosed by a mounted
- * {@link SessionTelemetryBackend} backend to human-facing acknowledgement surfaces (the
- * `/feedback` command's confirmation text). The Service Definition owns the
- * vocabulary so consumers and backends do not depend on a specific provider.
+ * Deployment-selected session-sharing mode, not confirmation of SDK delivery.
  */
 type SessionTelemetrySharingStatus = 'full' | 'feedback-only' | 'disabled'
 ```
+
+## 捕获策略
+
+```ts type-equiv
+/** Whether capture follows live events or reads the canonical log only when requested. */
+type SessionTelemetryCapture = 'live' | 'on-demand'
+```
+
+```ts type-equiv
+/** Backend-selected capture mode and history policy. */
+interface SessionTelemetryCaptureOptions {
+  /** Follow live events, or wait for explicit capture; defaults to live. */
+  capture?: SessionTelemetryCapture
+  /** Include stored history before this lifecycle; defaults to false. */
+  includeHistory?: boolean
+}
+```
+
+`includeHistory` 允许捕获存储与继承的记录，但本身不授权捕获。[OTel 后端](../../packages/session/session-telemetry-otel/README.zh.md)使用按需捕获，并要求新的自身显式反馈；它只释放截至该反馈的完整前缀，适用于所有提供方。
 
 ## 后端约定
 
