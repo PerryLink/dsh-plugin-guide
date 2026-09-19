@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.16] - 2026-09-19
+
+### Fixed
+
+- `scripts/sync-official-docs.ps1` could no longer run: upstream renamed the root Chinese README from `README-zh.md` to `README.zh.md`, so the `git archive` pathspec `:(top)README-zh.md` matched no files and the sync aborted with `fatal: pathspec ... did not match any files`. Updated the pathspec, the scope comment, and the `$rootKeep` allowlist. This was the root cause behind the stale mirror reported in [#8](https://github.com/PerryLink/dsh-plugin-guide/issues/8) — not a missing sync run.
+
+### Changed
+
+- `references/official-docs/` re-synced from `origin/master` at `ddefc45fbc7f8e46dd73185e68295696d1297887` (`dsh-v0.1.6-alpha.2`, 2026-09-19): 240 tracked files changed, 42 added, 3 removed. `references/official-docs/SNAPSHOT.md` now pins the alpha.2 commit, replacing the 2026-09-04 `d347e703908` snapshot that 0.3.15 shipped. Verified with `scripts/check-docs-drift.ps1` (`FRESH: references/official-docs matches the upstream branch tip`) and `scripts/verify-kit.ps1` (`VERIFY-OK`; 555 blobs compared, 0 drift). The drift issue [#8](https://github.com/PerryLink/dsh-plugin-guide/issues/8) is closed.
+
 ## [0.3.15] - 2026-09-19
 
 ### Changed
