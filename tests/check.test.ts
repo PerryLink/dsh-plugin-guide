@@ -122,4 +122,52 @@ describe('check command', () => {
     expect(parsed.ok).toBe(true)
     expect(parsed.checks.length).toBeGreaterThan(0)
   })
+
+  it('fails async apply that registers after its first await', () => {
+    const root = sandbox()
+    goodFixture(root)
+    write(root, 'src/index.ts', "export async function apply(ctx: any) {\n  await Promise.resolve()\n  ctx.effect(() => {})\n}\n")
+    const { report, exitCode } = runCheck({ root, strict: false })
+    expect(exitCode).toBe(1)
+    expect(statusOf(report.checks, 'redline-async-apply-registration')).toBe('fail')
+  })
+
+  it('passes async apply that registers before any await', () => {
+    const root = sandbox()
+    goodFixture(root)
+    write(root, 'src/index.ts', "export async function apply(ctx: any) {\n  ctx.effect(() => {})\n  await Promise.resolve()\n}\n")
+    const { report, exitCode } = runCheck({ root, strict: false })
+    expect(exitCode).toBe(0)
+    expect(statusOf(report.checks, 'redline-async-apply-registration')).toBe('pass')
+  })
+
+  it('expects the three-clause peer range for @deepseek-ai/dsh-* imports', () => {
+    const canonical = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0'
+    const legacy = '>=0.1.0-rc.8 <0.2.0'
+    const src = "import { defineTool } from '@deepseek-ai/dsh-tools'\nexport const Config = {}\n"
+
+    const bad = sandbox()
+    goodFixture(bad)
+    write(bad, 'src/index.ts', src)
+    write(bad, 'package.json', JSON.stringify({
+      name: 'dsh-demo', version: '0.1.0', main: 'index.js',
+      files: ['index.js', 'cordis.patch.yml', 'lib'],
+      engines: { node: '^22.19.0 || >=24.0.0' }, packageManager: 'pnpm@11.7.0',
+      peerDependencies: { '@deepseek-ai/dsh-tools': legacy },
+      dsh: { bundle: { patch: './cordis.patch.yml' } },
+    }))
+    expect(statusOf(runCheck({ root: bad, strict: false }).report.checks, 'manifest-peers')).toBe('fail')
+
+    const good = sandbox()
+    goodFixture(good)
+    write(good, 'src/index.ts', src)
+    write(good, 'package.json', JSON.stringify({
+      name: 'dsh-demo', version: '0.1.0', main: 'index.js',
+      files: ['index.js', 'cordis.patch.yml', 'lib'],
+      engines: { node: '^22.19.0 || >=24.0.0' }, packageManager: 'pnpm@11.7.0',
+      peerDependencies: { '@deepseek-ai/dsh-tools': canonical },
+      dsh: { bundle: { patch: './cordis.patch.yml' } },
+    }))
+    expect(statusOf(runCheck({ root: good, strict: false }).report.checks, 'manifest-peers')).toBe('pass')
+  })
 })

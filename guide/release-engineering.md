@@ -34,18 +34,18 @@ Keep a per-repo `AGENTS.md` stating that repository's own rules. As a portfolio 
 
 ## 2. The version-line matrix
 
-During developer preview the harness publishes several lines at once, for example `0.1.2-rc.1`, `0.1.5-alpha.1`, `0.1.5-rc.1`. A portfolio pinned to one line breaks the moment a user installs from another.
+During developer preview the harness publishes several lines at once, for example `0.1.2-rc.1`, `0.1.5-alpha.1`, `0.1.5-rc.1`, `0.1.6-alpha.2`. A portfolio pinned to one line breaks the moment a user installs from another.
 
-The pattern that admits both windows:
+The pattern that admits all windows (one clause per prerelease tuple; the `-0` floor covers every 0.1.6 prerelease, never the bare `>=0.1.6` form):
 
 ```jsonc
 {
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.2",
-    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0"
+    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-tools": "0.1.5-rc.1"
+    "@deepseek-ai/dsh-tools": "0.1.6-alpha.2"
   }
 }
 ```

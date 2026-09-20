@@ -20,6 +20,7 @@ export const SKILL_SECTIONS: Record<string, SkillRef> = {
   'redline-waterfall-next': { file: 'guide/plugin-dev-guide.md', section: '§3.5', heading: 'waterfall 铁律：必须调用 next()' },
   'redline-no-hardcoded-tunables': { file: 'guide/plugin-dev-guide.md', section: '§3.6', heading: '配置 Schema 化、不硬编码可调参数' },
   'redline-effect-registration': { file: 'guide/plugin-dev-guide.md', section: '§3.3', heading: '注册即 effect（disposer 可逆）' },
+  'redline-async-apply-registration': { file: 'guide/plugin-dev-guide.md', section: '§3.3', heading: 'async apply 首个 await 之后不得注册（卸载窗口竞态）' },
 }
 
 /** Fallback citation for any check id not in the table. */

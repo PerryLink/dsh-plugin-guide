@@ -27,7 +27,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.5-rc.2` (2026-09-09 को अनुकूलित): सत्र लिफ़ाफ़ा अपना ignorable फ़ील्ड केवल संग्रहीत-लॉग पठन संगतता के लिए रखता है - Session.append अभी भी इसे स्टैम्प नहीं कर सकता, इसलिए गेट व्यवहार अपरिवर्तित है। 2026-09-11 को dsh-v0.1.5-rc.2 master checkout के विरुद्ध सत्यापित (पूर्ण gate chain + profile install smoke)। |
+| Harness | DeepSeek Harness `dsh-v0.1.6-alpha.2` (2026-09-18 को पुनः-सिंक किया गया, `ddefc45`): आधिकारिक दस्तावेज़ स्नैपशॉट alpha.2 पर ताज़ा किया गया; checker अब तीन-खंड peer रेंज (`… || >=0.1.6-0 <0.2.0`) की अपेक्षा करता है (स्कैफ़ोल्ड टेम्पलेट्स के साथ एकल स्रोत); नई रेड लाइन — पहले `await` के बाद पंजीकरण करने वाले `async apply` विफल होते हैं। स्थानीय gate chain हरा (40 टेस्ट, typecheck, verify dogfood); compat job की वास्तविक alpha.2 रन अगले CI push के साथ आती है। |
 | Node | `^22.19.0 || >=24.0.0` (DeepSeek Harness रनटाइम) |
 | Platforms | सभी (सादा ESM बंडल; कोई नेटिव कोड नहीं, कोई नेटवर्क नहीं) |
 | Model | कोई भी (कोई मॉडल अंतःक्रिया नहीं) |
