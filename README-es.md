@@ -27,7 +27,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.5-rc.2` (adaptado el 2026-09-09): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-11 contra el checkout master dsh-v0.1.5-rc.2 (cadena completa de gates + smoke de instalación de perfil). |
+| Harness | DeepSeek Harness `dsh-v0.1.6-alpha.2` (re-sincronizado el 2026-09-18, `ddefc45`): la instantánea de docs oficiales se refrescó a alpha.2, el checker ahora espera el rango de pares de tres cláusulas (`… || >=0.1.6-0 <0.2.0`) con fuente única en las plantillas del andamiaje, y una nueva línea roja falla las funciones `async apply` que registran después de su primer `await`. Cadena de gates local verde (40 tests, typecheck, dogfood de `verify`); la ejecución real alpha.2 del job compat llega con el próximo push de CI. |
 | Node | `^22.19.0 || >=24.0.0` (runtime de DeepSeek Harness) |
 | Platforms | Todas (bundle ESM plano; sin código nativo, sin red) |
 | Model | Cualquiera (sin interacción con el modelo) |

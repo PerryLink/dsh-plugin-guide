@@ -47,22 +47,22 @@ export function apply(ctx: Context, config: Config) {
 
 ## 2. Register the card (browser half)
 
-The card registers into `settings.plugin.item` under its namespace and owns everything inside it — chrome, controls, and copy. It reads and writes through `ctx.settingsScope`, which fences each write with the revision it read:
+The card registers into the `plugins.item` list slot under its namespace and owns everything inside it — chrome, controls, and copy. The list slot takes `id`, `order`, and `label`, and hands the component a `props` object with `view: 'summary' | 'page'` (render the compact summary on the Plugins page and the full form on its own page). It reads and writes through `ctx.settingsScope`, which fences each write with the revision it read:
 
 ```ts ignore-check
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
-// Type-only: the keyed slot's declaration. Cross-plugin collaboration goes
+// Type-only: the list slot's declaration. Cross-plugin collaboration goes
 // through cordis services; a value import fails the client bundle-purity gate.
-import type {} from '@deepseek-ai/dsh-client-ui-settings-plugins/client'
+import type {} from '@deepseek-ai/dsh-client-ui-plugin-manager/client'
 
 export const inject = ['slots', 'locale', 'connection', 'remote', 'settingsScope']
 
 export function apply(ctx: ClientContext): void {
   const card = new MyPluginCardController(ctx.settingsScope.bind({ namespace: 'my-plugin' }))
-  ctx.slots.inject('settings.plugin.item', () => ctx.slots.register({
-    name: 'settings.plugin.item',
-    key: 'my-plugin',
-    locale: 'settings.myPlugin',
+  ctx.slots.inject('plugins.item', () => ctx.slots.register({
+    id: 'my-plugin',
+    order: 100,
+    label: 'settings.myPlugin',
     inject: () => card.inject(),
   }, MyPluginCard),
   )
@@ -75,7 +75,7 @@ The scope snapshot carries what a form needs: the resolved `value`, the composit
 
 The **Plugin configuration** tab reads which namespaces the Host serves and dispatches one slot key per namespace. A card is rendered when the Host serves its key and skipped when it does not, so a deployment that never composed the Host half shows no trace of the card. A served namespace no card claims renders nothing — that is how the namespaces owned by other pages (`ui-theme`, `permission`, `llm-*`) stay off this tab.
 
-Cards appear in the order they registered into the slot; a keyed entry declares no `order` of its own.
+Cards appear sorted by the `order` each entry declares in the `plugins.item` list slot.
 
 ## Packaging
 

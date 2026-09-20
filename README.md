@@ -29,7 +29,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.5-rc.2` (adapted 2026-09-09): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. Verified 2026-09-11 against the dsh-v0.1.5-rc.2 master checkout (full gate chain + profile install smoke). |
+| Harness | DeepSeek Harness `dsh-v0.1.6-alpha.2` (re-synced 2026-09-18, `ddefc45`): the official-docs snapshot is refreshed to alpha.2, the checker now expects the three-clause peer range (`… || >=0.1.6-0 <0.2.0`) single-sourced from the scaffold templates, and a new red line fails `async apply` functions that register after their first `await`. Local gate chain green (40 tests, typecheck, `verify` dogfood); the compat job's real alpha.2 run lands with the next CI push. |
 | Node | `^22.19.0 || >=24.0.0` (DeepSeek Harness runtime) |
 | Platforms | All (plain ESM bundle; no native code, no network) |
 | Model | Any (no model interaction) |

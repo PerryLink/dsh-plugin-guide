@@ -47,22 +47,22 @@ export function apply(ctx: Context, config: Config) {
 
 ## 2. 注册卡片（浏览器半侧）
 
-卡片以自己的命名空间为键注册进 `settings.plugin.item`，并拥有其中的一切——外观、控件与文案。它通过 `ctx.settingsScope` 读写，后者用读取时的 revision 为每次写入设栅：
+卡片以自己的命名空间为键注册进 `plugins.item` 列表槽，并拥有其中的一切——外观、控件与文案。列表槽接受 `id`、`order`、`label`，并给组件传 `props` 对象，其中 `view: 'summary' | 'page'`（在 Plugins 页渲染紧凑摘要、在专属页渲染完整表单）。它通过 `ctx.settingsScope` 读写，后者用读取时的 revision 为每次写入设栅：
 
 ```ts ignore-check
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
-// Type-only: the keyed slot's declaration. Cross-plugin collaboration goes
+// Type-only: the list slot's declaration. Cross-plugin collaboration goes
 // through cordis services; a value import fails the client bundle-purity gate.
-import type {} from '@deepseek-ai/dsh-client-ui-settings-plugins/client'
+import type {} from '@deepseek-ai/dsh-client-ui-plugin-manager/client'
 
 export const inject = ['slots', 'locale', 'connection', 'remote', 'settingsScope']
 
 export function apply(ctx: ClientContext): void {
   const card = new MyPluginCardController(ctx.settingsScope.bind({ namespace: 'my-plugin' }))
-  ctx.slots.inject('settings.plugin.item', () => ctx.slots.register({
-    name: 'settings.plugin.item',
-    key: 'my-plugin',
-    locale: 'settings.myPlugin',
+  ctx.slots.inject('plugins.item', () => ctx.slots.register({
+    id: 'my-plugin',
+    order: 100,
+    label: 'settings.myPlugin',
     inject: () => card.inject(),
   }, MyPluginCard),
   )
@@ -75,7 +75,7 @@ scope 快照携带表单所需的一切：解析后的 `value`、组装层 `base
 
 **插件配置**标签页读取 Host 服务了哪些命名空间，并为每个命名空间派发一个 slot 键。当 Host 服务了某卡片的键时它被渲染，否则被跳过，因此从未组装过 Host 半侧的部署不会留下这张卡片的任何痕迹。被服务却无人认领的命名空间什么都不渲染——归其他页面所有的那些命名空间（`ui-theme`、`permission`、`llm-*`）正是这样留在本标签页之外的。
 
-卡片按其注册进该 slot 的顺序出现；keyed entry 不声明自己的 `order`。
+卡片按各自在 `plugins.item` 列表槽中声明的 `order` 排序显示。
 
 ## 打包
 

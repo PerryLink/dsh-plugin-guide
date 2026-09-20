@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `dsh-plugin-dev check` grew a fifth red line: **`async apply` functions that register after their first `await`** (`ctx.effect` / `ctx.on` / `ctx.provide` / `ctx.plugin` / `*.register()`) now fail the check. Registrations made after the first top-level `await` land in the unload window and throw `INACTIVE_EFFECT`, while the old closure keeps running; the fix is to register through an effect created before any `await`. Covered by `tests/check.test.ts`, and the same shape is the `E2` seam in `dsh-plugin-upgrade`'s `0.1.5-rc.2` → `0.1.6-alpha.2` card.
+
+### Changed
+
+- The canonical `@deepseek-ai/dsh-*` peer range is now **single-sourced** (`DSH_PEER_RANGE` in `src/cli/templates.ts`) and substituted into both scaffold templates through `{{dshPeerRange}}`; the hardcoded `>=0.1.0-rc.8 <0.2.0` those templates shipped is gone. The range gains the `0.1.6` tuple's own clause (`|| >=0.1.6-0 <0.2.0`, never the bare `>=0.1.6` form, so every `0.1.6` prerelease is admitted), and this package's own peer declaration is re-pinned to match.
+- `README.md` (+ zh/es/pt/hi) states the current baseline: DeepSeek Harness `0.1.6-alpha.2` (`ddefc45`), the three-clause peer range, and the async-apply red line.
+- `guide/release-engineering.md` (+ `.zh-CN.md`) documents the `0.1.6-alpha.2` window and why the `-0` floor is the shape to use; `guide/plugin-dev-guide.md`'s hook row names `agent/created` (serial) instead of the removed `agent/session-start`; `guide/unfixed-issues.md` gains item 33 (the official `adding-a-settings-card` cookbook still teaches the deleted `settings.plugin.item` keyed slot) and records the retirement of the Creator-mode `cordis_define`/`cordis_run` dynamic tools.
+- The official `adding-a-settings-card` cookbook (EN + ZH) in `references/official-docs/` is corrected locally to the `plugins.item` list slot (`id`/`order`/`label`, `props.view: 'summary' | 'page'`); item 33 in `guide/unfixed-issues.md` records the upstream bug and notes that a re-sync reverts the correction, so it must be re-applied from that entry.
+
 ## [0.3.16] - 2026-09-19
 
 ### Fixed

@@ -300,7 +300,7 @@ LLM 适配器同理：继承 `LlmAdapter` 实现 `stream(options)`，`ctx.llm.re
 | 同会话目标 | `ctx.goals`；经 `agent/*` 继续 |
 | fork 活跃会话 | `ctx.sessions.fork(source, boundary?, childSessionId?)` |
 | 只对一个 agent 注册 | 用该 agent 的 `agent.ctx`（作用域注册） |
-| Hook 系统（用户/项目级） | `agent/session-start`、`agent/pre-step`、`agent/request`、`tools/pre-execute`、`tools/post-execute`、`agent/turn-stopping` 监听器 |
+| Hook 系统（用户/项目级） | `agent/created`（serial）、`agent/pre-step`、`agent/request`、`tools/pre-execute`、`tools/post-execute`、`agent/turn-stopping` 监听器 |
 | 上下文压缩 | `ctx.compaction` 缝 + `dsh-compaction-basic`；自动压力走 serial `agent/pre-step`，溢出恢复走 `agent/request-error` |
 | 系统提示词配置 | `ctx.systemPrompt.section()`（带排序与作用域内遮蔽） |
 | 计划模式 | `@deepseek-ai/dsh-plan-mode`（`plan/mode` 日志态、`/plan`、`exit_plan_mode` 工具） |

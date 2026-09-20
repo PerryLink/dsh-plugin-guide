@@ -13,6 +13,16 @@ import { writeFileDeep } from './lib/fs'
 /** Supported scaffold languages. */
 export type TemplateLang = 'ts' | 'js'
 
+/**
+ * The canonical `@deepseek-ai/dsh-*` peer range, single-sourced here and
+ * substituted into every scaffolded package.json through the
+ * `{{dshPeerRange}}` placeholder. Keep it identical to the canonical range in
+ * `dsh-plugin-kit/data/peer-range.json`: one clause per prerelease tuple is
+ * required by semver's prerelease rule, and the `-0` floor covers the whole
+ * 0.1.6 tuple (never the bare `>=0.1.6` form).
+ */
+export const DSH_PEER_RANGE = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0'
+
 /** Placeholder values substituted into template files. */
 export interface TemplateContext {
   /** Base plugin name without the `dsh-` prefix (e.g. `hello-plugin`). */
@@ -57,6 +67,7 @@ export function renderTemplate(text: string, context: TemplateContext): string {
     .replaceAll('{{name}}', context.name)
     .replaceAll('{{version}}', context.version)
     .replaceAll('{{year}}', context.year)
+    .replaceAll('{{dshPeerRange}}', DSH_PEER_RANGE)
 }
 
 /** One rendered scaffold file. */

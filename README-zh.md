@@ -29,7 +29,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.5-rc.2`（2026-09-09 已适配）：会话信封保留 ignorable 字段但仅用于存量日志读取兼容——Session.append 仍无法盖章，门控行为不变。已于 2026-09-11 对照 dsh-v0.1.5-rc.2 master checkout 核验（完整门禁链 + profile 安装冒烟）。 |
+| Harness | DeepSeek Harness `dsh-v0.1.6-alpha.2`（2026-09-18 重同步，`ddefc45`）：官方文档快照已刷新到 alpha.2；checker 现在期望三段式 peer 区间（`… || >=0.1.6-0 <0.2.0`，与脚手架模板单源）；新增红线——`async apply` 在首个 `await` 之后注册即判错。本地门禁链绿（40 测试、typecheck、verify 自测）；compat job 的真机 alpha.2 跑在下次 CI push 后生效。 |
 | Node | `^22.19.0 || >=24.0.0`（DeepSeek Harness 运行时） |
 | Platforms | 全部（纯 ESM bundle；无原生代码、无网络） |
 | Model | 任意（无模型交互） |

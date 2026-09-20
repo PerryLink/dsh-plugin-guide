@@ -11,7 +11,7 @@
 > - 用法：开发插件/排障时按「症状 → 位置 → 规避」查；条目后附原讨论，官方有新回复时以原帖为准。
 > - 诚实标注：无法在源码复核的环节（依赖未安装的半边）已注明。
 
-## 1. 仍未修复（29 项 + 2 项部分修复（#1、#2）+ 1 项已修复（#27，保留为修复记录），按严重度排序）
+## 1. 仍未修复（30 项 + 2 项部分修复（#1、#2）+ 1 项已修复（#27，保留为修复记录），按严重度排序）
 
 | # | 问题 | 位置（@ddefc45，2026-09-19 复核） | 临时规避 | 讨论 |
 |---|---|---|---|---|
@@ -47,8 +47,9 @@
 | 30 | http-proxy 把 `[::1]` 写进子进程 `no_proxy`/`NO_PROXY` → httpx 系 MCP server 崩溃（undici 专用括号项泄漏到子进程 env） | `packages/util/http-proxy/src/policy.ts:33`（LOOPBACK_NO_PROXY 含 `[::1]`，注释 `:25-32` 自认是为 undici）、`:206-210`；`install.ts:79-92,113-129`；harness 自身匹配器无需括号项（`:279-295` 去括号） | env 写入侧只写裸 `::1`，undici 消费处保留括号项（两处消费者分离） | #6655 |
 | 31 | 粘贴图片惰性持有 File 快照：剪贴板同步（如微信输入法跨设备复制）后提交时 FileReader NotFoundError | `ui-conversation/src/client/service.ts:73-80`（browserDraftAttachment 只存 File+objectURL）、`:124-135`（base64ImageOf）、`:286-291`；对比文件类立即上传 `:316-324` | 粘贴后立即发送，或拖拽/文件选择 | #6673 |
 | 32 | web-fetch NAT64 探测无守卫：无 DNS64 网络（ipv4only.arpa 不解析）下所有双栈主机 fetch 全灭 | `packages/web/web-fetch-http/src/network.ts:90-92`（无 try/catch）、`:113-134`（discoverNat64Prefixes）、`:38`；SSRF 检查独立（`:96-106`） | 无产品内规避；补丁方向=ENOTFOUND/ENODATA 视为无前缀 | #6664 |
+| 33 | 官方 cookbook 仍在教已删除的 `settings.plugin.item` 槽（alpha.2 已改为 `plugins.item` 列表槽：`id`/`order`/`label` + props `{view:'summary'|'page'}`） | `docs/cookbook/adding-a-settings-card.md:50,62-63`（+.zh；@ddefc45，0.1.6-alpha.2 世代）；正确槽树见 `docs/subsystems/slots.md:132-134`（`plugins.item`/`plugins.bundle.config`/`plugins.row.config`） | 照本 KB 订正版写（已本地改写并登记本条；重同步会复原，需按本条重新打补丁） | 无（上游 doc bug，未开帖） |
 
-## 2. 次级清单（已核实、优先级较低，6 项）
+## 2. 次级清单（已核实、优先级较低，7 项）
 
 | # | 问题 | 位置 | 规避 | 讨论 |
 |---|---|---|---|---|
@@ -58,6 +59,7 @@
 | S5 | cordis preset 的 SKILL.md 仍在教已废弃工具名（6 处旧名 vs 实现注册 7 个新名） | `packages/preset/agent-presets/presets/cordis/skills/editing-cordis-compositions/SKILL.md:32,34,64,80,118,122`；新名 `packages/extensions/tool-cordis/src/index.ts:45,64,100,152,244,333,355`；另有生成文件/文档残留 `tool-cordis/src/api-catalog.ts:6`、`cordis-client-runner/.../slot-catalog.ts:7,74`、`docs/subsystems/slots.md:176`（+.zh）与三个快照（`ui.expected.md:36`、`session.v2.jsonl:17`、`session.v3.jsonl:18`） | 文档修复型 PR；快照测试需重生成 | #6679 |
 | S6 | SIGTERM 无在途 turn 排空路径；5s 宽限硬编码；无 `dsh restart` | `apps/cli/src/process-shutdown.ts:4,69-75`；dispose=cancel+whenIdle `agent-loop/src/index.ts:594-595`；launcher 无 restart（`apps/cli/src/args.ts:145-201`） | 第二信号即强退是固定语义；drain 属 feature request | #6665 |
 | S7 | LLM 出站超时修复未合入；undici 全局 dispatcher 由 http-proxy 独占（>5min prefill 在 ~302s 被 body timeout 终止） | 无 `egress.ts`/`httpBodyTimeoutMs`；`llm-pi-ai/src/config.ts:46`（300s 空闲看门狗）、`adapter.ts:355`；`util/http-proxy/src/install.ts:208-220` | 每请求新建 fetch 绕过共享 socket 记账 | #5673 |
+| S8 | 创造模式 `cordis_define`/`cordis_run` 动态工具已退役 | 0.1.6-alpha.2 的 `docs/tool-catalog.md` 只剩两个只读检查工具（`cordis_inspect_list`/`cordis_inspect_query`）；运行期创作的替代面 = `plugin_manager` 工具 + `ctx.pluginManager` + `OPTIONAL_BUNDLES`（@ddefc45，0.1.6-alpha.2 世代） | 0.1.5-rc.2 世代 `docs/tool-catalog.md` 的 cordis_* 工具段（旧快照 :269-501）；`docs/capability-seams.md` 的 `ctx.dynamicCordisRunner` | 无（上游工具退役，非缺陷） |
 
 ## 3. 已在 master 修复（旧帖一律更新即可，无需改代码）
 

@@ -11,6 +11,7 @@ import { buildReport, renderHuman, type CheckReport, type CheckResult } from '..
 import { skillRefFor } from '../skill-sections'
 import { isArray, isObject, parseYaml, type YamlValue } from '../lib/yaml'
 import { readCliVersion } from '../meta'
+import { DSH_PEER_RANGE } from '../templates'
 
 /** Shape of the package.json fields the checker inspects. */
 interface PackageJson {
@@ -56,6 +57,7 @@ export function runCheck(options: CheckOptions): { report: CheckReport; exitCode
     checkRedlineWaterfallNext(root),
     checkRedlineNoHardcodedTunables(root),
     checkRedlineEffectRegistration(root),
+    checkRedlineAsyncApplyRegistration(root),
   ]
   const report = buildReport(root, readCliVersion(), checks)
   const failed = report.summary.failed
@@ -268,7 +270,7 @@ function checkManifestPeers(root: string, pkg?: PackageJson): CheckResult {
   for (const imp of harnessImports) {
     if (imp === '@deepseek-ai/cordis') expected[imp] = '^4.0.2'
     else if (imp === '@deepseek-ai/schemastery') expected[imp] = '^3.18.2'
-    else if (imp.startsWith('@deepseek-ai/dsh-')) expected[imp] = '>=0.1.0-rc.8 <0.2.0'
+    else if (imp.startsWith('@deepseek-ai/dsh-')) expected[imp] = DSH_PEER_RANGE
   }
   const problems: string[] = []
   for (const [pkgName, range] of Object.entries(expected)) {
@@ -473,6 +475,205 @@ function checkRedlineEffectRegistration(root: string): CheckResult {
     return { id: 'redline-effect-registration', severity: 'warning', kind: 'heuristic', status: 'warn', message: 'possible non-effect manual teardown', skillRef: ref, detail: manualTeardown }
   }
   return { id: 'redline-effect-registration', severity: 'warning', kind: 'heuristic', status: 'pass', message: 'no manual teardown patterns detected', skillRef: ref }
+}
+
+/** Registration idioms that must never run after the first `await` of an async apply. */
+const ASYNC_APPLY_REGISTRATION: Array<[string, RegExp]> = [
+  ['ctx.effect', /\bctx\.effect\s*\(/],
+  ['ctx.on', /\bctx\.on\s*\(/],
+  ['ctx.provide', /\bctx\.provide\s*\(/],
+  ['ctx.plugin', /\bctx\.plugin\s*\(/],
+  ['register()', /\.register\s*\(/],
+]
+
+/** Braces of the block whose `{` is at `openIdx`, skipping strings and comments. Returns the inner body or undefined. */
+function blockBody(text: string, openIdx: number): string | undefined {
+  let depth = 0
+  let quote: string | null = null
+  let lineComment = false
+  let blockComment = false
+  for (let i = openIdx; i < text.length; i++) {
+    const ch = text[i]
+    const next = text[i + 1]
+    if (lineComment) {
+      if (ch === '\n') lineComment = false
+      continue
+    }
+    if (blockComment) {
+      if (ch === '*' && next === '/') {
+        blockComment = false
+        i++
+      }
+      continue
+    }
+    if (quote) {
+      if (ch === '\\') {
+        i++
+        continue
+      }
+      if (ch === quote) quote = null
+      continue
+    }
+    if (ch === '/' && next === '/') {
+      lineComment = true
+      i++
+      continue
+    }
+    if (ch === '/' && next === '*') {
+      blockComment = true
+      i++
+      continue
+    }
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch
+      continue
+    }
+    if (ch === '{') depth++
+    else if (ch === '}') {
+      depth--
+      if (depth === 0) return text.slice(openIdx + 1, i)
+    }
+  }
+  return undefined
+}
+
+/** Index just past the first top-level (brace-depth 0) `await` keyword, or -1. */
+function firstTopLevelAwait(body: string): number {
+  let depth = 0
+  let quote: string | null = null
+  let lineComment = false
+  let blockComment = false
+  for (let i = 0; i < body.length - 5; i++) {
+    const ch = body[i]
+    const next = body[i + 1]
+    if (lineComment) {
+      if (ch === '\n') lineComment = false
+      continue
+    }
+    if (blockComment) {
+      if (ch === '*' && next === '/') {
+        blockComment = false
+        i++
+      }
+      continue
+    }
+    if (quote) {
+      if (ch === '\\') {
+        i++
+        continue
+      }
+      if (ch === quote) quote = null
+      continue
+    }
+    if (ch === '/' && next === '/') {
+      lineComment = true
+      i++
+      continue
+    }
+    if (ch === '/' && next === '*') {
+      blockComment = true
+      i++
+      continue
+    }
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch
+      continue
+    }
+    if (ch === '{') depth++
+    else if (ch === '}') depth--
+    else if (depth === 0 && ch === 'a' && body.startsWith('await', i)) {
+      const before = i === 0 ? '' : body[i - 1]
+      const after = body[i + 5] ?? ''
+      if (!/[A-Za-z0-9_$]/.test(before) && !/[A-Za-z0-9_$]/.test(after)) return i + 5
+    }
+  }
+  return -1
+}
+
+/** First top-level registration idiom after `fromIdx` (nested function bodies excluded), or undefined. */
+function registrationAfter(body: string, fromIdx: number): [string, string] | undefined {
+  let depth = 0
+  let quote: string | null = null
+  let lineComment = false
+  let blockComment = false
+  for (let i = fromIdx; i < body.length; i++) {
+    const ch = body[i]
+    const next = body[i + 1]
+    if (lineComment) {
+      if (ch === '\n') lineComment = false
+      continue
+    }
+    if (blockComment) {
+      if (ch === '*' && next === '/') {
+        blockComment = false
+        i++
+      }
+      continue
+    }
+    if (quote) {
+      if (ch === '\\') {
+        i++
+        continue
+      }
+      if (ch === quote) quote = null
+      continue
+    }
+    if (ch === '/' && next === '/') {
+      lineComment = true
+      i++
+      continue
+    }
+    if (ch === '/' && next === '*') {
+      blockComment = true
+      i++
+      continue
+    }
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch
+      continue
+    }
+    if (ch === '{') depth++
+    else if (ch === '}') {
+      if (depth === 0) break
+      depth--
+      continue
+    }
+    if (depth !== 0) continue
+    for (const [kind, re] of ASYNC_APPLY_REGISTRATION) {
+      const m = re.exec(body.slice(i))
+      if (m) return [kind, body.slice(i, i + Math.min(m[0].length, 40))]
+    }
+  }
+  return undefined
+}
+
+function checkRedlineAsyncApplyRegistration(root: string): CheckResult {
+  const ref = skillRefFor('redline-async-apply-registration')
+  const files = listSourceFiles(root)
+  const flagged: string[] = []
+  for (const file of files) {
+    const text = readText(file) ?? ''
+    const re = /export\s+async\s+function\s+apply\s*\(/g
+    let match: RegExpExecArray | null
+    while ((match = re.exec(text)) !== null) {
+      const bodyStart = text.indexOf('{', match.index)
+      if (bodyStart < 0) continue
+      const body = blockBody(text, bodyStart)
+      if (body === undefined) continue
+      const awaitIdx = firstTopLevelAwait(body)
+      if (awaitIdx < 0) continue
+      const hit = registrationAfter(body, awaitIdx)
+      if (hit) flagged.push(`${relativePath(root, file)}: async apply calls ${hit[0]} (${hit[1]}) after its first await — registration belongs in ctx.effect()/ctx.on() or before any await`)
+    }
+  }
+  if (flagged.length > 0) {
+    return { id: 'redline-async-apply-registration', severity: 'error', kind: 'heuristic', status: 'fail', message: 'async apply registers after its first await (unload-window race)', skillRef: ref, detail: flagged }
+  }
+  const anyApply = files.some((f) => /export\s+async\s+function\s+apply\s*\(/.test(readText(f) ?? ''))
+  if (!anyApply) {
+    return { id: 'redline-async-apply-registration', severity: 'error', kind: 'heuristic', status: 'skip', message: 'no async apply function found to inspect', skillRef: ref }
+  }
+  return { id: 'redline-async-apply-registration', severity: 'error', kind: 'heuristic', status: 'pass', message: 'no registration after the first await of any async apply', skillRef: ref }
 }
 
 function relativePath(root: string, file: string): string {

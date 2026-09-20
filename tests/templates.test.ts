@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { renderScaffold } from '../src/cli/templates'
+import { DSH_PEER_RANGE, renderScaffold } from '../src/cli/templates'
 
 const context = { name: 'demo-plugin', pkgName: 'dsh-demo-plugin', version: '0.1.0', year: '2026' }
 
@@ -23,7 +23,8 @@ describe('scaffold templates', () => {
       expect(pkg.packageManager).toBe('pnpm@11.7.0')
       expect(pkg.peerDependencies['@deepseek-ai/cordis']).toBe('^4.0.2')
       expect(pkg.peerDependencies['@deepseek-ai/schemastery']).toBe('^3.18.2')
-      expect(pkg.peerDependencies['@deepseek-ai/dsh-tools']).toBe('>=0.1.0-rc.8 <0.2.0')
+      expect(pkg.peerDependencies['@deepseek-ai/dsh-tools']).toBe(DSH_PEER_RANGE)
+      expect(pkg.devDependencies['@deepseek-ai/dsh-tools']).toBe(DSH_PEER_RANGE)
       expect(pkg.dsh.bundle.patch).toBe('./cordis.patch.yml')
     }
   })
