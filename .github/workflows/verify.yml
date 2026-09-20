@@ -30,6 +30,13 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Removed session-API grep (zero hits in src/)
+        shell: pwsh
+        run: |
+          $hits = Select-String -Path (Join-Path 'src' '*') -Pattern 'snapshotEvents','eventAt\(','ownEvents\(' -Recurse
+          if ($hits) { $hits | ForEach-Object { Write-Error "removed session API referenced: $($_.Path):$($_.LineNumber)" }; exit 1 }
+          Write-Output 'zero hits: snapshotEvents/eventAt(/ownEvents('
+
       - name: Build
         run: pnpm run build
 
