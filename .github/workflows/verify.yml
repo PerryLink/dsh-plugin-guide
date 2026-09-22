@@ -30,6 +30,8 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: README sync (five languages)
+        run: pnpm run check:readmes
       - name: Removed session-API grep (zero hits in src/)
         shell: pwsh
         run: |
