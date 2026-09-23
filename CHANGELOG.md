@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.17] - 2026-09-23
 
 ### Added
 
@@ -16,6 +16,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `README.md` (+ zh/es/pt/hi) states the current baseline: DeepSeek Harness `0.1.6-alpha.2` (`ddefc45`), the three-clause peer range, and the async-apply red line.
 - `guide/release-engineering.md` (+ `.zh-CN.md`) documents the `0.1.6-alpha.2` window and why the `-0` floor is the shape to use; `guide/plugin-dev-guide.md`'s hook row names `agent/created` (serial) instead of the removed `agent/session-start`; `guide/unfixed-issues.md` gains item 33 (the official `adding-a-settings-card` cookbook still teaches the deleted `settings.plugin.item` keyed slot) and records the retirement of the Creator-mode `cordis_define`/`cordis_run` dynamic tools.
 - The official `adding-a-settings-card` cookbook (EN + ZH) in `references/official-docs/` is corrected locally to the `plugins.item` list slot (`id`/`order`/`label`, `props.view: 'summary' | 'page'`); item 33 in `guide/unfixed-issues.md` records the upstream bug and notes that a re-sync reverts the correction, so it must be re-applied from that entry.
+- The published line this package checks against moves to `0.1.7-alpha.2`: the `@deepseek-ai/dsh-attachment` devDependency moves from `0.1.5-rc.2`, `DSH_PEER_RANGE` gains the `0.1.7` tuple's own clause (`|| >=0.1.7-0 <0.2.0`, never the bare `>=0.1.7` form) so the canonical range is four clauses, `dshWorkshop.compatibility.dshVersions` records `0.1.7-alpha.2`, and the `compat.yml` profile smoke installs the `0.1.7-alpha.2` CLI and bundle. This is a correctness fix, not a tightening: under npm semver's prerelease rule a comparator set whose only prerelease comparators sit on earlier `[major, minor, patch]` tuples cannot admit a later alpha, so the three-clause range the scaffold shipped could not admit the very line this workspace targets. The three existing clauses are unchanged, in place and in order, and nothing was narrowed.
+- New `typecheck:checkout` (`tsc -p tsconfig.checkout.json --noEmit`) compiles the TypeScript scaffold this package ships (`templates/ts/src`, `templates/ts/tests`) against the local harness checkout's built types, aliasing the three `@deepseek-ai/*` specifiers those templates import. `--traceResolution` confirms all three resolve to the checkout, and a scratch negative control fails, so the alias table is not vacuous. `tests/check.test.ts` now imports `DSH_PEER_RANGE` instead of duplicating the canonical string, and grew a third sandbox asserting that the pre-0.1.7 three-clause range **fails** the checker — under semver's prerelease rule it excludes every `0.1.7` prerelease, so rejecting it is the correct verdict. No assertion was deleted or weakened and the test count is unchanged.
+- The five README compatibility rows move to `dsh-v0.1.7-alpha.2` and their peer-range prose becomes four-clause with the new segment spelled out. This supersedes the `0.1.6-alpha.2` baseline recorded above.
+
+### Fixed
+
+- The scaffolder and the knowledge base taught a host line seven releases old. `dsh-plugin-dev init` installed `@deepseek-ai/dsh-base@0.1.5-rc.1` and `@deepseek-ai/dsh-headless@0.1.5-rc.1` (the `--base` / `--headless` defaults in `src/cli/main.ts`, four occurrences), and every scaffolded project's README shipped a compatibility row reading `DeepSeek Harness \`0.1.5-rc.1\`` — so a freshly created plugin announced, in five languages, that it targeted a line seven releases behind the one this workspace runs, and its own profile pointed there too. `src/cli/commands/verify.ts`'s failure remedy named the same old line. All three move to `0.1.7-alpha.2`, including the ten `templates/{js,ts}/README{,-zh,-es,-pt,-hi}.md` compatibility rows. Only the version token changed in the templates; their existing row shape (no `dsh-v` prefix, unlike the migrated plugin repos) was left alone rather than normalised. `verify:artifacts` asserts the JS scaffold still produces all five README languages.
 
 ## [0.3.16] - 2026-09-19
 
