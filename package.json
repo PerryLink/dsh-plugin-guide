@@ -50,6 +50,7 @@
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
     "typecheck:ci": "tsc --noEmit --pretty false",
+    "typecheck:checkout": "tsc -p tsconfig.checkout.json --noEmit",
     "test": "vitest run",
     "check:readmes": "node scripts/check-readme-sync.mjs",
     "check:kit": "pwsh -File scripts/verify-kit.ps1",
@@ -63,12 +64,12 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-attachment": "0.1.5-rc.2",
+    "@deepseek-ai/dsh-attachment": "0.1.7-alpha.2",
     "@types/node": "^22.20.1",
     "vitest": "^3.2.7"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0"
+    "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {
@@ -105,7 +106,7 @@
       "filesystem:read"
     ],
     "compatibility": {
-      "dshVersions": ["0.1.2-rc.1","0.1.5-rc.2"]
+      "dshVersions": ["0.1.2-rc.1","0.1.5-rc.2","0.1.7-alpha.2"]
     },
     "capability": {
       "id": "dsh-plugin-guide",

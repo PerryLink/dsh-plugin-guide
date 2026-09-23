@@ -1,0 +1,35 @@
+{
+  // Checkout ruler. `typecheck` proves this repo against the PUBLISHED packages
+  // in node_modules; this face proves the scaffold it ships against the HOST
+  // LINE ITSELF, by aliasing every `@deepseek-ai/*` specifier the repo really
+  // imports to the local harness checkout's built types (four levels up:
+  // D:\Projects\dsh\plugins\<repo> -> D:\deepseek-harness). Every target below
+  // was checked to exist on disk before this file was committed.
+  //
+  // Derivation: `grep -n "@deepseek-ai/"` over src/ and tests/ shows no import
+  // statement at all — the repo's own sources only name host packages inside
+  // string literals (fixture writers) and comparisons. The only files in this
+  // repository that really import a host package are the TS scaffold it
+  // generates for users, so those are the program this ruler compiles:
+  //   templates/ts/src/index.ts   -> @deepseek-ai/cordis (type), @deepseek-ai/dsh-tools
+  //   templates/ts/src/config.ts  -> @deepseek-ai/schemastery
+  // The fixtures the tests write are runtime strings, not part of any program,
+  // so nothing else needs an alias.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@deepseek-ai/cordis": ["../../../../deepseek-harness/vendor/cordis/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-tools": ["../../../../deepseek-harness/packages/core/tools/lib/types/index.d.ts"],
+      "@deepseek-ai/schemastery": ["../../../../deepseek-harness/vendor/schemastery/lib/types/index.d.ts"]
+    }
+  },
+  "include": [
+    "src",
+    "tests",
+    "tsdown.config.ts",
+    "vitest.config.ts",
+    "scripts/*.mjs",
+    "templates/ts/src",
+    "templates/ts/tests"
+  ]
+}

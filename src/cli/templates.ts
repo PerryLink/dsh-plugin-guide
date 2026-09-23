@@ -21,7 +21,7 @@ export type TemplateLang = 'ts' | 'js'
  * required by semver's prerelease rule, and the `-0` floor covers the whole
  * 0.1.6 tuple (never the bare `>=0.1.6` form).
  */
-export const DSH_PEER_RANGE = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0'
+export const DSH_PEER_RANGE = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0'
 
 /** Placeholder values substituted into template files. */
 export interface TemplateContext {

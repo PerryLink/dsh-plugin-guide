@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { runCheck } from '../src/cli/commands/check'
+import { DSH_PEER_RANGE } from '../src/cli/templates'
 import type { CheckResult } from '../src/cli/lib/report'
 
 const created: string[] = []
@@ -141,33 +142,32 @@ describe('check command', () => {
     expect(statusOf(report.checks, 'redline-async-apply-registration')).toBe('pass')
   })
 
-  it('expects the three-clause peer range for @deepseek-ai/dsh-* imports', () => {
-    const canonical = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0'
+  it('expects the canonical peer range for @deepseek-ai/dsh-* imports', () => {
+    // Single-sourced from the checker's own constant: a literal here drifts the
+    // moment the canonical range gains a prerelease tuple.
+    const canonical = DSH_PEER_RANGE
+    // The pre-0.1.7 canonical range. Its newest comparator sits on the 0.1.6
+    // tuple, so semver's prerelease rule rejects every 0.1.7 prerelease: the
+    // checker must call it stale, never accept it.
+    const stale = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0'
     const legacy = '>=0.1.0-rc.8 <0.2.0'
     const src = "import { defineTool } from '@deepseek-ai/dsh-tools'\nexport const Config = {}\n"
+    const fixture = (range: string): string => {
+      const root = sandbox()
+      goodFixture(root)
+      write(root, 'src/index.ts', src)
+      write(root, 'package.json', JSON.stringify({
+        name: 'dsh-demo', version: '0.1.0', main: 'index.js',
+        files: ['index.js', 'cordis.patch.yml', 'lib'],
+        engines: { node: '^22.19.0 || >=24.0.0' }, packageManager: 'pnpm@11.7.0',
+        peerDependencies: { '@deepseek-ai/dsh-tools': range },
+        dsh: { bundle: { patch: './cordis.patch.yml' } },
+      }))
+      return root
+    }
 
-    const bad = sandbox()
-    goodFixture(bad)
-    write(bad, 'src/index.ts', src)
-    write(bad, 'package.json', JSON.stringify({
-      name: 'dsh-demo', version: '0.1.0', main: 'index.js',
-      files: ['index.js', 'cordis.patch.yml', 'lib'],
-      engines: { node: '^22.19.0 || >=24.0.0' }, packageManager: 'pnpm@11.7.0',
-      peerDependencies: { '@deepseek-ai/dsh-tools': legacy },
-      dsh: { bundle: { patch: './cordis.patch.yml' } },
-    }))
-    expect(statusOf(runCheck({ root: bad, strict: false }).report.checks, 'manifest-peers')).toBe('fail')
-
-    const good = sandbox()
-    goodFixture(good)
-    write(good, 'src/index.ts', src)
-    write(good, 'package.json', JSON.stringify({
-      name: 'dsh-demo', version: '0.1.0', main: 'index.js',
-      files: ['index.js', 'cordis.patch.yml', 'lib'],
-      engines: { node: '^22.19.0 || >=24.0.0' }, packageManager: 'pnpm@11.7.0',
-      peerDependencies: { '@deepseek-ai/dsh-tools': canonical },
-      dsh: { bundle: { patch: './cordis.patch.yml' } },
-    }))
-    expect(statusOf(runCheck({ root: good, strict: false }).report.checks, 'manifest-peers')).toBe('pass')
+    expect(statusOf(runCheck({ root: fixture(legacy), strict: false }).report.checks, 'manifest-peers')).toBe('fail')
+    expect(statusOf(runCheck({ root: fixture(stale), strict: false }).report.checks, 'manifest-peers')).toBe('fail')
+    expect(statusOf(runCheck({ root: fixture(canonical), strict: false }).report.checks, 'manifest-peers')).toBe('pass')
   })
 })
