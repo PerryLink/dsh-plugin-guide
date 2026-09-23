@@ -34,21 +34,23 @@ Keep a per-repo `AGENTS.md` stating that repository's own rules. As a portfolio 
 
 ## 2. The version-line matrix
 
-During developer preview the harness publishes several lines at once, for example `0.1.2-rc.1`, `0.1.5-alpha.1`, `0.1.5-rc.1`, `0.1.6-alpha.2`. A portfolio pinned to one line breaks the moment a user installs from another.
+During developer preview the harness publishes several lines at once, for example `0.1.2-rc.1`, `0.1.5-alpha.1`, `0.1.5-rc.1`, `0.1.6-alpha.2`, `0.1.7-alpha.2`. A portfolio pinned to one line breaks the moment a user installs from another.
 
-The pattern that admits all windows (one clause per prerelease tuple; the `-0` floor covers every 0.1.6 prerelease, never the bare `>=0.1.6` form):
+The pattern that admits all windows (one clause per prerelease tuple; each `-0` floor covers every prerelease of its tuple, never the bare `>=0.1.7` form):
 
 ```jsonc
 {
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.2",
-    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0"
+    "@deepseek-ai/cordis": "^4.0.4",
+    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-tools": "0.1.6-alpha.2"
+    "@deepseek-ai/dsh-tools": "0.1.7-alpha.2"
   }
 }
 ```
+
+A range is only as wide as its newest clause, and semver makes this easy to get wrong in a way that looks right: **a range admits a prerelease only if some comparator carries that same `[major, minor, patch]` tuple AND a prerelease.** So a band ending at `>=0.1.6-0 <0.2.0` admits `0.1.6-alpha.2` but *not* `0.1.7-alpha.2` — it reads as "everything up to 0.2" and behaves as "nothing after the 0.1.6 tuple". Adding the line's own clause is the whole fix; check it with `semver.satisfies('0.1.7-alpha.2', range)`, never by eye.
 
 Rules that follow:
 
