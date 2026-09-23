@@ -1,6 +1,11 @@
 name: Release
 
 on:
+  # workflow_dispatch is how a tag whose publish failed gets re-run after a fix:
+  # a tag push executes the workflow file AT THE TAGGED COMMIT, so a fix committed
+  # after the tag would never run under that tag. Dispatching on the branch runs
+  # this file and checks out the fixed tree.
+  workflow_dispatch:
   push:
     tags: ['v*']
 
@@ -40,7 +45,13 @@ jobs:
 
       - name: Verify the changelog names this version
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          # A tag push names the version in the ref; a workflow_dispatch run on a
+          # branch does not, so fall back to package.json there.
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="$(node -p "require('./package.json').version")"
+          fi
           grep -q "## \[${VERSION}\]" CHANGELOG.md || { echo "CHANGELOG.md has no '## [${VERSION}]' section"; exit 1; }
 
       # Trusted publishing: the OIDC token (id-token: write above) replaces the
@@ -80,8 +91,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
-            echo "release ${{ github.ref_name }} already exists; skipping"
+          # A tag push releases the pushed tag; a workflow_dispatch run on a branch
+          # releases the version in package.json (that tag already exists).
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            REF_NAME="${GITHUB_REF_NAME}"
+          else
+            REF_NAME="v$(node -p "require('./package.json').version")"
+          fi
+          if gh release view "${REF_NAME}" >/dev/null 2>&1; then
+            echo "release ${REF_NAME} already exists; skipping"
             exit 0
           fi
-          gh release create "${{ github.ref_name }}" --generate-notes
+          gh release create "${REF_NAME}" --generate-notes
