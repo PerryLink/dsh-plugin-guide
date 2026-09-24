@@ -16,8 +16,8 @@ importers:
         version: 5.9.3
     devDependencies:
       '@deepseek-ai/dsh-attachment':
-        specifier: 0.1.7-rc.1
-        version: 0.1.7-rc.1
+        specifier: 0.1.7-rc.2
+        version: 0.1.7-rc.2
       '@types/node':
         specifier: ^22.20.1
         version: 22.20.1
@@ -27,11 +27,11 @@ importers:
 
 packages:
 
-  '@deepseek-ai/dsh-attachment@0.1.7-rc.1':
-    resolution: {integrity: sha512-iE0RTrUw1BEg3x8dnd3al46Ze+h/Z1hY/WenvhmX6fBiDp43Y1i9eWRflv/n+rM4E3760nMXXwAT+O/PwuJhMA==}
+  '@deepseek-ai/dsh-attachment@0.1.7-rc.2':
+    resolution: {integrity: sha512-g2SQ12Ki1l28T/H+fZKtSWDFF5Y1gavcKVBb2X4eOVX5uT5Jwumx+9Svelp1pHaknuAE1N2Yt9tMwj2quMkhDg==}
     peerDependencies:
       '@deepseek-ai/cordis': ~4.0.4
-      '@deepseek-ai/dsh-brand': 0.1.7-rc.1
+      '@deepseek-ai/dsh-brand': 0.1.7-rc.2
 
   '@esbuild/aix-ppc64@0.28.2':
     resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
@@ -969,7 +969,7 @@ packages:
 
 snapshots:
 
-  '@deepseek-ai/dsh-attachment@0.1.7-rc.1': {}
+  '@deepseek-ai/dsh-attachment@0.1.7-rc.2': {}
 
   '@esbuild/aix-ppc64@0.28.2':
     optional: true
