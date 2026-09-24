@@ -32,7 +32,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.7-alpha.2` (re-synced 2026-09-18, `ddefc45`): the official-docs snapshot is refreshed to alpha.2, the checker now expects the four-clause peer range (`… || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`) single-sourced from the scaffold templates, and a new red line fails `async apply` functions that register after their first `await`. Local gate chain green (40 tests, typecheck, `verify` dogfood); the compat job's real alpha.2 run lands with the next CI push. |
+| Harness | DeepSeek Harness `dsh-v0.1.7-rc.1` (re-synced 2026-09-24, `ddefc45`): the official-docs snapshot is refreshed to rc.1, the checker now expects the four-clause peer range (`… || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`) single-sourced from the scaffold templates, and a new red line fails `async apply` functions that register after their first `await`. Local gate chain green (40 tests, typecheck, `verify` dogfood); the compat job's real rc.1 run lands with the next CI push. |
 | Node | `^22.19.0 || >=24.0.0` (DeepSeek Harness runtime) |
 | Platforms | All (plain ESM bundle; no native code, no network) |
 | Model | Any (no model interaction) |

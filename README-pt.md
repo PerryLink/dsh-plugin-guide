@@ -29,7 +29,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.7-alpha.2` (re-sincronizado em 2026-09-18, `ddefc45`): o snapshot de docs oficiais foi atualizado para alpha.2, o checker agora espera o intervalo de pares de quatro cláusulas (`… || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`) com fonte única nos templates do scaffold, e uma nova linha vermelha falha funções `async apply` que registram após seu primeiro `await`. Cadeia de gates local verde (40 testes, typecheck, dogfood do `verify`); a execução real alpha.2 do job compat chega com o próximo push de CI. |
+| Harness | DeepSeek Harness `dsh-v0.1.7-rc.1` (re-sincronizado em 2026-09-24, `ddefc45`): o snapshot de docs oficiais foi atualizado para rc.1, o checker agora espera o intervalo de pares de quatro cláusulas (`… || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`) com fonte única nos templates do scaffold, e uma nova linha vermelha falha funções `async apply` que registram após seu primeiro `await`. Cadeia de gates local verde (40 testes, typecheck, dogfood do `verify`); a execução real rc.1 do job compat chega com o próximo push de CI. |
 | Node | `^22.19.0 || >=24.0.0` (runtime do DeepSeek Harness) |
 | Platforms | Todas (bundle ESM puro; sem código nativo, sem rede) |
 | Model | Qualquer (sem interação com o modelo) |

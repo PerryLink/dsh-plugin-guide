@@ -45,7 +45,7 @@
     "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-tools": "0.1.7-alpha.2"
+    "@deepseek-ai/dsh-tools": "0.1.7-rc.1"
   }
 }
 ```
