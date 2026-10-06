@@ -2,11 +2,20 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
+import semver from 'semver'
 import { runCheck } from '../src/cli/commands/check'
 import { DSH_PEER_RANGE } from '../src/cli/templates'
 import type { CheckResult } from '../src/cli/lib/report'
 
 const created: string[] = []
+
+/**
+ * The pre-0.2 canonical range. Its newest comparator sits on the 0.1.7 tuple, so
+ * semver's prerelease rule rejects every 0.2.x prerelease: the checker must call
+ * it stale, never accept it. Kept at module scope because both the peer-range
+ * test and the 0.2.x installability regression test assert against it.
+ */
+const staleUpTo017 = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0'
 
 afterEach(() => {
   for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true })
@@ -204,10 +213,7 @@ describe('check command', () => {
     // Single-sourced from the checker's own constant: a literal here drifts the
     // moment the canonical range gains a prerelease tuple.
     const canonical = DSH_PEER_RANGE
-    // The pre-0.1.7 canonical range. Its newest comparator sits on the 0.1.6
-    // tuple, so semver's prerelease rule rejects every 0.1.7 prerelease: the
-    // checker must call it stale, never accept it.
-    const stale = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0'
+    const stale = staleUpTo017
     const legacy = '>=0.1.0-rc.8 <0.2.0'
     const src = "import { defineTool } from '@deepseek-ai/dsh-tools'\nexport const Config = {}\n"
     const fixture = (range: string): string => {
@@ -227,5 +233,30 @@ describe('check command', () => {
     expect(statusOf(runCheck({ root: fixture(legacy), strict: false }).report.checks, 'manifest-peers')).toBe('fail')
     expect(statusOf(runCheck({ root: fixture(stale), strict: false }).report.checks, 'manifest-peers')).toBe('fail')
     expect(statusOf(runCheck({ root: fixture(canonical), strict: false }).report.checks, 'manifest-peers')).toBe('pass')
+  })
+
+  it('keeps the canonical peer range installable on the 0.2.x harness line', () => {
+    // Regression guard. `dsh` enforces peer ranges at INSTALL time and refuses a
+    // plugin whose range excludes the running runtime, so a canonical range that
+    // stops at 0.1.x scaffolds plugins that cannot be installed at all:
+    //   dsh: installation rejected: Plugin <pkg> is incompatible with dsh
+    //   0.2.1-alpha.1: peerDependencies {"@deepseek-ai/dsh-tools": ...}
+    // Asserted with the real `semver` package rather than a hand-rolled matcher:
+    // semver's prerelease rule is subtle enough that a reimplementation is its own
+    // bug source (a first attempt here got `alpha` vs `rc` precedence backwards).
+    for (const runtime of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.0']) {
+      expect(semver.satisfies(runtime, DSH_PEER_RANGE)).toBe(true)
+    }
+    // The 0.1.x-only range is the bug being guarded against: it rejects every
+    // 0.2.x prerelease, which is what made scaffolded plugins uninstallable.
+    expect(semver.satisfies('0.2.1-alpha.1', staleUpTo017)).toBe(false)
+    // Historical runtimes must stay installable across the widening.
+    for (const runtime of ['0.1.7-rc.2', '0.1.7-alpha.2', '0.1.2-rc.1', '0.1.5-alpha.1', '0.1.6-0']) {
+      expect(semver.satisfies(runtime, DSH_PEER_RANGE)).toBe(true)
+    }
+    // The range must stay well-formed and must not reach outside the 0.x line.
+    expect(semver.validRange(DSH_PEER_RANGE)).toBeTruthy()
+    expect(semver.satisfies('0.3.0', DSH_PEER_RANGE)).toBe(false)
+    expect(semver.satisfies('1.0.0', DSH_PEER_RANGE)).toBe(false)
   })
 })

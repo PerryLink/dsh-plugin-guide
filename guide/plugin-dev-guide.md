@@ -76,7 +76,7 @@ export function apply(ctx: Context) {
 - **bundle（分发层）**：npm 包，`package.json` 声明 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`；patch 里是"插入/覆盖插件行"的 YAML 数组。**`patch` 也可以是有序数组**：`{ "patch": ["./base.patch.yml", "./web.patch.yml"] }`，按序作为同一层应用，且每个文件里的相对插件路径**相对该文件所在目录**解析（校验失败信息：`dsh.bundle.patch must be a file path or a list of file paths`）。
 - **profile（可运行组合）**：`$DSH_HOME/profiles/<name>/`，`package.json` 声明 `"dsh": { "profile": { "bundles": [...] } }`；由 `dsh plugin` / `plugin_manager` 维护，手写不允许。
 - **client（浏览器半侧）**：`package.json` 声明 `"dsh": { "client": { "platform": "web", "inject": [...], "immediately": true, "external": [...] } }` 并导出编译好的 `./client`。`inject` **只决定激活顺序**（不是 cordis 服务注入），`immediately` 标记一阶段预取，`external` 列出基线之外的精确模块请求。客户端半侧只挂在**说明符恰为裸包名**的那一行上。
-- 另有两个可选作者字段：`dsh.manifestVersion`（清单格式标识，当前 `1`，与 npm 版本、会话格式版本无关）与 `engines.dsh`（兼容范围声明，**当前安装器/加载器都不校验**）。类型定义来自 `@deepseek-ai/dsh-package-manifest`。
+- 另有两个可选作者字段：`dsh.manifestVersion`（清单格式标识，当前 `1`，与 npm 版本、会话格式版本无关）与 `engines.dsh`（兼容范围声明，**当前安装器/加载器都不校验**；会被校验的是 `@deepseek-ai/dsh-*` 的 peerDependencies，见 §7.3）。类型定义来自 `@deepseek-ai/dsh-package-manifest`。
 
 bundle 最小结构：
 
@@ -394,6 +394,7 @@ Plugin Manager 与 Settings 会**在不激活插件的前提下**读展示信息
 - `files` 必须包含 patch、locale、图标与**每个运行时文件**——但**本地目录安装是链接 checkout，`files` 不过滤链接目录**，要直接核对文件；
 - **子路径插件（`my-plugins/search`）不是包，永远不读 `package.json`**：标题/描述走 `my-plugins/search/locale/*.json` 的 `meta.*`，图片走导出的 `my-plugins/search/icon`。
 - 可选作者字段：`dsh.manifestVersion`（当前 `1`）与 `engines.dsh`（**当前不校验**，只作声明）。类型来自 `@deepseek-ai/dsh-package-manifest`。
+- **真正会被强制的是 peerDependencies**（见 §7.3）：`dsh plugin add` 会用运行时的版本比对插件声明的 `@deepseek-ai/dsh-*` 范围，不匹配即**拒绝安装**。
 
 ### 7.1 从 GitHub 安装的 build-script 坑
 
@@ -420,7 +421,28 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 - **cordis 双副本 / 双 Cordis 分裂**：插件构建时若从 `.pnpm` 副本解析 cordis，与 harness 的 vendored 副本是"两个模块"，`declare module` 增强合并不了 → 报 `Property 'tools' does not exist on type 'Context'`。构建期把 cordis 解析到 harness 的 `vendor/cordis`；npm 安装路径下 peer 必须与宿主同一身份——**scoped `@deepseek-ai/cordis` 与 unscoped `cordis` 混用同样分裂**（dsh-tools 的类型只增强 scoped 版本）。独立包把 cordis 设为 peerDependency（+ dev），版本对齐宿主。
 - **官方 `@deepseek-ai/*` 包曾未发布公共 npm**（rc 早期）：社区 bundle 的 `dependencies` 留空，靠 profile 的 pnpm 闭包 flat fallback（`$DSH_HOME/profiles/node_modules`）注入；声明了反而解析失败。rc.6 起公开包可用（from-scratch 教程锁 `0.1.0-rc.6`、cordis `4.0.1`），两条时间线的资料都要知道，按当时宿主版本取舍。
 - **npm `latest` 标签是过期版本**：库包（`dsh-tools`、`dsh-base`、`dsh-headless`、`dsh-session-persistence-jsonl`、`dsh-settings`、`dsh-workflow` …）的 `latest` **至今**钉在 `0.0.1-rc.1`，所以写 `"latest"` 会装到远古版本，必须写死版本或钉 `next`/`alpha`。**2026-10-06 复核**：`@deepseek-ai/dsh` `latest`=`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`；dsh-tools / dsh-base / dsh-headless / dsh-session-persistence-jsonl 的 `latest` 仍 `0.0.1-rc.1`、`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`；`@deepseek-ai/cordis` `latest`=4.0.4 并有新标签 `dsh-0-2-1-alpha-1`=4.0.5-alpha.1；`@deepseek-ai/schemastery` `latest`=3.18.4；`create-dsh-plugin` `latest`=0.2.3；dsh-core、dsh-sdk 仍 404。历史两次复核（2026-08-14 与 09-04）的数值保留在上一条记录里，可见"`latest` 陷阱"从 rc 早期持续到 0.2 世代。**无作用域 `dsh` 包是无关项目 node-dsh**（"A shell written in JavaScript"）——官方 CLI 包是 `@deepseek-ai/dsh`，别装错。
-- **profile 内安装的 `@deepseek-ai/*` 会静默遮蔽运行时自带版本**（解析优先级 `profile > runtime`）：把共享实例的 dsh 包写进 **dependencies** 是错的做法——pnpm 会把它装进 profile，盖掉宿主自带的版本，然后核心服务注册失败（实测 `settings service is absent: mount @deepseek-ai/dsh-settings with @deepseek-ai/dsh-config-editor`，桌面端每次崩溃）。**共享实例的 dsh 包只放 `peerDependencies` + `devDependencies`**；独立版本演进或纯工具型包才放 `dependencies`。另注意 **DSH 不校验 peer 版本范围**（官方明文），peer 范围只是声明意图，真正的兼容要靠运行时探测。
+- **profile 内安装的 `@deepseek-ai/*` 会静默遮蔽运行时自带版本**（解析优先级 `profile > runtime`）：把共享实例的 dsh 包写进 **dependencies** 是错的做法——pnpm 会把它装进 profile，盖掉宿主自带的版本，然后核心服务注册失败（实测 `settings service is absent: mount @deepseek-ai/dsh-settings with @deepseek-ai/dsh-config-editor`，桌面端每次崩溃）。**共享实例的 dsh 包只放 `peerDependencies` + `devDependencies`**；独立版本演进或纯工具型包才放 `dependencies`。
+- ⚠️ **peer 范围会被安装期强制**（本节早期版本写成"DSH 不校验 peer 版本范围"，**已更正**）：`dsh plugin add` 用运行时版本比对插件声明的 `@deepseek-ai/dsh-*` 范围，不匹配即**拒绝安装**，打印声明的范围并给出豁免命令。实测原文：
+
+  ```
+  dsh: installation rejected: Plugin dsh-nurse-record-check@0.1.0 is incompatible with
+  dsh 0.2.1-alpha.1: peerDependencies {"@deepseek-ai/dsh-tools":">=0.1.2-rc.1 <0.2.0 || …"}.
+  To accept this risk explicitly, grant the exact-version exemption for
+  dsh-nurse-record-check@0.1.0 on dsh 0.2.1-alpha.1 with `dsh plugin allow-version` or the
+  plugin manager, then retry the installation or restart dsh.
+  ```
+
+  两个后果：① 范围**少列一个 0.2.x 的 prerelease 元组**，插件在 0.2.x 宿主上就装不上（拦在安装期，不是运行期）；② 用**旧版本宿主**打的 tarball 用新版本 `verify` 跑，报错会指向 base bundle 而不是你的插件（`dsh-plugin-dev verify` 的 `--base`/`--headless` 默认值因此必须与 compat workflow 同步）。
+- **豁免机制**（被拒后唯一的出路，可用 `dsh plugin --profile <p> --help` 复核）：
+
+  ```sh
+  dsh plugin --profile <profile> version-exemptions              # 列出已授予的豁免
+  dsh plugin --profile <profile> allow-version <pkg@version> \
+      --dsh-version <runtime> --accept-risk                      # 授予精确版本豁免
+  dsh plugin --profile <profile> revoke-version <pkg@version>    # 撤销
+  ```
+
+  豁免是**按 `<包@精确版本> × <宿主版本>` 的精确配对**（不是范围），所以宿主升级后要重新授予。`plugin_manager` 工具面里有对应入口，Web 侧边栏与插件管理页也能授予。**给用户写 README 排错节时把这三条命令抄进去**——这是被拒绝安装时用户唯一能自救的手段。
 - **`file:` 安装载入的是副本**：`dsh plugin add file:../my-plugin` 之后，profile 的 `node_modules` 下是**拷贝**（`nodeLinker: hoisted` + 锁文件只记 `version: file:<path>`），所以**改源码不生效、`update` 是 no-op**——只有 `remove` + `add` 才会重装。调试期要频繁改就用 `--patch` 直挂源码目录，或每次显式重装。
 
 **tsconfig 三件套 + 构建陷阱**
@@ -482,7 +504,7 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 ## 9.1 版本兼容与迁移（0.2 世代必读）
 
 - **先认版本**：`dsh --version`。`0.1.7-alpha.1` 起包含本世代全部破坏性变更（会话格式 V4）。npm 上 `latest`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`，而 master 最新 tag 是 `0.2.1-alpha.1`——**三个"最新"不是一个东西**。
-- **peer 范围写两侧**（如 `>=0.1.2-rc.1 <0.3.0`），但要记住 **DSH 不校验它**；真正的兼容靠运行时探测与发版纪律。
+- **peer 范围要写全两侧的 prerelease 元组**（如 `>=0.1.2-rc.1 <0.2.0 || … || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0`）。⚠️ **这个范围会被安装期强制**，不是文档意图：`dsh plugin add` 用运行时版本比对它，不匹配就拒绝安装并打印你声明的范围。所以少一个 0.2.x clause，插件在 0.2.x 宿主上**根本装不上**（拦在安装期，不是运行期）。范围之外仍要靠运行时特性探测——范围只表达"能不能装"，表达不了"某个 API 在不在"。
 - **共享实例的 dsh 包只放 peer + dev**，绝不放 dependencies（否则 profile 内副本会遮蔽运行时版本）。
 - **升级后必做**：`dsh --profile <name> --dump-config` 看有没有 `patch: entry <id> not found`（上游删行/改名后，你的 override 会**静默失效**）；再跑一次真实能力。
 - **逐项迁移清单**：见 [migration-0.2.md](migration-0.2.md)（含会话格式 V4、settings 重写、invariants 删除、`readBytes`、客户端 slot/Remote 改名、`agent.inject()` 的 source 包装退役、preset 分叉等全部条目与官方原文出处）。

@@ -3,7 +3,14 @@ import { flagBool, flagString, parseArgs } from './lib/args'
 import { readCliVersion } from './meta'
 import { runCheck, printCheckReport } from './commands/check'
 import { runNew } from './commands/new'
-import { resolveDsh, resolvePnpm, renderVerifySteps, runVerify } from './commands/verify'
+import {
+  resolveDsh,
+  resolvePnpm,
+  renderVerifySteps,
+  runVerify,
+  VERIFY_BASE_SPEC,
+  VERIFY_HEADLESS_SPEC,
+} from './commands/verify'
 
 const HELP = `dsh-plugin-dev — the DeepSeek Harness plugin-development CLI
 
@@ -98,8 +105,14 @@ export async function main(argv: string[], cwd: string = process.cwd()): Promise
           dshBin: resolveDsh(flagString(flags, 'dsh')),
           pnpmBin: resolvePnpm(flagString(flags, 'pnpm')),
           profile: flagString(flags, 'profile', 'compat') ?? 'compat',
-          base: flagString(flags, 'base', '@deepseek-ai/dsh-base@0.1.7-rc.2') ?? '@deepseek-ai/dsh-base@0.1.7-rc.2',
-          headless: flagString(flags, 'headless', '@deepseek-ai/dsh-headless@0.1.7-rc.2') ?? '@deepseek-ai/dsh-headless@0.1.7-rc.2',
+          // Keep these aligned with the versions `.github/workflows/compat.yml`
+          // installs. `dsh` enforces plugin/runtime compatibility at install time,
+          // so a stale pin here makes `verify` fail on every newer harness with
+          // "Plugin @deepseek-ai/dsh-headless@<old> is incompatible with dsh
+          // <new>" — a failure that names the base bundle, not the plugin under
+          // test. Verified working line: 0.2.1-alpha.1 (npm `alpha`).
+          base: flagString(flags, 'base', VERIFY_BASE_SPEC) ?? VERIFY_BASE_SPEC,
+          headless: flagString(flags, 'headless', VERIFY_HEADLESS_SPEC) ?? VERIFY_HEADLESS_SPEC,
           timeoutMs: timeoutMs(flags, 'timeout', 'DSH_PLUGIN_DEV_TIMEOUT', DEFAULT_TIMEOUT_MS),
           smokeTimeoutMs: timeoutMs(flags, 'smoke-timeout', 'DSH_PLUGIN_DEV_SMOKE_TIMEOUT', DEFAULT_SMOKE_TIMEOUT_MS),
         })

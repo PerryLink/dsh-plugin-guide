@@ -12,4 +12,10 @@ export default defineConfig({
   clean: true,
   sourcemap: false,
   outDir: 'lib',
+  // With `platform: node` tsdown forces `.mjs`/`.cjs`; disable that so ESM output
+  // follows the package `"type": "module"` and emits `lib/index.js` +
+  // `lib/index.d.ts` — the paths this template's package.json declares. Without
+  // this flag the build emits `lib/index.mjs`/`lib/index.d.mts`, `main` resolves
+  // to nothing, and the plugin silently never loads.
+  fixedExtension: false,
 })

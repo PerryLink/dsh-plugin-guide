@@ -19,9 +19,17 @@ export type TemplateLang = 'ts' | 'js'
  * `{{dshPeerRange}}` placeholder. Keep it identical to the canonical range in
  * `dsh-plugin-kit/data/peer-range.json`: one clause per prerelease tuple is
  * required by semver's prerelease rule, and the `-0` floor covers the whole
- * 0.1.6 tuple (never the bare `>=0.1.6` form).
+ * tuple (never a bare `>=0.2.0` form, which semver's prerelease rule would
+ * reject for `0.2.1-alpha.1`).
+ *
+ * The 0.2 line is load-bearing: `dsh` enforces peer ranges at install time and
+ * rejects any plugin whose declared range excludes the running runtime, so a
+ * range that stops at 0.1.x makes every scaffolded plugin uninstallable on a
+ * 0.2.x harness (`installation rejected: ... is incompatible with dsh
+ * 0.2.1-alpha.1`).
  */
-export const DSH_PEER_RANGE = '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0'
+export const DSH_PEER_RANGE =
+  '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0'
 
 /** Placeholder values substituted into template files. */
 export interface TemplateContext {

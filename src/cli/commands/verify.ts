@@ -10,6 +10,23 @@ import { join, resolve } from 'node:path'
 import { cleanupAllTempDirs, createTempDir, readJsonIfExists, writeFileDeep } from '../lib/fs'
 import { run, tailOf, type RunResult } from '../lib/subprocess'
 
+/**
+ * The verified harness line `verify` installs into its throwaway profile.
+ *
+ * Keep these in lockstep with `.github/workflows/compat.yml`, which installs the
+ * same versions. `dsh` rejects an incompatible plugin/base pair at install time,
+ * so a stale pin turns `verify` into a failure that names the *base bundle*
+ * rather than the plugin under test:
+ *
+ *   dsh: installation rejected: Plugin @deepseek-ai/dsh-headless@<old> is
+ *   incompatible with dsh <new>
+ *
+ * `tests/verify.test.ts` asserts these match compat.yml, so the two cannot drift
+ * apart silently again. Override per run with `--base` / `--headless`.
+ */
+export const VERIFY_BASE_SPEC = '@deepseek-ai/dsh-base@0.2.1-alpha.1'
+export const VERIFY_HEADLESS_SPEC = '@deepseek-ai/dsh-headless@0.2.1-alpha.1'
+
 /** Options for the verify command. */
 export interface VerifyOptions {
   root: string
@@ -161,11 +178,10 @@ function findTarball(dir: string): string | undefined {
   return undefined
 }
 
-function suggestionsFor(step: string, result: RunResult): string[] {
-  const base = [`tail of "${step}":\n${tailOf(result)}`]
+function suggestionsFor(step: string, result: RunResult): string[] {  const base = [`tail of "${step}":\n${tailOf(result)}`]
   if (result.timedOut) base.push(`command timed out; raise --timeout or --smoke-timeout`)
   if (step === 'install') {
-    base.push('ensure the dsh CLI is @deepseek-ai/dsh@0.1.7-rc.2 (older builds such as the rc.6 line do not satisfy the compat pin)')
+    base.push('ensure the dsh CLI is @deepseek-ai/dsh@0.2.1-alpha.1 (older builds such as the rc.6 line do not satisfy the compat pin)')
     base.push('confirm the profile allowlist matches the repo compat workflow (native builds allowlisted)')
   }
   if (step === 'headless') {
@@ -174,15 +190,39 @@ function suggestionsFor(step: string, result: RunResult): string[] {
   return base
 }
 
+/** Error signatures a headless smoke prints only *after* the tree loaded. */
+const SMOKE_LOADED_SIGNATURES = [
+  // Keyless machine: credentials are resolved per DSH_HOME and the temp home has none.
+  'MISSING_CREDENTIAL',
+  // Keyed machine: credentials live in the OS credential store, NOT under DSH_HOME,
+  // so a throwaway DSH_HOME does not isolate them. The run therefore reaches the
+  // provider and dies there — either on the transport or on rejection of the
+  // throwaway home's identity. Both mean dispatch happened, which is what this
+  // step proves; the model's answer was never the subject of the assertion.
+  'TRANSPORT:',
+  'transport failed',
+  'UNAUTHORIZED',
+  'invalid api key',
+  'API key is invalid',
+]
+
 /**
- * True when a headless smoke run proves the plugin tree loaded: keyless runs
- * print `MISSING_CREDENTIAL` (on stderr), keyed runs print `ok`.
+ * True when a headless smoke run proves the plugin tree loaded. Three accepted
+ * outcomes, all of which require that the tree mounted and the turn dispatched:
+ * a keyless run printing `MISSING_CREDENTIAL`, a keyed run printing `ok`, or a
+ * keyed run whose provider call failed at the transport/auth layer.
+ *
+ * The third case is not a fallback for a broken plugin: a plugin that never
+ * mounted produces no provider traffic at all, so it prints none of these
+ * signatures and still fails this check.
+ *
  * @param stdout - captured stdout.
  * @param stderr - captured stderr.
  */
 export function isSmokeOk(stdout: string, stderr: string): boolean {
   const text = `${stdout}\n${stderr}`
-  return text.includes('MISSING_CREDENTIAL') || /(^|[^a-z])ok([^a-z]|$)/i.test(text)
+  if (SMOKE_LOADED_SIGNATURES.some((signature) => text.includes(signature))) return true
+  return /(^|[^a-z])ok([^a-z]|$)/i.test(text)
 }
 
 /** Resolve the dsh binary: explicit flag/env first, then PATH `dsh`. */

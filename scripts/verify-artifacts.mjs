@@ -5,7 +5,7 @@
 //   3. the scaffolder produces TS and JS skeletons inside a mkdtemp sandbox
 //      (never touching a real home directory), which are then removed.
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, rmSync, readdirSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, readdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -59,6 +59,18 @@ try {
     check(result.status === 0 && hasEntry && hasPatch, `${lang} scaffold produces entry + cordis.patch.yml (exit ${result.status})`)
     check(readmeCount === 5, `${lang} scaffold produces 5 README languages (${readmeCount})`)
   }
+
+  // 3b. Extension contract for the TS scaffold. `platform: node` makes tsdown
+  // force `.mjs`/`.cjs` unless `fixedExtension` is disabled, while the scaffolded
+  // package.json declares `lib/index.js` + `lib/index.d.ts`. When those two
+  // disagree the build succeeds and `main` resolves to nothing, so the plugin
+  // installs and then silently never loads — with no error anywhere. Asserted
+  // offline (no install, no build) so the gate stays network-free.
+  const tsConfig = readFileSync(join(root, 'templates', 'ts', 'tsdown.config.mjs'), 'utf8')
+  check(
+    /fixedExtension\s*:\s*false/.test(tsConfig),
+    'ts template disables tsdown fixedExtension so the build emits the declared lib/index.js',
+  )
 } finally {
   rmSync(sandbox, { recursive: true, force: true })
 }

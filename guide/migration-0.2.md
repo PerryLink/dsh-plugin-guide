@@ -20,7 +20,7 @@
 | npm `alpha` / `next` | `alpha`=`0.2.1-alpha.1`、`next`=`0.2.0-rc.2` |
 | 区间内发布线（9 个） | `0.1.6-alpha.2`(09-17) → `0.1.7-alpha.1`(09-22) → `0.1.5-rc.3`(09-22) → `0.1.7-alpha.2`(09-22) → `0.1.7-rc.1`(09-23) → `0.1.7-rc.2`(09-24) → `0.2.0-rc.1`(09-28) → `0.2.0-rc.2`(09-29) → `0.2.1-alpha.1`(10-03) |
 | Node 门槛 | `^22.19.0 \|\| >=24.0.0`，**区间内未变**（无 `.nvmrc`/`.node-version` 文件） |
-| `dsh.version` 字段 | **不存在**。DSH 的包清单只有 `dsh.bundle` / `dsh.profile` / `dsh.client` 三组键，且官方明确"不校验 peer 版本范围"——声明的 peer 范围只是文档意图，**不是加载期门禁** |
+| `dsh.version` 字段 | **不存在**。DSH 的包清单只有 `dsh.bundle` / `dsh.profile` / `dsh.client` 三组键 |
 | 官方发布说明在哪 | 仓库里**没有 `CHANGELOG.md`**、也没有 `docs/persistence-changes/releases/*` 新条目，所以逐版本说明只在 GitHub **Releases** 的 body 里（`gh release view <tag>` 或 Releases API）。本文件的每一条都对照过 tag `dsh-v0.1.7-alpha.1` / `dsh-v0.2.0-rc.2` / `dsh-v0.2.1-alpha.1` 的发布说明 |
 
 **官方 0.1.7-alpha.1 发布说明里点名的四条插件必改**（原文"其他变更"段）：Session 日志升级 V4、工作区文件读取统一为 `readBytes`（旧接口必须迁移）、官方 DeepSeek 适配器**只用 Messages API**（移除 Chat Completions 与 `protocol` 选项）、设置改由当前 Profile 的插件配置保存（旧 `settings.yaml` 只尝试导入一次）。同版本还改了：Agent 预设改由插件组合包声明/安装（旧目录预设需迁移）、组合包支持按序多 patch、插件可声明"无需重载的配置字段"、新增 `--dump-config-schema`、插件可用 locale 声明多语言标题描述 + `package.json` 图标。
@@ -29,7 +29,7 @@
 
 **npm 陷阱（最贵的一条）**：库包（`dsh-tools`、`dsh-base`、`dsh-headless`、`dsh-session-persistence-jsonl`、`dsh-session`、`dsh-settings`、`dsh-workflow` …）的 `latest` 至今钉在 **`0.0.1-rc.1`**。写 `"@deepseek-ai/dsh-session": "latest"` 会装到远古版本；必须写死版本或钉 `next`/`alpha`。唯一的例外是 CLI 包 `@deepseek-ai/dsh`（`latest`=`0.2.0-rc.2`）。
 
-**跨线 peer 范围**：`^0.1.x` 与 `^0.2.x` 互不覆盖，要同时支持两条线必须写两侧范围（本知识库自身用 `>=0.1.2-rc.1 <0.3.0`）。因为 DSH 不校验范围，真正的兼容手段是**运行时特性探测**。
+**跨线 peer 范围**：`^0.1.x` 与 `^0.2.x` 互不覆盖，要同时支持两条线必须写两侧范围。⚠️ **peer 范围会被安装期强制**（本节早期版本写成"DSH 不校验范围"，已更正）：`dsh plugin add` 会拿运行时的版本去比插件声明的 peer 范围，不匹配就**拒绝安装**并把声明的范围原样打印出来。跨线支持因此必须**在范围里同时列出两侧的 prerelease 元组**（每个元组一个 clause），否则 0.2.x 宿主装不上——详见 [plugin-dev-guide.md](plugin-dev-guide.md) §7.3 的 `dsh-plugin` 段。范围之外仍要配**运行时特性探测**，因为范围只能表达"能不能装"，表达不了"某个 API 在不在"。
 
 ## 2. 会话格式 V3 → V4（影响最深，涉及历史日志）
 
@@ -84,7 +84,7 @@
 
 - `dsh.bundle.patch` 现在接受**有序数组**：`{ "patch": ["./base.patch.yml", "./web.patch.yml"] }`，按序作为同一层应用，且每个文件里的相对插件路径**相对该文件所在目录**解析。校验失败信息：`dsh.bundle.patch must be a file path or a list of file paths`。
 - 层顺序未变：`dsh.profile.bundles` 顺序 → profile 自己的 `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → 各 `--patch`（argv 顺序）。**按 id 覆盖时整段 `config` 被替换，不做深合并。**
-- 包清单还可以声明 `dsh.manifestVersion`（格式标识，当前 `1`，与 npm 版本、会话格式版本无关）与 `engines.dsh`（作者声明的兼容范围，**当前安装器/加载器都不强制**）。类型定义见 `@deepseek-ai/dsh-package-manifest`。
+- 包清单还可以声明 `dsh.manifestVersion`（格式标识，当前 `1`，与 npm 版本、会话格式版本无关）与 `engines.dsh`（作者声明的兼容范围，**当前安装器/加载器都不强制**——真正会被强制的是 `@deepseek-ai/dsh-*` 的 **peerDependencies**，安装期即拒绝不匹配者，见 [plugin-dev-guide.md](plugin-dev-guide.md) §7.3）。类型定义见 `@deepseek-ai/dsh-package-manifest`。
 - 展示元数据契约（Plugin Manager / Settings 在**不激活插件**的前提下读取）：包根读 `package.json` 的 `name`/`description`/`icon`，或导出 `./locale/*.json` 的 `meta.title`/`meta.description` 与 `./icon`；图标支持 SVG/PNG/JPEG/WebP，**≤ 256 KiB 且必须落在包内**（绝对路径、URL、指向包外的 symlink 都被拒）。子路径插件**永远不读** `<subpath>/package.json`——标题/描述走 `locale/*.json` 的 `meta.*`，图片走导出的 `<subpath>/icon`。
 - `dsh.client` 键**未变**：`platform`（web）、`inject`（仅排序，不是 cordis 服务注入）、`immediately`（一阶段预取）、`external`（基线与注入边之外的精确模块请求）。但客户端半侧只挂在**说明符恰为裸包名**的那一行上：把一个包拆成多行的组合包，其 UI 只随根行启停。
 
