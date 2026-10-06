@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.24] - 2026-10-06
+
+### Added
+
+- The five READMEs gain a **Release channels** section: which surface is the source of truth for each distribution channel and how it updates. It records that npm is published by `.github/workflows/release.yml` on a `v*` tag (verify-kit gate → CHANGELOG section check → `npm publish --provenance`, skipped when the version exists), that the GitHub Release comes from the same idempotent workflow, that the discovery badges are live lookups needing no publication, that **Gitee is a read-only scheduled mirror** which is force-aligned to the GitHub tip by the family's `gitee-sync` workflow and never receives a tag from this repository, and that the Desktop Market and the 1024 store install from npm so a published version needs no per-version submission.
+
+### Changed
+
+- Published to make the section above part of the artifact: `README*.md` are inside the npm `files` whitelist, and npm metadata is immutable, so documenting the release channels in the repository alone would leave the shipped copy and the repository disagreeing.
+
 ## [0.3.23] - 2026-10-06
 
 Re-verified against the newest official master `5badb15009ae1756c3afe0ae0cef1faafc290ccc` (`dsh-v0.2.1-alpha.1`, 2026-10-03; +2300 commits over the previous baseline `ddefc45`, 8763 changed files). This release closes the 0.1.6-alpha.2 → 0.2.1-alpha.1 gap: the **whole 0.1.7 and 0.2.x lines were undocumented** in the knowledge base before it.

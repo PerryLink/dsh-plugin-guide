@@ -179,6 +179,17 @@ El bundle de skill no expone ningún `Config` de Schemastery — registra la bas
 - **`downloads/` es generado, no confirmado.** Las instantáneas crudas (archivos de repos de la comunidad, Discussions, artículos) deben generarse con los scripts antes de usarse.
 - **El contenido de `awesome-dsh-plugins` es solo local.** Su upstream declara una restricción de uso interno, por lo que no se redistribuye con el repo.
 
+## Release channels
+
+Todos los canales resuelven desde este repositorio o desde npm, así que **una etiqueta llega a todos**; solo el espejo de Gitee es una copia programada:
+
+| Canal | Fuente de verdad | Cómo se actualiza |
+|---|---|---|
+| npm (`dsh-plugin-guide`) | el `package.json` de este repositorio | `.github/workflows/release.yml` en una etiqueta `v*`: puerta `verify-kit` → comprobación de la sección del CHANGELOG → `npm publish --provenance` (se omite si la versión ya existe) |
+| GitHub Release | la misma etiqueta | el mismo workflow la crea de forma idempotente |
+| Insignias de descubrimiento (versión npm, etiqueta de GitHub, DSH Market, dsh-doctor) | consultas en vivo | no hay nada que publicar: leen npm/el registro en cada render |
+| Espejo de Gitee | este repositorio | **espejo programado de solo lectura**, no un destino de publicación: el workflow `gitee-sync` de la familia lo alinea al tip de GitHub con `--force-with-lease`, así que `main` suele ir una ejecución programada por detrás. **Aquí nunca se empuja una etiqueta a Gitee**; compara con `git ls-remote` antes de reportar el espejo como obsoleto |
+| DSH Desktop Market / dsh1024 | npm | el mercado instala el paquete de npm, así que una versión publicada es instalable de inmediato; no hay envío por versión |
 ## Keeping it fresh
 
 ```sh

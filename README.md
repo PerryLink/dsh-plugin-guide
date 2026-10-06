@@ -189,6 +189,18 @@ The skill bundle exposes no Schemastery `Config` — it registers the knowledge 
 - **`downloads/` is generated, not committed.** Raw snapshots (community repo archives, Discussions, articles) must be generated with the scripts before use.
 - **`awesome-dsh-plugins` content is local-only.** Its upstream declares an internal-use constraint, so it is not redistributed with the repo.
 
+## Release channels
+
+Every channel resolves from this repository or from npm, so one tag reaches all of them; only the Gitee mirror is a scheduled copy:
+
+| Channel | Source of truth | How it updates |
+|---|---|---|
+| npm (`dsh-plugin-guide`) | this repo's `package.json` | `.github/workflows/release.yml` on a `v*` tag: `verify-kit` gate → CHANGELOG section check → `npm publish --provenance` (skipped when the version already exists) |
+| GitHub Release | the same tag | the same workflow creates it idempotently from the tag |
+| Discovery badges (npm version, GitHub tag, DSH Market, dsh-doctor) | live lookups | nothing to publish — they read npm/the registry on each render |
+| Gitee mirror | this repo | a **read-only scheduled mirror**, not a publish target: it is force-aligned to the GitHub tip (`--force-with-lease`) by the family's `gitee-sync` workflow, so `main` is normally one scheduled run behind. Gitee never receives a tag push from here; compare `git ls-remote` against GitHub before reporting the mirror stale |
+| DSH Desktop Market / dsh1024 | npm | the market installs the npm package, so a published version is immediately installable; no per-version submission |
+
 ## Keeping it fresh
 
 ```sh

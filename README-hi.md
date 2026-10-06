@@ -179,6 +179,17 @@ skill बंडल कोई Schemastery `Config` उजागर नहीं �
 - **`downloads/` उत्पन्न है, कमिट नहीं।** कच्चे स्नैपशॉट (सामुदायिक रेपो संग्रह, Discussions, लेख) उपयोग से पहले स्क्रिप्ट से उत्पन्न करने चाहिए।
 - **`awesome-dsh-plugins` सामग्री केवल स्थानीय है।** इसका अपस्ट्रीम आंतरिक-उपयोग प्रतिबंध घोषित करता है, इसलिए इसे रेपो के साथ पुनर्वितरित नहीं किया जाता।
 
+## Release channels
+
+हर channel इस repo या npm से resolve होता है, इसलिए **एक tag सब जगह पहुँच जाता है**; केवल Gitee mirror एक शेड्यूल्ड कॉपी है:
+
+| Channel | सत्य-स्रोत | कैसे अपडेट होता है |
+|---|---|---|
+| npm (`dsh-plugin-guide`) | इस repo का `package.json` | `v*` tag पर `.github/workflows/release.yml`: `verify-kit` गेट → CHANGELOG में उस संस्करण का section जाँच → `npm publish --provenance` (संस्करण पहले से हो तो छोड़ देता है) |
+| GitHub Release | वही tag | वही workflow इसे idempotent तरीके से बनाता है |
+| Discovery बैज (npm version, GitHub tag, DSH Market, dsh-doctor) | लाइव lookup | प्रकाशित करने को कुछ नहीं — हर render पर npm/registry पढ़ते हैं |
+| Gitee mirror | यह repo | **read-only शेड्यूल्ड mirror**, प्रकाशन लक्ष्य नहीं: परिवार का `gitee-sync` workflow इसे `--force-with-lease` से GitHub tip पर align करता है, इसलिए `main` सामान्यतः एक शेड्यूल्ड रन पीछे रहता है। **यहाँ से Gitee पर tag कभी push नहीं होता**; mirror को पुराना बताने से पहले `git ls-remote` से तुलना करें |
+| DSH Desktop Market / dsh1024 | npm | market npm पैकेज इंस्टॉल करता है, इसलिए प्रकाशित संस्करण तुरंत इंस्टॉल-योग्य है; प्रति-संस्करण सबमिशन नहीं |
 ## Keeping it fresh
 
 ```sh

@@ -181,6 +181,17 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 - **`downloads/` 由脚本生成、不入库。** 原始快照（社区仓库归档、Discussions、文章）使用前需用脚本生成。
 - **`awesome-dsh-plugins` 内容仅本地。** 其上游声明内部使用约束，故不随仓库再分发。
 
+## Release channels
+
+所有渠道都从本仓库或 npm 解析，因此**推一个 tag 就能到所有渠道**；只有 Gitee 镜像是定时拷贝：
+
+| 渠道 | 真源 | 更新方式 |
+|---|---|---|
+| npm（`dsh-plugin-guide`） | 本仓库的 `package.json` | `v*` tag 触发 `.github/workflows/release.yml`：`verify-kit` 门禁 → 校验 CHANGELOG 有该版本段 → `npm publish --provenance`（版本已存在则跳过） |
+| GitHub Release | 同一个 tag | 同一 workflow 幂等创建 |
+| 展示徽章（npm 版本、GitHub tag、DSH Market、dsh-doctor） | 实时查询 | 无需发布——每次渲染都读 npm/registry |
+| Gitee 镜像 | 本仓库 | **只读定时镜像**，不是发布目标：由家族仓的 `gitee-sync` workflow 用 `--force-with-lease` 强制对齐 GitHub tip，所以 `main` 通常落后一次定时运行。**这里从不对 Gitee 推 tag**；报"镜像过期"前先用 `git ls-remote` 与 GitHub 对比 |
+| DSH Desktop Market / dsh1024 | npm | 市场装的就是 npm 包，发布即可安装，无需逐版本投稿 |
 ## Keeping it fresh
 
 ```sh
