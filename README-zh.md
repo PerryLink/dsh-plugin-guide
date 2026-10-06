@@ -27,6 +27,8 @@
 
 ---
 
+**📖 想在网页上读？** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) —— 每章独立成页，另有给助手用的机器可读 [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt)。
+
 <!-- star-cta -->
 ## ⭐ 如果它帮到了你
 

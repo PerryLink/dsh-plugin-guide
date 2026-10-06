@@ -25,6 +25,8 @@
 
 ---
 
+**📖 Prefere ler como site?** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) — cada capítulo em sua própria página, além de um [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt) legível por máquina para assistentes.
+
 <!-- star-cta -->
 ## ⭐ 如果它帮到了你
 
