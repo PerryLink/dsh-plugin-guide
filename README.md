@@ -65,6 +65,7 @@
 | `guide/plugin-dev-guide.md` | The complete development guide (10 chapters) |
 | `guide/quick-reference.md` | One-page cheat sheet (5 languages) |
 | `guide/links.md` | Curated URL index: official dev docs (site ↔ local copies) + community doc links |
+| `guide/when-to-retire-a-plugin.md` | Retiring and freezing plugins: the criteria and the measured data behind a portfolio audit (EN + ZH) |
 | `references/official-docs/` | Verbatim copy of the official repo docs (EN + ZH) |
 | `references/*.md` | Research reports: repo docs, website, Cordis, the paper, community ecosystem, 114-repo archive (15 deep-dived) |
 | `scripts/` | Idempotent download scripts + integrity checker + topic snapshot generator |

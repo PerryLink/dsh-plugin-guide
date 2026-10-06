@@ -61,6 +61,7 @@ Este plugin forma parte de la [familia de plugins DSH](https://github.com/PerryL
 | `guide/plugin-dev-guide.md` | La guía de desarrollo completa (10 capítulos) |
 | `guide/quick-reference.md` | Hoja de referencia de una página (5 idiomas) |
 | `guide/links.md` | Índice de URL curado: documentación oficial de desarrollo (sitio ↔ copias locales) + enlaces de documentación de la comunidad |
+| `guide/when-to-retire-a-plugin.md` | Retirar y congelar plugins: los criterios y los datos medidos de una auditoría de cartera (EN + ZH) |
 | `references/official-docs/` | Copia textual de la documentación oficial del repo (EN + ZH) |
 | `references/*.md` | Informes de investigación: documentación del repo, sitio web, Cordis, el paper, ecosistema de la comunidad, archivo de 114 repos (15 con deep-dive) |
 | `scripts/` | Scripts de descarga idempotentes + verificador de integridad + generador de instantáneas de tema |
