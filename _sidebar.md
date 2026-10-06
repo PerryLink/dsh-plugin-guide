@@ -1,0 +1,20 @@
+- [Overview](README.md)
+- **Guide**
+  - [Plugin development (10 chapters)](guide/plugin-dev-guide.md)
+  - [Quick reference](guide/quick-reference.md)
+  - [When to retire or freeze a plugin](guide/when-to-retire-a-plugin.md)
+  - [何时退役或冻结一个插件](guide/when-to-retire-a-plugin.zh-CN.md)
+  - [Release engineering](guide/release-engineering.md)
+  - [Unfixed upstream issues](guide/unfixed-issues.md)
+  - [Curated links](guide/links.md)
+- **Reference**
+  - [Harness repository](references/harness-repo.md)
+  - [Upstream Cordis](references/upstream-cordis.md)
+  - [Cordis paper and community](references/cordis-paper-and-community.md)
+  - [Community ecosystem](references/community-ecosystem.md)
+  - [Community repo deep dive](references/community-repo-deep-dive.md)
+  - [Official website pages](references/website-pages.md)
+  - [Sources](references/sources.md)
+- **Machine-readable**
+  - [llms.txt](llms.txt)
+  - [llms-full.txt](llms-full.txt)

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>dsh-plugin-guide — DeepSeek Harness plugin development knowledge base</title>
+  <meta name="description" content="DeepSeek Harness (dsh) plugin development knowledge base: the development guide, release playbook, source-verified unfixed upstream issues, and measured ecosystem data on when to retire a plugin.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+</head>
+<body>
+  <div id="app">Loading…</div>
+  <script>
+    window.$docsify = {
+      name: 'dsh-plugin-guide',
+      repo: 'PerryLink/dsh-plugin-guide',
+      basePath: '/dsh-plugin-guide/',
+      homepage: 'README.md',
+      loadSidebar: true,
+      subMaxLevel: 3,
+      relativePath: false,
+      notFoundPage: false,
+      search: {
+        placeholder: 'Search the knowledge base…',
+        noData: 'No results',
+        depth: 3
+      },
+      plugins: [
+        function (hook) {
+          hook.afterEach(function (html) {
+            return html + '<hr><p style="font-size:0.85em;opacity:0.75">' +
+              'Whole knowledge base in one file: ' +
+              '<a href="llms-full.txt">llms-full.txt</a> · ' +
+              '<a href="llms.txt">llms.txt</a></p>'
+          })
+        }
+      ]
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+</body>
+</html>

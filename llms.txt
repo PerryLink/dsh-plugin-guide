@@ -1,0 +1,32 @@
+# dsh-plugin-guide
+
+> DeepSeek Harness (dsh) plugin development knowledge base — the development guide, the release playbook, the source-verified list of unfixed upstream issues, and the measured ecosystem data behind one author's retirement and freeze decisions.
+
+This file is the machine-readable index. The whole corpus in one plain-text file:
+[llms-full.txt](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/llms-full.txt)
+
+The same material ships as an installable DSH bundle so an agent can consult it in-session:
+
+```
+dsh plugin --profile web add dsh-plugin-guide
+```
+
+## Start here
+
+- [Plugin development guide (10 chapters)](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/plugin-dev-guide.md): the contract, the capability seams, session/event vocabulary, the 20+ measured pitfalls, and the shipping checklist.
+- [Quick reference](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/quick-reference.md): one page, five languages.
+- [When to retire or freeze a plugin](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/when-to-retire-a-plugin.md): the criteria, the measured npm multipliers against each rival, what frozen does and does not mean, and eight self-check questions. (Chinese: `guide/when-to-retire-a-plugin.zh-CN.md`)
+
+## Reference
+
+- [Release engineering](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/release-engineering.md): tagging, npm provenance, the `-0` prerelease floor, and why the tag workflow owns the GitHub Release.
+- [Unfixed upstream issues](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/unfixed-issues.md): every entry carries `path:line` against a named host commit, the workaround, and the fixing commit when one exists.
+- [Curated links](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/links.md): official development docs, site URL against local mirror copy.
+- [Community ecosystem](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/community-ecosystem.md) · [Community repository deep dive](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/community-repo-deep-dive.md)
+- [Harness repository reference](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/harness-repo.md) · [Upstream Cordis](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/upstream-cordis.md) · [Cordis paper and community](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/cordis-paper-and-community.md) · [Official website pages](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/website-pages.md)
+
+## Source of truth
+
+- Repository: https://github.com/PerryLink/dsh-plugin-guide
+- Host project: https://github.com/deepseek-ai/deepseek-harness
+- Plugin discovery, per the host's own `CONTRIBUTING.md`: tag the repository with the `dsh-plugin` GitHub topic.
