@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "The dsh-plugin-guide knowledge base plus the dsh-plugin-dev CLI toolchain: official docs, Cordis primer, community deep-dives, and battle-tested pitfalls registered as an on-demand agent skill, with a scaffolder, static checker, and pack verifier for building DSH plugins.",
   "type": "module",
   "main": "index.js",
@@ -119,6 +119,7 @@
         "0.1.7-alpha.2",
         "0.1.7-rc.1",
         "0.1.7-rc.2",
+        "0.2.0-rc.2",
         "0.2.1-alpha.1"
       ]
     },

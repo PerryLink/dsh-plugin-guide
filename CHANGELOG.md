@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.26] - 2026-10-06
+
+### Fixed
+
+- **`dshWorkshop.compatibility.dshVersions` omitted `0.2.0-rc.2`, the version npm publishes as `latest`.** 0.3.25 opened the `>=0.2.0-0 <0.3.0` clause in the peer range and the package is installable on that line, but the declared compatibility list still jumped from `0.1.7-rc.2` to `0.2.1-alpha.1` — so a reader on the `latest` line saw itself listed as unsupported by a package that supports it. `0.2.0-rc.2` is now listed; the list is what the market surface reads, so it has to agree with the peer range.
+
 ## [0.3.25] - 2026-10-06
 
 Found by scaffolding a real plugin and installing it on a real `0.2.1-alpha.1` host. **Two defects made every TypeScript scaffold unusable, and neither one raised an error anywhere.** 0.3.23 claimed the peer range "already admits the `0.1.7` and `0.2.x` lines"; that was true of this package's own `package.json` and false of `src/cli/templates.ts`, so the scaffolded range stopped at 0.1.x. Both are now fixed and both have a regression guard.
