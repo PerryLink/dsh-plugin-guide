@@ -4,6 +4,8 @@
   - [Quick reference](guide/quick-reference.md)
   - [When to retire or freeze a plugin](guide/when-to-retire-a-plugin.md)
   - [何时退役或冻结一个插件](guide/when-to-retire-a-plugin.zh-CN.md)
+  - [Choosing a plugin (measured)](guide/choosing-a-plugin.md)
+  - [插件选型（实测）](guide/choosing-a-plugin.zh-CN.md)
   - [Release engineering](guide/release-engineering.md)
   - [Unfixed upstream issues](guide/unfixed-issues.md)
   - [Curated links](guide/links.md)

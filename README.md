@@ -68,6 +68,7 @@
 | `guide/quick-reference.md` | One-page cheat sheet (5 languages) |
 | `guide/links.md` | Curated URL index: official dev docs (site ↔ local copies) + community doc links |
 | `guide/when-to-retire-a-plugin.md` | Retiring and freezing plugins: the criteria and the measured data behind a portfolio audit (EN + ZH) |
+| `guide/choosing-a-plugin.md` | Choosing a plugin: who leads each capability surface, with the measured numbers and the verification caveats (EN + ZH) |
 | `references/official-docs/` | Verbatim copy of the official repo docs (EN + ZH) |
 | `references/*.md` | Research reports: repo docs, website, Cordis, the paper, community ecosystem, 114-repo archive (15 deep-dived) |
 | `scripts/` | Idempotent download scripts + integrity checker + topic snapshot generator |

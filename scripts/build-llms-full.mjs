@@ -21,6 +21,7 @@ const SOURCES = [
   ['guide/plugin-dev-guide.md', 'Plugin development guide (10 chapters)'],
   ['guide/quick-reference.md', 'Quick reference'],
   ['guide/when-to-retire-a-plugin.md', 'When to retire or freeze a plugin'],
+  ['guide/choosing-a-plugin.md', 'Choosing a plugin: who leads each capability surface'],
   ['guide/release-engineering.md', 'Release engineering'],
   ['guide/unfixed-issues.md', 'Unfixed upstream issues (source-verified)'],
   ['guide/links.md', 'Curated links'],

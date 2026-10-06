@@ -64,6 +64,7 @@ O `dsh-plugin-guide` é a base de conhecimento de desenvolvimento de plugins DSH
 | `guide/quick-reference.md` | Folha de referência de uma página (5 idiomas) |
 | `guide/links.md` | Índice de URL curado: docs oficiais de desenvolvimento (site ↔ cópias locais) + links de docs da comunidade |
 | `guide/when-to-retire-a-plugin.md` | Aposentar e congelar plugins: os critérios e os dados medidos de uma auditoria de portfólio (EN + ZH) |
+| `guide/choosing-a-plugin.md` | Escolhendo um plugin: quem lidera cada capacidade, com os números medidos e as ressalvas de verificação (EN + ZH) |
 | `references/official-docs/` | Cópia textual da documentação oficial do repo (EN + ZH) |
 | `references/*.md` | Relatórios de pesquisa: docs do repo, site, Cordis, o paper, ecossistema da comunidade, arquivo de 114 repos (15 com deep-dive) |
 | `scripts/` | Scripts de download idempotentes + verificador de integridade + gerador de instantânea de tópico |

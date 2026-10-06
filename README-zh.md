@@ -66,6 +66,7 @@
 | `guide/quick-reference.md` | 一页速查表（5 语言） |
 | `guide/links.md` | 精选 URL 索引：官方开发文档（站点 ↔ 本地副本）+ 社区文档链接 |
 | `guide/when-to-retire-a-plugin.md` | 插件退役与冻结：一次组合审计的判据与实测数据（中英双语） |
+| `guide/choosing-a-plugin.md` | 插件选型：每个能力面该用哪个，含实测数字与核验警示（中英双语） |
 | `references/official-docs/` | 官方仓库文档逐字副本（英 + 中） |
 | `references/*.md` | 调研报告：仓库文档、网站、Cordis、论文、社区生态、114 仓库归档（15 个深读） |
 | `scripts/` | 幂等下载脚本 + 完整性检查器 + 话题快照生成器 |
