@@ -4,9 +4,16 @@
   "description": "A DeepSeek Harness (DSH) plugin scaffolded by dsh-plugin-dev.",
   "type": "module",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
   "files": [
     "index.js",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg"
   ],
   "scripts": {
     "test": "vitest run"
@@ -23,6 +30,7 @@
     "@deepseek-ai/schemastery": "^3.18.2"
   },
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     }

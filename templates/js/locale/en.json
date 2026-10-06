@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "{{name}}",
+    "description": "A DeepSeek Harness plugin scaffolded by dsh-plugin-dev."
+  }
+}

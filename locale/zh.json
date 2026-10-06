@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "dsh-plugin-guide",
+    "description": "DeepSeek Harness 插件开发知识库：官方文档副本、契约红线、迁移指南、源码核实的问题索引，以及 dsh-plugin-dev 命令行工具。"
+  }
+}

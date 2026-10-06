@@ -1,4 +1,4 @@
-# dsh-plugin-guide official-docs sync script.
+﻿# dsh-plugin-guide official-docs sync script.
 # Purpose: sync the deepseek-harness checkout's official docs into references/official-docs/ (verbatim copy).
 # Source is pinned to origin/master (HEAD fallback): untracked drafts and unpushed commits in the checkout never enter the KB.
 # Output: references/official-docs/SNAPSHOT.md (source ref/SHA, sync time, file counts - the freshness authority for READMEs).

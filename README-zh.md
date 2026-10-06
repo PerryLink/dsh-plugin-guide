@@ -40,7 +40,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1`（2026-09-24 重同步，`ddefc45`）：官方文档快照已刷新到 rc.1；checker 现在期望四段式 peer 区间（`… || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`，与脚手架模板单源）；新增红线——`async apply` 在首个 `await` 之后注册即判错。本地门禁链绿（40 测试、typecheck、verify 自测）；compat job 的真机 rc.1 跑在下次 CI push 后生效。 |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1`（`5badb15009`，master 最新 tag，2026-10-03）；npm `latest`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`。已于 2026-10-06 对照该 checkout 重核（完整门禁链 + profile 安装冒烟）。知识库、官方文档副本与 [guide/migration-0.2.md](guide/migration-0.2.md) 均以该基线为准。 |
 | Node | `^22.19.0 || >=24.0.0`（DeepSeek Harness 运行时） |
 | Platforms | 全部（纯 ESM bundle；无原生代码、无网络） |
 | Model | 任意（无模型交互） |

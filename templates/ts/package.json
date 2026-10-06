@@ -5,9 +5,16 @@
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "exports": {
+    ".": "./lib/index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
   "files": [
     "lib",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg"
   ],
   "scripts": {
     "build": "tsdown",
@@ -32,6 +39,7 @@
     "@deepseek-ai/schemastery": "^3.18.2"
   },
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     }

@@ -33,12 +33,14 @@
 
 ## C. 本地 checkout 文档副本（references/official-docs/）
 
-- `docs/**`（215 个 md，含全部 `.zh.md` 双语对）— 教程/架构/子系统/API/cookbook 全量
-- 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README-zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
+- `docs/**`（**369 个 md**，含 182 个 `.zh.md` 双语对）— 教程/架构/子系统/API/cookbook/upgrade-guide/persistence-changes 全量（计数以 `references/official-docs/SNAPSHOT.md` 为准）
+- 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README.zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
 - `packages/AGENTS.md` · `packages/README.md` · `vendor/README.md`
 - `website-docs.ts`（站点投影清单）
 - 上游英文 `README.md` 不进入本目录（与 KB 索引同名），线上快照在 `downloads/github/harness/README.md`
 - 同步脚本本次加固：pathspec 全部 `:(top)` 锚定（避免 basename 全局匹配误收仓库深处 symlink）；Windows 下无法解出的 symlink 按其 blob 目标文本落地；目的目录只保留范围内条目（曾因一次失败抽取残留污染，已由脚本自动修剪 107 项）。
+- **不在站点路由表里的重要文档**（本地有副本、站上找不到）：`session-format-status.md`、`upgrade-guide/**`（6 篇，**无 index、无任何入链**）、`persistence-changes/**`、`ui-radius.md`、`web-styling.md`、`module-graph.md`、`dependency-catalog.json`、`persistence-schema.json`——清单见 [guide/links.md](../guide/links.md) §2.1。
+- **官方自带插件开发技能不在 `docs/` 下**：在 `packages/preset/agent-preset/skills/**`（本库要点摘录见 [official-plugin-dev-skill.md](official-plugin-dev-skill.md)）。
 
 ## D. 社区与生态（downloads/community/ + references/community-ecosystem.md）
 
@@ -80,10 +82,13 @@
 
 `downloads/github/harness/discussions/`（说明文件 `README.md` 含分类统计与精选清单；刷新脚本 `scripts/archive-discussions.ps1`）：
 
-- `list.json` —— 全部 **1654 条**讨论（title/body/category/answers 等，正文即文档；08-14 首版 1408 条，08-15 增量 +246）
+- `list.json` —— 全部讨论（title/body/category/answers 等，正文即文档）；**2026-10-06 刷新**：`archive-discussions.ps1` 全量重跑（list.json 约 31.6 MB）：**list=5000、精选线程 1648**（`README.md` 由脚本自动生成分类统计：General 2250、Show Your Plugins! 1148、Ideas 1031、Q&A 565、Polls 5、Announcements 1）。
+  - ⚠️ **REST 分页天花板**：`/discussions` 走 REST 只能翻到 **5000 条**（脚本 `page -le 50` × 100/页）；同期 **GraphQL** `UPDATED_AT DESC` 报告仓库 **total_count=8850**。所以归档覆盖的是前 5000 条而非全量；需要更全时按 GraphQL 补抓（社区刷新用的就是 GraphQL 分页：31 页 × 100 覆盖 `UPDATED_AT >= 2026-09-14` 的 3100 条）。
 - `comments-<n>.json` —— 精选线程的全部评论（规则：Announcements/Q&A/Ideas 评论≥1；General/Show and tell 评论≥3 且非拉群帖）
-- `_selection.tsv` —— 精选清单
-- 背景：官方仓库 **Issues 关闭、Discussions 开放**（社区反馈主渠道）；排障与功能讨论代表：#49 ArchLinux 安装、#55 pnpm 全局安装 cordis-plugin-timer 缺失、#60 外部 GUI/ACP bridge、#30 win32 目录选择器；**08-15 新编号至 1629+**，代表作 [#1629 RFC 官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（08-15T01:15Z）、安全审计类 #817/#454/#523/#250
+- `_selection.tsv` —— 精选清单（1648 行 + 表头）
+- 背景：官方仓库 **Issues 关闭、Discussions 开放**（社区反馈主渠道）；**2026-10-06 API 复核**：`has_issues=false`——**没有 issue tracker、也不收 PR**，Discussions 是唯一渠道；仓库 star≈244,304、fork≈29,266、最后 push 2026-10-03、许可 MIT。代表作 [#1629 RFC 官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)、[#6520 本库的未修复问题汇总帖](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)（最后活动 2026-09-23，**无维护者回复**）。
+- **重要结论（写进贡献规则）**：本轮通读的 3100 条线程里，**没有任何维护者确认过修复或设计决定**；唯一的"官方决定"权威记录是 **GitHub Releases 说明**（仓库无 CHANGELOG）。引用"官方已确认"必须落到 Release 原文或提交号。另：**Announcements 分类只有 1 条**——官方不在 Discussions 发版，发版只在 Releases。
+- **本窗口最高价值的线程**：#8199（升级后 22 个第三方 bundle 里 11 个被判不兼容 + `minimumReleaseAge` 静默阻塞）、#7850 / #8821（`plugin add` 不补齐 layer 行）、#8633（宿主插件失败在 `dsh web` 下不可见）、#8688（`connection.rpc.handle()` 405，自 0.1.0-rc.7 起）、#8862（profile 内 dsh 包遮蔽运行时）、#8968 / #8857 / #8635（运行中改 `cordis.patch.yml` 的三种破坏后果）、#8590（社区 0.1.5-rc.2 → 0.2.0-rc.2 移植实录）、#8669（12 评论真实插件构建日志，含 `inject` 写成函数导致整 bundle 被自愈禁用的血案）、#8537（插件验收 profile 隔离提案 + `sanitizeProfile` 复盘）、#8836（`assistant()` 空白文本块 → 云端 400）、#8649（桌面端 skill provider 因 `app.asar` 相对根丢光文件系统 skill）。
 
 ## G. npm 包归档（2026-08-14 晚新增）
 

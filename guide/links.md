@@ -34,13 +34,31 @@
 | 生成式参考（配置/Tool/持久化） | [reference/config-catalog](https://deepseek-harness.github.io/deepseek-harness/reference/config-catalog) · [tool-catalog](https://deepseek-harness.github.io/deepseek-harness/reference/tool-catalog) · [persistence-catalog](https://deepseek-harness.github.io/deepseek-harness/reference/persistence-catalog) | config-catalog.md / tool-catalog.md / persistence-catalog.md |
 | Cordis 核心 API | [reference/cordis-api/context](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/context) · [events](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/events) · [fiber](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/fiber) · [registry](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/registry) · [service](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/service) · [inherited](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/inherited) | cordis-api/ |
 | 开发手册（Cookbook） | [adding-a-package](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-package) · [adding-a-tool](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool) · [adding-an-llm-adapter](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-an-llm-adapter) · [extension-cookbook](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/extension-cookbook)（`adding-a-conversation-node` 已在 alpha.3 上游移除） | cookbook/ |
-| 子系统生成式服务/事件 API | [reference/subsystems/](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)（每个子系统一页：tools、shell、session、web、skills、subagent……） | subsystems/ |
+| 子系统生成式服务/事件 API | [reference/subsystems/](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)（每个子系统一页：tools、shell、session、web、skills、subagent、settings、otel、product-telemetry、voice-input、claude-code-mods……） | subsystems/ |
+| API 网关 | [reference/api-gateway](https://deepseek-harness.github.io/deepseek-harness/reference/api-gateway) | api-gateway.md |
+| 公开部署（反向代理） | [guide/public-deployments](https://deepseek-harness.github.io/deepseek-harness/guide/public-deployments)（`--public-url` / `--trusted-host`） | user/guide/public-deployments.md |
+
+## 2.1 未上文档站的仓库内文档（只有 GitHub 直链 + 本地副本）
+
+这些文件在 `references/official-docs/docs/` 里**有全文副本**，但**不在站点路由表**（`website-docs.ts`）里，所以站上找不到——只能读本地副本或 GitHub：
+
+| 主题 | 本地副本 | GitHub 直链 |
+|---|---|---|
+| 会话格式版本状态（**版本权威**） | `docs/session-format-status.md`（含 `latestFinalizedVersion: 4` / `latestReleasedVersion: 3` 记录） | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md) |
+| 逐版本迁移指南（**无 index、无入链**，6 篇） | `docs/upgrade-guide/v0.1.7-rc.2/**`、`docs/upgrade-guide/v0.2.0-rc.2/**`（schedule-optional-bundle、transcript-view-legacy-normal、account-sign-in-errors、remove-runtime-invariants、schedule-bundle-retired、subpath-plugin-display-manifest） | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/upgrade-guide) |
+| 持久化类型变更记录（含 V4 声明） | `docs/persistence-changes/**`（`2026-09-16-session-format-v4.md`、`finalized/v4.json`、`historical-formats/v3.md`…） | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/persistence-changes) |
+| 圆角规范 | `docs/ui-radius.md` | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/ui-radius.md) |
+| Web 样式 | `docs/web-styling.md` | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/web-styling.md) |
+| 模块图 / 依赖目录 / 持久化 schema | `docs/module-graph.md`、`docs/dependency-catalog.json`、`docs/persistence-schema.json` | [docs 目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs) |
+| **官方自带插件开发技能**（preset 内，最该读的一份） | 不在 `docs/` 下：`packages/preset/agent-preset/skills/cordis-plugin-development/**`；本库要点摘录见 [../references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md) | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/preset/agent-preset/skills) |
 
 ## 3. 官方仓库与直链（GitHub，master 分支）
 
 - 仓库根：https://github.com/deepseek-ai/deepseek-harness · 官网：https://www.deepseek.com/harness/
 - 开发红线 [AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)（本地副本 references/official-docs/AGENTS.md）
-- **官方 Discussions（Issues 关闭，反馈主渠道）**：https://github.com/deepseek-ai/deepseek-harness/discussions —— 全量 **1654 条**（2026-08-15 刷新）归档于 `downloads/github/harness/discussions/`（list.json 含正文；精选线程含评论，`scripts/archive-discussions.ps1` 可带 token 幂等刷新）；**社区关键动态**：[#1629 RFC：官方插件脚手架（template repo + `pnpm create dsh-plugin`）](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（08-15T01:15Z 发布）、安全审计类 [#817](https://github.com/deepseek-ai/deepseek-harness/discussions/817)、[#454](https://github.com/deepseek-ai/deepseek-harness/discussions/454)
+- **官方 Discussions（Issues 关闭，反馈主渠道）**：https://github.com/deepseek-ai/deepseek-harness/discussions —— **API 核实 `has_issues=false`（无 issue tracker、不收 PR），Discussions 是唯一渠道**；**2026-10-06 全量刷新归档**于 `downloads/github/harness/discussions/`（list.json 含正文；精选线程含评论；`scripts/archive-discussions.ps1` 可带 token 幂等刷新）——**list=5000、精选 1648**。⚠️ REST 列表最多翻到 5000 条（脚本会显式告警），而仓库实际 total_count≈8850（GraphQL 口径）。仓库元数据（star≈244k、fork≈29k、最后 push 2026-10-03）见 `downloads/github/harness/repo.json`。
+- **官方 Releases（唯一权威的"官方决定"记录）**：https://github.com/deepseek-ai/deepseek-harness/releases —— 仓库内**没有 CHANGELOG**，逐版本变更只在 Release 说明里；破坏性变更在正文里以"破坏性变更/Breaking change"标注。本库 `guide/migration-0.2.md` 已对照 `0.1.7-alpha.1` / `0.2.0-rc.2` / `0.2.1-alpha.1` 三份原文明列。
+- **重要社区帖（本世代）**：[#1629 RFC：官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)、[#6520 未修复问题清单（本库汇总帖）](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)、[#8199 升级后大批插件被判不兼容](https://github.com/deepseek-ai/deepseek-harness/discussions/8199)、[#8633 宿主插件失败在 web 下不可见](https://github.com/deepseek-ai/deepseek-harness/discussions/8633)、[#8968 改 patch 永久废掉 sessionController](https://github.com/deepseek-ai/deepseek-harness/discussions/8968)、[#8590 社区 0.1.5→0.2.0 移植实录](https://github.com/deepseek-ai/deepseek-harness/discussions/8590)、[#8537 插件验收 profile 隔离提案](https://github.com/deepseek-ai/deepseek-harness/discussions/8537)、[#8669 真实插件构建日志（12 评论）](https://github.com/deepseek-ai/deepseek-harness/discussions/8669)。
 - **npm 包**：`@deepseek-ai/dsh`（https://www.npmjs.com/package/@deepseek-ai/dsh）等全家桶 72 个包元数据归档于 `downloads/npm/`（README 含全表）；`create-dsh-plugin`（https://www.npmjs.com/package/create-dsh-plugin）
 - 未上站的仓库内文档（本地副本 references/official-docs/docs/ 同名文件）：
   - [docs/event-producer-consumer.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/event-producer-consumer.md) — 全事件生产/消费矩阵

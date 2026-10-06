@@ -14,6 +14,7 @@ export const SKILL_SECTIONS: Record<string, SkillRef> = {
   'manifest-engines': { file: 'guide/plugin-dev-guide.md', section: '§8', heading: '规范与质量门禁（Node 版本）' },
   'manifest-files': { file: 'guide/plugin-dev-guide.md', section: '§7.1', heading: 'files 白名单与构建产物' },
   'manifest-package-manager': { file: 'guide/plugin-dev-guide.md', section: '§8', heading: 'packageManager 固定 pnpm' },
+  'display-meta': { file: 'guide/plugin-dev-guide.md', section: '§7.0.1', heading: '展示元数据与图标（locale meta + 导出 icon）' },
   'readme-five-langs': { file: 'guide/plugin-dev-guide.md', section: '§8', heading: '文档双语/多语成对' },
   'readme-consistency': { file: 'guide/plugin-dev-guide.md', section: '§8', heading: '五语 README 同步' },
   'redline-persona-role': { file: 'SKILL.md', section: '§边界', heading: '注入提示词段落以角色句开头、保持短小' },

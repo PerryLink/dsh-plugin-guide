@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "dsh-plugin-guide",
+    "description": "DeepSeek Harness plugin-development knowledge base: official docs mirror, contract rules, migration guide, verified issue index, and the dsh-plugin-dev CLI."
+  }
+}

@@ -38,7 +38,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (2026-09-24 को पुनः-सिंक किया गया, `ddefc45`): आधिकारिक दस्तावेज़ स्नैपशॉट rc.1 पर ताज़ा किया गया; checker अब चार-खंड peer रेंज (`… || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`) की अपेक्षा करता है (स्कैफ़ोल्ड टेम्पलेट्स के साथ एकल स्रोत); नई रेड लाइन — पहले `await` के बाद पंजीकरण करने वाले `async apply` विफल होते हैं। स्थानीय gate chain हरा (40 टेस्ट, typecheck, verify dogfood); compat job की वास्तविक rc.1 रन अगले CI push के साथ आती है। |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (`5badb15009`, master का सबसे नया tag, 2026-10-03); npm `latest` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.1`। 2026-10-06 को उसी checkout के विरुद्ध पुनः सत्यापित (gate chain + profile install smoke)। नॉलेज बेस, आधिकारिक-docs मिरर और [guide/migration-0.2.md](guide/migration-0.2.md) इसी बेसलाइन पर हैं। |
 | Node | `^22.19.0 || >=24.0.0` (DeepSeek Harness रनटाइम) |
 | Platforms | सभी (सादा ESM बंडल; कोई नेटिव कोड नहीं, कोई नेटवर्क नहीं) |
 | Model | कोई भी (कोई मॉडल अंतःक्रिया नहीं) |

@@ -20,13 +20,19 @@ interface PackageJson {
   main?: string
   files?: string[]
   type?: string
+  icon?: string
+  exports?: Record<string, string>
   engines?: { node?: string }
   packageManager?: string
   peerDependencies?: Record<string, string>
   dependencies?: Record<string, string>
   devDependencies?: Record<string, string>
-  dsh?: { bundle?: { patch?: string } }
+  dsh?: { bundle?: { patch?: string | string[] } }
 }
+
+/** Icon formats the harness accepts, and its per-file size ceiling. */
+const ICON_EXTENSIONS = ['.svg', '.png', '.jpg', '.jpeg', '.webp']
+const ICON_MAX_BYTES = 256 * 1024
 
 const README_LANGS = ['README.md', 'README-zh.md', 'README-es.md', 'README-pt.md', 'README-hi.md']
 
@@ -51,6 +57,7 @@ export function runCheck(options: CheckOptions): { report: CheckReport; exitCode
     checkManifestEngines(root, pkg),
     checkManifestFiles(root, pkg),
     checkManifestPackageManager(root, pkg),
+    checkDisplayMeta(root, pkg),
     checkReadmeFiveLangs(root),
     checkReadmeConsistency(root),
     checkRedlinePersonaRole(root),
@@ -76,10 +83,17 @@ export function printCheckReport(report: CheckReport, format: 'json' | 'text'): 
 
 // ---- shared helpers ----
 
-function patchPath(root: string, pkg?: PackageJson): string | undefined {
+/** Every patch file a `dsh.bundle.patch` pointer names, in application order. */
+function patchPaths(root: string, pkg?: PackageJson): string[] {
   const pointer = pkg?.dsh?.bundle?.patch
-  if (!pointer) return undefined
-  return resolve(root, pointer)
+  if (!pointer) return []
+  const list = Array.isArray(pointer) ? pointer : [pointer]
+  return list.filter((entry): entry is string => typeof entry === 'string' && entry !== '').map((entry) => resolve(root, entry))
+}
+
+/** The first patch file, for checks that only describe one file. */
+function patchPath(root: string, pkg?: PackageJson): string | undefined {
+  return patchPaths(root, pkg)[0]
 }
 
 /**
@@ -239,11 +253,16 @@ function checkManifestBundlePatch(root: string, pkg?: PackageJson): CheckResult 
   if (!pointer) {
     return { id: 'manifest-bundle-patch', severity: 'warning', kind: 'deterministic', status: 'warn', message: 'no dsh.bundle.patch declared (pure cordis plugin, no bundle layer)', skillRef: ref }
   }
-  const path = resolve(root, pointer)
-  if (!isFile(path)) {
-    return { id: 'manifest-bundle-patch', severity: 'error', kind: 'deterministic', status: 'fail', message: `dsh.bundle.patch points at a missing file: ${pointer}`, skillRef: ref }
+  const paths = patchPaths(root, pkg)
+  if (paths.length === 0) {
+    return { id: 'manifest-bundle-patch', severity: 'error', kind: 'deterministic', status: 'fail', message: 'dsh.bundle.patch must be a file path or a list of file paths', skillRef: ref }
   }
-  return { id: 'manifest-bundle-patch', severity: 'error', kind: 'deterministic', status: 'pass', message: `dsh.bundle.patch resolves to ${pointer}`, skillRef: ref }
+  const missing = paths.filter((path) => !isFile(path))
+  const label = Array.isArray(pointer) ? pointer.join(', ') : pointer
+  if (missing.length > 0) {
+    return { id: 'manifest-bundle-patch', severity: 'error', kind: 'deterministic', status: 'fail', message: `dsh.bundle.patch points at a missing file: ${label}`, skillRef: ref, detail: missing.map((path) => `not found: ${path}`) }
+  }
+  return { id: 'manifest-bundle-patch', severity: 'error', kind: 'deterministic', status: 'pass', message: `dsh.bundle.patch resolves to ${label}`, skillRef: ref }
 }
 
 function checkManifestMain(root: string, pkg?: PackageJson): CheckResult {
@@ -304,10 +323,13 @@ function checkManifestFiles(_root: string, pkg?: PackageJson): CheckResult {
   if (!files || files.length === 0) {
     return { id: 'manifest-files', severity: 'warning', kind: 'deterministic', status: 'warn', message: 'no `files` whitelist; npm will publish everything', skillRef: ref }
   }
-  const patchFile = pkg?.dsh?.bundle?.patch?.replace(/^\.\//, '') ?? 'cordis.patch.yml'
+  const pointer = pkg?.dsh?.bundle?.patch
+  const patchFiles = (Array.isArray(pointer) ? pointer : pointer ? [pointer] : ['cordis.patch.yml']).map((entry) => entry.replace(/^\.\//, ''))
   const main = pkg?.main
   const problems: string[] = []
-  if (!files.includes(patchFile)) problems.push(`files whitelist is missing the patch file "${patchFile}"`)
+  for (const patchFile of patchFiles) {
+    if (!files.includes(patchFile)) problems.push(`files whitelist is missing the patch file "${patchFile}"`)
+  }
   if (main && !files.includes(main) && !files.some((f) => main.startsWith(`${f.replace(/\/$/, '')}/`))) {
     problems.push(`files whitelist is missing the main entry "${main}"`)
   }
@@ -329,6 +351,84 @@ function checkManifestPackageManager(_root: string, pkg?: PackageJson): CheckRes
     return { id: 'manifest-package-manager', severity: 'warning', kind: 'deterministic', status: 'warn', message: `packageManager is "${pm}"; the family standard is pnpm@11.7.0`, skillRef: ref }
   }
   return { id: 'manifest-package-manager', severity: 'warning', kind: 'deterministic', status: 'warn', message: 'packageManager not pinned; add "pnpm@11.7.0" for reproducible installs', skillRef: ref }
+}
+
+// ---- 8.5 display metadata (locale + icon) ----
+
+/**
+ * Plugin Manager and Settings read display text and an icon without activating
+ * the plugin, so a package that runs but ships no metadata still looks broken to
+ * users. Passing this check is a packaging requirement, not a runtime feature.
+ */
+function checkDisplayMeta(root: string, pkg?: PackageJson): CheckResult {
+  const ref = skillRefFor('display-meta')
+  const problems: string[] = []
+  const notes: string[] = []
+
+  const localeExport = Object.keys(pkg?.exports ?? {}).find((key) => key.includes('locale'))
+  if (!localeExport) {
+    problems.push('no locale export; add { "./locale/*.json": "./locale/*.json" } and a locale file with meta.title/meta.description')
+  } else {
+    const localeDir = join(root, 'locale')
+    if (!isDirectory(localeDir)) {
+      problems.push(`exports "${localeExport}" but the locale/ directory is missing`)
+    } else {
+      const files = readdirSync(localeDir).filter((f) => f.endsWith('.json'))
+      if (files.length === 0) problems.push('locale/ holds no .json files')
+      const en = files.find((f) => f === 'en.json')
+      if (!en) problems.push('locale/en.json is missing (English is the required fallback)')
+      for (const file of files.filter((f) => f === 'en.json')) {
+        const meta = readJsonIfExists<{ meta?: { title?: unknown; description?: unknown } }>(join(localeDir, file))
+        const title = typeof meta?.meta?.title === 'string' ? meta.meta.title.trim() : ''
+        const description = typeof meta?.meta?.description === 'string' ? meta.meta.description.trim() : ''
+        if (title === '') problems.push(`locale/${file} has no meta.title`)
+        if (description === '') problems.push(`locale/${file} has no meta.description`)
+      }
+      if (files.length === 1) notes.push('only locale/en.json present; add the user-facing languages too')
+    }
+  }
+
+  const manifestIcon = typeof pkg?.icon === 'string' && pkg.icon !== '' ? pkg.icon : undefined
+  const iconExport = Object.keys(pkg?.exports ?? {}).find((key) => key === './icon' || key.endsWith('/icon'))
+  if (!manifestIcon && !iconExport) {
+    problems.push('no icon; publish an exported "./icon" (or a top-level package.json "icon")')
+  }
+  // A package-root `icon` is a path relative to the manifest directory, so it can be
+  // inspected directly; an exported `./icon` target is owned by the exports map and
+  // is only reported, never resolved.
+  if (manifestIcon) {
+    const iconPath = resolve(root, manifestIcon)
+    if (!isFile(iconPath)) {
+      problems.push(`package.json icon points at a missing file: ${manifestIcon}`)
+    } else {
+      if (!ICON_EXTENSIONS.some((ext) => iconPath.toLowerCase().endsWith(ext))) {
+        problems.push(`icon must be SVG, PNG, JPEG or WebP: ${manifestIcon}`)
+      }
+      const size = statSync(iconPath).size
+      if (size > ICON_MAX_BYTES) problems.push(`icon exceeds 256 KiB (${size} bytes): ${manifestIcon}`)
+      if (size === 0) problems.push(`icon file is empty: ${manifestIcon}`)
+    }
+  }
+  if (iconExport && !manifestIcon) {
+    const target = pkg?.exports?.[iconExport]
+    if (typeof target === 'string' && target !== '' && !ICON_EXTENSIONS.some((ext) => target.toLowerCase().endsWith(ext))) {
+      problems.push(`exported ${iconExport} must resolve to SVG, PNG, JPEG or WebP (got ${target})`)
+    }
+  }
+
+  if (problems.length > 0) {
+    return { id: 'display-meta', severity: 'warning', kind: 'deterministic', status: 'warn', message: 'display metadata incomplete (Plugin Manager shows the raw id and default artwork)', skillRef: ref, detail: [...problems, ...notes] }
+  }
+  return { id: 'display-meta', severity: 'warning', kind: 'deterministic', status: 'pass', message: 'display metadata present (locale meta + exported icon)', skillRef: ref, ...(notes.length > 0 ? { detail: notes } : {}) }
+}
+
+/** True when the path exists and is a directory. */
+function isDirectory(path: string): boolean {
+  try {
+    return statSync(path).isDirectory()
+  } catch {
+    return false
+  }
 }
 
 // ---- 9-10. five-language README ----

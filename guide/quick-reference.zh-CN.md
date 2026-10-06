@@ -1,4 +1,4 @@
-# DeepSeek Harness  0.1.2-rc.1 恢复信封 ignorable?: true 字段但仅用于存量日志读取兼容（其 Session.append 仍无法盖章），门控行为不变。 插件开发速查表
+# DeepSeek Harness 插件开发速查表
 
 > 一页式速查。细节回到 [plugin-dev-guide.md](plugin-dev-guide.md) 与 [references](../references/)。
 
@@ -130,14 +130,20 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 
 ## 红线（违反=挂门禁/错误行为）
 
-1. 注册必须走 `ctx.effect()`/`ctx.on()`/服务 `register()`（返回 disposer）。
-2. waterfall 监听器必须调 `next()`；不调=故意短路。
-3. 模型可见 ⟺ 已记录：新模型可见输入必须新增会话事件（`SessionEventMap`）。
-4. 不得硬编码可调参数（判断：cordis.yml 能否改）；misconfig fail loud。
-5. 独立插件包：cordis 是 peerDependency（与宿主同身份：scoped `@deepseek-ai/cordis` 与 unscoped 混用会"双 Cordis 分裂"）；ESM；`dsh.bundle` 清单；git 安装配 `prepare` + `allowBuilds`；发布带 `lib/` 或 tarball。
-6. 文档双语成对；工具描述/提示词即行为；非平凡变更加 Agent Note；提交前跑最小检查集（dsh-pre-push-checks）。
-7. 跨边界 opaque id 用 branded（`Branded<B>` from `dsh-brand`），从不裸 `string`。
-8. `SessionEventMap` 成员默认 required-on-read：`ignorable` 信封在 0.1.2-alpha.1 已移除（读路径 fail-closed——不认识该事件类型的 build 一律拒绝日志），插件自定义事件的追加走自适应门、在无信封宿主上停写；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。对 `SessionEvent` 的 switch 落入文档化 `default`——**禁用 `assertNever`**（merge-extensible union）。
+1. 注册必须走 `ctx.effect()`/`ctx.on()`/服务 `register()`（返回 disposer）。注册在别的 ctx（如 `agent.ctx`）上的有**两个拥有者**——disposer 也要留在自己插件的 effect 里。
+2. waterfall 监听器必须调 `next()`；不调=故意短路。改写 `agent/pre-step` 决策要**展开**（`{ ...decision, messages }`），否则 `startsRequestSeries` 之类字段会丢。
+3. **用最弱的够用机制**：`ctx.tools.restrict()`（只移除）< `ctx.tools.guard()`（只拒绝）< waterfall 改写（依赖顺序）< `system-prompt/assemble`（整段替换）。最终结果只看 `tools/result`；只有要变换结果才用 `tools/post-execute`。
+4. 模型可见 ⟺ 已记录：新模型可见输入必须新增会话事件（`SessionEventMap`）——**由宿主侧新增**，不是插件自己写（见第 10 条）。
+5. 不得硬编码可调参数（判断：cordis.yml 能否改）；misconfig fail loud。要暴露给用户的实时字段用 `Volatile<T>` + `loader/volatile-update`（表单命名空间=profile 条目 id）。
+6. 独立插件包：cordis 是 peerDependency（与宿主同身份：scoped `@deepseek-ai/cordis` 与 unscoped 混用会"双 Cordis 分裂"）；ESM；`dsh.bundle` 清单（`patch` **可为有序数组**）；git 安装配 `prepare` + `allowBuilds`；发布带 `lib/` 或 tarball。**共享实例的 dsh 包只放 peer + dev，绝不放 dependencies**（profile 内副本会静默遮蔽运行时；且 DSH **不校验** peer 范围）。
+7. 必须交展示元数据：`locale/*.json` 的 `meta.title`/`meta.description` + 导出的 `./icon`（SVG/PNG/JPEG/WebP，≤256 KiB，必须在包内）。子路径插件**不读**自己的 `package.json`。
+8. 文档双语成对；工具描述/提示词即行为；非平凡变更加 Agent Note；提交前跑最小检查集（dsh-pre-push-checks）。
+9. 跨边界 opaque id 用 branded（`Branded<B>` from `dsh-brand`），从不裸 `string`。
+10. **绝不要用新的 `type` 追加会话事件**：`SessionEventMap` 成员默认 required-on-read——不认识该事件类型的 build 会拒绝整份日志，除非该事件带上信封的 `ignorable: true` 标记；而运行时 `Session.append()` **无法**写这个标记（其第三参仅为 surface 事件的 `SurfaceIntent`）。插件状态要从既有事件推导，或用 inspection 找到的 storage 服务自持。只有结构格式变更才 bump `SESSION_FORMAT_VERSION`（当前 `4`；V3→V4 迁移把 tool 结果提升为 tool-role 消息、把消息 source 换成生产者自有的 `source.kind`）。对 `SessionEvent` 的 switch 仍落入文档化 `default`——**禁用 `assertNever`**（merge-extensible union）。
+11. `agent.inject()` 的 `source` **不再接受**退役的 `{ kind: 'plugin', plugin: '<name>' }` 包装——先用 `MessageSourceMap` 声明合并自己的 kind。`inject` 不唤醒 agent（要唤醒用 `followup()`/`steer()`）。
+12. **绝不在会话运行期间写 profile 的 `cordis.patch.yml`**（HMR 会重载：会话内工具会消失、在途 turn 被杀、最坏重建 `session-controller` 失败并永久失效，只能整进程重启）。不要手写 profile 的 `package.json`，不要在 profile 目录里跑 pnpm。
+13. UI 插件：只渲染 slot 里的 React 组件（禁止 iframe 托管页面）；样式只用 `--dsw-alias-*` 主题 token；不 `require` 任何 Harness Client 包（抛错组件会把 slot 搞白）；`dsh.client.inject` **必须是静态数组**。
+14. 性能：per-session 状态放 `ctx.sessionProjections`（纯同步 `apply`、忽略即同引用、纯 JSON + `stateVersion`）；等持久事件（`turn/end`/`assistant/message`/`tool/result`），实时 token 读 `agent/assistant-stream`；**不轮询 `agent/status`**。
 
 ## 社区实测坑速查（详见 guide §7.3 / community-repo-deep-dive.md）
 
@@ -146,7 +152,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 - Windows junction 用 PowerShell `New-Item -ItemType Junction`；vitest 盘符大写 `C:/`。
 - `DSH_PERMISSION_MODE=danger-full-access` 高风险（Windows 无沙箱后端、禁用审批）；`DSH_*` 放 `~/.dsh/.env` 会报错。
 - 会话文件多帧 zstd：用 `scanZstdFrames`/`createZstdFrameDecoder`（`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`）。
-- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`（latest=0.1.2-rc.1）；`@deepseek-ai/dsh-tools` 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 是过期版本（0.0.1-rc.1），要钉 `next`（0.1.2-rc.1）；`create-dsh-plugin` latest=0.2.1；dsh-core/dsh-sdk 仍未发布（2026-09-04 复核）。
+- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`（`latest`=`next`=0.2.0-rc.2、`alpha`=0.2.1-alpha.1）；`@deepseek-ai/dsh-tools`、`@deepseek-ai/dsh-base`、`@deepseek-ai/dsh-headless`、`@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 仍是过期版本（0.0.1-rc.1），要钉 `next`（0.2.0-rc.2）或 `alpha`（0.2.1-alpha.1）；`create-dsh-plugin` latest=0.2.3；`@deepseek-ai/cordis` latest=4.0.4，另有新标签 `dsh-0-2-1-alpha-1`=4.0.5-alpha.1；dsh-core/dsh-sdk 仍未发布（2026-10-06 复核）。
 - 路径比较前两侧都 `resolve()`（Windows 反斜杠陷阱）。
 
 ## 文档链接
@@ -164,7 +170,9 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 
 ## 关键源索引
 
-- 本地官方文档全文：`references/official-docs/docs/**`（215 篇，含全部 `.zh.md`）
+- 本地官方文档全文：`references/official-docs/docs/**`（369 篇，含全部 182 个 `.zh.md`）；**没上文档站**的那些页（session-format-status、`upgrade-guide/**`、`persistence-changes/**`、ui-radius、web-styling、module-graph）见 [links.md](links.md) §2.1
+- 迁移清单：[migration-0.2.md](migration-0.2.md)（0.1.6-alpha.2 → 0.2.1-alpha.1 的全部破坏性变更，逐条附官方 upgrade-guide 出处）
+- 官方自带插件开发技能：[references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)
 - 仓库根约束：`references/official-docs/AGENTS.md`、`references/official-docs/packages/AGENTS.md`、`references/official-docs/vendor/README.md`；同步状态见 `references/official-docs/SNAPSHOT.md`
 - 站点爬取 HTML：`downloads/web/site/**`（中英双语全站）+ `downloads/manifest.tsv`（下载清单）
 - 上游 Cordis：`downloads/github/cordis/**` + 调研 `references/upstream-cordis.md`

@@ -139,6 +139,14 @@ const homeAndGuide = pairedPages([
     order: 3,
   },
   {
+    source: 'docs/user/guide/public-deployments.md',
+    route: 'guide/public-deployments.md',
+    label: { root: '公开部署', en: 'Public deployments' },
+    sidebar: { root: 'zh-guide', en: 'en-guide' },
+    section: { root: '入门', en: 'Guide' },
+    order: 4,
+  },
+  {
     source: 'docs/user/guide/python-sdk.md',
     route: 'guide/python-sdk.md',
     label: { root: 'Python', en: 'Python' },
@@ -300,7 +308,6 @@ const subsystemGroups = [
   ['内核与作用域', 'Core and scopes', [
     ['core.md', '核心', 'Core'],
     ['scope.md', '作用域', 'Scopes'],
-    ['invariants.md', '运行时不变式', 'Runtime invariants'],
   ]],
   ['会话与持久化', 'Sessions and persistence', [
     ['session.md', '会话', 'Sessions'],
@@ -330,7 +337,7 @@ const subsystemGroups = [
     ['web.md', 'Web 访问', 'Web access'],
     ['skills.md', '技能', 'Skills'],
     ['workflow.md', '工作流', 'Workflows'],
-    ['subagent.md', '子代理', 'Subagents'],
+    ['subagent.md', '子智能体', 'Subagents'],
   ]],
   ['策略与交互', 'Policy and interaction', [
     ['approval.md', '审批', 'Approvals'],
@@ -440,7 +447,7 @@ const reference = [
     ['adding-a-package.md', '新增 Package', 'Adding a package'],
     ['adding-a-tool.md', '新增 Tool', 'Adding a tool'],
     ['adding-an-llm-adapter.md', '新增 LLM Adapter', 'Adding an LLM adapter'],
-    ['adding-a-settings-card.md', '新增设置卡片', 'Adding a settings card'],
+    ['adding-a-settings-card.md', '新增设置页', 'Adding a settings page'],
     ['extension-cookbook.md', '扩展模式', 'Extension patterns'],
   ] as const).map(([file, rootLabel, enLabel], order): PairedPage => ({
     source: `docs/cookbook/${file}`,

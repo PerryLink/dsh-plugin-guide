@@ -2,7 +2,7 @@
 
 English | [中文](web-server.zh.md)
 
-[dsh-host-webserver](../../packages/host/webserver) is the browser HTTP carrier for the GUI host: a single `node:http` plugin providing `ctx.webServer`, a named-route registry, optional gzip response compression, index.html transform callbacks, and one fallback handler that a plugin may claim. It is not part of the agent loop and not a capability seam; it knows no harness concepts, and another plugin registers every feature route, including the `/api` bridge, plugin bundles, and the HMR event stream ([layering note](../../.agents/notes/implemented/architecture/2026-07-24-web-config-tree-boot-and-transport-layering.md)). It serves browsers only: Electron loads the built files over `file://` and sends fetch requests through an IPC bridge instead of this server.
+[dsh-host-webserver](../../packages/host/webserver) is the browser HTTP carrier for the GUI host: a single `node:http` plugin providing `ctx.webServer`, a named-route registry, optional gzip response compression, index.html transform callbacks, and one fallback handler that a plugin may claim. It is not part of the agent loop and not a capability seam; it knows no harness concepts, and another plugin registers every feature route, including the `/api` bridge, plugin bundles, and the HMR event stream ([layering reference](../../packages/boot/app-boot/README.md)). It serves browsers only: Electron loads the built files over `file://` and sends fetch requests through an IPC bridge instead of this server.
 
 Source: [`packages/host/webserver/src/index.ts`](../../packages/host/webserver/src/index.ts)
 
@@ -64,7 +64,7 @@ Generated from source by `scripts/gen-cordis-catalog.ts` (verified fresh by `pnp
 
 ### `ctx.connection` — `HostConnectionHandle`
 
-Host `ctx.connection` shape consumed by transport-independent adapters.
+Host `ctx.connection` members consumed by transport-independent adapters.
 
 ```ts cordis-catalog
 /**
@@ -83,6 +83,14 @@ createSharedFetchHandler(channel: '/api'): ConnectionFetchHandler
 requestRejection(request: ConnectionTrustRequest): ConnectionRequestRejection
 
 /**
+ * Admit one request: it passes {@link requestRejection} and speaks for the
+ * operator, or it is refused with that status.
+ * @param request - request headers from the HTTP or upgrade request.
+ * @returns the operator Peer, or the rejection status.
+ */
+admit(request: ConnectionTrustRequest): PeerAdmission
+
+/**
  * Authenticate one frontend index request, owning a token redirect or 401.
  * @param request - root or configured-index HTTP request.
  * @param response - response owned when the result is false.
@@ -92,8 +100,8 @@ authorizeIndex(request: ConnectionIndexRequest, response: ConnectionIndexRespons
 
 /**
  * Add the fresh process token to an ordinary Web application URL.
- * @param baseUrl - clean canonical browser origin.
- * @returns root URL accepted by {@link authorizeIndex} for initial login.
+ * @param baseUrl - clean application URL whose authority and mount are preserved.
+ * @returns tokenized URL for initial login; a mount proxy strips its prefix before {@link authorizeIndex}.
  */
 authenticatedUrl(baseUrl: string): string
 ```

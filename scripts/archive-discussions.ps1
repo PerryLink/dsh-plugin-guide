@@ -48,7 +48,12 @@ if (Test-Path (Join-Path $OutDir 'list.json')) {
 }
 $all = @()
 $page = 1
-while ($page -le 50) {
+# REST /discussions caps at 5000 rows (50 pages x 100). The cap is explicit so a
+# silent truncation cannot be mistaken for a complete archive: the run reports
+# when it stops at the ceiling, and the README records the ceiling alongside the
+# GraphQL total_count (which is larger).
+$pageCap = 50
+while ($page -le $pageCap) {
   $items = Get-Api "https://api.github.com/repos/$Repo/discussions?per_page=100&page=$page&sort=created"
   if ($items.Count -eq 0) { Write-Output "page ${page}: 空页,列表结束"; break }
   $all += $items
@@ -56,6 +61,9 @@ while ($page -le 50) {
   if ($items.Count -lt 100) { break }
   $page++
   Start-Sleep -Milliseconds 500
+}
+if ($all.Count -ge ($pageCap * 100)) {
+  Write-Output "WARN: 列表在第 $pageCap 页触顶(REST 5000 条上限)——归档为前 5000 条,非全量;更全的历史需按 GraphQL UPDATED_AT 分页补抓"
 }
 if ($all.Count -eq 0) { throw 'discussions 列表抓取失败(0 条)' }
 if ($prevCount -gt 0 -and $all.Count -lt [Math]::Floor($prevCount * 0.9)) {

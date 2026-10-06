@@ -131,14 +131,20 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 
 ## कठोर नियम (उल्लंघन = गेट विफलता / गलत व्यवहार)
 
-1. हर पंजीकरण `ctx.effect()` / `ctx.on()` / सेवा के `register()` से हो (disposer लौटाता है)।
-2. waterfall श्रोताओं को `next()` बुलाना ही होगा; न बुलाना जानबूझकर शॉर्ट-सर्किट है।
-3. मॉडल-दृश्य ⇔ लॉग: नई मॉडल-दृश्य इनपुट के लिए नया सत्र इवेंट चाहिए (`SessionEventMap`)।
-4. समायोज्य मान कभी हार्डकोड न करें (कसौटी: क्या cordis.yml इसे बदल सकता है?); गलत कॉन्फ़िग ज़ोर से विफल हो।
-5. स्वतंत्र प्लगइन पैकेज: cordis peerDependency है और होस्ट पहचान से मेल खाना चाहिए (scoped `@deepseek-ai/cordis` और unscoped मिलाना पहचान बाँट देता है); ESM; `dsh.bundle` मैनिफ़ेस्ट; git इंस्टॉल को `prepare` + `allowBuilds` चाहिए; `lib/` या tarball प्रकाशित करें।
-6. दस्तावेज़ द्विभाषी जोड़ों में; टूल विवरण/प्रॉम्प्ट ही व्यवहार हैं; गैर-तुच्छ बदलाव में Agent Note चाहिए; पुश से पहले न्यूनतम जाँच सेट चलाएँ (dsh-pre-push-checks)।
-7. सीमाओं के पार अपारदर्शी ids branded होते हैं (`Branded<B>` from `dsh-brand`), कभी भी नंगे `string` नहीं।
-8. `SessionEventMap` सदस्य required-on-read हैं: 0.1.2-alpha.1 में `ignorable` लिफ़ाफ़ा हट गया है (पठन विफल-बंद है — जो build किसी इवेंट प्रकार को नहीं जानता वह log अस्वीकार करता है), और plugins के अपने इवेंट के append एक अनुकूली द्वार से चलते हैं जो बिना-लिफ़ाफ़े वाले hosts पर लिखना रोक देता है; केवल संरचनात्मक प्रारूप बदलाव ही `SESSION_FORMAT_VERSION` bump करते हैं। `SessionEvent` पर switch दस्तावेज़ित `default` में गिरता है — `assertNever` नहीं (merge-extensible union)।
+1. हर पंजीकरण `ctx.effect()` / `ctx.on()` / सेवा के `register()` से हो (disposer लौटाता है)। किसी अन्य context पर पंजीकरण (जैसे `agent.ctx`) के **दो मालिक** होते हैं — उसका disposer अपने effect में भी रखें।
+2. waterfall श्रोताओं को `next()` बुलाना ही होगा; न बुलाना जानबूझकर शॉर्ट-सर्किट है। `agent/pre-step` निर्णय बदलते समय उसे **spread** करें (`{ ...decision, messages }`) ताकि `startsRequestSeries` जैसे फ़ील्ड न खोएँ।
+3. **जो सबसे कमज़ोर mechanism काम करे वही लें**: `ctx.tools.restrict()` (केवल हटाता है) < `ctx.tools.guard()` (केवल मना करता है) < waterfall rewrite (क्रम पर निर्भर) < `system-prompt/assemble` (सब बदल देता है)। अंतिम परिणाम `tools/result` पर देखें; बदलने के लिए ही `tools/post-execute` लें।
+4. मॉडल-दृश्य ⇔ लॉग: नई मॉडल-दृश्य इनपुट के लिए नया सत्र इवेंट चाहिए (`SessionEventMap`) — **होस्ट जोड़ता है**, आप नहीं (नियम 10 देखें)।
+5. समायोज्य मान कभी हार्डकोड न करें (कसौटी: क्या cordis.yml इसे बदल सकता है?); गलत कॉन्फ़िग ज़ोर से विफल हो। लाइव-संपादन योग्य फ़ील्ड `Volatile<T>` + `loader/volatile-update` से (फ़ॉर्म namespace = profile entry id)।
+6. स्वतंत्र प्लगइन पैकेज: cordis peerDependency है और होस्ट पहचान से मेल खाना चाहिए (scoped `@deepseek-ai/cordis` और unscoped मिलाना पहचान बाँट देता है); ESM; `dsh.bundle` मैनिफ़ेस्ट (`patch` क्रमबद्ध array हो सकता है); git इंस्टॉल को `prepare` + `allowBuilds` चाहिए; `lib/` या tarball प्रकाशित करें। साझा-इंस्टेंस वाले dsh पैकेज **केवल peerDependencies + devDependencies** में रखें, `dependencies` में कभी नहीं (profile की प्रति runtime को चुपचाप ढक देती है, और DSH peer रेंज **सत्यापित नहीं** करता)।
+7. प्रदर्शन मेटाडेटा ज़रूर भेजें: `locale/*.json` में `meta.title`/`meta.description` और export किया हुआ `./icon` (SVG/PNG/JPEG/WebP, ≤256 KiB, पैकेज के भीतर)। subpath प्लगइन अपना `package.json` **कभी नहीं** पढ़ते।
+8. दस्तावेज़ द्विभाषी जोड़ों में; टूल विवरण/प्रॉम्प्ट ही व्यवहार हैं; गैर-तुच्छ बदलाव में Agent Note चाहिए; पुश से पहले न्यूनतम जाँच सेट चलाएँ (dsh-pre-push-checks)।
+9. सीमाओं के पार अपारदर्शी ids branded होते हैं (`Branded<B>` from `dsh-brand`), कभी भी नंगे `string` नहीं।
+10. **किसी नए `type` के साथ session event कभी न जोड़ें**: `SessionEventMap` सदस्य required-on-read हैं — जो build किसी प्रकार को नहीं जानता वह पूरा log अस्वीकार कर देता है, जब तक उस event पर envelope का `ignorable: true` चिह्न न हो, और चल रहा `Session.append()` वह चिह्न लिख नहीं सकता (उसका तीसरा argument केवल surface events के लिए `SurfaceIntent` है)। अपनी state मौजूदा events से निकालें, या plugin का डेटा inspection से मिली storage service में रखें। केवल संरचनात्मक प्रारूप बदलाव ही `SESSION_FORMAT_VERSION` bump करते हैं (अब `4`; V3→V4 माइग्रेशन tool परिणामों को tool-role संदेशों में उठाता है और संदेश `source` को producer के `source.kind` पर ले जाता है)। `SessionEvent` पर switch अब भी दस्तावेज़ित `default` में गिरता है — `assertNever` नहीं (merge-extensible union)।
+11. `agent.inject()` का `source` अब सेवानिवृत्त `{ kind: 'plugin', plugin: '<name>' }` wrapper **स्वीकार नहीं करता** — पहले `MessageSourceMap` से अपना kind declare करें। `inject` agent को जगाता नहीं (`followup()`/`steer()` जगाते हैं)।
+12. **सत्र चलते समय profile का `cordis.patch.yml` कभी न लिखें** (HMR उसे reload करता है: जीवित सत्रों से tools गायब हो जाते हैं, चल रहे turn मर जाते हैं, और `session-controller` दोबारा बनाने पर वह पूरी प्रक्रिया restart तक मृत रह सकता है)। profile का `package.json` हाथ से न लिखें, profile डायरेक्टरी में pnpm न चलाएँ।
+13. UI प्लगइन: React को slot में render करें (iframe में सर्व किया पेज कभी नहीं); styling केवल `--dsw-alias-*` theme tokens से; Harness Client पैकेज को `require` कभी न करें (throw करता component पूरा slot खाली कर देता है); `dsh.client.inject` **स्थिर array** होना चाहिए।
+14. प्रदर्शन: per-session state `ctx.sessionProjections` में रखें (शुद्ध synchronous `apply`, अनदेखा करने पर वही reference, शुद्ध JSON + `stateVersion`); durable events की प्रतीक्षा करें (`turn/end`, `assistant/message`, `tool/result`) और live tokens `agent/assistant-stream` से render करें; `agent/status` को कभी poll न करें।
 
 ## समुदाय की त्वरित समस्या-सूची (विवरण: गाइड §7.3 / community-repo-deep-dive.md)
 
@@ -147,7 +153,7 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 - Windows junctions PowerShell `New-Item -ItemType Junction` से; vitest ड्राइव अक्षर बड़ा `C:/`।
 - `DSH_PERMISSION_MODE=danger-full-access` उच्च जोखिम है (Windows पर सैंडबॉक्स बैकएंड नहीं, अनुमोदन बंद); `~/.dsh/.env` में `DSH_*` स्टार्टअप तोड़ता है।
 - सत्र फ़ाइलें मल्टी-फ़्रेम zstd हैं: `scanZstdFrames`/`createZstdFrameDecoder` उपयोग करें (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`)।
-- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें (latest=0.1.2-rc.1); `@deepseek-ai/dsh-tools` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` पुराना है (0.0.1-rc.1), `next` (0.1.2-rc.1) पिन करें; `create-dsh-plugin` latest=0.2.1; dsh-core/dsh-sdk अभी भी अप्रकाशित (2026-09-04 को सत्यापित)।
+- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.1); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` अब भी पुराना है (0.0.1-rc.1), इसलिए `next` (0.2.0-rc.2) या `alpha` (0.2.1-alpha.1) पिन करें; `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 और नया टैग `dsh-0-2-1-alpha-1`=4.0.5-alpha.1; dsh-core/dsh-sdk अभी भी अप्रकाशित (2026-10-06 को सत्यापित)।
 - पथ तुलना से पहले दोनों ओर `resolve()` करें (Windows बैकस्लैश जाल)।
 
 ## दस्तावेज़ लिंक

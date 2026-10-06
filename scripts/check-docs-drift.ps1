@@ -1,4 +1,4 @@
-# dsh-plugin-guide official-docs freshness probe.
+﻿# dsh-plugin-guide official-docs freshness probe.
 # Purpose: detect drift between the KB mirror (references/official-docs) and the
 #   upstream deepseek-harness repository WITHOUT a local checkout. It compares the
 #   upstream branch tip SHA (git ls-remote) against the pinned "Source commit" SHA

@@ -56,7 +56,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (re-synced 2026-09-24, `ddefc45`): the official-docs snapshot is refreshed to rc.1, the checker now expects the four-clause peer range (`… || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`) single-sourced from the scaffold templates, and a new red line fails `async apply` functions that register after their first `await`. Local gate chain green (40 tests, typecheck, `verify` dogfood); the compat job's real rc.1 run lands with the next CI push. |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (`5badb15009`, the newest master tag, 2026-10-03); npm `latest` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.1`. Re-verified 2026-10-06 against that checkout (gate chain + profile install smoke). The knowledge base, the official-docs mirror and `guide/migration-0.2.md` all carry this baseline. |
 | Node | `^22.19.0 || >=24.0.0` (DeepSeek Harness runtime) |
 | Platforms | All (plain ESM bundle; no native code, no network) |
 | Model | Any (no model interaction) |
@@ -65,29 +65,35 @@
 
 `dsh-plugin-guide` is the DSH plugin-development knowledge base plus a CLI toolchain, packaged as one installable bundle. The knowledge base registers as the `dsh-plugin-guide` agent skill (visible in every session catalog, loading workflow steps, official docs, and community deep-dives on demand); the `dsh-plugin-dev` CLI adds three mechanical layers on top of it.
 
-- **Plugin contract & hard rules** — effects/disposers, waterfall `next()`, model-visible ⟺ logged, Schemastery config.
-- **Official docs archive** — a verbatim copy of the official repo docs (EN + ZH), byte-identical to upstream at the last verified snapshot.
+- **Plugin contract & hard rules** — effects/disposers, waterfall `next()`, host-owned session events, `MessageSourceMap`, the weakest-mechanism ordering, Schemastery config, UI and performance rules.
+- **Official docs archive** — a verbatim copy of the official repo docs (EN + ZH), byte-identical to upstream at the last verified snapshot, including the pages that never reach the documentation site.
+- **Migration guide** — [guide/migration-0.2.md](guide/migration-0.2.md): every breaking change from `0.1.6-alpha.2` to `0.2.1-alpha.1` (session format V4, the settings rebuild, invariant removal, `readBytes`, new slots, retired `plugin` message source), each with its official source and a 12-item checklist.
+- **Official in-repo skill, distilled** — [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md): the harness's own `cordis-plugin-development` workflow, prohibitions, display-metadata checklist, practices, and UI/performance rules.
 - **Cordis primer** — the five concepts and the mechanism timeline (repository-plugin introduced 0809, removed 0811; the two install channels).
-- **20+ real-world pitfalls** with root cause + fix (cordis dual copies, tsconfig trio, multi-frame zstd sessions, Windows junctions, stale npm `latest`, …).
+- **Verified issue index** — [guide/unfixed-issues.md](guide/unfixed-issues.md): 22 unfixed + 11 newly verified items with `path:line`, workarounds, fixing commits, design-vs-bug table, and an explicit "unreproducible" section.
+- **30+ real-world pitfalls** with root cause + fix (cordis dual copies, tsconfig trio, multi-frame zstd sessions, Windows junctions, stale npm `latest`, `file:` installs loading a copy, live patch writes, …).
 - **Community deep-dives** — 114 community repositories archived (15 deep-dived), plus a full source index where every fact links to its origin.
-- **CLI toolchain** — `dsh-plugin-dev new / check / verify`: scaffold, static-check, and pack-verify DSH plugins; every check links back to the skill section it enforces.
+- **CLI toolchain** — `dsh-plugin-dev new / check / verify`: scaffold, static-check (including display metadata and multi-patch manifests), and pack-verify DSH plugins; every check links back to the skill section it enforces.
 
 ## Knowledge base
 
 | Path | What it is |
 |---|---|
 | `SKILL.md` | The `dsh-plugin-guide` agent skill: hard rules + task-based development paths |
-| `package.json` · `cordis.patch.yml` · `index.js` | The installable DSH bundle: `dsh.bundle.patch` manifest + entry point that registers the skill |
+| `package.json` · `cordis.patch.yml` · `index.js` · `locale/` · `icon.svg` | The installable DSH bundle: `dsh.bundle.patch` manifest, entry point that registers the skill, and the display metadata Plugin Manager reads |
 | `guide/plugin-dev-guide.md` | The complete development guide (10 chapters) |
+| `guide/migration-0.2.md` | Breaking-change migration guide for the 0.2 generation |
+| `guide/unfixed-issues.md` | Source-verified bug index + fixed-on-master list + design-vs-bug table |
 | `guide/quick-reference.md` | One-page cheat sheet (5 languages) |
-| `guide/links.md` | Curated URL index: official dev docs (site ↔ local copies) + community doc links |
+| `guide/links.md` | Curated URL index: official dev docs (site ↔ local copies) + community doc links + repo-only pages |
 | `guide/when-to-retire-a-plugin.md` | Retiring and freezing plugins: the criteria and the measured data behind a portfolio audit (EN + ZH) |
 | `guide/choosing-a-plugin.md` | Choosing a plugin: who leads each capability surface, with the measured numbers and the verification caveats (EN + ZH) |
 | `references/official-docs/` | Verbatim copy of the official repo docs (EN + ZH) |
+| `references/official-plugin-dev-skill.md` | Distilled official in-repo plugin-development skill |
 | `references/*.md` | Research reports: repo docs, website, Cordis, the paper, community ecosystem, 114-repo archive (15 deep-dived) |
 | `scripts/` | Idempotent download scripts + integrity checker + topic snapshot generator |
 | `bin/` · `src/cli/` · `dist/` | The `dsh-plugin-dev` CLI: scaffolder, checker, verifier (TypeScript, tsdown-bundled) |
-| `templates/` | TS + JS scaffold skeletons: contract template, Config, tests, cordis.patch.yml, five-language READMEs |
+| `templates/` | TS + JS scaffold skeletons: contract template, Config, tests, cordis.patch.yml, locale metadata, icon, five-language READMEs |
 | `downloads/` | Raw snapshots — generated by `scripts/`, not committed |
 
 ## CLI toolchain
@@ -235,54 +241,55 @@ pwsh -File scripts/verify-kit.ps1   # critical paths + link scan (+ docs drift w
 
 ## PerryLink DSH Plugin Family
 
-This project is one of the **44 DeepSeek Harness plugins** maintained by [PerryLink](https://github.com/PerryLink). If this one helps you, the others likely will too:
+This project is one of the [40 DeepSeek Harness plugins](https://github.com/PerryLink) maintained by [PerryLink](https://github.com/PerryLink). If this one helps you, the others likely will too:
 
 | Plugin | One-liner |
 |---|---|
 | **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** | Second-model auto-review on the approval chain, fail-closed by default | |
-| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | Automatic strong/cheap model-tier routing with deterministic risk guards and a `/tier` command | |
-| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | 🚫 **RETIRED** — see the note above |
-| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | | 🧊 FROZEN — see the repo README |
-| **[dsh-catalog](https://github.com/PerryLink/dsh-catalog)** | DSH Desktop Market standard catalog source for the PerryLink family | |
-| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | Read-only MCP server exposing the certification registry: grades, snapshots and five-dimension evidence | |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | |
 | **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** | Claude Code /rewind-equivalent: snapshots, session forks, one-shot restore | |
-| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | | 🧊 FROZEN — see the repo README |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | |
 | **[dsh-click](https://github.com/PerryLink/dsh-click)** | Cross-platform native desktop control for DeepSeek Harness — Windows first. | |
 | **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** | Terminal-style input history for the web composer: arrows, Ctrl+R search | |
 | **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | Dataset quality checks and citation cross-checks (the optional numeric bridge consumed here) | |
-| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | | 🧊 FROZEN — see the repo README |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | |
 | **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** | Engineering-discipline guard: requirements grill, test gates, adversary review | |
-| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | | 🧊 FROZEN — see the repo README |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | |
 | **[dsh-fast](https://github.com/PerryLink/dsh-fast)** | Read-only performance diagnostics for DeepSeek Harness. | |
 | **[dsh-fund-research](https://github.com/PerryLink/dsh-fund-research)** | Deterministic research reports for Chinese public mutual funds | |
 | **[dsh-github](https://github.com/PerryLink/dsh-github)** | GitHub PR/issues integration for DSH, every write gated by approval | |
 | **[dsh-industry-research](https://github.com/PerryLink/dsh-industry-research)** | Industry research orchestration that seals its deliverables through this plugin's `ctx.researchReport.assemble` | |
-| **[dsh-laya](https://github.com/PerryLink/dsh-laya)** | Laya typed decisions (`noul`/`choice`/`score`) as a first-class Cordis service and model-visible tools | |
 | **[dsh-library](https://github.com/PerryLink/dsh-library)** | Local document knowledge base for DeepSeek Harness. | |
 | **[dsh-local-ai](https://github.com/PerryLink/dsh-local-ai)** | Local-model (Ollama) integration for DeepSeek Harness. | |
 | **[dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions)** | LSP diagnostics, formatting, completion, code actions and rename over language servers | |
 | **[dsh-mask](https://github.com/PerryLink/dsh-mask)** | PII masking middleware: anonymize at the model boundary, restore at the display layer | |
 | **[dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel)** | Read-only MCP runtime panel: /mcp command + Settings tab with status, tools and errors | |
-| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** | Approval-gated cross-session memory: ctx.memory seam + SQLite + memory tool | | 🧊 FROZEN — see the repo README |
+| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** | Approval-gated cross-session memory: ctx.memory seam + SQLite + memory tool | |
 | **[dsh-observe](https://github.com/PerryLink/dsh-observe)** | OpenTelemetry and Langfuse observability exporter for DeepSeek Harness. | |
 | **[dsh-output-styles](https://github.com/PerryLink/dsh-output-styles)** | Claude Code outputStyles-equivalent runtime style switching | |
 | **[dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules)** | Claude Code-style declarative allow/deny/ask permission rules with audit | |
-| **[dsh-plugin-certification](https://github.com/PerryLink/dsh-plugin-certification)** | Community certification registry with repro-checkable grades and badges | |
-| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | Zero-dependency static + sandbox smoke detector for DSH plugins | |
-| **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** | Plugin-development knowledge base as an on-demand agent skill | |
-| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | Shared zero-runtime-dependency toolkit for the PerryLink DSH plugins | |
-| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | One-package, one-corridor-index plugin upgrade skill: routes a repository to the matching closed corridor card | |
-| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console | | 🧊 FROZEN — see the repo README |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console |
 | **[dsh-research-report](https://github.com/PerryLink/dsh-research-report)** | Verifiable research-report engine: content-addressed evidence ledger and sealed versions | |
 | **[dsh-score](https://github.com/PerryLink/dsh-score)** | Multi-dimensional quality scoring for DeepSeek Harness plugins. | |
-| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | 🚫 **RETIRED** — see the note above |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | |
 | **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** | Cross-device session sync for DeepSeek Harness — a dedicated git mirror of your session store. | |
 | **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** | Security-audit skill pack: secret scan, dependency and supply-chain review | |
 | **[dsh-talk](https://github.com/PerryLink/dsh-talk)** | Voice-first session loop for DeepSeek Harness: talk to it, hear it answer. | |
-| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | 🚫 **RETIRED** — see the note above |
 | **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** | Isolated install-and-smoke test drives for DeepSeek Harness plugins. | |
-| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools | |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools |
 | **[dsh-translate](https://github.com/PerryLink/dsh-translate)** | Vendor parameter translation and deterministic JSON repair for DeepSeek Harness. | |
+| **[dsh-wechat](https://github.com/pan17/dsh-wechat)** | WeChat ↔ DSH bridge (Tencent iLink bot): text/image/file/voice, approvals in chat |
+| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | Automatic strong/cheap model-tier routing with deterministic risk guards and a `/tier` command | |
+| **[dsh-catalog](https://github.com/PerryLink/dsh-catalog)** | DSH Desktop Market standard catalog source for the PerryLink family | |
+| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | Read-only MCP server exposing the certification registry: grades, snapshots and five-dimension evidence | |
+| **[dsh-kit](https://github.com/PerryLink/dsh-kit)** | One-command starter pack that installs the core family | |
+| **[dsh-plugin-certification](https://github.com/PerryLink/dsh-plugin-certification)** | Community certification registry with repro-checkable grades and badges | |
+| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | Shared zero-runtime-dependency toolkit for the PerryLink DSH plugins | |
+| **[dsh-plugin-portal](https://github.com/PerryLink/dsh-plugin-portal)** | Zero-dependency static portal rendering the whole plugin family as one page | |
+| **[dsh-plugin-upgrade-015](https://github.com/PerryLink/dsh-plugin-upgrade-015)** | Merged `0.1.3-alpha.1` → `0.1.5-rc.1` upgrade corridor card plus a zero-dependency seam scanner | |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | |
+| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | Zero-dependency static + sandbox smoke detector for DSH plugins | |
 
 ## Disclaimer
 
@@ -357,6 +364,10 @@ export function apply(ctx: Context) {
 | 上游 Cordis 框架 | [cordiverse/cordis](https://github.com/cordiverse/cordis)（README/docs 已下载） | downloads/github/cordis/ + references/upstream-cordis.md |
 | Cordis 论文 | [cordiverse/paper](https://github.com/cordiverse/paper) | downloads/github/paper/ + references/cordis-paper-and-community.md |
 | 生态/社区 | [社区开发文档与生态链接](../references/community-ecosystem.md)（topic 清单、awesome 列表、注册中心） | references/community-ecosystem.md + downloads/community/ |
+| **官方自带插件开发技能（0.2 世代新增，务必先读）** | 无站点路由（在 preset 包内） | `references/official-plugin-dev-skill.md`（原文抄录）+ 上游 `packages/preset/agent-preset/skills/cordis-plugin-development/**` |
+| **逐版本迁移指南（0.2 世代新增）** | 无站点路由 | `references/official-docs/docs/upgrade-guide/**`；本库综述 [migration-0.2.md](migration-0.2.md) |
+| 会话格式版本状态 | 无站点路由 | `references/official-docs/docs/session-format-status.md` |
+| 运行时自查（比文档更权威） | 会话内 `cordis_inspect_list` / `cordis_inspect_query`（Service / Event / Config / Tool / Slots / Theme） | — |
 
 网站与本地文档是同源的：GitHub Pages 站点由 `website/docs.ts`（副本在 references/official-docs/website-docs.ts）把仓库 `docs/` 投影成中/英两棵路由树；`develop/basic/` 页面 = `docs/user/develop/basic/index.zh.md`。**想"离线全量"看官方文档，读 references/official-docs/docs/ 即可。** 线上 URL 与本地副本的**完整对照**（含 `en/` 英文投影、全部 reference/cookbook/cordis-api/subsystems 路由与 GitHub 直链）见 [links.md](links.md)。
 
@@ -364,23 +375,28 @@ export function apply(ctx: Context) {
 
 ## 2. 工程形态与开发环境
 
-### 2.1 两种开发方式
+### 2.1 三种开发方式
 
 1. **仓库内开发（scratch 目录）**：clone `deepseek-ai/deepseek-harness`，`pnpm install` 后建 `scratch-plugin/`，用 `--patch` 覆盖层挂载本地插件（`pnpm dsh web --patch ./scratch-plugin/cordis.yml`）。适合学教程、改核心。
 2. **独立插件包（发布形态）**：一个 npm 包 + `cordis.patch.yml`，经 `dsh plugin --profile <name> add <包>` 装入 profile。适合对外发布。
+3. **会话内直接装（0.2 世代官方首选路径）**：在工作区写 bundle，然后用 **`plugin_manager` 工具的 `install_bundle`**（`target` 传**绝对包目录**）装进当前 profile——插件立刻对该 profile 的所有会话生效并跨重启保留。官方明确：**不要**手写 profile 的 `package.json`/`cordis.patch.yml`，**不要**在 profile 目录里跑 pnpm；`install_bundle` 负责这些步骤，而且 profile 之外的每一次手写都需要单独审批。详见 [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)。
 
-### 2.2 两个概念、两种清单（package.json 的 `dsh` 键）
+### 2.2 三个概念、三种清单（package.json 的 `dsh` 键）
 
-- **bundle（分发层）**：npm 包，`package.json` 声明 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`；patch 里是"插入/覆盖插件行"的 YAML 数组。
-- **profile（可运行组合）**：`$DSH_HOME/profiles/<name>/`，`package.json` 声明 `"dsh": { "profile": { "bundles": [...] } }`；由 `dsh plugin` 命令自动维护，手写不允许。
+- **bundle（分发层）**：npm 包，`package.json` 声明 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`；patch 里是"插入/覆盖插件行"的 YAML 数组。**`patch` 也可以是有序数组**：`{ "patch": ["./base.patch.yml", "./web.patch.yml"] }`，按序作为同一层应用，且每个文件里的相对插件路径**相对该文件所在目录**解析（校验失败信息：`dsh.bundle.patch must be a file path or a list of file paths`）。
+- **profile（可运行组合）**：`$DSH_HOME/profiles/<name>/`，`package.json` 声明 `"dsh": { "profile": { "bundles": [...] } }`；由 `dsh plugin` / `plugin_manager` 维护，手写不允许。
+- **client（浏览器半侧）**：`package.json` 声明 `"dsh": { "client": { "platform": "web", "inject": [...], "immediately": true, "external": [...] } }` 并导出编译好的 `./client`。`inject` **只决定激活顺序**（不是 cordis 服务注入），`immediately` 标记一阶段预取，`external` 列出基线之外的精确模块请求。客户端半侧只挂在**说明符恰为裸包名**的那一行上。
+- 另有两个可选作者字段：`dsh.manifestVersion`（清单格式标识，当前 `1`，与 npm 版本、会话格式版本无关）与 `engines.dsh`（兼容范围声明，**当前安装器/加载器都不校验**）。类型定义来自 `@deepseek-ai/dsh-package-manifest`。
 
 bundle 最小结构：
 
 ```
 hello-plugin/
-├── package.json       # dsh.bundle → cordis.patch.yml
+├── package.json       # dsh.bundle → cordis.patch.yml；可选 dsh.client + icon + exports
 ├── cordis.patch.yml   # - insert: [{ id, name: 'dsh-hello-plugin' }]
-└── index.js           # export const name / export function apply
+├── index.js           # export const name / export function apply
+├── locale/en.json     # { "meta": { "title": "...", "description": "..." } }（Plugin Manager 展示用）
+└── icon.svg           # 导出的 ./icon，≤ 256 KiB 且必须在包内
 ```
 
 ### 2.3 配置分层顺序（后层覆盖前层，逐行按 `id` 整段替换 config）
@@ -390,18 +406,22 @@ hello-plugin/
 3. 机器级 `$DSH_HOME/cordis.patch.yml`
 4. 命令行 `--patch <path>`（argv 顺序）
 
-patch 覆盖某行时**整行 config 被替换而非深合并**——覆盖方必须重述该行需要的全部键。验证实际组合：`dsh --profile <name> --dump-config`。
+patch 覆盖某行时**整行 config 被替换而非深合并**——覆盖方必须重述该行需要的全部键。**上游删行/改名后，targeting 该 id 的 override 会静默失效**（只在启动日志里留一行 `patch: entry <id> not found`），所以每次升级后都要跑一次 `--dump-config`。验证实际组合：`dsh --profile <name> --dump-config`。
 
 ### 2.4 常用命令
 
 ```sh
+dsh --version                           # 先确认宿主版本（0.1.7-alpha.1 起 = 会话格式 V4）
 dsh --profile web                       # 启动 Web UI
 dsh --profile headless "任务文本"        # 一次性无界面执行
-dsh --profile <name> --dump-config      # 打印实际生效的插件树
+dsh --profile <name> --dump-config      # 打印实际生效的插件树；查 patch: entry not found
 dsh plugin --profile <name> add <pkg>   # 安装 bundle（转发给 pnpm）
 dsh plugin --profile <name> remove <pkg>
+dsh plugin --profile <name> install     # 仅补装/修复 profile 依赖（自愈入口）
 pnpm dsh web --patch ./scratch-plugin/cordis.yml   # 仓库内开发调试
 ```
+
+会话内优先用 `plugin_manager` 工具（`list_plugins` / `list_bundles` / `install_bundle` / `set_plugin` / `set_bundle` / `remove_bundle`）而不是 shell：它把安装、bundle 选择、失败与 pending 状态一并返回。注意 `list_plugins`/`list_bundles` 在非 Full access 下同样需要审批，只在结果决定下一步时才调；**用免审批的 `cordis_inspect_query` 确认新行是否真的挂上**。`application: applied` 才算生效；`overridden` 表示被更高优先层盖住，`restart-required` 表示**尚未生效**。
 
 ---
 
@@ -461,7 +481,8 @@ ctx.effect(() => { const t = setInterval(...); return () => clearInterval(t) }) 
 - **类型安全**：`declare module '@deepseek-ai/cordis' { interface Events { 'my-plugin/ready': (p: {id: string}) => void } }`。
 - **命名空间**：`namespace/action`（`agent/step`、`tools/result`、`session/event`……）。
 - **注意区分**：`turn/*`、`step/*`、`tool/call`、`tool/result`、`compaction/*` 是**持久化会话事件类型**（在 `session/event` 里以 `event.type` 出现），不是同名 Cordis 事件。
-- **SessionEvent switch 规则**：`SessionEventMap` 是 merge-extensible union，对 `SessionEvent` 的 switch **禁用 `assertNever`**（插件新增的 variant 是合法未知值）——处理已知 case 后落入文档化 `default` 放行；closed union（如 `StreamChunk`）才以 `assertNever` 收尾。
+- **SessionEvent switch 规则**：`SessionEventMap` 是 merge-extensible union，对 `SessionEvent` 的 switch **禁用 `assertNever`**——处理已知 case 后落入文档化 `default` 放行；closed union（如 `StreamChunk`）才以 `assertNever` 收尾。
+- **会话事件红线（官方 practices 原文）**：**绝不要用新的 `type` 追加会话事件**——读方只在事件带信封 `ignorable: true` 时接受未知类型，而运行时 `Session.append()` 写不了这个标记（第三参仅为 surface 事件的 `SurfaceIntent`），写了会让整个会话**打不开**。插件状态从既有事件推导，或放进 inspection 找到的 storage 服务。类型层的 merge-extensible 是给宿主新增事件用的，不是插件写入口。见 `references/official-docs/docs/subsystems/session.md` 与 `docs/cordis-primer.md`。
 - 全量"谁发谁听"矩阵：`docs/event-producer-consumer.md`（副本在 references/official-docs/docs/）。
 
 ### 3.6 配置（Config）
@@ -489,7 +510,7 @@ export function apply(ctx: Context, config: Config) { /* config 已校验+补默
 2. **waterfall 监听器必须调 `next()`**。
 3. **模型可见 ⟺ 已记录**（Model-visible ⟺ logged）：任何进入模型请求的内容必须能从会话日志重建；新增模型可见输入必须新增会话事件。运行时不变式会断言这一点。
 4. **跨边界 opaque id 用 branded**：`Branded<B>`（`dsh-brand`，纯类型、零运行时依赖），从不裸 `string`；构造走 per-type factory（`SessionId` / `CallId` / `JobId` / `GoalId` 等），防止不同 id 在类型层互换。
-5. **会话事件版本规则**：`SessionEventMap` 成员默认 required-on-read，无信封豁免——`0.1.2-alpha.1` 已移除 `ignorable` 信封、读路径 fail-closed，不认识该事件类型的 build 一律拒绝日志；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。`0.1.2-rc.1` 恢复信封 `ignorable?: true` 字段但仅用于存量日志读取兼容——其 `Session.append` 第三参为仅 surface 事件的 `SurfaceIntent`，仍无法盖章标记，故自适应门在该线上继续停写（行为不变）。插件新增会话事件时按此契约设计：下游插件事件目前无注册面，写自定义事件的插件用自适应门在无信封宿主上停写（新增模型可见输入见红线 3）。
+5. **会话事件版本规则**：`SessionEventMap` 成员默认 required-on-read——不认识该事件类型的 build 一律拒绝整份日志，除非该事件带信封的 `ignorable: true`。**插件不得新增事件类型**（见 §3.5 红线）：`Session.append()` 写不了信封标记。只有结构格式变更才 bump `SESSION_FORMAT_VERSION`（当前 **4**；V3→V4 把 results 提升为 tool-role 消息、把消息 source 改为生产者自有的 `source.kind`，V3 读方拒绝 V4 日志）。新增**模型可见输入**由宿主侧事件承担（红线 3），插件只消费。
 
 ---
 
@@ -537,7 +558,17 @@ schema 自动汇入系统提示词组装；模型可用原生函数调用或 Cod
 5. **抛错或返回非法值 ⇒ `isError`**：基础设施故障用 throw；成功的领域结果放进规范值（即使渲染层解释一个"不理想"状态，如非零退出码）。
 6. **尊重 `exec.signal`**：触发时取消在途工作（前台工作与其绑定；后台任务改用任务自带取消信号）。
 7. **`presentationMeta(args, value)`（可选）**：从同一规范值导出可回放的 JSON 持久化到 `tool/result`，供 UI 卡片回放。
-8. **异步通知用 `exec.agent`**：`agent.inject({ content, source: { kind: 'plugin', plugin: '<name>' } })` 把上下文注入**下一条**模型请求（不是唤醒；空闲 agent 保持空闲）。对已释放的 agent 要 try/catch。
+8. **异步通知用 `exec.agent`**：`agent.inject({ content, source: { kind: '<你的 kind>' } })` 把上下文注入**下一条**模型请求（不是唤醒；空闲 agent 保持空闲）。⚠️ **本世代硬性变化**：`source` 不再接受退役的 `{ kind: 'plugin', plugin: '<name>' }` 包装——会话格式 V4 在**消息准入**处直接拒绝它（`packages/core/session/src/index.ts` 的 source 准入；官方 `docs/cookbook/adding-a-tool.md:49` 明写）。插件自己的 kind 必须先经声明合并注册，否则先用宿主已有的 kind：
+
+```ts
+declare module '@deepseek-ai/dsh-llm' {
+  interface MessageSourceMap {
+    'my-plugin': { kind: 'my-plugin' }   // kind 必须与 MESSAGE_SOURCE_KIND_PATTERN 匹配
+  }
+}
+```
+
+`agent.inject()` 只是 `send(input, 'next-step', false)`（`packages/core/agent-loop/src/agent.ts:171`）；同族还有 `followup()`（下一回合，唤醒）与 `steer()`（下一步，唤醒）。对已释放的 agent 要 try/catch。
 
 ### 4.3 后台任务（长任务）
 
@@ -560,8 +591,28 @@ schema 自动汇入系统提示词组装；模型可用原生函数调用或 Cod
 
 - 卡片类型：`generic`（默认）/ `terminal` / `diff` / `search` / `read` / `web`（`kind: search|fetch`）。
 - **纯函数硬规则**：卡片方法在实时流与日志回放都会执行 ⇒ 只能依赖 `args`（+ 结果），**禁止 I/O、会话状态、时钟/随机**。diff 由 args 推导；需要旧文件内容/工作目录时——放进持久化结果元数据或 UI 适配器，而不是 presenter。
-- UI 专属格式不进模型结果；`defineTool` 对展示路径软校验（老日志参数不崩溃，回退 generic）。
-- 中性词表在 `dsh-tools`；工具永不 import UI/传输类型。
+- **UI 专属格式不进模型结果**；`defineTool` 对展示路径软校验（老日志参数不崩溃，回退 generic）。
+- **中性词表在 `dsh-tools`**；工具永不 import UI/传输类型。
+
+### 4.7 两个新钩子（0.2 世代）
+
+- **`ToolDefinition.projectContent(exec, result)`**：在 `tools/post-execute` 策略**之前**安装"执行期准备好的内容"；策略的替换仍然权威（下游只看到策略结果），绕过 post-execute 的管线失败**不会**调用它。适合"结果本身是结构值、但要给模型附一段确定性正文"的场景。
+- **`ToolSchema.deferLoading: true`**：标记该工具的 schema **延后加载**，经 `schemaOf()` 进入模型可见 schema。用于工具很多、不想每轮都付全量定义 token 的场景（与 0.1.7-rc.2 起的"动态增加工具且不破坏 KV Cache"配套）。
+- **`PreToolDecision` 的 `ask` 新增 `displayReason`**：`{ kind:'ask'; reason?: string; displayReason?: { readonly en: string; readonly [locale: string]: string } }`——`reason` 是**审计用**的批准理由，`displayReason` 是**本地化**的提示文案（审批卡片会按界面语言显示，并引导 agent 用提问语言解释理由）。
+
+### 4.8 插件 UI（Web）与性能：官方 `practices.md` 的硬规则
+
+完整要点见 [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md) §3.2/§3.4；开发 UI 插件前**至少**记住这五条：
+
+1. **先选渲染面**：插件页面必须渲染成 **slot 里的 React 组件**；**不要**从 Host 提供 HTML 再 iframe 嵌进去（iframe 拿不到宿主主题 token、明暗切换与 `ctx.locale`）。
+2. **样式只用主题 token**（`cordis_inspect_query` 的 `Theme` 列出的 `--dsw-alias-*`）；字面颜色只用于 artwork。**不要** `require` 任何 Harness Client 包（`@deepseek-ai/dsh-client-ui-primitives` 等）——它们会无预警变化，而**抛错的组件会把整个 slot 条目搞白**（console: `slot entry crashed in '<slot>'`）。要对齐宿主就"把 primitive 的标记/CSS/行为抄进插件"。
+3. **只经 slot 贡献**：`ctx.slots.inject(ownerKey, () => ctx.slots.register(...))`；会话数据经 slot props 的 selector hook 读**最小切片**；**不要**在组件外写 DOM，也不要往 `document.body` 追加第二个应用。
+4. **加 Chat 行**：`ctx.uiConversation.events.register()` 注册事件定义 + 在 `conversation.chat.node` slot 下按定义的 `kind` 注册视图（分页/落位/增量组装由 Conversation 层负责）。Client 需要会话派生值时，在 Host projection 上声明 **`wire.view`**——Client **不自己 fold 会话事件**。
+5. **性能**：per-session 状态放进 `ctx.sessionProjections`（`apply(state, event)` 纯同步、忽略的事件返回同一引用；`stateOf()` 读；纯 JSON + 改语义就 bump `stateVersion`）；**等持久事件**（`turn/end`/`assistant/message`/`tool/result`），实时 token 从 `agent/assistant-stream` 渲染；**不要轮询 `agent/status`**；注意 `whenIdle()` **不**等于"一次 followup 结束"。
+
+另有一条最容易踩的工程坑：**`dsh.client` 的 `inject` 必须是静态数组**（cordis 不接受函数形式）。曾有一个已发布的 0.2.0 插件把它导出成函数 → 声明为零依赖 → `apply()` 抛 `cannot get property "sidebarRightTabs" without inject` → 日志只留一行 `web boot: 1 entry did not activate` → **插件自愈机制把整个 bundle 禁用了**。单测要断言"`inject` 是数组且覆盖 `apply()` 触及的每个服务"。
+
+**工具的 `parameters` 是 DSH 自己的方言，不是 JSON Schema**；Remote 服务调用是**位置参数**而不是对象参数（`get()` 能用，最有欺骗性）；往 `ctx` 上写**未声明**的属性会抛错并可能静默杀掉整个插件的激活——可选服务一律 `ctx.get(name)`，**`ctx.<service>` 只对自己 `inject` 里声明过的服务合法**。
 
 ---
 
@@ -610,13 +661,18 @@ LLM 适配器同理：继承 `LlmAdapter` 实现 `stream(options)`，`ctx.llm.re
 | 会话预设组合 | preset 层：per-session agent composition from preset cordis.yml（`dsh-preset`） |
 | 待办列表 | `dsh-todo` 的 `todo_write` 工具（状态进会话日志，可作参考实现） |
 | 循环卫生/工具超时 | `dsh-guard`：重复调用提醒 + `tools/execute` 截止时间强制 |
-| 子代理委派 | `ctx.subagents` provider 注册表 + `dsh-tool-subagent` |
-| 多代理编排 | `ctx.workflow` 缝（Definition/Provider/Consumer）+ `workflow`/`ralph` 工具 Consumer |
+| 子代理委派 | `ctx.subagents` provider 注册表 + `dsh-tool-subagent`（现有多家 provider：in-process spawn / fork / `dsh-subagent-acp` / `-codex` / `-claude-code` / `-dsh-sdk`） |
+| 多代理编排 | `ctx.workflowEngine` 缝（Definition/Provider/Consumer）+ PTC workflow engine + `workflow`/`ralph` 工具 Consumer |
 | MCP | 每服务器一个插件：发现工具 → `ctx.tools.register()` |
 | Skills | section + 工具注册；调用时 `inject()` 技能内容 |
 | 定时任务 | 注册模型可调的调度工具；定时器 → 空闲 `followup(source:{kind:'cron'})` / 忙碌 `inject()` |
 | 遥测/回放 | `session/event` → JSONL；回放 = `sessions.create(id, {seed})` |
-| 热重载 | 所有注册是 effect → vendored HMR 天然可用 |
+| 上报通道（0.2 新增） | `ctx.otel`：`createEventReporter(options)` / `createSessionLogReporter(options)`——自带传输与批处理，未用时**不分配** provider/transport；**消费者必须在自己 fiber 释放时 drain 通道** |
+| 产品分析事件（0.2 新增） | `ctx.productAnalytics`（`ProductTelemetry`）——**只发显式选定的字段，不自动采集** Session 数据或标识；Desktop 消费者在 `packages/client/product-analytics`，普通 Web 不采集 |
+| 语音输入（0.2 新增，实验） | Host 侧三角色（Service Definition / SenseVoice Provider / Remote Consumer）；浏览器侧 `TranscriptionRequest`，UI 挂 `conversation.input.activity` 与 `plugins.bundle.activation` |
+| Claude Code mod 桥（0.2 新增，实验） | `defineMod({ name, version, root, userConfig, register })` 挂在 `cordis.yml` 的 bridge 行之后；类型从 `@deepseek-ai/dsh-experimental-claude-code-mods` 导入。**官方安全提示：mod 不加沙箱，只挂你愿意当插件运行的 mod** |
+| per-session 派生状态（性能首选） | `ctx.sessionProjections`：纯同步 `apply`、忽略的事件返回同引用、`stateOf()` 读、纯 JSON + `stateVersion`；Client 需要派生值时在 Host projection 上声明 `wire.view`（**Client 不自己 fold 会话事件**） |
+| 热重载 | 所有注册是 effect → vendored HMR 天然可用。**但**：改 profile 的 `cordis.patch.yml` 会触发重载并可能丢工具/杀在途 turn（见 §7.0 警告与 `unfixed-issues.md` T1）——运行中不要改 |
 
 Hook 的"原生 hook"就是挂在拦截点上的普通 Cordis 插件，不需要外部协议；`dsh-hooks-claude-code`/`dsh-hooks-codex` 是把 Claude Code/Codex hook 配置映射到这些扩展点的桥。
 
@@ -636,6 +692,18 @@ Hook 的"原生 hook"就是挂在拦截点上的普通 Cordis 插件，不需要
 
 安装状态管理文件：profile 的 `package.json`（`dsh.profile.bundles` 层栈）+ `cordis.patch.yml`（insert 行与 disabled 启停，HMR watched）。
 Git 源安装支持子路径选择器：`dsh plugin --profile demo add "github:owner/repo#<ref>&path:<subdir>"`（构建产物已入库时可免构建直接装）。
+
+> ⚠️ **"配置 HMR 实时生效"有代价（本世代实测，见 guide/unfixed-issues.md T1）**：`dsh-hmr` 精确监听 `profile/package.json`、`profile.patchPath`、`$DSH_HOME/cordis.patch.yml`，**任何写入**（包括逐字节相同的重写）都触发重载。实测后果：正在跑的会话会丢掉 preset 贡献的全部工具（65 → 41）、在途 turn 被杀，最坏情况重建 `session-controller` 时抛 `file-upload: Agent resolver is already registered` 并**永久失效**（只能整进程重启）。**结论：不要在会话运行期间改 profile patch**；配置改动走 `plugin_manager` / `dsh plugin` 入口，必须手改就先停进程。
+
+### 7.0.1 展示元数据与图标（0.2 世代新增的硬性交付项）
+
+Plugin Manager 与 Settings 会**在不激活插件的前提下**读展示信息，所以"能跑"不等于"交付完成"。官方清单（`references/official-plugin-dev-skill.md` §3.1）：
+
+- `locale/en.json`（以及用户语言，如 `locale/zh.json`）写 `{ "meta": { "title": "...", "description": "..." } }`，并在 `exports` 里导出 `"./locale/*.json"`；
+- 图标导出为 `"./icon"`（包根插件也可在 `package.json` 顶层写 `icon`，它优先于 `./icon`）；支持 SVG/PNG/JPEG/WebP，**≤ 256 KiB**，realpath 后必须仍在包内；
+- `files` 必须包含 patch、locale、图标与**每个运行时文件**——但**本地目录安装是链接 checkout，`files` 不过滤链接目录**，要直接核对文件；
+- **子路径插件（`my-plugins/search`）不是包，永远不读 `package.json`**：标题/描述走 `my-plugins/search/locale/*.json` 的 `meta.*`，图片走导出的 `my-plugins/search/icon`。
+- 可选作者字段：`dsh.manifestVersion`（当前 `1`）与 `engines.dsh`（**当前不校验**，只作声明）。类型来自 `@deepseek-ai/dsh-package-manifest`。
 
 ### 7.1 从 GitHub 安装的 build-script 坑
 
@@ -661,7 +729,9 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 **身份与依赖（最致命）**
 - **cordis 双副本 / 双 Cordis 分裂**：插件构建时若从 `.pnpm` 副本解析 cordis，与 harness 的 vendored 副本是"两个模块"，`declare module` 增强合并不了 → 报 `Property 'tools' does not exist on type 'Context'`。构建期把 cordis 解析到 harness 的 `vendor/cordis`；npm 安装路径下 peer 必须与宿主同一身份——**scoped `@deepseek-ai/cordis` 与 unscoped `cordis` 混用同样分裂**（dsh-tools 的类型只增强 scoped 版本）。独立包把 cordis 设为 peerDependency（+ dev），版本对齐宿主。
 - **官方 `@deepseek-ai/*` 包曾未发布公共 npm**（rc 早期）：社区 bundle 的 `dependencies` 留空，靠 profile 的 pnpm 闭包 flat fallback（`$DSH_HOME/profiles/node_modules`）注入；声明了反而解析失败。rc.6 起公开包可用（from-scratch 教程锁 `0.1.0-rc.6`、cordis `4.0.1`），两条时间线的资料都要知道，按当时宿主版本取舍。
-- **npm `latest` 标签是过期版本**：`@deepseek-ai/dsh-tools` 的 `latest` 停在陈旧 0.0.1-rc.1——脚手架（create-dsh-plugin）显式钉 `next` 标签版本；裸跑 `npm i @deepseek-ai/dsh-tools` 会踩旧版。2026-08-14 复核：dsh-tools 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 均为 0.0.1-rc.1、`next` 为 0.1.0-rc.6；`@deepseek-ai/dsh` latest=next=0.1.0-rc.6、`@deepseek-ai/cordis` latest=4.0.1（另有 `next`=4.0.1-rc.4）；create-dsh-plugin 已发布 latest=0.1.1（2026-08-13T15:15Z）；dsh-core、dsh-sdk 仍未发布（404）。**无作用域 `dsh` 包是无关项目 node-dsh**（"A shell written in JavaScript"）——官方 CLI 包是 `@deepseek-ai/dsh`，别装错。2026-09-04 复核：`@deepseek-ai/dsh` latest=next=0.1.2-rc.1（`alpha`=0.1.2-alpha.5）、`@deepseek-ai/cordis` latest=4.0.2（`next`=4.0.1-rc.4）、dsh-tools 与 dsh-session-persistence-jsonl 的 `next` 抬到 0.1.2-rc.1（`latest` 仍 0.0.1-rc.1）、create-dsh-plugin latest=0.2.1；dsh-core、dsh-sdk 仍 404。
+- **npm `latest` 标签是过期版本**：库包（`dsh-tools`、`dsh-base`、`dsh-headless`、`dsh-session-persistence-jsonl`、`dsh-settings`、`dsh-workflow` …）的 `latest` **至今**钉在 `0.0.1-rc.1`，所以写 `"latest"` 会装到远古版本，必须写死版本或钉 `next`/`alpha`。**2026-10-06 复核**：`@deepseek-ai/dsh` `latest`=`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`；dsh-tools / dsh-base / dsh-headless / dsh-session-persistence-jsonl 的 `latest` 仍 `0.0.1-rc.1`、`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`；`@deepseek-ai/cordis` `latest`=4.0.4 并有新标签 `dsh-0-2-1-alpha-1`=4.0.5-alpha.1；`@deepseek-ai/schemastery` `latest`=3.18.4；`create-dsh-plugin` `latest`=0.2.3；dsh-core、dsh-sdk 仍 404。历史两次复核（2026-08-14 与 09-04）的数值保留在上一条记录里，可见"`latest` 陷阱"从 rc 早期持续到 0.2 世代。**无作用域 `dsh` 包是无关项目 node-dsh**（"A shell written in JavaScript"）——官方 CLI 包是 `@deepseek-ai/dsh`，别装错。
+- **profile 内安装的 `@deepseek-ai/*` 会静默遮蔽运行时自带版本**（解析优先级 `profile > runtime`）：把共享实例的 dsh 包写进 **dependencies** 是错的做法——pnpm 会把它装进 profile，盖掉宿主自带的版本，然后核心服务注册失败（实测 `settings service is absent: mount @deepseek-ai/dsh-settings with @deepseek-ai/dsh-config-editor`，桌面端每次崩溃）。**共享实例的 dsh 包只放 `peerDependencies` + `devDependencies`**；独立版本演进或纯工具型包才放 `dependencies`。另注意 **DSH 不校验 peer 版本范围**（官方明文），peer 范围只是声明意图，真正的兼容要靠运行时探测。
+- **`file:` 安装载入的是副本**：`dsh plugin add file:../my-plugin` 之后，profile 的 `node_modules` 下是**拷贝**（`nodeLinker: hoisted` + 锁文件只记 `version: file:<path>`），所以**改源码不生效、`update` 是 no-op**——只有 `remove` + `add` 才会重装。调试期要频繁改就用 `--patch` 直挂源码目录，或每次显式重装。
 
 **tsconfig 三件套 + 构建陷阱**
 - 独立 TS 插件包实测可用形态：`module: esnext` + `moduleResolution: bundler` + `allowImportingTsExtensions: true`（否则 TS5097）+ `rewriteRelativeImportExtensions: true`（否则产物残留 `./x.ts` 导入 → 运行时 ESM 崩溃）+ `lib: ["ES2024"]` + `outDir: lib` + `declarationDir: lib/types`。用 `Buffer`/`node:` 时显式 `"types": ["node"]`（不写 `types` 字段会隐式包含全部 @types，脆弱）。
@@ -712,21 +782,33 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 - **社区/学习**：[hikariming/dshfind](https://github.com/hikariming/dshfind)（DSH 学习与分享社区，MDX）。
 - **教程与文档型仓库（08-14 晚扫描新增归档）**：[flaqai/deepeseek-harness-guide](https://github.com/flaqai/deepeseek-harness-guide)（15 语言指南）、[Electricitysheep/dsh-handbook](https://github.com/Electricitysheep/dsh-handbook)（14 章双语手册 + PDF）、[flysheep-ai/learn_deepseek_harness](https://github.com/flysheep-ai/learn_deepseek_harness)（s01–s23 渐进课程）、[pingfanfan/hello-dsh](https://github.com/pingfanfan/hello-dsh)（零基础 22 技能实例）、[LaplaceYoung/dsh-book-deepseek-harness](https://github.com/LaplaceYoung/dsh-book-deepseek-harness)（源码拆解书）、[curtiseng/cordis-course](https://github.com/curtiseng/cordis-course)（Cordis 论文中文课程）、[NanmiCoder/dsh-agent-teams](https://github.com/NanmiCoder/dsh-agent-teams)（英文插件开发教程 developing-dsh-plugins.md）；**08-15 第七批（14 个）**：桌面壳（[anywhere-labs](https://github.com/anywhere-labs/deepseek-harness-desktop)、[cc1252](https://github.com/cc1252/deepseek-harness-desktop)、[ChisaAlter](https://github.com/ChisaAlter/Deepseek-Harness-Desktop) 等 7 个）、[banana770/dsh-qq-bridge](https://github.com/banana770/dsh-qq-bridge)（QQ 桥接）、[zzszmyf/dsh-security-pocs](https://github.com/zzszmyf/dsh-security-pocs)（安全 PoC）、[HenryZ838978/deepseek-harness](https://github.com/HenryZ838978/deepseek-harness)（Python 移植）、[Vengisk/deepseek-harness-termux](https://github.com/Vengisk/deepseek-harness-termux)（Termux）；第八批 3 个：[orxz/deepseek-harness-themes](https://github.com/orxz/deepseek-harness-themes)（主题）、[vvlife/whalehub-dsh](https://github.com/vvlife/whalehub-dsh)（WhaleHub 市场）、[dsh-market/dsh-market](https://github.com/dsh-market/dsh-market)……完整 114 仓清单见 [community-ecosystem.md](../references/community-ecosystem.md) §4。
 - **本工作区已有实例可参考**：`dsh-chat-import`（JS + cordis.patch.yml）、`dsh-resume-plugin`（多 skill 插件）、`dsh-plugin-claude-bridge`（TS + src/ + tsconfig）；114 个社区仓库的**完整源码副本**在 `downloads/community-repos/`（首批 15 个深读报告见 [references/community-repo-deep-dive.md](../references/community-repo-deep-dive.md)）。
-- **官方 Discussions 最新动态**：官方 [RFC #1629](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（2026-08-15，官方插件脚手架 template repo + `pnpm create dsh-plugin` 提案，直指 dsh-tools `latest` 版本火车混淆问题）——全量 1654 条讨论归档于 `downloads/github/harness/discussions/`。
+- **官方 Discussions 最新动态**：官方 [RFC #1629](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（2026-08-15，官方插件脚手架 template repo + `pnpm create dsh-plugin` 提案，直指 dsh-tools `latest` 版本火车混淆问题）——**全量归档已刷新到 2026-10-06**（`downloads/github/harness/discussions/`：list=5000、精选线程 1648；REST 列表上限 5000 而仓库实际 total_count≈8850，脚本会显式告警）。仓库 API 核实 star≈244k、`has_issues=false`——**没有 issue tracker、不收 PR，Discussions 是唯一渠道，且 Announcements 分类只有 1 条**（官方不在讨论区发版）。**注意**：本轮通读窗口内 3100 条讨论，**没有任何维护者在任何帖里确认过修复或设计决定**；唯一权威的"官方决定"记录是 GitHub **Releases** 的说明（仓库无 CHANGELOG）。引用"官方已确认"时落到 Release 原文或提交号。
+- **0.2 世代新增的作者工具（社区）**：[mengjiemy/dsh-plugin-devkit](https://github.com/mengjiemy/dsh-plugin-devkit)（四个命令对准四类"静默失败"：`smoke` 在安装前用假 `window`/`react` 加载 client 插件——装一个坏 client 半侧会把整个 UI 拖下水；`sync` 对比源码目录与 `file:` 安装后 DSH **真正加载的副本**；`version` 比对 profile 与 client 自身的 `@deepseek-ai/*` 版本；`css` 检测插件间 `:root` CSS 变量冲突）、`dsh-composition-doctor`（把插件故障关联回组合来源——正对 T3 的诊断空白）、`dsh-xray`（声明能力 vs 实际能力）、`Noob-stupid/dsh-plugin-gating-hub`（升级契约预检 + 自动回滚）。生态规模参考：`topic:dsh-plugin` 约 **17,776 仓**（上限值，标签灌水严重），[dsh-plugin.org](https://dsh-plugin.org) 索引约 12,699，星数最高的市场是 [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market)（约 5.6k）。
 - 完整信息与更多链接见 [references/community-ecosystem.md](../references/community-ecosystem.md)；官方文档 URL 对照见 [guide/links.md](links.md)。
+
+
+---
+
+## 9.1 版本兼容与迁移（0.2 世代必读）
+
+- **先认版本**：`dsh --version`。`0.1.7-alpha.1` 起包含本世代全部破坏性变更（会话格式 V4）。npm 上 `latest`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`，而 master 最新 tag 是 `0.2.1-alpha.1`——**三个"最新"不是一个东西**。
+- **peer 范围写两侧**（如 `>=0.1.2-rc.1 <0.3.0`），但要记住 **DSH 不校验它**；真正的兼容靠运行时探测与发版纪律。
+- **共享实例的 dsh 包只放 peer + dev**，绝不放 dependencies（否则 profile 内副本会遮蔽运行时版本）。
+- **升级后必做**：`dsh --profile <name> --dump-config` 看有没有 `patch: entry <id> not found`（上游删行/改名后，你的 override 会**静默失效**）；再跑一次真实能力。
+- **逐项迁移清单**：见 [migration-0.2.md](migration-0.2.md)（含会话格式 V4、settings 重写、invariants 删除、`readBytes`、客户端 slot/Remote 改名、`agent.inject()` 的 source 包装退役、preset 分叉等全部条目与官方原文出处）。
 
 ---
 
 ## 10. 从零到发布的标准路径（总结清单）
 
 1. 读 Cordis Primer（5 个概念）→ 跑 Cordis tutorial 01-07（无 key）。
-2. 按 docs/user/develop/basic 四步做第一个插件（scratch-plugin + `--patch`）。
-3. 需要新能力时：先查 architecture「Where new behavior goes」与 extension-cookbook 表选扩展点；tool 类需求读 adding-a-tool.md 全文。
+2. 按 docs/user/develop/basic 四步做第一个插件（scratch-plugin + `--patch`）；或者在会话里直接走官方路径：写 bundle → `plugin_manager.install_bundle` → `cordis_inspect_query` 核对（见 [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)）。
+3. 需要新能力时：先查 architecture「Where new behavior goes」与 extension-cookbook 表选扩展点（**用最弱的够用机制**）；tool 类需求读 adding-a-tool.md 全文。
 4. 需要可替换能力 → 三层拆分（practice 教程）；需要接模型商 → LLM adapter 指南。
-5. 配置全部 Schema 化、fail loud；不硬编码可调值。
-6. 打包：bundle manifest + cordis.patch.yml；git 安装配 `prepare`；npm/tarball 分发免 allowBuilds。
-7. 发布前：包级测试 + 关键 snapshot + typecheck/build/hygiene；README 双语并写明扩展点与模型可见效果。
-8. 发布到 dsh-plugin topic / hub / awesome 列表，社区可见。
+5. 配置全部 Schema 化、fail loud；不硬编码可调值；工具 `parameters` 是 DSH 方言不是 JSON Schema。
+6. 打包：bundle manifest + cordis.patch.yml（可多文件数组）；**补展示元数据**（`locale/*.json` 的 `meta.*` + 导出的 `./icon`）；git 安装配 `prepare`；npm/tarball 分发免 allowBuilds。
+7. 发布前：包级测试 + 关键 snapshot + typecheck/build/hygiene；README 双语并写明扩展点与模型可见效果；`inject` 是静态数组且覆盖 `apply()` 触及的每个服务。
+8. 发布到 dsh-plugin topic / hub / awesome 列表，社区可见；显式声明跨线 peer 范围并按版本发版（组合包升级是社区最常见的"插件被判不兼容"来源）。
 
 ---
 
@@ -870,14 +952,20 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 
 ## Hard rules (violations = gate failures / wrong behavior)
 
-1. Every registration goes through `ctx.effect()` / `ctx.on()` / a service `register()` (returns a disposer).
-2. Waterfall listeners must call `next()`; not calling it short-circuits by design.
-3. Model-visible ⇔ logged: new model-visible input requires a new session event (`SessionEventMap`).
-4. Never hardcode tunables (test: can cordis.yml change it?); misconfiguration fails loud.
-5. Standalone plugin packages: cordis is a peerDependency matching the host identity (mixing scoped `@deepseek-ai/cordis` and unscoped splits identities); ESM; `dsh.bundle` manifest; git installs need `prepare` + `allowBuilds`; ship `lib/` or a tarball.
-6. Bilingual docs in pairs; tool descriptions/prompts are behavior; non-trivial changes need an Agent Note; run the minimal check set before pushing (dsh-pre-push-checks).
-7. Opaque cross-boundary ids are branded (`Branded<B>` from `dsh-brand`), never bare `string`.
-8. `SessionEventMap` members are required-on-read: the `ignorable` envelope is gone on 0.1.2-alpha.1 (reads fail closed — a build that does not know an event type refuses the log), and plugin appends of custom events ride an adaptive gate that stops writing on envelope-less hosts; only structural format changes bump `SESSION_FORMAT_VERSION`. 0.1.2-rc.1 retains the `ignorable?: true` field for stored-log read compatibility only — its `Session.append` third argument is a `SurfaceIntent` for surface events and still cannot stamp the marker, so the gate keeps skipping custom-event appends there (no behavior change). Switch over `SessionEvent` falls through a documented `default` — no `assertNever` (merge-extensible union).
+1. Every registration goes through `ctx.effect()` / `ctx.on()` / a service `register()` (returns a disposer). A registration on another context (e.g. `agent.ctx`) has two owners — keep its disposer in your own effect too.
+2. Waterfall listeners must call `next()`; not calling it short-circuits by design. When rewriting an `agent/pre-step` decision, **spread it** (`{ ...decision, messages }`) so fields like `startsRequestSeries` survive.
+3. Weakest mechanism that suffices: `ctx.tools.restrict()` (remove only) < `ctx.tools.guard()` (deny only) < waterfall rewrite (order-dependent) < `system-prompt/assemble` (replaces everything). Observe final outcomes on `tools/result`; use `tools/post-execute` only to transform.
+4. Model-visible ⇔ logged: new model-visible input requires a new session event (`SessionEventMap`) — added by the host, never by appending a new `type` yourself (see rule 8).
+5. Never hardcode tunables (test: can cordis.yml change it?); misconfiguration fails loud. Live-editable user fields use `Volatile<T>` + `loader/volatile-update` (the form namespace is the profile entry id).
+6. Standalone plugin packages: cordis is a peerDependency matching the host identity (mixing scoped `@deepseek-ai/cordis` and unscoped splits identities); ESM; `dsh.bundle` manifest (`patch` may be an ordered array); git installs need `prepare` + `allowBuilds`; ship `lib/` or a tarball. Shared-instance dsh packages go in **peerDependencies + devDependencies only** — never `dependencies` (a profile copy silently shadows the runtime, and DSH does not validate peer ranges).
+7. Ship display metadata: `locale/*.json` `meta.title`/`meta.description` plus an exported `./icon` (SVG/PNG/JPEG/WebP, ≤256 KiB, inside the package). Subpath plugins never read their own `package.json`.
+8. Bilingual docs in pairs; tool descriptions/prompts are behavior; non-trivial changes need an Agent Note; run the minimal check set before pushing (dsh-pre-push-checks).
+9. Opaque cross-boundary ids are branded (`Branded<B>` from `dsh-brand`), never bare `string`.
+10. **Never append a session event with a new `type`.** `SessionEventMap` members are required-on-read: a reader that does not know a type refuses the whole log unless the event carries the envelope's `ignorable: true` marker, and live `Session.append()` cannot set that marker (its third argument is a `SurfaceIntent` for surface events only). Derive your state from existing events, or keep plugin-owned data in a storage service found through inspection. Only structural format changes bump `SESSION_FORMAT_VERSION` (currently `4`; the V3→V4 migration lifts tool results into tool-role messages and moves message sources to producer-owned `source.kind`). Switch over `SessionEvent` still falls through a documented `default` — no `assertNever` (merge-extensible union).
+11. `agent.inject()`'s `source` no longer accepts the retired `{ kind: 'plugin', plugin: '<name>' }` wrapper — declare your own kind through `MessageSourceMap` first. `inject` does not wake the agent (`followup()`/`steer()` do).
+12. Never write a profile `cordis.patch.yml` while sessions run (HMR reloads it: tools vanish from live sessions, in-flight turns die, and a rebuild of `session-controller` can kill it until a full restart). Never hand-write a profile `package.json`; never run pnpm inside the profile directory.
+13. UI plugins: render React in a slot (never an iframe-hosted page); style with `--dsw-alias-*` theme tokens only; never `require` a Harness Client package (a throwing component blanks the slot); `dsh.client.inject` must be a **static array**.
+14. Performance: keep per-session state in `ctx.sessionProjections` (pure synchronous `apply`, same reference when ignored, plain JSON + `stateVersion`); wait on durable events (`turn/end`, `assistant/message`, `tool/result`) and render live tokens from `agent/assistant-stream`; never poll `agent/status`.
 
 ## Community pitfalls quick list (details: guide §7.3 / community-repo-deep-dive.md)
 
@@ -886,7 +974,7 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 - Windows junctions via PowerShell `New-Item -ItemType Junction`; vitest drive letter must be uppercase `C:/`.
 - `DSH_PERMISSION_MODE=danger-full-access` is high-risk (no sandbox backend on Windows, approvals disabled); `DSH_*` vars in `~/.dsh/.env` break startup.
 - Session files are multi-frame zstd: use `scanZstdFrames`/`createZstdFrameDecoder` (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`).
-- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh` (latest=0.1.2-rc.1); `@deepseek-ai/dsh-tools` and `@deepseek-ai/dsh-session-persistence-jsonl` have stale `latest` (0.0.1-rc.1), pin `next` (0.1.2-rc.1); `create-dsh-plugin` latest=0.2.1; dsh-core/dsh-sdk still unpublished (verified 2026-09-04).
+- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh` (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.1); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` and `@deepseek-ai/dsh-session-persistence-jsonl` still ship a stale `latest` (0.0.1-rc.1), so pin `next` (0.2.0-rc.2) or `alpha` (0.2.1-alpha.1); `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 with a new `dsh-0-2-1-alpha-1` tag at 4.0.5-alpha.1; dsh-core/dsh-sdk still unpublished (verified 2026-10-06).
 - `resolve()` both sides before path comparisons (Windows backslash trap).
 
 ## Documentation links
@@ -904,7 +992,9 @@ Community dev docs — templates/tutorials/pitfalls, full list in [references/co
 
 ## Key source index
 
-- Official docs verbatim: `references/official-docs/docs/**` (215 pages, all `.zh.md` pairs included)
+- Official docs verbatim: `references/official-docs/docs/**` (369 md pages, all 182 `.zh.md` pairs included); the pages **not on the documentation site** (session-format-status, `upgrade-guide/**`, `persistence-changes/**`, ui-radius, web-styling, module-graph) are listed in [links.md](links.md) §2.1
+- Migration checklist: [migration-0.2.md](migration-0.2.md) (every breaking change from 0.1.6-alpha.2 → 0.2.1-alpha.1, with the official upgrade-guide source for each)
+- The official in-repo plugin-development skill: [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)
 - Repo-root constraints: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/vendor/README.md`; sync state in `references/official-docs/SNAPSHOT.md`
 - Site crawl HTML: `downloads/web/site/**` (EN+ZH full site) + `downloads/manifest.tsv` (download ledger)
 - Upstream Cordis: `downloads/github/cordis/**` + research `references/upstream-cordis.md`
@@ -1513,8 +1603,8 @@ The pattern that admits all windows (one clause per prerelease tuple; each `-0` 
 ```jsonc
 {
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.4",
-    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0"
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.3.0"
   },
   "devDependencies": {
     "@deepseek-ai/dsh-tools": "0.1.7-rc.2"
@@ -1676,109 +1766,144 @@ Corrections and additions are welcome; the practical entry points are listed in 
 
 > 本文件是 `dsh-plugin-guide` 知识库对官方仓库社区讨论的**源码级结论收拢**：
 > 每个条目都在基线提交上逐行核实过（read/grep），附 `path:line`、临时规避与原文讨论链接。
-> 汇总帖见官方 Discussions [DSH master (0.1.6-alpha.2 / ddefc45fbc) 仍未修复的问题清单（社区核实版）](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)。
+> 汇总帖见官方 Discussions [DSH master 仍未修复的问题清单（社区核实版）](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)。
 >
 > - 初版基线：`c291e7961a515f6d7af9304e7fd1d257929aef26`（2026-09-10 快照，0.1.5-rc.2 世代）
-> - **复核基线：`0d1f50007f9bca3f52b06e1c3074fa14d5fb0720`（2026-09-15，0.1.6-alpha.1 世代；区间 666 提交 / 3123 改动文件）——2026-09-15 全表重核：1 项已修复（#6129）、1 项转部分修复（#2）、行号已按新基线刷新**
-> - **复核基线 2：`ddefc45fbc7f8e46dd73185e68295696d1297887`（`dsh-v0.1.6-alpha.2`，2026-09-19；较上一基线 +882 提交）——2026-09-19 再核：#27 已修复（`6b05ed53e9`）、#1 转部分修复（`61c548e200`：同级模式已接受，仅更窄/不受支持仍抛错），下表行号已刷新**
+> - 复核基线 1：`0d1f50007f9bca3f52b06e1c3074fa14d5fb0720`（2026-09-15，0.1.6-alpha.1 世代；区间 666 提交）
+> - 复核基线 2：`ddefc45fbc7f8e46dd73185e68295696d1297887`（`dsh-v0.1.6-alpha.2`，2026-09-19；+882 提交）
+> - **复核基线 3：`5badb15009ae1756c3afe0ae0cef1faafc290ccc`（`dsh-v0.2.1-alpha.1`，2026-10-03；+2300 余提交 / 8763 改动文件）——2026-10-06 全表重核，逐条复核覆盖 #1–#32 与 S1–S7**：
+>   - **转入已修复 4 项**：#2（协议平面压平为 Messages-only，旧 chat-completions 半边删除；**后继形态 #8836 仍在**）、#5（`code`→`ptc` 迁移）、#10（pi-ai ^0.87.1 带上 `x-opencode-session`）、#22（压缩阈值改为 `min(window×ratio, window−reserved−headroom)`）、#29（telemetry 读取拍平 + 迁移产物强校验）——共 5 项，其中 #5 的修复**早于上一基线**，说明旧条目本身就过时。
+>   - **判为不可复现 1 项**：#4（read_image）移入 §2，保留记录但**不要再当 bug 传播**。
+>   - **部分修复 3 项**：#1（同级已接受、更窄仍抛）、#13（windowsHide 半侧已消失，自愈半侧仍在）、#19（`./invariant` 子路径已随 invariants 整体移除而消失，残留 devDependency `dsh-attachment` 引用）、S5（SKILL.md 半侧早已修好，仅剩生成文件/文档措辞残留）——共 4 项。
+>   - **新核实 11 项**：§3 的 T1–T11（社区在 2026-09-15→10-06 窗口内提出，并经源码或已发布产物双向复核）。
+>   - **行号全面刷新**：#23/#24/#26/#28/#30/#31/#32/S2/S4/S6/S7 的行号整体前移了一代；S5 引用**过时两代**；S1 的失败模式静态不可复现，已降级。
+>   - 区间内两处上游改名/重写已并入条目：`llm-deepseek` 协议平面压平（`99e22ebbeb`，`src/common/*` → `src/*`、chat-completions 删除）、`preset/agent-presets` → `preset/agent-preset`（`d1e22a7e24`）。
 > - 核实人：PerryLink（[dsh-plugin-guide](https://github.com/perrylink/dsh-plugin-guide) 维护者）
 > - 用法：开发插件/排障时按「症状 → 位置 → 规避」查；条目后附原讨论，官方有新回复时以原帖为准。
-> - 诚实标注：无法在源码复核的环节（依赖未安装的半边）已注明。
+> - 诚实标注：无法在源码复核的环节已注明 `UNVERIFIABLE`；**判为不可复现的条目不删除**，移入 §2 保留为"疑似误诊"记录。
+> - **维护者参与度**：本轮通读窗口内 3100 条讨论，**没有任何维护者在任何帖里确认过修复或设计决定**；`#6520` 最后活动为 2026-09-23，无维护者回复。官方 Release 说明是唯一权威的"官方决定"记录（仓库无 CHANGELOG、无 issue tracker——API 核实 `has_issues=false`）。引用"官方已确认"时务必落到 Release 原文或提交号。
 
-## 1. 仍未修复（30 项 + 2 项部分修复（#1、#2）+ 1 项已修复（#27，保留为修复记录），按严重度排序）
+## 1. 仍未修复（22 项 + 2 项部分修复（#1、#13）+ 1 项残留面（#29），按严重度排序）
 
-| # | 问题 | 位置（@ddefc45，2026-09-19 复核） | 临时规避 | 讨论 |
+| # | 问题 | 位置（@5badb15，2026-10-06 复核） | 临时规避 | 讨论 |
 |---|---|---|---|---|
-| 1 | 同级/更窄的 `sandbox_permissions`：**同级自 `61c548e200` 起已接受**，更窄/不受支持的目标仍报错（模型整轮循环只余此半边） | `packages/sandbox/sandbox/src/escalation.ts:160`（同级在 `:155` 短路返回；schema 恒广告全枚举 `:41`；danger-full-access 变体 `packages/bundle/base/cordis.patch.yml:234` + `packages/fs/fs-sandbox/src/index.ts:65-67` + `packages/fs/tool-fs/src/sandbox.ts:39-45,59-70`；spec 钉死 `tests/escalation.spec.ts:88,90`） | persona 注明「已是该模式就别带 sandbox_permissions」 | #4021 #4481 #4672 #4742 #4763 #4976 #4990 #5570（同族 #5238 #5298 #6215） |
-| 2 | 纯推理轮以空 content 落盘 → 之后每轮 400，整会话报废（**PARTIAL**：默认协议已切 Messages，待真机复测） | `packages/llm/llm-deepseek/src/protocols/chat-completions/serialize.ts:196-229`（chat-completions 仍空 content，注释 `:212-219`；旧 `src/serialize.ts` 已随 `6a137ea702` 删除）；默认协议已切 Messages（`src/config.ts:81,207`，`b0641b83fc`），推理走 `thinking` 块（`messages/serialize.ts:29-32`） | 显式 `protocol: chat-completions` 时：备份后解压 session.v3.jsonl.zstd，改占位/删除该条后重压 | #5466（同族 #1850 #6218 #6431） |
-| 3 | windows-acl 沙箱缓存临时目录消失后该会话永久损坏 | `packages/sandbox/sandbox-local/src/index.ts:415-417`（缓存命中无复核）；runner 首检 `packages/sandbox/sandbox-windows-acl/src/runner.ts:110-113` | 重启 dsh host 重建快照 | #6483（同族 #5034） |
-| 4 | read_image 所有预设一调即失败（cannot get property 'fs' without inject） | `packages/fs/tool-fs/src/index.ts:70-71`（inject 收窄 scope）；执行体 `packages/fs/tool-fs/src/read-image.ts:209`（`:265` 同类） | 无产品内规避；走外部视觉路径 | #4612 |
-| 5 | 升级后旧 `code` 预设会话全部无法 resume（无 legacy 别名） | `packages/preset/agent-presets/src/index.ts:372-381`（无 LEGACY_PRESET_IDS）；错误被包成 `gateway/internal`（`packages/api/session-controller/src/agent.ts:216`） | 复制内置 ptc 预设到 `~/.dsh/.agent-presets/code/`，或改绑 standard/ptc | #5657 #5381 #5781 #4167 #5585 |
-| 6 | exFAT 卷 write 必败（EISDIR）+ 盘根写入 EPERM | `packages/fs/fs-local/src/fsio.ts:633-638`（硬链接发布无回退，默认 `link` `:608`、`throwGuardedCreateFailure` `:536-571`）、`:597-598`（mkdir 不容忍盘根 EPERM） | 目标放 NTFS；勿直写盘根 | #5704 #4981（相关 #2402） |
-| 7 | Node < 22.19/24.2 安装后静默深埋失败（无友好版本门） | `apps/cli/src/bin.ts`（无运行时版本检查）；`apps/cli/package.json` 无 engines；仅根 `package.json:8-9`（npm 只警告） | 升级 Node ≥ 24.2（或 22.19+）；全局安装替代 npx | #6115 #6124 #6126 |
-| 8 | 单个损坏插件条目令所有对话请求 REQUEST_EXTENSION | `packages/llm/llm-deepseek/src/common/request-extensions.ts:20-24`（异常一律升级，原 `adapter.ts:627-637` 已随 `6a137ea702` 消失）；`packages/llm/plugin-package-inventory-deepseek/src/index.ts:123`（抛错）；默认挂载 `packages/bundle/base/cordis.patch.yml:70-71` | profile patch 禁用该插件，或修复损坏条目 | #6161（相关 #5683 #5968 #6108） |
-| 9 | PTC 模式零参数工具绑定必失败 | `packages/ptc-runtime/ptc-runtime-node/src/bootstrap.ts:326-335`（旧包 `code-runtime-worker-thread` 已由 `7c9bb5914c` 改名）；`json-wire.ts`（原 `worker-json.ts`） | 无产品内规避；帖内一行修复未合入 | #6065 |
-| 10 | opencode-go 路由缺 `x-opencode-session` 头 + 缺 4.1-flash 目录项 | `packages/llm/llm-pi-ai/src/adapter.ts:384`；`packages/llm/llm-pi-ai/package.json:44`（pi-ai ^0.85.1 dist 无该头） | 路由级静态头（牺牲每会话亲和）；profile `models` 手写条目 | #6224 |
-| 11 | Python SDK 跨进程续接旧会话只跑不落盘 | `packages/sdk/server/src/server.ts:259-292`（只查进程内表；恒 create 无 resume） | 同一进程内复用实例循环多轮 | #4591 #5950 #4954（相关 #1414） |
-| 12 | append() 不执行消息身份校验：插件注入缺 id/role 写坏会话 | `packages/core/session/src/index.ts:719-770`（append 只调 validateSessionEventData `:748`）；`assertMessageEventShape` `:327-386` 只挂 adoptSessionEvent/seed | 注入消息必须自带 id、role:'user'、source:{kind} | #6284（相关 #6236 #918） |
-| 13 | `dsh plugin` 子命令无法自愈 profile 依赖（CLI 侧亦缺 windowsHide） | `apps/cli/src/plugin.ts:120-163`（spawnSync 无 healing、`:134-138` 无 windowsHide） | profile 目录手动 pnpm install | #5537（#4024） |
-| 14 | 插件经 `connection.rpc.handle()` 注册的通道静默失效（405） | `packages/client/connection/src/rpc-host.ts:79-84`（owner 取服务自身 ctx）、`:178-179`；0.1.5-rc.x 回归实证：`git show dsh-v0.1.2-rc.1` inject=`['webServer','credentials']` → `dsh-v0.1.5-rc.2`=`['credentials']`（`index.ts:69`）；**截至 `dsh-v0.1.6-alpha.1` 仍未修** | 打社区补丁 cb9b6e2；等上游合并 | #6227（同族 #6270 #6289 #6337 #6513 #6681） |
-| 15 | 文档预览插件钉版 pdfjs-dist 6.3.289 引用全局 `Iterator` → 旧 Safari/WebView 无法启动 | `packages/client/ui-sidebar-documentpreview/package.json:69`；`src/client/index.ts:37,116` | 换 Chrome/Edge 126+ / Firefox 131+ / Safari 18.2+；或注释 :37/:116 重建 | #6507（同类 #3912） |
-| 16 | pwsh 沙箱对临时根未加保护的 realpath（RAM 盘报 EISDIR） | `packages/sandbox/sandbox-windows-acl/src/path-boundary.ts:11-12`（对照 `packages/sandbox/sandbox/src/roots.ts:30-41` 已有回退先例） | TEMP/TMP 指回物理盘或子目录 | #6018 |
-| 17 | 编程式 `agents.create` 缺 model 时静默死轮 | `packages/core/agent-loop/src/index.ts:421`（{{model}} 绑原始可选字段无回退）；webhook 已有回退先例 `packages/webhook/webhook/src/session.ts:63-66` | 先 `agentDefaultModel.currentSelection()` 再显式传 provider/model | #4967 |
-| 18 | grep/read 行预览从列 0 截断，2000 字节外的匹配被隐藏 | `packages/fs/tool-fs-search/src/grep.ts:35`、`search-core.ts:324-325`（kind:'head'）、`packages/fs/tool-fs/src/read-render.ts:11` | 单行大文件改用 shell 提取区间 | #4982 |
-| 19 | dsh-llm 发布类型引用 devDependencies（npm 消费者 TS2724） | `packages/llm/llm/package.json:21-24`（./invariant 是公开子路径）、`:76-77` | 钉 0.1.1-rc.2 或自行声明依赖 | #5913 |
-| 20 | /compact 在 agent 未空闲时一律报「active compaction」，诊断串味 | `packages/core/agent-loop/src/agent.ts:157-158`、`packages/compaction/compaction-basic/src/index.ts:410-416` | 等 turn 完全结束再 /compact | #6223 |
-| 21 | todo 任务栏在回合中断后永久消失 | `packages/todo/tool-todo/src/index.ts:134-145`——投影 apply 在 `turn/start` 无条件返回 null（`:140`）、`stateVersion: 2`（`:144`）；修复需 bump 2→3（投影缓存 ver 不匹配即丢弃，`packages/session/session-projection-cache/README.md:80`） | 无产品内规避（模型自觉重写不可靠） | #6524（已并入汇总帖 #6520） |
-| 22 | 压缩阈值按整窗口算，1M 窗口下高于 provider 实际输入上限（pressure 几乎永不触发） | `packages/compaction/compaction-basic/src/config.ts:20`（DEFAULT_THRESHOLD_RATIO = 0.8）、`:144`（thresholdTokens = floor(contextWindow × ratio)，不减输出预算）；`DEFAULT_MAX_TOKENS = 256_000` 现位于 `packages/llm/llm-deepseek/src/common/defaults.ts:8`（`DEFAULT_CONTEXT_WINDOW = 1_000_000` 在 `:6`，原 `adapter.ts:149` 已随协议拆分消失） | `modelPolicies` 按模型覆盖 thresholdRatio（对 1M/256K 设 ≤0.65）；#5123 有 reservedOutputTokens 补丁建议 | #5123 #5263 #5800 #6671（实测证据来自 #6520 条目提交者） |
-| 23 | overflow 分支 retainTokens = 0，一次清掉约 98%（手动 /compact 同源） | `packages/compaction/compaction-basic/src/index.ts:281-285`——overflow 直接 `selectCompactableRange(session, measurement, 0)`（`:285`）；注释 `:248` 写明绕过正常保留尾策略 | 无产品内规避；先确认 preset 隔离域挂载了 compaction-basic（host 树默认禁用，`packages/bundle/web-app/cordis.patch.yml:432-439`） | #5416 #5650 #6672 |
-| 24 | tool-result 剪枝跑在压缩选区之前，摘要器输入已失真 | `packages/compaction/compaction-basic/src/index.ts:281-285`（overflow：prune → select）、`:305-313`（pressure：prune → remeasure → select） | 无产品内规避 | #5766（相关实测 1:1 剪枝标记，来自 #6520 条目提交者） |
-| 25 | 压缩后旧轮推理整段不回传（实测推理占摘要器输入 58.8%） | 压缩交易把选区整体替换为摘要（`packages/compaction/compaction-basic/src/region.ts:174` compactSurfaceRegion + `commitCompactionBody` `:472-500`），旧轮 reasoning 位于被替换区间内、不再回传 | 无产品内规避 | #6480 #6510 #3002（实测证据为准，见 #6520） |
-| 26 | token-meter 的 CJK 增量低估（实测 +26% ~ +57%，纯中文样本 1.57×） | `packages/llm/token-meter/src/estimate.ts:13`（CHARS_PER_TOKEN = 4；estimate 只作用于每步增量，总量 provider-anchored） | 无产品内规避；注意按真实用量预算 | #6361 #5632 #6688（实测口径见 #6520） |
-| 27 | ~~桌面端打包在 prepare:dsh 阶段必败（payload smoke 引用已移除的 fs-ext）~~ **已修复**：`6b05ed53e9` 删除了 smoke 的 `checkFsExt()` 及其调用（只进 `dsh-v0.1.6-alpha.2`，未进 alpha.1） | 原位置 `apps/desktop/scripts/prepare-dsh.ts:142`、`apps/desktop/tests/fixtures/runtime-payload-smoke.mjs:67-83` | 不再需要 | #6589 #6612 |
-| 28 | 读路径 `SessionLogScanner` 默认 `recoverable`：seq gap/损坏行被静默截断，直到后续 turn/end 才重抛（"valid aborted-turn 被当作 no more history"） | `packages/session/session-persistence-jsonl/src/index.ts:915`（无 recovery 实参）；`format.ts:403`（默认值）、`:482-484`/`:497-514`（issue 暂存）、`:369`（header 侧实为 strict，但被扫描器默认覆盖）；strict 仅 verify 路径 `generation.ts:583/597` | 备份日志手动修 gap；修复方向=`:915` 传 `'strict'` 或暴露 `format.ts:394` issue | #6562 #3631 |
-| 29 | v0→v3 迁移后三类 stock 投影未守卫 `message.content/source` 读取 → hydrate 崩溃（迁移器有直通分支不保证完整 envelope） | `session-turn-outline/src/projection.ts:110,113,119`；`session-stats/src/projection.ts:174`；`session-telemetry/src/coordinator.ts:270`；直通分支 `session-format-v0-to-v1/src/migration.ts:354-357,366-368,390-395` | 投影侧防御性守卫（最小风险补丁方向） | #6686 |
-| 30 | http-proxy 把 `[::1]` 写进子进程 `no_proxy`/`NO_PROXY` → httpx 系 MCP server 崩溃（undici 专用括号项泄漏到子进程 env） | `packages/util/http-proxy/src/policy.ts:33`（LOOPBACK_NO_PROXY 含 `[::1]`，注释 `:25-32` 自认是为 undici）、`:206-210`；`install.ts:79-92,113-129`；harness 自身匹配器无需括号项（`:279-295` 去括号） | env 写入侧只写裸 `::1`，undici 消费处保留括号项（两处消费者分离） | #6655 |
-| 31 | 粘贴图片惰性持有 File 快照：剪贴板同步（如微信输入法跨设备复制）后提交时 FileReader NotFoundError | `ui-conversation/src/client/service.ts:73-80`（browserDraftAttachment 只存 File+objectURL）、`:124-135`（base64ImageOf）、`:286-291`；对比文件类立即上传 `:316-324` | 粘贴后立即发送，或拖拽/文件选择 | #6673 |
-| 32 | web-fetch NAT64 探测无守卫：无 DNS64 网络（ipv4only.arpa 不解析）下所有双栈主机 fetch 全灭 | `packages/web/web-fetch-http/src/network.ts:90-92`（无 try/catch）、`:113-134`（discoverNat64Prefixes）、`:38`；SSRF 检查独立（`:96-106`） | 无产品内规避；补丁方向=ENOTFOUND/ENODATA 视为无前缀 | #6664 |
-| 33 | 官方 cookbook 仍在教已删除的 `settings.plugin.item` 槽（alpha.2 已改为 `plugins.item` 列表槽：`id`/`order`/`label` + props `{view:'summary'|'page'}`） | `docs/cookbook/adding-a-settings-card.md:50,62-63`（+.zh；@ddefc45，0.1.6-alpha.2 世代）；正确槽树见 `docs/subsystems/slots.md:132-134`（`plugins.item`/`plugins.bundle.config`/`plugins.row.config`） | 照本 KB 订正版写（已本地改写并登记本条；重同步会复原，需按本条重新打补丁） | 无（上游 doc bug，未开帖） |
+| 1 | 同级/更窄的 `sandbox_permissions`：**同级自 `61c548e200` 起已接受**（该修复早于上一基线），更窄/不受支持的目标仍报错 | `packages/sandbox/sandbox/src/escalation.ts:171-179`（同级在 `:173` 返回；`:177-178` 仍抛"not strictly wider"；旧基线同文件 `:153-161`） | persona 注明「已是该模式就别带 sandbox_permissions」 | #4021 #4481 #4672 #4742 #4763 #4976 #4990 #5570（同族 #5238 #5298 #6215） |
+| 2 | 适配器把**空白文本块**原样送上线路 → 云端端点 HTTP 400，整会话报废（**旧条目的 chat-completions 半边已随协议删除消失，这是 V4 / Messages-only 之后的后继形态，0.2.1-alpha.1 仍在**） | `packages/llm/llm-deepseek/src/serialize.ts:30`（`assistant()` 在 `:26` 声明，`:30` 的 `case 'text'` **无守卫**）；同文件两个兄弟转换器对同一 case 有守卫：`:65`（真值判断）、`:93`（长度判断）。实测每次出现的都是 `{ type:'text', text:'\n' }`——**长度 1，从不为 `''`**，所以 `length === 0` 抓不到；该包内基于 `trim()` 的守卫全库搜索为空。自托管路由容忍，**切到云模型才炸** | 无产品内规避；补丁要求=回放时丢弃**纯空白**文本块（并同样应用到 `:65`/`:93`，因为其他 role 也会发 `"\n"`）。另注意 npm 产物 `files` 只含 `lib/index.js` 与 `lib/types/**/*.d.ts`——**不发布 `src/`**，所以源码锚点在 npm 包里对不上 | #8836（后继）；#5466 #1850 #6218 #6431（原始族） |
+| 3 | windows-acl 沙箱缓存临时目录消失后该会话永久损坏 | `packages/sandbox/sandbox-local/src/index.ts:423-425`（缓存命中无存在性复核；旧 `:415-417`）；runner 首检 `packages/sandbox/sandbox-windows-acl/src/runner.ts:110-114`。区间新增的 ACL 诊断技能（`1d56bd5628`/`927b59e138`/`5bab07157f`）只修 ACL，不修消失的临时目录 | 重启 dsh host 重建快照 | #6483（同族 #5034） |
+| 6 | exFAT 卷 write 必败（EISDIR）+ 盘根写入 EPERM | `packages/fs/fs-local/src/fsio.ts:633-638`（硬链接发布无回退，默认 `link` `:608`、`throwGuardedCreateFailure` `:536-571`）、`:597-598`（mkdir 不容忍盘根 EPERM）。`fsio.ts` 在本区间**零改动**，行号与上一基线完全一致 | 目标放 NTFS；勿直写盘根 | #5704 #4981（相关 #2402） |
+| 7 | Node < 22.19/24.2 安装后静默深埋失败（无友好版本门） | `apps/cli/src/bin.ts:26-27`（区间重构过 bin.ts，但**仍未加**运行时版本检查）；`apps/cli/package.json` 无 engines；仅根 `package.json:8-9`（npm 只警告）；`apps/cli`/`packages/boot` 内无 `process.versions.node` 检查 | 升级 Node ≥ 24.2（或 22.19+）；全局安装替代 npx | #6115 #6124 #6126 |
+| 8 | 单个损坏插件条目令所有对话请求 REQUEST_EXTENSION | `packages/llm/llm-deepseek/src/request-extensions.ts:24-29`（该文件已由 `99e22ebbeb` 从 `src/common/` 上移一级；异常一律升级）；`packages/llm/plugin-package-inventory-deepseek/src/index.ts:124`（抛错）；registry 扇出 `packages/llm/deepseek-llm-api-extensions/src/index.ts:108-113`；默认挂载 `packages/bundle/base/cordis.patch.yml:77-78`。区间新增的 `onOmitted` 加固**只覆盖序列化失败**，不覆盖抛错的贡献者 | profile patch 禁用该插件，或修复损坏条目 | #6161（相关 #5683 #5968 #6108） |
+| 9 | PTC 模式零参数工具绑定必失败 | `packages/ptc-runtime/ptc-runtime-node/src/bootstrap.ts:326-335`（+ `index.ts:319`）；`json-wire.ts:201`（零参调用得到 `undefined` → `binding arguments must be lossless JSON`）。`packages/ptc-runtime` 源码在本区间**零改动** | 无产品内规避；帖内一行修复未合入 | #6065 |
+| 11 | Python SDK 跨进程续接旧会话只跑不落盘 | `packages/sdk/server/src/server.ts:261-294`（旧 `:259-292`；只查进程内表；恒 `agents.create`）；`packages/sdk` 与 `python/` 全树只有 initialize/session-prompt/shutdown 三类 RPC，**无任何 resume** | 同一进程内复用实例循环多轮 | #4591 #5950 #4954（相关 #1414） |
+| 13 | `dsh plugin` 子命令无法自愈 profile 依赖（PARTIAL：windowsHide 半侧已消失） | **原引用的 `apps/cli/src/plugin.ts:120-163` 早已不存在**（该文件在**上一基线之前**的 2026-09-14 由 `98b92b683c` 删除）。现子进程在 `packages/boot/plugin-manager/src/operations.ts:357`，走 execa（默认 `windowsHide: true`），故弹窗半侧已消失；**自愈半侧仍在**：`runPluginCommand`（`:544-557`）只转发调用方的 pnpm 参数，boot 提示仍指向 `dsh plugin --profile X install`（`packages/boot/app-boot/src/profile.ts:715`） | 用 `dsh plugin --profile <p> install`（旧建议"手动 pnpm install"已过时） | #5537（#4024） |
+| 14 | 插件经 `connection.rpc.handle()` 注册的通道静默失效（405） | `packages/client/connection/src/rpc-host.ts:87`（`const owner = this.ctx`，与上一基线逐字节相同）、`:191-194`（`owner.effect(() => owner.webServer.register(route))`）；inject 现为 `['credentials']`，位置 `packages/client/connection/src/index.ts:89`（旧条目写的 `:69` 在上一基线就已不准）。**caveat**：vendored Cordis 的 accessor 走影子代理，`this.ctx` 是"读取方"的 ctx，故"owner 取服务自身 ctx"的因果表述无法从源码确证，405 症状需要活体复现 | 打社区补丁 cb9b6e2；等上游合并 | #6227（同族 #6270 #6289 #6337 #6513 #6681） |
+| 16 | pwsh 沙箱对临时根未加保护的 realpath（RAM 盘报 EISDIR） | `packages/sandbox/sandbox-windows-acl/src/path-boundary.ts:11-13`（`realpathSync.native` 无 try/catch；与上一基线逐字节相同）；对照 `packages/sandbox/sandbox/src/roots.ts:30-41` 已有回退先例（同样未改） | TEMP/TMP 指回物理盘或子目录 | #6018 |
+| 17 | 编程式 `agents.create` 缺 model 时静默死轮 | `packages/core/agent-loop/src/index.ts:371`（旧条目 `:421`／报告 `:422-424` 均有偏差；`{{model}}` 仍绑 `context.agent?.options.model` 无 `agentDefaultModel` 回退）；`packages/core/agent-loop/src/agent.ts:581-582` 的 throw 与旧基线一致；webhook 已有回退先例 `packages/webhook/webhook/src/session.ts:63-66` | 先 `agentDefaultModel.currentSelection()` 再显式传 provider/model | #4967 |
+| 18 | grep/read 行预览从列 0 截断，2000 字节外的匹配被隐藏 | `packages/fs/tool-fs-search/src/grep.ts:35`、`search-core.ts:324-325`（`kind:'head'`）、`packages/fs/tool-fs/src/read-render.ts:11`（`:70` 同类）——全部未变，行号与上一基线一致。细节：**grep 的截断按字节**（TextRetainer），**read 的截断按字符**（`line.length`） | 单行大文件改用 shell 提取区间 | #4982 |
+| 20 | /compact 在 agent 未空闲时一律报「active compaction」，诊断串味 | `packages/compaction/compaction-basic/src/index.ts:428-433`（旧 `:410-416`）；`packages/core/agent-loop/src/agent.ts:183-184`（旧 `:157-158`）；面向用户的文案 `packages/command/command-compact/src/index.ts:29`——三处与旧基线逐字相同 | 等 turn 完全结束再 /compact | #6223 |
+| 21 | todo 任务栏在回合中断后永久消失 | `packages/todo/tool-todo/src/index.ts:129`（投影 apply 在 `turn/start` 无条件返回 null；旧 `:140`）、`:133`（`stateVersion: 2`；旧 `:144`）；区间只改了 `DESCRIPTION_*` 文案。修复需 bump 2→3（投影缓存 ver 不匹配即丢弃，`packages/session/session-projection-cache/README.md:81`） | 无产品内规避（模型自觉重写不可靠） | #6524（已并入汇总帖 #6520） |
+| 23 | overflow 分支 retainTokens = 0，一次清掉约 98%（手动 /compact 同源） | `packages/compaction/compaction-basic/src/index.ts:299`——overflow 直接 `selectCompactableRange(session, measurement, 0)`（旧 `:281-285`）；手动 /compact 同样是 `0`（`:394-398`）。**新增缓解**：`maxOverflowRetries: 0` 可拒绝这次零保留 pass；后端现已**按 preset 作用域**（`packages/bundle/web-app/presets/*.patch.yml:67-83`，host 树禁用 `packages/bundle/web-app/cordis.patch.yml:527-528`——旧引用的 `:432-439` 已失效） | 设 `maxOverflowRetries: 0`；确认 preset 隔离域确实挂载了 compaction-basic | #5416 #5650 #6672 |
+| 24 | tool-result 剪枝跑在压缩选区之前，摘要器输入已失真 | `packages/compaction/compaction-basic/src/index.ts:294-302`（overflow：prune → select）、`:323-331`（pressure：prune → remeasure → select）；剪枝器已是独立包 `packages/compaction/compaction-tool-result-pruner/src/index.ts:136-182` | **（本次新增可用的规避）** 在自己编写的 preset 里**不挂** `tool-result-pruner` 行，或抬高 `thresholdChars` | #5766（相关实测 1:1 剪枝标记，来自 #6520 条目提交者） |
+| 25 | 压缩后旧轮推理整段不回传（实测推理占摘要器输入 58.8%） | 压缩交易把选区整体替换为摘要（`packages/compaction/compaction-basic/src/region.ts:173` compactSurfaceRegion + replace 操作 `:506-509`；旧 `:174`/`:472-500`），旧轮 reasoning 位于被替换区间内、不再回传；区间内**没有**新增推理保留路径 | 无产品内规避 | #6480 #6510 #3002（实测证据为准，见 #6520） |
+| 26 | token-meter 的 CJK 增量低估（实测 +26% ~ +57%，纯中文样本 1.57×） | `packages/llm/token-meter/src/estimate.ts:13`（CHARS_PER_TOKEN = 4；estimate 只作用于每步增量，总量 provider-anchored）。**上游现已把它记为已知限制**（`token-meter/README.md:154`、`compaction-basic/README.md:257`）——回答社区时按"已知限制"表述，别当未发现的 bug | 无产品内规避；注意按真实用量预算 | #6361 #5632 #6688（实测口径见 #6520） |
+| 28 | 读路径 `SessionLogScanner` 默认 `recoverable`：seq gap/损坏行被静默截断，直到后续 turn/end 才重抛（"valid aborted-turn 被当作 no more history"） | `packages/session/session-persistence-jsonl/src/index.ts:964`（无 recovery 实参）；`src/format.ts:404`（默认值）、`:499-503`/`:513-517`（issue 暂存）；gap 逻辑 `session-format-v1-to-v2/src/codec.ts:104-112`；strict 仅 verify 路径 `generation.ts:586,600`。格式已升 V4 但**这条读路径未动**，行为现已被测试钉死（`tests/jsonl.spec.ts:2227-2249`）。新增的相邻守卫：`format.ts:493`（assertV4RowAdmission）、`:468`（assertReleasedV4Relationships） | 备份日志手动修 gap；修复方向=给 `:964` 传 `'strict'` 或暴露 `format.ts` 的 issue | #6562 #3631 |
+| 30 | http-proxy 把 `[::1]` 写进子进程 `no_proxy`/`NO_PROXY` → httpx 系 MCP server 崩溃（undici 专用括号项泄漏到子进程 env） | `packages/util/http-proxy/src/policy.ts:33`（LOOPBACK_NO_PROXY 仍含 `['localhost','127.0.0.1','::1','[::1]']`，注释 `:25-32` 自认是为 undici）；env 写入 `install.ts:79-92,113-129`、子进程覆盖 `:262-279`；子进程消费方 `packages/subprocess/subprocess/src/index.ts:75`。**src 在本区间零改动** | env 写入侧只写裸 `::1`，undici 消费处保留括号项（两处消费者分离） | #6655 |
+| 31 | 粘贴图片惰性持有 File 快照：剪贴板同步（如微信输入法跨设备复制）后提交时 FileReader NotFoundError | `packages/client/ui-conversation/src/client/service.ts:74-81`（只存惰性 `file`）、`:125-137`（提交时才 FileReader）、`:309-325`（文件类立即上传、图片类惰性）；该文件本区间仅 +6/−2 | 粘贴后立即发送，或拖拽/文件选择 | #6673 |
+| 32 | web-fetch NAT64 探测无守卫：无 DNS64 网络（ipv4only.arpa 不解析）下所有双栈主机 fetch 全灭 | `packages/web/web-fetch-http/src/network.ts:90-92`（无 try/catch）、`:113-117`（discoverNat64Prefixes）、`:38`；SSRF 检查独立（现 `:96-108`）。**src 未改动** | 无产品内规避；补丁方向=ENOTFOUND/ENODATA 视为无前缀 | #6664 |
+| 29 | 原生 V4 的 `user/message` content **未做校验**（只校验 `source`）→ 手改或插件注入的缺 `content` 行仍在投影层抛错。迁移路径的同类症状已由 `f4a32dbd0a` 修掉（见 §5），这条是**残留面** | 投影读取 `session-turn-outline/src/projection.ts:39`；对照：迁移产物的强校验在 `session-format-v3-to-v4/src/validation.ts:52-129` | 注入 `user/message` 时带完整 `content` | #6686 |
 
-## 2. 次级清单（已核实、优先级较低，7 项）
+## 2. 疑似误诊（1 项，保留记录，勿当 bug 传播）
 
-| # | 问题 | 位置 | 规避 | 讨论 |
+| # | 原报问题 | 复核结论（@5badb15） |
+|---|---|---|
+| 4 | read_image 所有预设一调即失败（cannot get property 'fs' without inject） | **UNREPRODUCIBLE（疑似误诊）**：`packages/fs/tool-fs/src/index.ts:70-72` 与 `read-image.ts:209,263`（旧 `:265`）在本区间**未改动**，`vendor/cordis/src/reflect.ts` 同样未改；真机跑该包真实 spec `vitest run packages/fs/tool-fs/tests/read-image.spec.ts` = **41/41 通过**，而该 spec 正是走 `ctx.inject(['attachments'], …)` + `ctx.tools.execute` 这条路径，且它不在本区间的测试 diff 里。结论：既不是"修复了"，也不是可复现缺陷——遇到同症状请先确认是否被"在未注入 attachments 的上下文里直接调 read_image"之类用法触发，再开帖。 |
+
+## 3. 本世代新核实的问题（社区提出 + 源码/产物双向复核，T1–T11）
+
+> 这一组是 2026-09-15 → 10-06 窗口内社区新开帖、并经**源码或已发布产物**双向复核的问题，之前不在本清单里。T 编号独立，避免与 §1 的编号冲突。
+
+| # | 问题 | 位置 / 证据 | 规避 | 讨论 |
 |---|---|---|---|---|
-| S1 | Python SDK bundled runtime 清单缺 `dsh-attachment-local` → 挂载即 ERR_MODULE_NOT_FOUND | `python/sdk-runtime/package.json` 依赖清单（`dsh-attachment` 在 `:23`，仍无 `dsh-attachment-local`；0.1.6 世代清单已改：`dsh-code-runtime*`→`dsh-ptc-runtime*`、新增 `dsh-compaction-image-offload`/`dsh-session-title-llm`） | SDK 组合不挂 attachment-local | #4377 |
-| S2 | 会话列表 RPC 是一次性全量快照，无分页/懒加载 | `packages/api/session-controller/src/index.ts:223-225`；cursor 仅保留位 `types.ts:245` | 拆分工作区/清理旧会话/ssh -C | #6017 |
-| S4 | 冷/种子会话列表行回退显示工作区文件夹名 | `packages/api/session-controller/src/client/sessions/service.ts:145-152` | 打开会话一次生成标题投影 | #6316 #6207（相关 #3375 #5368） |
-| S5 | cordis preset 的 SKILL.md 仍在教已废弃工具名（6 处旧名 vs 实现注册 7 个新名） | `packages/preset/agent-presets/presets/cordis/skills/editing-cordis-compositions/SKILL.md:32,34,64,80,118,122`；新名 `packages/extensions/tool-cordis/src/index.ts:45,64,100,152,244,333,355`；另有生成文件/文档残留 `tool-cordis/src/api-catalog.ts:6`、`cordis-client-runner/.../slot-catalog.ts:7,74`、`docs/subsystems/slots.md:176`（+.zh）与三个快照（`ui.expected.md:36`、`session.v2.jsonl:17`、`session.v3.jsonl:18`） | 文档修复型 PR；快照测试需重生成 | #6679 |
-| S6 | SIGTERM 无在途 turn 排空路径；5s 宽限硬编码；无 `dsh restart` | `apps/cli/src/process-shutdown.ts:4,69-75`；dispose=cancel+whenIdle `agent-loop/src/index.ts:594-595`；launcher 无 restart（`apps/cli/src/args.ts:145-201`） | 第二信号即强退是固定语义；drain 属 feature request | #6665 |
-| S7 | LLM 出站超时修复未合入；undici 全局 dispatcher 由 http-proxy 独占（>5min prefill 在 ~302s 被 body timeout 终止） | 无 `egress.ts`/`httpBodyTimeoutMs`；`llm-pi-ai/src/config.ts:46`（300s 空闲看门狗）、`adapter.ts:355`；`util/http-proxy/src/install.ts:208-220` | 每请求新建 fetch 绕过共享 socket 记账 | #5673 |
-| S8 | 创造模式 `cordis_define`/`cordis_run` 动态工具已退役 | 0.1.6-alpha.2 的 `docs/tool-catalog.md` 只剩两个只读检查工具（`cordis_inspect_list`/`cordis_inspect_query`）；运行期创作的替代面 = `plugin_manager` 工具 + `ctx.pluginManager` + `OPTIONAL_BUNDLES`（@ddefc45，0.1.6-alpha.2 世代） | 0.1.5-rc.2 世代 `docs/tool-catalog.md` 的 cordis_* 工具段（旧快照 :269-501）；`docs/capability-seams.md` 的 `ctx.dynamicCordisRunner` | 无（上游工具退役，非缺陷） |
+| T1 | **运行中修改 `cordis.patch.yml` 具破坏性**：`dsh-hmr` 精确监听 `profile/package.json`、`profile.patchPath`、`$DSH_HOME/cordis.patch.yml`（`@deepseek-ai/dsh-hmr/lib/index.js:353-376`，0.2.0-rc.2），任何写入（**包括逐字节相同的重写**）都触发重载 | 实测三种后果：① 会话内工具从 **65 → 41**（丢失 `bash`/`edit`/`read`/`write`/`grep`/`glob`/`web_fetch`/`web_search`/`skill`/`subagent_fork`/`workflow`/`todo_write`/`present`/全部 `job_*`，只剩 preset 之外挂载的行）；② 运行中会话的 turn 被杀；③ 重建 `session-controller` 时抛 `file-upload: Agent resolver is already registered`，`sessionController` **永久失效**（只有整进程重启能恢复，之后每次重载同样失败） | **运行中不要写 profile patch**。改配置走 profile 管理入口（`plugin_manager` / `dsh plugin`）而不是手写 YAML；必须手改就先停进程 | #8635 #8857 #8968 |
+| T2 | `plugin add` **不补齐既有依赖的 layer 行**：`packages/boot/plugin-manager/src/operations.ts:95`/`:99`（`if (beforeDeps.has(name)) continue`），产物侧同一代码在 `lib/index.js:271`/`:275`（固定 176 行偏移）。后果：`dsh.profile.bundles` 掉了行之后，之后任何 `add` 都不会修回来；"先发布无 `dsh.bundle`、后加上 `dsh.bundle`"的包**永远不会**被登记为 bundle 层，且**第二次尝试不打印任何警告** | 实测仍在 `0.2.1-alpha.1`（源码与产物一致） | 先 `remove` 再 `add`；或手工补 `dsh.profile.bundles` | #7850 #8821 |
+| T3 | 宿主插件（Host plugin）激活失败**在 `dsh web` 下不可见**：`Fiber._reload` 捕获异常 → `ctx.logger.error` → 置 FAILED、**不重抛**（`vendor/cordis/src/fiber.ts:646-665`）；`web` profile 没有日志导出器，那行日志**没有 sink**，终端一片空白，而工具/监听器已经静默缺失。`apply()` 返回普通对象只得到 `TypeError('Invalid effect')`，**不报插件名也不报值** | 交叉引用 #5145（同族客户端侧 #7891） | 排障时用 headless/带日志的 profile 复现，或逐个禁用 bundle 二分；社区工具 dsh-composition-doctor 专门把故障关联回组合来源 | #8633 |
+| T4 | profile 内安装的 `@deepseek-ai/*` 包会**静默遮蔽**运行时自带版本：解析优先级 `profile > runtime`。最小复现：插件把 `"@deepseek-ai/dsh-settings": "^0.1.0-rc.6"` 写进 **dependencies** → pnpm 装进 profile 的 `0.1.0-rc.8` 盖掉自带的 `0.2.0-rc.2` → `settings service is absent: mount @deepseek-ai/dsh-settings with @deepseek-ai/dsh-config-editor`，桌面端每次崩溃 | `POST /api/settings/describe` 返回 `gateway/internal` | 共享实例的 dsh 包只放 **peerDependencies + devDependencies**，**绝不放 dependencies**（§migration-0.2 §1 的 npm 段同理） | #8862 #8864 |
+| T5 | 会话内 **tool-call id 不唯一** → Web Chat/Trajectory 组装器抛 `received more than one start Match` 后**永久停止产节点**（实时与回放两条路径都无降级分支） | `packages/client/ui-conversation/src/client/conversation/assembler.ts` 的 `acceptMatch` | 无产品内规避；自己生成 `callId` 的插件务必全局唯一 | #6520 内提案（XGntsl，对照 `0d1f50007f` 核实）+ ≥10 个独立帖（自 `0.1.1-rc.2` 起） |
+| T6 | 含 `turn: null` 的 `step` 块的会话**永远渲染不完**：白屏卡在 "Loading history…"，渲染循环不推进、CPU 升高；而契约检查报 0 违规，官方 `Session` 构造与 `deriveMessages` 都成功 | 渲染路径在无法归属的块上循环 | 无产品内规避 | #6520 内提案（yamingmou） |
+| T7 | **桌面端 `cordis` preset 丢失全部文件系统 skill**：preset 唯一的 skill provider 目录指向 `app.asar` 内部（`resolve('@deepseek-ai/dsh-agent-preset/package.json') + /skills`），读取抛 `TypeError: Cannot mix BigInt and other types`；`discoverRoot` **没有 per-root try/catch**，且自定义目录**先于**默认根被扫描，于是一次失败终止整个 provider 的 `list()`——连带丢失项目的 `.dsh/skills` 与用户的 `~/.dsh/skills`、`~/.agents/skills`；`dsh-tool-skill` 又以 `snapshot.complete` 为发布门槛，导致模型侧 skill 目录整体消失（日志里同一条 `skipped` 反复出现即是信号） | `dsh-hooks`/skill provider 链路；`isAbsentSkillPathError` 只吞 `ENOENT`/`ENOTDIR`/`FS_NOT_FOUND`/`FS_NOT_DIRECTORY`，其余错误照抛 | 无产品内规避；把 skill 放默认根而不是 symlink 进 `~/.dsh/skills`（该路径不解决问题） | #8649 #8763 #8996 |
+| T8 | 第三方插件在会话观察者里抛异常会**放倒整个宿主**（观察者回调外侧没有隔离边界） | 无 per-listener 隔离 | 自己插件里所有回调 try/catch | #8585 |
+| T9 | 插件 `pre-step` 观察监听器返回 `undefined` → **放倒全部会话**（`installModelSelection` 中间件链未加守卫） | `packages/core/agent-loop/**` 选择中间件链 | 观测型监听器要原样返回传入的 decision（改写时用 `{ ...decision, … }`） | #8778 |
+| T10 | `dsh plugin` 依赖**系统 pnpm**（不自带）：产物在 `@deepseek-ai/dsh-plugin-manager/lib/index.js` 用 `execa(options.command ?? "pnpm", …)`（L324/517/650/694/733），`pnpmCommand` 默认 `"pnpm"`（L1354），`dsh/node_modules` 里没有 pnpm——PATH 里去掉 pnpm，所有市场安装 `exit 1`，且 UI 可能只显示 `exit 1`。第二个缺陷：`install-spec.js` **校验但不注入版本**，裸包名会被 profile 的 lockfile 解析到旧版（实测 `@latest`、`@^2`、`pnpm update --latest`、`pnpm add …@latest` **全部失败**，只有显式 `@2.8.4` 成功） | 源码级复核 | 保证 PATH 有 pnpm；装包时**显式写版本** | #8905 #8922 #8310 |
+| T11 | **组合包升级后大批第三方插件被判不兼容**：`evaluatePluginCompatibility()` 只返回**不满足**的 peer，且**不带任何"哪个版本能满足"的字段**，UI 无法告诉用户该装哪个版本；`minimumReleaseAge`（24h 冷却）让 `pnpm update` 成为静默 no-op、锁文件检查抛 `ERR_PNPM_MINERELEASE_AGE_VIOLATION`（可用 `--config.minimum-release-age=0`，但桌面宿主**拒绝**市场追加的 pnpm 参数）；另有锁文件污染模式：一旦两个 `name@version` 落进 `minimumReleaseAgeExclude`，该 profile 之后**每次**安装都失败 | `packages/boot/app-boot/src/plugin-compatibility.ts` | 插件显式声明两侧 peer 范围（如 `>=0.1.2-rc.1 <0.3.0`）并按版本发版；用户侧遇冷却期用 `--config.minimum-release-age=0` | #8199 #8310 |
 
-## 3. 已在 master 修复（旧帖一律更新即可，无需改代码）
+**相关但不单列**（同族或用户侧）：#8537 提出 `dsh --profile <name> --ephemeral` 与一等公民 `dsh plugin verify <tarball>`（install → composition check → visibility probe → uninstall → rollback）——正是本仓库 `dsh-plugin-dev verify` 与 `PerryLink/dsh-test-drive` 在做的事；同帖给出 `sanitizeProfile` **按设计**把 profile 的 `cordis.patch.yml` 改名成 `.bak-<timestamp>`（JSDoc 明写 "patches are never parsed"），桌面端 `disableAllPlugins` 走的正是这条路径，实测用户文件 2622 B → 837 B，而 `backupPath` 只在 `console.info` 里打印、**UI 不显示**。#7401 单个 MCP 工具 `inputSchema` 含不支持关键字会**拒绝整个 server**；#7995 v0→v1 迁移拒收写入方唯一会产出的 `subagent/descriptor` version 2；#8836 见 §1 #2（V4 后继形态）；#8904 升级插件后有一个 client entry 没有 fiber → 刷新页面即崩整个应用。
 
-更新到 0.1.5-rc.2 世代后以下问题消失；遇旧帖时给「更新即可 + 提交号」式回答：
+## 4. 次级清单（已核实、优先级较低，6 项）
 
-- **windowsHide 弹窗族**：`a05b5fbe79` + `cc8099dc5f`（子进程清理工具隐藏）；CLI 半侧 `apps/cli/src/plugin.ts:134-138` 仍未修（见上 #13）。
-- **Windows 目录选择器 CJK 截断族**（U+XX00 低字节为 0）：`51c242749a` 重写 readUtf16 → `koffi.decode(..., 'str16')`（`packages/host/directory-picker-native/src/win32-dialog-bindings.ts:39-44`）。覆盖 #643 #1660 #2126 #2227 #3010 #3313。
-- **`--expose-internals` HMR 启动失败**：`c685582d54` + `675efe73f2`；loader 回退 `node-addon-require-builtin`（`vendor/loader/src/internal.ts:108-118`，CLI 依赖 `apps/cli/package.json:101`）。
-- **compat.supportsDeveloperRole 可配置**：`884f7b9c41` + `cf4a27c471`（schema `packages/llm/llm-pi-ai/src/config.ts:256`、`catalog.ts:367`）+ 文档 `30a838cda3`（`docs/user/guide/providers.zh.md:156,184`）。
-- **子代理模型快照 → request-time 选择**：`f76a225a7d`（PR #2663；`packages/subagent/subagent/src/child-agent.ts:60-85`）。
-- **pnpm 11 构建失败（npm_execpath）**：`89674edc93`（`scripts/build.ts:18-20` + `scripts/pnpm-invocation.ts`）。
-- **fs-ext/node-gyp Windows 构建族**：`d927cbff99` 换成预编译 `@deepseek-ai/node-addon-system`（flock）。
-- **koffi 32KB 崩溃**：`141d72d7cf`（不再固定 32KiB view 读指针）。
-- **非 loopback HTTP crypto.randomUUID**：新增 `dsh-util-crypto` 提供实现（`packages/client/connection/src/rpc.ts:36` 侧）。
-- **ACP server 已发布**：`dsh --profile acp`（`@deepseek-ai/dsh-acp`）。
-- **MCP structuredContent 要求条件化**：`e1633fbc3f`（自 0.1.0-rc.7+；按 outputSchema 广告与否决定）。
+| # | 问题 | 位置（@5badb15） | 规避 | 讨论 |
+|---|---|---|---|---|
+| S1 | Python SDK bundled runtime 清单缺 `dsh-attachment-local`（`python/sdk-runtime/package.json:27` 只有 `dsh-attachment`）——**但静态不可复现**：`dsh-base` 把 `dsh-attachment-local` 列为产品依赖（`packages/bundle/base/package.json:42`），且 `scripts/verify-runtime-closure.ts:83-92` 会递归走依赖图，实跑 `pnpm run verify-runtime-closure` **通过**（"4 agent presets and 185 workspace packages form a closed runtime dependency graph"）。**降级为清单一致性观察**：除非有人能在构建出的 wheel 里复现 `ERR_MODULE_NOT_FOUND`，不要再当缺陷传播 | 见左 | 无需规避 | #4377 |
+| S2 | 会话列表 RPC 是一次性全量快照，无分页/懒加载 | `packages/api/session-controller/src/index.ts:258-261`（list 忽略 `_request`）、`src/list.ts:131-164`、`src/types.ts:264-271`（cursor 仍只是保留位，无 `nextCursor`） | 拆分工作区/清理旧会话/ssh -C | #6017 |
+| S4 | 冷/种子会话列表行回退显示工作区文件夹名 | `packages/api/session-controller/src/client/sessions/service.ts:116-123`（`displayTitleOf` → `workspaceTitleOf(cwd)` → id），调用点 `:620` | 打开会话一次生成标题投影 | #6316 #6207（相关 #3375 #5368） |
+| S5 | cordis 组合 skill 里残留已废弃的 `cordis_inspect` 措辞（**PARTIAL**：SKILL.md 正文半侧早在上一基线**之前**就由 `ed32f57f88`（2026-09-16）修好——旧条目引的是 2026-09-10 的 165 行版本，已过时两代） | 残留未修：`packages/extensions/tool-cordis/src/api-catalog.ts:6`、`cordis-client-runner/src/client/slot-catalog.ts:7,74`、`docs/subsystems/slots.md:194`（+.zh）；SKILL.md 现位于 `packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md:84`（改名 `d1e22a7e24`）。**注意**：那三个"快照"（`cordis-history ui.expected.md`、`session.v2/v3.jsonl`）是**故意的历史回放/迁移 fixture，不要重新生成** | 文档修复型 PR | #6679 |
+| S6 | SIGTERM 无在途 turn 排空路径；5s 宽限硬编码；无 `dsh restart` | `apps/cli/src/process-shutdown.ts:4`（5s）、`:69-75`（第二信号强退）；`profile-boot.ts:269,280-281`；dispose=cancel+whenIdle 现位于 `packages/core/agent-loop/src/index.ts:544-545`（旧 `:594-595`）；`apps/cli/src/args.ts` 里**没有** restart 模式 | 第二信号即强退是固定语义；drain 属 feature request | #6665 |
+| S7 | LLM 出站超时修复未合入；undici 全局 dispatcher 由 http-proxy 独占（>5min prefill 在 ~302s 被 body timeout 终止） | `packages/util/http-proxy/src/install.ts:208-213`（`setGlobalDispatcher`）、`new Agent({factory})` `:145-156`（**无 bodyTimeout**）；全库无 `httpBodyTimeoutMs`/`bodyTimeout`/`egress.ts`（新增的 `tests/egress.spec.ts` 只测代理路由）；pi-ai 看门狗 300_000 在 `llm-pi-ai/src/config.ts:47`（按路由覆盖 `:344`）、`adapter.ts:354-355` | 每请求新建 fetch 绕过共享 socket 记账 | #5673 |
+| S8 | 创造模式 `cordis_define`/`cordis_run` 动态工具已退役 | `docs/tool-catalog.md` 只剩两个只读检查工具（`cordis_inspect_list`/`cordis_inspect_query`）；运行期创作的替代面 = `plugin_manager` 工具 + `ctx.pluginManager` + `OPTIONAL_BUNDLES` | 0.1.5-rc.2 世代 `docs/tool-catalog.md` 的 `cordis_*` 工具段（旧快照 :269-501）、`docs/capability-seams.md` 的 `ctx.dynamicCordisRunner` | 无（上游工具退役，非缺陷） |
+
+## 5. 已在 master 修复（旧帖一律更新即可，无需改代码）
+
+带 ✅ 的是本次（2026-10-06，基线 `5badb15`）新转入的条目：
+
+- ✅ **纯推理轮以空 content 落盘 → 之后每轮 400、整会话报废（#2）**：`99e22ebbeb` 在区间内把 `llm-deepseek` 的协议平面**压平为 Messages-only**——旧 `src/protocols/chat-completions/serialize.ts` 及其同族 5 文件 / 1255 行被**整体删除（无改名）**，`protocols/messages/*` 上移为 `src/*`；`src/config.ts:206-207` 表明 `protocol:` 键现在**直接抛错**，空 content 分支随之消失。**仍需要的动作**：已被写坏的存量日志照旧要手工修（备份后解压 `session.v3.jsonl.zstd`，删/改占位后重压）；若你依赖显式 `protocol: chat-completions`，删掉该配置项。
+- ✅ **升级后旧 `code` 预设会话无法 resume（#5）**：`ff33f79eb1` 在 `session-format-v2-to-v3` 的迁移里把 `code` 映射为 `ptc`（header 与所有 agent-preset/selected，`migration.ts:18`、`:140-151`）。**注意该修复早于上一基线**，旧条目本身已过时。残留属设计：原生 V3/V4 里的 `code` **不会**被重新解释，registry 仍抛 `agent-preset/not-found`（`packages/preset/agent-preset-registry/src/index.ts:207`），且该包在 `d1e22a7e24`（2026-09-21）拆包，无 git 改名配对。存量会话仍建议复制内置 ptc 预设或改绑 standard/ptc。
+- ✅ **opencode-go 路由缺 `x-opencode-session` 头 + 缺 4.1-flash 目录项（#10）**：`6ed596f71b` 把 `packages/llm/llm-pi-ai/package.json:44` 的 `pi-ai` 抬到 `^0.87.1`；实测已装 0.87.1 的 `dist/providers/opencode-headers.js` 会设置 `x-opencode-session` 并包装 opencode/opencode-go，目录里也有 `deepseek-v4.1-flash`（仓库侧 patch 不触碰该 wrapper）。
+- ✅ **压缩阈值按整窗口算，1M 窗口下高于 provider 实际输入上限（#22）——本次新修复**：`555b664b08` 把阈值改为 `Math.floor(Math.min(contextWindow × ratio, contextWindow − reservedCompletionTokens − headroomTokens))`（`packages/compaction/compaction-basic/src/config.ts:191-194`），新增 `headroomTokens`（默认 `65_536`，`:75`），保留输出在 `index.ts:314-318` 接线；窗口 ≤ `maxTokens + headroom` 时抛 `TargetPressureConfigError`（后续 `ec7030afd3`）。**新公开配置键**：`headroomTokens`、`maxTokens`——旧帖里"按模型覆盖 `thresholdRatio`"的规避可以撤掉。同区间 `llm-deepseek` 的 `src/common/defaults.ts` 由 `99e22ebbeb` 改名为 `src/defaults.ts`（`DEFAULT_CONTEXT_WINDOW`/`DEFAULT_MAX_TOKENS` 仍是 1M/256K）。
+- **windowsHide 弹窗族**：`a05b5fbe79` + `cc8099dc5f`；CLI 侧现由 execa 承担（见 §1 #13）。
+- **Windows 目录选择器 CJK 截断族**（U+XX00 低字节为 0）：`51c242749a` 重写 readUtf16 → `koffi.decode(..., 'str16')`。覆盖 #643 #1660 #2126 #2227 #3010 #3313。
+- **`--expose-internals` HMR 启动失败**：`c685582d54` + `675efe73f2`；loader 回退 `node-addon-require-builtin`。
+- **compat.supportsDeveloperRole 可配置**：`884f7b9c41` + `cf4a27c471` + 文档 `30a838cda3`。
+- **子代理模型快照 → request-time 选择**：`f76a225a7d`（PR #2663）。
+- **pnpm 11 构建失败（npm_execpath）**：`89674edc93`。
+- **fs-ext/node-gyp Windows 构建族**：`d927cbff99`（换成预编译 `@deepseek-ai/node-addon-system`）。
+- **koffi 32KB 崩溃**：`141d72d7cf`。
+- **非 loopback HTTP crypto.randomUUID**：新增 `dsh-util-crypto`。
+- **ACP server 已发布**：`dsh --profile acp`。
+- **MCP structuredContent 要求条件化**：`e1633fbc3f`（自 0.1.0-rc.7+）。
 - **旧 v0→v3 迁移校验**：多处收紧/修复已随 0.1.5-rc 发布（历史会话不可加载先试升级）。
 - **轮次导航条（turn rail）load-and-jump**：`b3064cca77` + `6af1ee49b1`。
-- **轨迹面板首 token 时间（#6129）**：`e779831f40` "fix(client): restore assistant timing from recorded streams"（2026-09-14 经 `a85778448a` 进入 master；不在初版基线 c291e7961a 中）。`packages/client/ui-trajectory/src/client/trajectory-assistant-definition.ts:195-203` 新增 `settleTiming()` 用 `assistantStreamFirstTokenTime(event.data.stream)` 从已记录流恢复首 token 时间，挂到 `assistant/message`（`:210-213`）与新增的 `assistant/attempt`（`:238-243,367`）。回放/已结流不再是空洞（原次级 S3，2026-09-15 复核移入本节）。
-- **Node 版本门槛**：根 `package.json:8-9` engines `^22.19.0 || >=24.0.0`；实测实际下限 ≈ 24.2（24.0/24.1 有 undefined 报错）。
+- **轨迹面板首 token 时间（#6129）**：`e779831f40`（2026-09-14 经 `a85778448a` 进 master）。
+- **桌面端打包 payload smoke 引用已移除的 fs-ext（#27）**：`6b05ed53e9`（只进 `dsh-v0.1.6-alpha.2`）；本次复核确认 `apps/desktop/scripts/prepare-dsh.ts` 里已无 `checkFsExt()`。
+- ✅ **v0→v3 迁移后 stock 投影读取崩溃（#29）——本次新修复**：`f4a32dbd0a`。telemetry 读取被拍平（`session-telemetry/src/coordinator.ts:273` 现在读 `message.isError`，旧代码读 `message.content[0].isError`），并且**迁移产物在 hydrate 前被强校验**（`session-format-v3-to-v4/src/validation.ts:52-129`，经 `session-persistence-jsonl/src/format.ts:468` 的 `assertReleasedV4Relationships` 接入；拒绝路径 `session-format/src/catalog.ts:231-251`）。症状因此从"hydrate 崩溃"变成"**带明确错误的拒绝加载**"。**残留面**已单列为 §1 的 #29（原生 V4 的 `user/message` content 仍不校验）。
+- **运行时 invariants 全部移除（本区间新增的"官方移除"，不是修复）**：`@deepseek-ai/dsh-invariants`、`ctx.invariants`、`<pkg>/invariant` 子路径、整棵 `packages/runtime-diagnostics`、`sdk-minimal` 的五条相关行全部消失；四个 emitter 从重抛改为记录并继续。若你的旧帖/插件依赖它们，见 [migration-0.2.md](migration-0.2.md) §4。
+- **Node 版本门槛**：根 `package.json:8-9` engines `^22.19.0 || >=24.0.0`（本区间未变）；实测实际下限 ≈ 24.2（24.0/24.1 有 undefined 报错）。
 
-## 4. 设计行为 / 常见误解（不是 bug，快速对照）
+## 6. 设计行为 / 常见误解（不是 bug，快速对照）
 
 | 现象 | 结论 | 关键位置 |
 |---|---|---|
-| 本地模型把工具调用输出成 `<DSML|function_calls>` 文本 | 适配器只解析 `delta.tool_calls`，不解析文本标签；这是服务端职责 | `packages/llm/llm-deepseek/src/translate.ts:167-195` |
-| 自定义 provider 显示上下文 262k 而非 1M | 262144 是未声明容量时的内置默认假设，可 settings.yaml 覆盖 | `packages/llm/llm-pi-ai/src/config.ts:64,330`、`catalog.ts:901` |
-| 没填 key 却在扣 DeepSeek 余额 | 默认凭据引用环境变量 `DEEPSEEK_API_KEY`，启动环境只读且优先级最高 | `packages/llm/llm-deepseek/src/index.ts:88`；`packages/credentials/credentials-local/README.md:75-80` |
+| 本地模型把工具调用输出成 `<DSML\|function_calls>` 文本 | 适配器只解析 `delta.tool_calls`，不解析文本标签；这是服务端职责 | `packages/llm/llm-deepseek/src/translate.ts` |
+| 自定义 provider 显示上下文 262k 而非 1M | 262144 是未声明容量时的内置默认假设，可 settings 覆盖 | `packages/llm/llm-pi-ai/src/config.ts:64,330`、`catalog.ts:901` |
+| 没填 key 却在扣 DeepSeek 余额 | 默认凭据引用环境变量 `DEEPSEEK_API_KEY`，启动环境只读且优先级最高 | `packages/llm/llm-deepseek-api-key/**`；`packages/credentials/credentials-local/README.md:75-80` |
 | web_search 用 deepseek-v4-flash 而非会话模型 | 独立搜索 provider（web-search-deepseek），模型/凭据/端点与聊天分离 | `packages/web/web-search-deepseek/src/provider.ts:38,207-221` |
-| `dsh --profile tui` 不存在 | tui 非内置；README 中为示例（"assuming the tui profile is installed"），社区方案 `dsh plugin --profile tui add github:deepseek-harness/turtle-ui` | `apps/cli/README.md:28`、`apps/cli/reference/README.md:70-72` |
-| `--host 0.0.0.0` 被拒绝 | 刻意不支持（远程代码执行风险）；用 LAN IP + `--trusted-host` 或 SSH 隧道 | `packages/bundle/web-app/src/startup.ts:74-75` |
-| 工具定义每轮都发 | 无「每 N 轮」开关；工具集不变时前缀缓存复用（逻辑 prompt 体积 ≠ 全价计费） | `packages/core/agent-loop/src/agent.ts:262-265,556,613` |
-| 同级权限请求报错 | 见第 1 节 #1（**同级自 `61c548e200` 起已接受**，只剩更窄/不受支持的目标抛错）；read-only 下升级走审批可正常终止 | `packages/sandbox/sandbox/src/escalation.ts:155,160` |
-| bash/run_code 的 `description` 必填 | 刻意设计（活动列表/UI 展示用）；空串另有执行期拒绝 | `packages/shell/tool-bash/src/index.ts:244-252`；`packages/core/tools/src/ptc.ts:304-311,327-330`（#3874） |
+| `dsh --profile tui` 不存在 | tui 非内置；README 中为示例，社区方案 `dsh plugin --profile tui add github:deepseek-harness/turtle-ui` | `apps/cli/README.md`、`apps/cli/reference/README.md:70-72` |
+| `--host 0.0.0.0` 被拒绝 | 刻意不支持（远程代码执行风险）；用 LAN IP + `--trusted-host` 或 SSH 隧道；反向代理部署见 `docs/user/guide/public-deployments.md` | `packages/bundle/web-app/src/startup.ts:74-75` |
+| 工具定义每轮都发 | 无「每 N 轮」开关；工具集不变时前缀缓存复用。新增 `ToolSchema.deferLoading: true` 可标记延后加载 | `packages/core/agent-loop/src/agent.ts`；`packages/core/tools/src/index.ts` |
+| 同级权限请求报错 | 见 §1 #1（同级已接受，只剩更窄/不受支持的目标抛错） | `packages/sandbox/sandbox/src/escalation.ts:171-179` |
+| bash/run_code 的 `description` 必填 | 刻意设计（活动列表/UI 展示用）；空串另有执行期拒绝 | `packages/shell/tool-bash/src/index.ts`；`packages/core/tools/src/ptc.ts`（#3874） |
 | 界面 token 远小于计费 | 界面=主会话 usage 之和；子代理独立会话/日志不计入；无费用熔断功能 | `ui-trajectory/src/client/layout.ts:758,952-955`；`subagent-in-process-driver/src/index.ts:113`（#6688） |
 | skill 目录监视挡 Windows 插件更新 | `watch: false` 开关已存在（未文档化）；Windows 可用 `watchUsePolling` | `packages/skill/skill-filesystem/src/index.ts:82-83`（#6674） |
-| headless 每次运行新会话 | 默认新会话 `session-<uuid>`；**0.1.6+ 已支持 `--session-id <id>` 续跑已存在会话**（`startup.ts:44`、`index.ts:279` `agents.resume`；缺 `sessionPersistence`/`sessionQuery` 会 fail loud）；无"继续最近会话"便捷形式；多轮另可走 Connection RPC/gateway | `packages/bundle/headless/src/index.ts:279,342`；`startup.ts:43-45`（#6677） |
-| 想"回退到第 N 轮重跑" | 无原位 rewind；fork 生成新会话继承前缀，边界禁落在开启 turn 内；UI 仅开放已完成轮次末条消息 | `packages/core/session/src/index.ts:1203,1256-1260`；`ui-chat/src/client/locale.ts:71-72`（#6652） |
-| 自定义 provider 想调思考强度 | 模型条目声明 `reasoningEfforts`（off/minimal/low/medium/high/xhigh/max）→ thinkingLevelMap；仅 llm-pi-ai | `packages/llm/llm-pi-ai/src/catalog.ts:607,690-743`；示例 `index.ts:28-53`（#1058） |
+| headless 每次运行新会话 | 默认新会话 `session-<uuid>`；`--session-id <id>` 可续跑已存在会话（缺 `sessionPersistence`/`sessionQuery` 会 fail loud）；无"继续最近会话"便捷形式；多轮另可走 Connection RPC/gateway | `packages/bundle/headless/src/index.ts:279,342`；`startup.ts:43-45`（#6677） |
+| 想"回退到第 N 轮重跑" | 无原位 rewind；fork 生成新会话继承前缀，边界禁落在开启 turn 内 | `packages/core/session/src/index.ts`；`ui-chat/src/client/locale.ts:71-72`（#6652） |
+| 自定义 provider 想调思考强度 | 模型条目声明 `reasoningEfforts`（off/minimal/low/medium/high/xhigh/max）→ thinkingLevelMap；仅 llm-pi-ai | `packages/llm/llm-pi-ai/src/catalog.ts:607,690-743`（#1058） |
 | 编译报错引用不存在的导出（如 PersistenceCoordinator） | 旧产物与源码混装，非配置问题；彻底重建 | 常量已改名搬家 `session-query/src/config.ts:12`（#5622） |
 | 自动压缩"开始"阶段不可见 | 节点模型已按 lifecycle-first（start=compaction/start）；仅渲染层被 checkpoint 门控 | `ui-chat/src/client/conversation-nodes/compaction.ts:39-45,52-53`（#6675） |
+| 插件想写自己的会话事件 | **不要写**：未知类型要带信封 `ignorable: true` 才被接受，而 `Session.append()` 写不了该标记，写入会让会话打不开。改用既有事件推导或 storage 服务 | `packages/core/session/src/types.ts`（`SessionEvent.ignorable`）；官方 `.../cordis-plugin-development/references/practices.md` |
 
-## 5. 相关资源
+## 7. 相关资源
 
-- 官方汇总帖（31 项未修 + 1 项部分修复 + 6 项次级，2026-09-15 已对照 0.1.6-alpha.1 复核）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
+- 官方汇总帖（社区核实版）：<https://github.com/deepseek-ai/deepseek-harness/discussions/6520>
+- 本世代破坏性变更的迁移路径：[migration-0.2.md](migration-0.2.md)
+- 官方逐版本迁移指南（原文副本，仓库内**无 index、无入链**）：`references/official-docs/docs/upgrade-guide/**`
 - 官方仓库 checkout 路径约定见 [SKILL.md](../SKILL.md)（本知识库以 `D:\deepseek-harness` 为示例）。
 - 每项条目引用的讨论号均可拼为 `https://github.com/deepseek-ai/deepseek-harness/discussions/<编号>` 直接查看原始分析。
 
@@ -1827,13 +1952,31 @@ Corrections and additions are welcome; the practical entry points are listed in 
 | 生成式参考（配置/Tool/持久化） | [reference/config-catalog](https://deepseek-harness.github.io/deepseek-harness/reference/config-catalog) · [tool-catalog](https://deepseek-harness.github.io/deepseek-harness/reference/tool-catalog) · [persistence-catalog](https://deepseek-harness.github.io/deepseek-harness/reference/persistence-catalog) | config-catalog.md / tool-catalog.md / persistence-catalog.md |
 | Cordis 核心 API | [reference/cordis-api/context](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/context) · [events](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/events) · [fiber](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/fiber) · [registry](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/registry) · [service](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/service) · [inherited](https://deepseek-harness.github.io/deepseek-harness/reference/cordis-api/inherited) | cordis-api/ |
 | 开发手册（Cookbook） | [adding-a-package](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-package) · [adding-a-tool](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool) · [adding-an-llm-adapter](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-an-llm-adapter) · [extension-cookbook](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/extension-cookbook)（`adding-a-conversation-node` 已在 alpha.3 上游移除） | cookbook/ |
-| 子系统生成式服务/事件 API | [reference/subsystems/](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)（每个子系统一页：tools、shell、session、web、skills、subagent……） | subsystems/ |
+| 子系统生成式服务/事件 API | [reference/subsystems/](https://deepseek-harness.github.io/deepseek-harness/reference/subsystems/)（每个子系统一页：tools、shell、session、web、skills、subagent、settings、otel、product-telemetry、voice-input、claude-code-mods……） | subsystems/ |
+| API 网关 | [reference/api-gateway](https://deepseek-harness.github.io/deepseek-harness/reference/api-gateway) | api-gateway.md |
+| 公开部署（反向代理） | [guide/public-deployments](https://deepseek-harness.github.io/deepseek-harness/guide/public-deployments)（`--public-url` / `--trusted-host`） | user/guide/public-deployments.md |
+
+## 2.1 未上文档站的仓库内文档（只有 GitHub 直链 + 本地副本）
+
+这些文件在 `references/official-docs/docs/` 里**有全文副本**，但**不在站点路由表**（`website-docs.ts`）里，所以站上找不到——只能读本地副本或 GitHub：
+
+| 主题 | 本地副本 | GitHub 直链 |
+|---|---|---|
+| 会话格式版本状态（**版本权威**） | `docs/session-format-status.md`（含 `latestFinalizedVersion: 4` / `latestReleasedVersion: 3` 记录） | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md) |
+| 逐版本迁移指南（**无 index、无入链**，6 篇） | `docs/upgrade-guide/v0.1.7-rc.2/**`、`docs/upgrade-guide/v0.2.0-rc.2/**`（schedule-optional-bundle、transcript-view-legacy-normal、account-sign-in-errors、remove-runtime-invariants、schedule-bundle-retired、subpath-plugin-display-manifest） | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/upgrade-guide) |
+| 持久化类型变更记录（含 V4 声明） | `docs/persistence-changes/**`（`2026-09-16-session-format-v4.md`、`finalized/v4.json`、`historical-formats/v3.md`…） | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/persistence-changes) |
+| 圆角规范 | `docs/ui-radius.md` | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/ui-radius.md) |
+| Web 样式 | `docs/web-styling.md` | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/web-styling.md) |
+| 模块图 / 依赖目录 / 持久化 schema | `docs/module-graph.md`、`docs/dependency-catalog.json`、`docs/persistence-schema.json` | [docs 目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs) |
+| **官方自带插件开发技能**（preset 内，最该读的一份） | 不在 `docs/` 下：`packages/preset/agent-preset/skills/cordis-plugin-development/**`；本库要点摘录见 [../references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md) | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/preset/agent-preset/skills) |
 
 ## 3. 官方仓库与直链（GitHub，master 分支）
 
 - 仓库根：https://github.com/deepseek-ai/deepseek-harness · 官网：https://www.deepseek.com/harness/
 - 开发红线 [AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)（本地副本 references/official-docs/AGENTS.md）
-- **官方 Discussions（Issues 关闭，反馈主渠道）**：https://github.com/deepseek-ai/deepseek-harness/discussions —— 全量 **1654 条**（2026-08-15 刷新）归档于 `downloads/github/harness/discussions/`（list.json 含正文；精选线程含评论，`scripts/archive-discussions.ps1` 可带 token 幂等刷新）；**社区关键动态**：[#1629 RFC：官方插件脚手架（template repo + `pnpm create dsh-plugin`）](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（08-15T01:15Z 发布）、安全审计类 [#817](https://github.com/deepseek-ai/deepseek-harness/discussions/817)、[#454](https://github.com/deepseek-ai/deepseek-harness/discussions/454)
+- **官方 Discussions（Issues 关闭，反馈主渠道）**：https://github.com/deepseek-ai/deepseek-harness/discussions —— **API 核实 `has_issues=false`（无 issue tracker、不收 PR），Discussions 是唯一渠道**；**2026-10-06 全量刷新归档**于 `downloads/github/harness/discussions/`（list.json 含正文；精选线程含评论；`scripts/archive-discussions.ps1` 可带 token 幂等刷新）——**list=5000、精选 1648**。⚠️ REST 列表最多翻到 5000 条（脚本会显式告警），而仓库实际 total_count≈8850（GraphQL 口径）。仓库元数据（star≈244k、fork≈29k、最后 push 2026-10-03）见 `downloads/github/harness/repo.json`。
+- **官方 Releases（唯一权威的"官方决定"记录）**：https://github.com/deepseek-ai/deepseek-harness/releases —— 仓库内**没有 CHANGELOG**，逐版本变更只在 Release 说明里；破坏性变更在正文里以"破坏性变更/Breaking change"标注。本库 `guide/migration-0.2.md` 已对照 `0.1.7-alpha.1` / `0.2.0-rc.2` / `0.2.1-alpha.1` 三份原文明列。
+- **重要社区帖（本世代）**：[#1629 RFC：官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)、[#6520 未修复问题清单（本库汇总帖）](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)、[#8199 升级后大批插件被判不兼容](https://github.com/deepseek-ai/deepseek-harness/discussions/8199)、[#8633 宿主插件失败在 web 下不可见](https://github.com/deepseek-ai/deepseek-harness/discussions/8633)、[#8968 改 patch 永久废掉 sessionController](https://github.com/deepseek-ai/deepseek-harness/discussions/8968)、[#8590 社区 0.1.5→0.2.0 移植实录](https://github.com/deepseek-ai/deepseek-harness/discussions/8590)、[#8537 插件验收 profile 隔离提案](https://github.com/deepseek-ai/deepseek-harness/discussions/8537)、[#8669 真实插件构建日志（12 评论）](https://github.com/deepseek-ai/deepseek-harness/discussions/8669)。
 - **npm 包**：`@deepseek-ai/dsh`（https://www.npmjs.com/package/@deepseek-ai/dsh）等全家桶 72 个包元数据归档于 `downloads/npm/`（README 含全表）；`create-dsh-plugin`（https://www.npmjs.com/package/create-dsh-plugin）
 - 未上站的仓库内文档（本地副本 references/official-docs/docs/ 同名文件）：
   - [docs/event-producer-consumer.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/event-producer-consumer.md) — 全事件生产/消费矩阵
@@ -5099,12 +5242,14 @@ vendored `cordis` README 开宗明义：
 
 ## C. 本地 checkout 文档副本（references/official-docs/）
 
-- `docs/**`（215 个 md，含全部 `.zh.md` 双语对）— 教程/架构/子系统/API/cookbook 全量
-- 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README-zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
+- `docs/**`（**369 个 md**，含 182 个 `.zh.md` 双语对）— 教程/架构/子系统/API/cookbook/upgrade-guide/persistence-changes 全量（计数以 `references/official-docs/SNAPSHOT.md` 为准）
+- 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README.zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
 - `packages/AGENTS.md` · `packages/README.md` · `vendor/README.md`
 - `website-docs.ts`（站点投影清单）
 - 上游英文 `README.md` 不进入本目录（与 KB 索引同名），线上快照在 `downloads/github/harness/README.md`
 - 同步脚本本次加固：pathspec 全部 `:(top)` 锚定（避免 basename 全局匹配误收仓库深处 symlink）；Windows 下无法解出的 symlink 按其 blob 目标文本落地；目的目录只保留范围内条目（曾因一次失败抽取残留污染，已由脚本自动修剪 107 项）。
+- **不在站点路由表里的重要文档**（本地有副本、站上找不到）：`session-format-status.md`、`upgrade-guide/**`（6 篇，**无 index、无任何入链**）、`persistence-changes/**`、`ui-radius.md`、`web-styling.md`、`module-graph.md`、`dependency-catalog.json`、`persistence-schema.json`——清单见 [guide/links.md](../guide/links.md) §2.1。
+- **官方自带插件开发技能不在 `docs/` 下**：在 `packages/preset/agent-preset/skills/**`（本库要点摘录见 [official-plugin-dev-skill.md](official-plugin-dev-skill.md)）。
 
 ## D. 社区与生态（downloads/community/ + references/community-ecosystem.md）
 
@@ -5146,10 +5291,13 @@ vendored `cordis` README 开宗明义：
 
 `downloads/github/harness/discussions/`（说明文件 `README.md` 含分类统计与精选清单；刷新脚本 `scripts/archive-discussions.ps1`）：
 
-- `list.json` —— 全部 **1654 条**讨论（title/body/category/answers 等，正文即文档；08-14 首版 1408 条，08-15 增量 +246）
+- `list.json` —— 全部讨论（title/body/category/answers 等，正文即文档）；**2026-10-06 刷新**：`archive-discussions.ps1` 全量重跑（list.json 约 31.6 MB）：**list=5000、精选线程 1648**（`README.md` 由脚本自动生成分类统计：General 2250、Show Your Plugins! 1148、Ideas 1031、Q&A 565、Polls 5、Announcements 1）。
+  - ⚠️ **REST 分页天花板**：`/discussions` 走 REST 只能翻到 **5000 条**（脚本 `page -le 50` × 100/页）；同期 **GraphQL** `UPDATED_AT DESC` 报告仓库 **total_count=8850**。所以归档覆盖的是前 5000 条而非全量；需要更全时按 GraphQL 补抓（社区刷新用的就是 GraphQL 分页：31 页 × 100 覆盖 `UPDATED_AT >= 2026-09-14` 的 3100 条）。
 - `comments-<n>.json` —— 精选线程的全部评论（规则：Announcements/Q&A/Ideas 评论≥1；General/Show and tell 评论≥3 且非拉群帖）
-- `_selection.tsv` —— 精选清单
-- 背景：官方仓库 **Issues 关闭、Discussions 开放**（社区反馈主渠道）；排障与功能讨论代表：#49 ArchLinux 安装、#55 pnpm 全局安装 cordis-plugin-timer 缺失、#60 外部 GUI/ACP bridge、#30 win32 目录选择器；**08-15 新编号至 1629+**，代表作 [#1629 RFC 官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（08-15T01:15Z）、安全审计类 #817/#454/#523/#250
+- `_selection.tsv` —— 精选清单（1648 行 + 表头）
+- 背景：官方仓库 **Issues 关闭、Discussions 开放**（社区反馈主渠道）；**2026-10-06 API 复核**：`has_issues=false`——**没有 issue tracker、也不收 PR**，Discussions 是唯一渠道；仓库 star≈244,304、fork≈29,266、最后 push 2026-10-03、许可 MIT。代表作 [#1629 RFC 官方插件脚手架](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)、[#6520 本库的未修复问题汇总帖](https://github.com/deepseek-ai/deepseek-harness/discussions/6520)（最后活动 2026-09-23，**无维护者回复**）。
+- **重要结论（写进贡献规则）**：本轮通读的 3100 条线程里，**没有任何维护者确认过修复或设计决定**；唯一的"官方决定"权威记录是 **GitHub Releases 说明**（仓库无 CHANGELOG）。引用"官方已确认"必须落到 Release 原文或提交号。另：**Announcements 分类只有 1 条**——官方不在 Discussions 发版，发版只在 Releases。
+- **本窗口最高价值的线程**：#8199（升级后 22 个第三方 bundle 里 11 个被判不兼容 + `minimumReleaseAge` 静默阻塞）、#7850 / #8821（`plugin add` 不补齐 layer 行）、#8633（宿主插件失败在 `dsh web` 下不可见）、#8688（`connection.rpc.handle()` 405，自 0.1.0-rc.7 起）、#8862（profile 内 dsh 包遮蔽运行时）、#8968 / #8857 / #8635（运行中改 `cordis.patch.yml` 的三种破坏后果）、#8590（社区 0.1.5-rc.2 → 0.2.0-rc.2 移植实录）、#8669（12 评论真实插件构建日志，含 `inject` 写成函数导致整 bundle 被自愈禁用的血案）、#8537（插件验收 profile 隔离提案 + `sanitizeProfile` 复盘）、#8836（`assistant()` 空白文本块 → 云端 400）、#8649（桌面端 skill provider 因 `app.asar` 相对根丢光文件系统 skill）。
 
 ## G. npm 包归档（2026-08-14 晚新增）
 

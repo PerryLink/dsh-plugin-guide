@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "{{name}}",
+    "description": "由 dsh-plugin-dev 脚手架生成的 DeepSeek Harness 插件。"
+  }
+}

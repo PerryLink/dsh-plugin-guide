@@ -26,6 +26,30 @@ describe('scaffold templates', () => {
       expect(pkg.peerDependencies['@deepseek-ai/dsh-tools']).toBe(DSH_PEER_RANGE)
       expect(pkg.devDependencies['@deepseek-ai/dsh-tools']).toBe(DSH_PEER_RANGE)
       expect(pkg.dsh.bundle.patch).toBe('./cordis.patch.yml')
+      expect(pkg.dsh.manifestVersion).toBe(1)
+    }
+  })
+
+  it('ships the display metadata Plugin Manager reads without activating the plugin', () => {
+    for (const lang of ['ts', 'js'] as const) {
+      const set = files(lang)
+      const pkg = JSON.parse(set.get('package.json') ?? '{}')
+      // Exports make the locale files and the icon resolvable by specifier.
+      expect(pkg.exports['./locale/*.json']).toBe('./locale/*.json')
+      expect(pkg.exports['./icon']).toBe('./icon.svg')
+      // Every shipped resource must be inside the published file list.
+      expect(pkg.files).toContain('locale/*.json')
+      expect(pkg.files).toContain('icon.svg')
+      // meta.title/meta.description are what the plugin rows render.
+      const en = JSON.parse(set.get('locale/en.json') ?? '{}')
+      expect(en.meta.title).not.toContain('{{')
+      expect(en.meta.description).not.toContain('{{')
+      expect(en.meta.title.length).toBeGreaterThan(0)
+      expect(set.get('locale/zh.json')).toBeDefined()
+      // The icon must be a real, non-empty, in-package asset.
+      const icon = set.get('icon.svg') ?? ''
+      expect(icon).toContain('<svg')
+      expect(icon.length).toBeLessThan(256 * 1024)
     }
   })
 

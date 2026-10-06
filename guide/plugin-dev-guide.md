@@ -54,6 +54,10 @@ export function apply(ctx: Context) {
 | 上游 Cordis 框架 | [cordiverse/cordis](https://github.com/cordiverse/cordis)（README/docs 已下载） | downloads/github/cordis/ + references/upstream-cordis.md |
 | Cordis 论文 | [cordiverse/paper](https://github.com/cordiverse/paper) | downloads/github/paper/ + references/cordis-paper-and-community.md |
 | 生态/社区 | [社区开发文档与生态链接](../references/community-ecosystem.md)（topic 清单、awesome 列表、注册中心） | references/community-ecosystem.md + downloads/community/ |
+| **官方自带插件开发技能（0.2 世代新增，务必先读）** | 无站点路由（在 preset 包内） | `references/official-plugin-dev-skill.md`（原文抄录）+ 上游 `packages/preset/agent-preset/skills/cordis-plugin-development/**` |
+| **逐版本迁移指南（0.2 世代新增）** | 无站点路由 | `references/official-docs/docs/upgrade-guide/**`；本库综述 [migration-0.2.md](migration-0.2.md) |
+| 会话格式版本状态 | 无站点路由 | `references/official-docs/docs/session-format-status.md` |
+| 运行时自查（比文档更权威） | 会话内 `cordis_inspect_list` / `cordis_inspect_query`（Service / Event / Config / Tool / Slots / Theme） | — |
 
 网站与本地文档是同源的：GitHub Pages 站点由 `website/docs.ts`（副本在 references/official-docs/website-docs.ts）把仓库 `docs/` 投影成中/英两棵路由树；`develop/basic/` 页面 = `docs/user/develop/basic/index.zh.md`。**想"离线全量"看官方文档，读 references/official-docs/docs/ 即可。** 线上 URL 与本地副本的**完整对照**（含 `en/` 英文投影、全部 reference/cookbook/cordis-api/subsystems 路由与 GitHub 直链）见 [links.md](links.md)。
 
@@ -61,23 +65,28 @@ export function apply(ctx: Context) {
 
 ## 2. 工程形态与开发环境
 
-### 2.1 两种开发方式
+### 2.1 三种开发方式
 
 1. **仓库内开发（scratch 目录）**：clone `deepseek-ai/deepseek-harness`，`pnpm install` 后建 `scratch-plugin/`，用 `--patch` 覆盖层挂载本地插件（`pnpm dsh web --patch ./scratch-plugin/cordis.yml`）。适合学教程、改核心。
 2. **独立插件包（发布形态）**：一个 npm 包 + `cordis.patch.yml`，经 `dsh plugin --profile <name> add <包>` 装入 profile。适合对外发布。
+3. **会话内直接装（0.2 世代官方首选路径）**：在工作区写 bundle，然后用 **`plugin_manager` 工具的 `install_bundle`**（`target` 传**绝对包目录**）装进当前 profile——插件立刻对该 profile 的所有会话生效并跨重启保留。官方明确：**不要**手写 profile 的 `package.json`/`cordis.patch.yml`，**不要**在 profile 目录里跑 pnpm；`install_bundle` 负责这些步骤，而且 profile 之外的每一次手写都需要单独审批。详见 [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)。
 
-### 2.2 两个概念、两种清单（package.json 的 `dsh` 键）
+### 2.2 三个概念、三种清单（package.json 的 `dsh` 键）
 
-- **bundle（分发层）**：npm 包，`package.json` 声明 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`；patch 里是"插入/覆盖插件行"的 YAML 数组。
-- **profile（可运行组合）**：`$DSH_HOME/profiles/<name>/`，`package.json` 声明 `"dsh": { "profile": { "bundles": [...] } }`；由 `dsh plugin` 命令自动维护，手写不允许。
+- **bundle（分发层）**：npm 包，`package.json` 声明 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`；patch 里是"插入/覆盖插件行"的 YAML 数组。**`patch` 也可以是有序数组**：`{ "patch": ["./base.patch.yml", "./web.patch.yml"] }`，按序作为同一层应用，且每个文件里的相对插件路径**相对该文件所在目录**解析（校验失败信息：`dsh.bundle.patch must be a file path or a list of file paths`）。
+- **profile（可运行组合）**：`$DSH_HOME/profiles/<name>/`，`package.json` 声明 `"dsh": { "profile": { "bundles": [...] } }`；由 `dsh plugin` / `plugin_manager` 维护，手写不允许。
+- **client（浏览器半侧）**：`package.json` 声明 `"dsh": { "client": { "platform": "web", "inject": [...], "immediately": true, "external": [...] } }` 并导出编译好的 `./client`。`inject` **只决定激活顺序**（不是 cordis 服务注入），`immediately` 标记一阶段预取，`external` 列出基线之外的精确模块请求。客户端半侧只挂在**说明符恰为裸包名**的那一行上。
+- 另有两个可选作者字段：`dsh.manifestVersion`（清单格式标识，当前 `1`，与 npm 版本、会话格式版本无关）与 `engines.dsh`（兼容范围声明，**当前安装器/加载器都不校验**）。类型定义来自 `@deepseek-ai/dsh-package-manifest`。
 
 bundle 最小结构：
 
 ```
 hello-plugin/
-├── package.json       # dsh.bundle → cordis.patch.yml
+├── package.json       # dsh.bundle → cordis.patch.yml；可选 dsh.client + icon + exports
 ├── cordis.patch.yml   # - insert: [{ id, name: 'dsh-hello-plugin' }]
-└── index.js           # export const name / export function apply
+├── index.js           # export const name / export function apply
+├── locale/en.json     # { "meta": { "title": "...", "description": "..." } }（Plugin Manager 展示用）
+└── icon.svg           # 导出的 ./icon，≤ 256 KiB 且必须在包内
 ```
 
 ### 2.3 配置分层顺序（后层覆盖前层，逐行按 `id` 整段替换 config）
@@ -87,18 +96,22 @@ hello-plugin/
 3. 机器级 `$DSH_HOME/cordis.patch.yml`
 4. 命令行 `--patch <path>`（argv 顺序）
 
-patch 覆盖某行时**整行 config 被替换而非深合并**——覆盖方必须重述该行需要的全部键。验证实际组合：`dsh --profile <name> --dump-config`。
+patch 覆盖某行时**整行 config 被替换而非深合并**——覆盖方必须重述该行需要的全部键。**上游删行/改名后，targeting 该 id 的 override 会静默失效**（只在启动日志里留一行 `patch: entry <id> not found`），所以每次升级后都要跑一次 `--dump-config`。验证实际组合：`dsh --profile <name> --dump-config`。
 
 ### 2.4 常用命令
 
 ```sh
+dsh --version                           # 先确认宿主版本（0.1.7-alpha.1 起 = 会话格式 V4）
 dsh --profile web                       # 启动 Web UI
 dsh --profile headless "任务文本"        # 一次性无界面执行
-dsh --profile <name> --dump-config      # 打印实际生效的插件树
+dsh --profile <name> --dump-config      # 打印实际生效的插件树；查 patch: entry not found
 dsh plugin --profile <name> add <pkg>   # 安装 bundle（转发给 pnpm）
 dsh plugin --profile <name> remove <pkg>
+dsh plugin --profile <name> install     # 仅补装/修复 profile 依赖（自愈入口）
 pnpm dsh web --patch ./scratch-plugin/cordis.yml   # 仓库内开发调试
 ```
+
+会话内优先用 `plugin_manager` 工具（`list_plugins` / `list_bundles` / `install_bundle` / `set_plugin` / `set_bundle` / `remove_bundle`）而不是 shell：它把安装、bundle 选择、失败与 pending 状态一并返回。注意 `list_plugins`/`list_bundles` 在非 Full access 下同样需要审批，只在结果决定下一步时才调；**用免审批的 `cordis_inspect_query` 确认新行是否真的挂上**。`application: applied` 才算生效；`overridden` 表示被更高优先层盖住，`restart-required` 表示**尚未生效**。
 
 ---
 
@@ -158,7 +171,8 @@ ctx.effect(() => { const t = setInterval(...); return () => clearInterval(t) }) 
 - **类型安全**：`declare module '@deepseek-ai/cordis' { interface Events { 'my-plugin/ready': (p: {id: string}) => void } }`。
 - **命名空间**：`namespace/action`（`agent/step`、`tools/result`、`session/event`……）。
 - **注意区分**：`turn/*`、`step/*`、`tool/call`、`tool/result`、`compaction/*` 是**持久化会话事件类型**（在 `session/event` 里以 `event.type` 出现），不是同名 Cordis 事件。
-- **SessionEvent switch 规则**：`SessionEventMap` 是 merge-extensible union，对 `SessionEvent` 的 switch **禁用 `assertNever`**（插件新增的 variant 是合法未知值）——处理已知 case 后落入文档化 `default` 放行；closed union（如 `StreamChunk`）才以 `assertNever` 收尾。
+- **SessionEvent switch 规则**：`SessionEventMap` 是 merge-extensible union，对 `SessionEvent` 的 switch **禁用 `assertNever`**——处理已知 case 后落入文档化 `default` 放行；closed union（如 `StreamChunk`）才以 `assertNever` 收尾。
+- **会话事件红线（官方 practices 原文）**：**绝不要用新的 `type` 追加会话事件**——读方只在事件带信封 `ignorable: true` 时接受未知类型，而运行时 `Session.append()` 写不了这个标记（第三参仅为 surface 事件的 `SurfaceIntent`），写了会让整个会话**打不开**。插件状态从既有事件推导，或放进 inspection 找到的 storage 服务。类型层的 merge-extensible 是给宿主新增事件用的，不是插件写入口。见 `references/official-docs/docs/subsystems/session.md` 与 `docs/cordis-primer.md`。
 - 全量"谁发谁听"矩阵：`docs/event-producer-consumer.md`（副本在 references/official-docs/docs/）。
 
 ### 3.6 配置（Config）
@@ -186,7 +200,7 @@ export function apply(ctx: Context, config: Config) { /* config 已校验+补默
 2. **waterfall 监听器必须调 `next()`**。
 3. **模型可见 ⟺ 已记录**（Model-visible ⟺ logged）：任何进入模型请求的内容必须能从会话日志重建；新增模型可见输入必须新增会话事件。运行时不变式会断言这一点。
 4. **跨边界 opaque id 用 branded**：`Branded<B>`（`dsh-brand`，纯类型、零运行时依赖），从不裸 `string`；构造走 per-type factory（`SessionId` / `CallId` / `JobId` / `GoalId` 等），防止不同 id 在类型层互换。
-5. **会话事件版本规则**：`SessionEventMap` 成员默认 required-on-read，无信封豁免——`0.1.2-alpha.1` 已移除 `ignorable` 信封、读路径 fail-closed，不认识该事件类型的 build 一律拒绝日志；只有结构格式变更才 bump `SESSION_FORMAT_VERSION`。`0.1.2-rc.1` 恢复信封 `ignorable?: true` 字段但仅用于存量日志读取兼容——其 `Session.append` 第三参为仅 surface 事件的 `SurfaceIntent`，仍无法盖章标记，故自适应门在该线上继续停写（行为不变）。插件新增会话事件时按此契约设计：下游插件事件目前无注册面，写自定义事件的插件用自适应门在无信封宿主上停写（新增模型可见输入见红线 3）。
+5. **会话事件版本规则**：`SessionEventMap` 成员默认 required-on-read——不认识该事件类型的 build 一律拒绝整份日志，除非该事件带信封的 `ignorable: true`。**插件不得新增事件类型**（见 §3.5 红线）：`Session.append()` 写不了信封标记。只有结构格式变更才 bump `SESSION_FORMAT_VERSION`（当前 **4**；V3→V4 把 results 提升为 tool-role 消息、把消息 source 改为生产者自有的 `source.kind`，V3 读方拒绝 V4 日志）。新增**模型可见输入**由宿主侧事件承担（红线 3），插件只消费。
 
 ---
 
@@ -234,7 +248,17 @@ schema 自动汇入系统提示词组装；模型可用原生函数调用或 Cod
 5. **抛错或返回非法值 ⇒ `isError`**：基础设施故障用 throw；成功的领域结果放进规范值（即使渲染层解释一个"不理想"状态，如非零退出码）。
 6. **尊重 `exec.signal`**：触发时取消在途工作（前台工作与其绑定；后台任务改用任务自带取消信号）。
 7. **`presentationMeta(args, value)`（可选）**：从同一规范值导出可回放的 JSON 持久化到 `tool/result`，供 UI 卡片回放。
-8. **异步通知用 `exec.agent`**：`agent.inject({ content, source: { kind: 'plugin', plugin: '<name>' } })` 把上下文注入**下一条**模型请求（不是唤醒；空闲 agent 保持空闲）。对已释放的 agent 要 try/catch。
+8. **异步通知用 `exec.agent`**：`agent.inject({ content, source: { kind: '<你的 kind>' } })` 把上下文注入**下一条**模型请求（不是唤醒；空闲 agent 保持空闲）。⚠️ **本世代硬性变化**：`source` 不再接受退役的 `{ kind: 'plugin', plugin: '<name>' }` 包装——会话格式 V4 在**消息准入**处直接拒绝它（`packages/core/session/src/index.ts` 的 source 准入；官方 `docs/cookbook/adding-a-tool.md:49` 明写）。插件自己的 kind 必须先经声明合并注册，否则先用宿主已有的 kind：
+
+```ts
+declare module '@deepseek-ai/dsh-llm' {
+  interface MessageSourceMap {
+    'my-plugin': { kind: 'my-plugin' }   // kind 必须与 MESSAGE_SOURCE_KIND_PATTERN 匹配
+  }
+}
+```
+
+`agent.inject()` 只是 `send(input, 'next-step', false)`（`packages/core/agent-loop/src/agent.ts:171`）；同族还有 `followup()`（下一回合，唤醒）与 `steer()`（下一步，唤醒）。对已释放的 agent 要 try/catch。
 
 ### 4.3 后台任务（长任务）
 
@@ -257,8 +281,28 @@ schema 自动汇入系统提示词组装；模型可用原生函数调用或 Cod
 
 - 卡片类型：`generic`（默认）/ `terminal` / `diff` / `search` / `read` / `web`（`kind: search|fetch`）。
 - **纯函数硬规则**：卡片方法在实时流与日志回放都会执行 ⇒ 只能依赖 `args`（+ 结果），**禁止 I/O、会话状态、时钟/随机**。diff 由 args 推导；需要旧文件内容/工作目录时——放进持久化结果元数据或 UI 适配器，而不是 presenter。
-- UI 专属格式不进模型结果；`defineTool` 对展示路径软校验（老日志参数不崩溃，回退 generic）。
-- 中性词表在 `dsh-tools`；工具永不 import UI/传输类型。
+- **UI 专属格式不进模型结果**；`defineTool` 对展示路径软校验（老日志参数不崩溃，回退 generic）。
+- **中性词表在 `dsh-tools`**；工具永不 import UI/传输类型。
+
+### 4.7 两个新钩子（0.2 世代）
+
+- **`ToolDefinition.projectContent(exec, result)`**：在 `tools/post-execute` 策略**之前**安装"执行期准备好的内容"；策略的替换仍然权威（下游只看到策略结果），绕过 post-execute 的管线失败**不会**调用它。适合"结果本身是结构值、但要给模型附一段确定性正文"的场景。
+- **`ToolSchema.deferLoading: true`**：标记该工具的 schema **延后加载**，经 `schemaOf()` 进入模型可见 schema。用于工具很多、不想每轮都付全量定义 token 的场景（与 0.1.7-rc.2 起的"动态增加工具且不破坏 KV Cache"配套）。
+- **`PreToolDecision` 的 `ask` 新增 `displayReason`**：`{ kind:'ask'; reason?: string; displayReason?: { readonly en: string; readonly [locale: string]: string } }`——`reason` 是**审计用**的批准理由，`displayReason` 是**本地化**的提示文案（审批卡片会按界面语言显示，并引导 agent 用提问语言解释理由）。
+
+### 4.8 插件 UI（Web）与性能：官方 `practices.md` 的硬规则
+
+完整要点见 [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md) §3.2/§3.4；开发 UI 插件前**至少**记住这五条：
+
+1. **先选渲染面**：插件页面必须渲染成 **slot 里的 React 组件**；**不要**从 Host 提供 HTML 再 iframe 嵌进去（iframe 拿不到宿主主题 token、明暗切换与 `ctx.locale`）。
+2. **样式只用主题 token**（`cordis_inspect_query` 的 `Theme` 列出的 `--dsw-alias-*`）；字面颜色只用于 artwork。**不要** `require` 任何 Harness Client 包（`@deepseek-ai/dsh-client-ui-primitives` 等）——它们会无预警变化，而**抛错的组件会把整个 slot 条目搞白**（console: `slot entry crashed in '<slot>'`）。要对齐宿主就"把 primitive 的标记/CSS/行为抄进插件"。
+3. **只经 slot 贡献**：`ctx.slots.inject(ownerKey, () => ctx.slots.register(...))`；会话数据经 slot props 的 selector hook 读**最小切片**；**不要**在组件外写 DOM，也不要往 `document.body` 追加第二个应用。
+4. **加 Chat 行**：`ctx.uiConversation.events.register()` 注册事件定义 + 在 `conversation.chat.node` slot 下按定义的 `kind` 注册视图（分页/落位/增量组装由 Conversation 层负责）。Client 需要会话派生值时，在 Host projection 上声明 **`wire.view`**——Client **不自己 fold 会话事件**。
+5. **性能**：per-session 状态放进 `ctx.sessionProjections`（`apply(state, event)` 纯同步、忽略的事件返回同一引用；`stateOf()` 读；纯 JSON + 改语义就 bump `stateVersion`）；**等持久事件**（`turn/end`/`assistant/message`/`tool/result`），实时 token 从 `agent/assistant-stream` 渲染；**不要轮询 `agent/status`**；注意 `whenIdle()` **不**等于"一次 followup 结束"。
+
+另有一条最容易踩的工程坑：**`dsh.client` 的 `inject` 必须是静态数组**（cordis 不接受函数形式）。曾有一个已发布的 0.2.0 插件把它导出成函数 → 声明为零依赖 → `apply()` 抛 `cannot get property "sidebarRightTabs" without inject` → 日志只留一行 `web boot: 1 entry did not activate` → **插件自愈机制把整个 bundle 禁用了**。单测要断言"`inject` 是数组且覆盖 `apply()` 触及的每个服务"。
+
+**工具的 `parameters` 是 DSH 自己的方言，不是 JSON Schema**；Remote 服务调用是**位置参数**而不是对象参数（`get()` 能用，最有欺骗性）；往 `ctx` 上写**未声明**的属性会抛错并可能静默杀掉整个插件的激活——可选服务一律 `ctx.get(name)`，**`ctx.<service>` 只对自己 `inject` 里声明过的服务合法**。
 
 ---
 
@@ -307,13 +351,18 @@ LLM 适配器同理：继承 `LlmAdapter` 实现 `stream(options)`，`ctx.llm.re
 | 会话预设组合 | preset 层：per-session agent composition from preset cordis.yml（`dsh-preset`） |
 | 待办列表 | `dsh-todo` 的 `todo_write` 工具（状态进会话日志，可作参考实现） |
 | 循环卫生/工具超时 | `dsh-guard`：重复调用提醒 + `tools/execute` 截止时间强制 |
-| 子代理委派 | `ctx.subagents` provider 注册表 + `dsh-tool-subagent` |
-| 多代理编排 | `ctx.workflow` 缝（Definition/Provider/Consumer）+ `workflow`/`ralph` 工具 Consumer |
+| 子代理委派 | `ctx.subagents` provider 注册表 + `dsh-tool-subagent`（现有多家 provider：in-process spawn / fork / `dsh-subagent-acp` / `-codex` / `-claude-code` / `-dsh-sdk`） |
+| 多代理编排 | `ctx.workflowEngine` 缝（Definition/Provider/Consumer）+ PTC workflow engine + `workflow`/`ralph` 工具 Consumer |
 | MCP | 每服务器一个插件：发现工具 → `ctx.tools.register()` |
 | Skills | section + 工具注册；调用时 `inject()` 技能内容 |
 | 定时任务 | 注册模型可调的调度工具；定时器 → 空闲 `followup(source:{kind:'cron'})` / 忙碌 `inject()` |
 | 遥测/回放 | `session/event` → JSONL；回放 = `sessions.create(id, {seed})` |
-| 热重载 | 所有注册是 effect → vendored HMR 天然可用 |
+| 上报通道（0.2 新增） | `ctx.otel`：`createEventReporter(options)` / `createSessionLogReporter(options)`——自带传输与批处理，未用时**不分配** provider/transport；**消费者必须在自己 fiber 释放时 drain 通道** |
+| 产品分析事件（0.2 新增） | `ctx.productAnalytics`（`ProductTelemetry`）——**只发显式选定的字段，不自动采集** Session 数据或标识；Desktop 消费者在 `packages/client/product-analytics`，普通 Web 不采集 |
+| 语音输入（0.2 新增，实验） | Host 侧三角色（Service Definition / SenseVoice Provider / Remote Consumer）；浏览器侧 `TranscriptionRequest`，UI 挂 `conversation.input.activity` 与 `plugins.bundle.activation` |
+| Claude Code mod 桥（0.2 新增，实验） | `defineMod({ name, version, root, userConfig, register })` 挂在 `cordis.yml` 的 bridge 行之后；类型从 `@deepseek-ai/dsh-experimental-claude-code-mods` 导入。**官方安全提示：mod 不加沙箱，只挂你愿意当插件运行的 mod** |
+| per-session 派生状态（性能首选） | `ctx.sessionProjections`：纯同步 `apply`、忽略的事件返回同引用、`stateOf()` 读、纯 JSON + `stateVersion`；Client 需要派生值时在 Host projection 上声明 `wire.view`（**Client 不自己 fold 会话事件**） |
+| 热重载 | 所有注册是 effect → vendored HMR 天然可用。**但**：改 profile 的 `cordis.patch.yml` 会触发重载并可能丢工具/杀在途 turn（见 §7.0 警告与 `unfixed-issues.md` T1）——运行中不要改 |
 
 Hook 的"原生 hook"就是挂在拦截点上的普通 Cordis 插件，不需要外部协议；`dsh-hooks-claude-code`/`dsh-hooks-codex` 是把 Claude Code/Codex hook 配置映射到这些扩展点的桥。
 
@@ -333,6 +382,18 @@ Hook 的"原生 hook"就是挂在拦截点上的普通 Cordis 插件，不需要
 
 安装状态管理文件：profile 的 `package.json`（`dsh.profile.bundles` 层栈）+ `cordis.patch.yml`（insert 行与 disabled 启停，HMR watched）。
 Git 源安装支持子路径选择器：`dsh plugin --profile demo add "github:owner/repo#<ref>&path:<subdir>"`（构建产物已入库时可免构建直接装）。
+
+> ⚠️ **"配置 HMR 实时生效"有代价（本世代实测，见 guide/unfixed-issues.md T1）**：`dsh-hmr` 精确监听 `profile/package.json`、`profile.patchPath`、`$DSH_HOME/cordis.patch.yml`，**任何写入**（包括逐字节相同的重写）都触发重载。实测后果：正在跑的会话会丢掉 preset 贡献的全部工具（65 → 41）、在途 turn 被杀，最坏情况重建 `session-controller` 时抛 `file-upload: Agent resolver is already registered` 并**永久失效**（只能整进程重启）。**结论：不要在会话运行期间改 profile patch**；配置改动走 `plugin_manager` / `dsh plugin` 入口，必须手改就先停进程。
+
+### 7.0.1 展示元数据与图标（0.2 世代新增的硬性交付项）
+
+Plugin Manager 与 Settings 会**在不激活插件的前提下**读展示信息，所以"能跑"不等于"交付完成"。官方清单（`references/official-plugin-dev-skill.md` §3.1）：
+
+- `locale/en.json`（以及用户语言，如 `locale/zh.json`）写 `{ "meta": { "title": "...", "description": "..." } }`，并在 `exports` 里导出 `"./locale/*.json"`；
+- 图标导出为 `"./icon"`（包根插件也可在 `package.json` 顶层写 `icon`，它优先于 `./icon`）；支持 SVG/PNG/JPEG/WebP，**≤ 256 KiB**，realpath 后必须仍在包内；
+- `files` 必须包含 patch、locale、图标与**每个运行时文件**——但**本地目录安装是链接 checkout，`files` 不过滤链接目录**，要直接核对文件；
+- **子路径插件（`my-plugins/search`）不是包，永远不读 `package.json`**：标题/描述走 `my-plugins/search/locale/*.json` 的 `meta.*`，图片走导出的 `my-plugins/search/icon`。
+- 可选作者字段：`dsh.manifestVersion`（当前 `1`）与 `engines.dsh`（**当前不校验**，只作声明）。类型来自 `@deepseek-ai/dsh-package-manifest`。
 
 ### 7.1 从 GitHub 安装的 build-script 坑
 
@@ -358,7 +419,9 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 **身份与依赖（最致命）**
 - **cordis 双副本 / 双 Cordis 分裂**：插件构建时若从 `.pnpm` 副本解析 cordis，与 harness 的 vendored 副本是"两个模块"，`declare module` 增强合并不了 → 报 `Property 'tools' does not exist on type 'Context'`。构建期把 cordis 解析到 harness 的 `vendor/cordis`；npm 安装路径下 peer 必须与宿主同一身份——**scoped `@deepseek-ai/cordis` 与 unscoped `cordis` 混用同样分裂**（dsh-tools 的类型只增强 scoped 版本）。独立包把 cordis 设为 peerDependency（+ dev），版本对齐宿主。
 - **官方 `@deepseek-ai/*` 包曾未发布公共 npm**（rc 早期）：社区 bundle 的 `dependencies` 留空，靠 profile 的 pnpm 闭包 flat fallback（`$DSH_HOME/profiles/node_modules`）注入；声明了反而解析失败。rc.6 起公开包可用（from-scratch 教程锁 `0.1.0-rc.6`、cordis `4.0.1`），两条时间线的资料都要知道，按当时宿主版本取舍。
-- **npm `latest` 标签是过期版本**：`@deepseek-ai/dsh-tools` 的 `latest` 停在陈旧 0.0.1-rc.1——脚手架（create-dsh-plugin）显式钉 `next` 标签版本；裸跑 `npm i @deepseek-ai/dsh-tools` 会踩旧版。2026-08-14 复核：dsh-tools 与 `@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 均为 0.0.1-rc.1、`next` 为 0.1.0-rc.6；`@deepseek-ai/dsh` latest=next=0.1.0-rc.6、`@deepseek-ai/cordis` latest=4.0.1（另有 `next`=4.0.1-rc.4）；create-dsh-plugin 已发布 latest=0.1.1（2026-08-13T15:15Z）；dsh-core、dsh-sdk 仍未发布（404）。**无作用域 `dsh` 包是无关项目 node-dsh**（"A shell written in JavaScript"）——官方 CLI 包是 `@deepseek-ai/dsh`，别装错。2026-09-04 复核：`@deepseek-ai/dsh` latest=next=0.1.2-rc.1（`alpha`=0.1.2-alpha.5）、`@deepseek-ai/cordis` latest=4.0.2（`next`=4.0.1-rc.4）、dsh-tools 与 dsh-session-persistence-jsonl 的 `next` 抬到 0.1.2-rc.1（`latest` 仍 0.0.1-rc.1）、create-dsh-plugin latest=0.2.1；dsh-core、dsh-sdk 仍 404。
+- **npm `latest` 标签是过期版本**：库包（`dsh-tools`、`dsh-base`、`dsh-headless`、`dsh-session-persistence-jsonl`、`dsh-settings`、`dsh-workflow` …）的 `latest` **至今**钉在 `0.0.1-rc.1`，所以写 `"latest"` 会装到远古版本，必须写死版本或钉 `next`/`alpha`。**2026-10-06 复核**：`@deepseek-ai/dsh` `latest`=`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`；dsh-tools / dsh-base / dsh-headless / dsh-session-persistence-jsonl 的 `latest` 仍 `0.0.1-rc.1`、`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`；`@deepseek-ai/cordis` `latest`=4.0.4 并有新标签 `dsh-0-2-1-alpha-1`=4.0.5-alpha.1；`@deepseek-ai/schemastery` `latest`=3.18.4；`create-dsh-plugin` `latest`=0.2.3；dsh-core、dsh-sdk 仍 404。历史两次复核（2026-08-14 与 09-04）的数值保留在上一条记录里，可见"`latest` 陷阱"从 rc 早期持续到 0.2 世代。**无作用域 `dsh` 包是无关项目 node-dsh**（"A shell written in JavaScript"）——官方 CLI 包是 `@deepseek-ai/dsh`，别装错。
+- **profile 内安装的 `@deepseek-ai/*` 会静默遮蔽运行时自带版本**（解析优先级 `profile > runtime`）：把共享实例的 dsh 包写进 **dependencies** 是错的做法——pnpm 会把它装进 profile，盖掉宿主自带的版本，然后核心服务注册失败（实测 `settings service is absent: mount @deepseek-ai/dsh-settings with @deepseek-ai/dsh-config-editor`，桌面端每次崩溃）。**共享实例的 dsh 包只放 `peerDependencies` + `devDependencies`**；独立版本演进或纯工具型包才放 `dependencies`。另注意 **DSH 不校验 peer 版本范围**（官方明文），peer 范围只是声明意图，真正的兼容要靠运行时探测。
+- **`file:` 安装载入的是副本**：`dsh plugin add file:../my-plugin` 之后，profile 的 `node_modules` 下是**拷贝**（`nodeLinker: hoisted` + 锁文件只记 `version: file:<path>`），所以**改源码不生效、`update` 是 no-op**——只有 `remove` + `add` 才会重装。调试期要频繁改就用 `--patch` 直挂源码目录，或每次显式重装。
 
 **tsconfig 三件套 + 构建陷阱**
 - 独立 TS 插件包实测可用形态：`module: esnext` + `moduleResolution: bundler` + `allowImportingTsExtensions: true`（否则 TS5097）+ `rewriteRelativeImportExtensions: true`（否则产物残留 `./x.ts` 导入 → 运行时 ESM 崩溃）+ `lib: ["ES2024"]` + `outDir: lib` + `declarationDir: lib/types`。用 `Buffer`/`node:` 时显式 `"types": ["node"]`（不写 `types` 字段会隐式包含全部 @types，脆弱）。
@@ -409,21 +472,33 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 - **社区/学习**：[hikariming/dshfind](https://github.com/hikariming/dshfind)（DSH 学习与分享社区，MDX）。
 - **教程与文档型仓库（08-14 晚扫描新增归档）**：[flaqai/deepeseek-harness-guide](https://github.com/flaqai/deepeseek-harness-guide)（15 语言指南）、[Electricitysheep/dsh-handbook](https://github.com/Electricitysheep/dsh-handbook)（14 章双语手册 + PDF）、[flysheep-ai/learn_deepseek_harness](https://github.com/flysheep-ai/learn_deepseek_harness)（s01–s23 渐进课程）、[pingfanfan/hello-dsh](https://github.com/pingfanfan/hello-dsh)（零基础 22 技能实例）、[LaplaceYoung/dsh-book-deepseek-harness](https://github.com/LaplaceYoung/dsh-book-deepseek-harness)（源码拆解书）、[curtiseng/cordis-course](https://github.com/curtiseng/cordis-course)（Cordis 论文中文课程）、[NanmiCoder/dsh-agent-teams](https://github.com/NanmiCoder/dsh-agent-teams)（英文插件开发教程 developing-dsh-plugins.md）；**08-15 第七批（14 个）**：桌面壳（[anywhere-labs](https://github.com/anywhere-labs/deepseek-harness-desktop)、[cc1252](https://github.com/cc1252/deepseek-harness-desktop)、[ChisaAlter](https://github.com/ChisaAlter/Deepseek-Harness-Desktop) 等 7 个）、[banana770/dsh-qq-bridge](https://github.com/banana770/dsh-qq-bridge)（QQ 桥接）、[zzszmyf/dsh-security-pocs](https://github.com/zzszmyf/dsh-security-pocs)（安全 PoC）、[HenryZ838978/deepseek-harness](https://github.com/HenryZ838978/deepseek-harness)（Python 移植）、[Vengisk/deepseek-harness-termux](https://github.com/Vengisk/deepseek-harness-termux)（Termux）；第八批 3 个：[orxz/deepseek-harness-themes](https://github.com/orxz/deepseek-harness-themes)（主题）、[vvlife/whalehub-dsh](https://github.com/vvlife/whalehub-dsh)（WhaleHub 市场）、[dsh-market/dsh-market](https://github.com/dsh-market/dsh-market)……完整 114 仓清单见 [community-ecosystem.md](../references/community-ecosystem.md) §4。
 - **本工作区已有实例可参考**：`dsh-chat-import`（JS + cordis.patch.yml）、`dsh-resume-plugin`（多 skill 插件）、`dsh-plugin-claude-bridge`（TS + src/ + tsconfig）；114 个社区仓库的**完整源码副本**在 `downloads/community-repos/`（首批 15 个深读报告见 [references/community-repo-deep-dive.md](../references/community-repo-deep-dive.md)）。
-- **官方 Discussions 最新动态**：官方 [RFC #1629](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（2026-08-15，官方插件脚手架 template repo + `pnpm create dsh-plugin` 提案，直指 dsh-tools `latest` 版本火车混淆问题）——全量 1654 条讨论归档于 `downloads/github/harness/discussions/`。
+- **官方 Discussions 最新动态**：官方 [RFC #1629](https://github.com/deepseek-ai/deepseek-harness/discussions/1629)（2026-08-15，官方插件脚手架 template repo + `pnpm create dsh-plugin` 提案，直指 dsh-tools `latest` 版本火车混淆问题）——**全量归档已刷新到 2026-10-06**（`downloads/github/harness/discussions/`：list=5000、精选线程 1648；REST 列表上限 5000 而仓库实际 total_count≈8850，脚本会显式告警）。仓库 API 核实 star≈244k、`has_issues=false`——**没有 issue tracker、不收 PR，Discussions 是唯一渠道，且 Announcements 分类只有 1 条**（官方不在讨论区发版）。**注意**：本轮通读窗口内 3100 条讨论，**没有任何维护者在任何帖里确认过修复或设计决定**；唯一权威的"官方决定"记录是 GitHub **Releases** 的说明（仓库无 CHANGELOG）。引用"官方已确认"时落到 Release 原文或提交号。
+- **0.2 世代新增的作者工具（社区）**：[mengjiemy/dsh-plugin-devkit](https://github.com/mengjiemy/dsh-plugin-devkit)（四个命令对准四类"静默失败"：`smoke` 在安装前用假 `window`/`react` 加载 client 插件——装一个坏 client 半侧会把整个 UI 拖下水；`sync` 对比源码目录与 `file:` 安装后 DSH **真正加载的副本**；`version` 比对 profile 与 client 自身的 `@deepseek-ai/*` 版本；`css` 检测插件间 `:root` CSS 变量冲突）、`dsh-composition-doctor`（把插件故障关联回组合来源——正对 T3 的诊断空白）、`dsh-xray`（声明能力 vs 实际能力）、`Noob-stupid/dsh-plugin-gating-hub`（升级契约预检 + 自动回滚）。生态规模参考：`topic:dsh-plugin` 约 **17,776 仓**（上限值，标签灌水严重），[dsh-plugin.org](https://dsh-plugin.org) 索引约 12,699，星数最高的市场是 [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market)（约 5.6k）。
 - 完整信息与更多链接见 [references/community-ecosystem.md](../references/community-ecosystem.md)；官方文档 URL 对照见 [guide/links.md](links.md)。
+
+
+---
+
+## 9.1 版本兼容与迁移（0.2 世代必读）
+
+- **先认版本**：`dsh --version`。`0.1.7-alpha.1` 起包含本世代全部破坏性变更（会话格式 V4）。npm 上 `latest`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`，而 master 最新 tag 是 `0.2.1-alpha.1`——**三个"最新"不是一个东西**。
+- **peer 范围写两侧**（如 `>=0.1.2-rc.1 <0.3.0`），但要记住 **DSH 不校验它**；真正的兼容靠运行时探测与发版纪律。
+- **共享实例的 dsh 包只放 peer + dev**，绝不放 dependencies（否则 profile 内副本会遮蔽运行时版本）。
+- **升级后必做**：`dsh --profile <name> --dump-config` 看有没有 `patch: entry <id> not found`（上游删行/改名后，你的 override 会**静默失效**）；再跑一次真实能力。
+- **逐项迁移清单**：见 [migration-0.2.md](migration-0.2.md)（含会话格式 V4、settings 重写、invariants 删除、`readBytes`、客户端 slot/Remote 改名、`agent.inject()` 的 source 包装退役、preset 分叉等全部条目与官方原文出处）。
 
 ---
 
 ## 10. 从零到发布的标准路径（总结清单）
 
 1. 读 Cordis Primer（5 个概念）→ 跑 Cordis tutorial 01-07（无 key）。
-2. 按 docs/user/develop/basic 四步做第一个插件（scratch-plugin + `--patch`）。
-3. 需要新能力时：先查 architecture「Where new behavior goes」与 extension-cookbook 表选扩展点；tool 类需求读 adding-a-tool.md 全文。
+2. 按 docs/user/develop/basic 四步做第一个插件（scratch-plugin + `--patch`）；或者在会话里直接走官方路径：写 bundle → `plugin_manager.install_bundle` → `cordis_inspect_query` 核对（见 [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)）。
+3. 需要新能力时：先查 architecture「Where new behavior goes」与 extension-cookbook 表选扩展点（**用最弱的够用机制**）；tool 类需求读 adding-a-tool.md 全文。
 4. 需要可替换能力 → 三层拆分（practice 教程）；需要接模型商 → LLM adapter 指南。
-5. 配置全部 Schema 化、fail loud；不硬编码可调值。
-6. 打包：bundle manifest + cordis.patch.yml；git 安装配 `prepare`；npm/tarball 分发免 allowBuilds。
-7. 发布前：包级测试 + 关键 snapshot + typecheck/build/hygiene；README 双语并写明扩展点与模型可见效果。
-8. 发布到 dsh-plugin topic / hub / awesome 列表，社区可见。
+5. 配置全部 Schema 化、fail loud；不硬编码可调值；工具 `parameters` 是 DSH 方言不是 JSON Schema。
+6. 打包：bundle manifest + cordis.patch.yml（可多文件数组）；**补展示元数据**（`locale/*.json` 的 `meta.*` + 导出的 `./icon`）；git 安装配 `prepare`；npm/tarball 分发免 allowBuilds。
+7. 发布前：包级测试 + 关键 snapshot + typecheck/build/hygiene；README 双语并写明扩展点与模型可见效果；`inject` 是静态数组且覆盖 `apply()` 触及的每个服务。
+8. 发布到 dsh-plugin topic / hub / awesome 列表，社区可见；显式声明跨线 peer 范围并按版本发版（组合包升级是社区最常见的"插件被判不兼容"来源）。
 
 ---
 

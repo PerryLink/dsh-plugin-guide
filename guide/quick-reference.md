@@ -131,14 +131,20 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 
 ## Hard rules (violations = gate failures / wrong behavior)
 
-1. Every registration goes through `ctx.effect()` / `ctx.on()` / a service `register()` (returns a disposer).
-2. Waterfall listeners must call `next()`; not calling it short-circuits by design.
-3. Model-visible ⇔ logged: new model-visible input requires a new session event (`SessionEventMap`).
-4. Never hardcode tunables (test: can cordis.yml change it?); misconfiguration fails loud.
-5. Standalone plugin packages: cordis is a peerDependency matching the host identity (mixing scoped `@deepseek-ai/cordis` and unscoped splits identities); ESM; `dsh.bundle` manifest; git installs need `prepare` + `allowBuilds`; ship `lib/` or a tarball.
-6. Bilingual docs in pairs; tool descriptions/prompts are behavior; non-trivial changes need an Agent Note; run the minimal check set before pushing (dsh-pre-push-checks).
-7. Opaque cross-boundary ids are branded (`Branded<B>` from `dsh-brand`), never bare `string`.
-8. `SessionEventMap` members are required-on-read: the `ignorable` envelope is gone on 0.1.2-alpha.1 (reads fail closed — a build that does not know an event type refuses the log), and plugin appends of custom events ride an adaptive gate that stops writing on envelope-less hosts; only structural format changes bump `SESSION_FORMAT_VERSION`. 0.1.2-rc.1 retains the `ignorable?: true` field for stored-log read compatibility only — its `Session.append` third argument is a `SurfaceIntent` for surface events and still cannot stamp the marker, so the gate keeps skipping custom-event appends there (no behavior change). Switch over `SessionEvent` falls through a documented `default` — no `assertNever` (merge-extensible union).
+1. Every registration goes through `ctx.effect()` / `ctx.on()` / a service `register()` (returns a disposer). A registration on another context (e.g. `agent.ctx`) has two owners — keep its disposer in your own effect too.
+2. Waterfall listeners must call `next()`; not calling it short-circuits by design. When rewriting an `agent/pre-step` decision, **spread it** (`{ ...decision, messages }`) so fields like `startsRequestSeries` survive.
+3. Weakest mechanism that suffices: `ctx.tools.restrict()` (remove only) < `ctx.tools.guard()` (deny only) < waterfall rewrite (order-dependent) < `system-prompt/assemble` (replaces everything). Observe final outcomes on `tools/result`; use `tools/post-execute` only to transform.
+4. Model-visible ⇔ logged: new model-visible input requires a new session event (`SessionEventMap`) — added by the host, never by appending a new `type` yourself (see rule 8).
+5. Never hardcode tunables (test: can cordis.yml change it?); misconfiguration fails loud. Live-editable user fields use `Volatile<T>` + `loader/volatile-update` (the form namespace is the profile entry id).
+6. Standalone plugin packages: cordis is a peerDependency matching the host identity (mixing scoped `@deepseek-ai/cordis` and unscoped splits identities); ESM; `dsh.bundle` manifest (`patch` may be an ordered array); git installs need `prepare` + `allowBuilds`; ship `lib/` or a tarball. Shared-instance dsh packages go in **peerDependencies + devDependencies only** — never `dependencies` (a profile copy silently shadows the runtime, and DSH does not validate peer ranges).
+7. Ship display metadata: `locale/*.json` `meta.title`/`meta.description` plus an exported `./icon` (SVG/PNG/JPEG/WebP, ≤256 KiB, inside the package). Subpath plugins never read their own `package.json`.
+8. Bilingual docs in pairs; tool descriptions/prompts are behavior; non-trivial changes need an Agent Note; run the minimal check set before pushing (dsh-pre-push-checks).
+9. Opaque cross-boundary ids are branded (`Branded<B>` from `dsh-brand`), never bare `string`.
+10. **Never append a session event with a new `type`.** `SessionEventMap` members are required-on-read: a reader that does not know a type refuses the whole log unless the event carries the envelope's `ignorable: true` marker, and live `Session.append()` cannot set that marker (its third argument is a `SurfaceIntent` for surface events only). Derive your state from existing events, or keep plugin-owned data in a storage service found through inspection. Only structural format changes bump `SESSION_FORMAT_VERSION` (currently `4`; the V3→V4 migration lifts tool results into tool-role messages and moves message sources to producer-owned `source.kind`). Switch over `SessionEvent` still falls through a documented `default` — no `assertNever` (merge-extensible union).
+11. `agent.inject()`'s `source` no longer accepts the retired `{ kind: 'plugin', plugin: '<name>' }` wrapper — declare your own kind through `MessageSourceMap` first. `inject` does not wake the agent (`followup()`/`steer()` do).
+12. Never write a profile `cordis.patch.yml` while sessions run (HMR reloads it: tools vanish from live sessions, in-flight turns die, and a rebuild of `session-controller` can kill it until a full restart). Never hand-write a profile `package.json`; never run pnpm inside the profile directory.
+13. UI plugins: render React in a slot (never an iframe-hosted page); style with `--dsw-alias-*` theme tokens only; never `require` a Harness Client package (a throwing component blanks the slot); `dsh.client.inject` must be a **static array**.
+14. Performance: keep per-session state in `ctx.sessionProjections` (pure synchronous `apply`, same reference when ignored, plain JSON + `stateVersion`); wait on durable events (`turn/end`, `assistant/message`, `tool/result`) and render live tokens from `agent/assistant-stream`; never poll `agent/status`.
 
 ## Community pitfalls quick list (details: guide §7.3 / community-repo-deep-dive.md)
 
@@ -147,7 +153,7 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 - Windows junctions via PowerShell `New-Item -ItemType Junction`; vitest drive letter must be uppercase `C:/`.
 - `DSH_PERMISSION_MODE=danger-full-access` is high-risk (no sandbox backend on Windows, approvals disabled); `DSH_*` vars in `~/.dsh/.env` break startup.
 - Session files are multi-frame zstd: use `scanZstdFrames`/`createZstdFrameDecoder` (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`).
-- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh` (latest=0.1.2-rc.1); `@deepseek-ai/dsh-tools` and `@deepseek-ai/dsh-session-persistence-jsonl` have stale `latest` (0.0.1-rc.1), pin `next` (0.1.2-rc.1); `create-dsh-plugin` latest=0.2.1; dsh-core/dsh-sdk still unpublished (verified 2026-09-04).
+- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh` (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.1); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` and `@deepseek-ai/dsh-session-persistence-jsonl` still ship a stale `latest` (0.0.1-rc.1), so pin `next` (0.2.0-rc.2) or `alpha` (0.2.1-alpha.1); `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 with a new `dsh-0-2-1-alpha-1` tag at 4.0.5-alpha.1; dsh-core/dsh-sdk still unpublished (verified 2026-10-06).
 - `resolve()` both sides before path comparisons (Windows backslash trap).
 
 ## Documentation links
@@ -165,7 +171,9 @@ Community dev docs — templates/tutorials/pitfalls, full list in [references/co
 
 ## Key source index
 
-- Official docs verbatim: `references/official-docs/docs/**` (215 pages, all `.zh.md` pairs included)
+- Official docs verbatim: `references/official-docs/docs/**` (369 md pages, all 182 `.zh.md` pairs included); the pages **not on the documentation site** (session-format-status, `upgrade-guide/**`, `persistence-changes/**`, ui-radius, web-styling, module-graph) are listed in [links.md](links.md) §2.1
+- Migration checklist: [migration-0.2.md](migration-0.2.md) (every breaking change from 0.1.6-alpha.2 → 0.2.1-alpha.1, with the official upgrade-guide source for each)
+- The official in-repo plugin-development skill: [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)
 - Repo-root constraints: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/vendor/README.md`; sync state in `references/official-docs/SNAPSHOT.md`
 - Site crawl HTML: `downloads/web/site/**` (EN+ZH full site) + `downloads/manifest.tsv` (download ledger)
 - Upstream Cordis: `downloads/github/cordis/**` + research `references/upstream-cordis.md`

@@ -29,15 +29,15 @@ The provider admits the deferred read before allocating source bytes, shares con
 
 ## Preview reads
 
-`RenderedDocumentBytes` extends the workspace byte response with `missingFonts` and `generation`; the original source identity accompanies the converted PDF.
+`RenderedDocumentBytes` carries workspace file metadata, native PDF `data`, `missingFonts`, and `generation`; the original source identity accompanies the converted PDF.
 
-The `officeToPdf.render` Remote method checks source authorization and versions through the Session's [Workspace Files](../../packages/api/workspace-files/README.md) service. After conversion admission, `fs.readBytes` supplies raw input within the reserved byte capacity; Office input limits govern this read. The response carries base64 PDF bytes with the source absolute path and freshness version. Source access failures pass through; size and engine failures expose a classified reason without diagnostics. Conversion does not activate an Agent or append events.
+The `officeToPdf.render` Remote method checks source authorization and versions through the Session's [Workspace Files](../../packages/api/workspace-files/README.md) service. After conversion admission, `fs.readBytes` supplies raw input within the reserved byte capacity; Office input limits govern this read. The binary Remote projects the PDF into a multipart attachment and restores an `ArrayBuffer`-backed `Uint8Array` on the Client. Source access failures pass through; size and engine failures expose a classified reason without diagnostics. Conversion does not activate an Agent or append events.
 
 The `api/remotes` assembly mounts the conversion service's generated Remote descriptor. The shared Document Preview package registers Office formats with complete-byte loading and its existing PDF.js Worker. Each preview read rechecks renderer generation, source authorization, and version before sharing an in-flight conversion or cached PDF. Connection resets and plugin disposal cancel requests and clear cached bytes. Missing services show localized configuration guidance.
 
 ## Engine selection and limits
 
-The external [`@deepseek-ai/libreoffice-kit`](https://github.com/deepseek-harness/libreoffice-kit) Node API selects its precompiled engines. The kit has an independent version and release workflow, defined by the [release ownership decision](../../.agents/notes/implemented/architecture/2026-09-14-independent-libreoffice-kit.md). Application builds install the published npm packages. Application packaging requires the target’s declared native engine, or Node WASM when the kit declares no native engine for that target. The [platform engine decision](../../.agents/notes/implemented/architecture/2026-09-15-platform-office-engines.md) defines installation and packaging. Invalid metadata, missing required assets, and conversion errors reject without switching engines. Conversion uses disk input and output paths on the Host, with no browser conversion engine or font RPC.
+The external [`@deepseek-ai/libreoffice-kit`](https://github.com/deepseek-ai/dsh-libreoffice-kit) Node API selects its precompiled engines. The kit has an independent version and release workflow, defined by the [release ownership decision](../../.agents/notes/implemented/architecture/2026-09-14-independent-libreoffice-kit.md). Application builds install the published npm packages. Application packaging requires the target’s declared native engine, or Node WASM when the kit declares no native engine for that target. The [platform engine reference](../../packages/document/office-to-pdf/README.md) defines installation and packaging. Invalid metadata, missing required assets, and conversion errors reject without switching engines. Conversion uses disk input and output paths on the Host, with no browser conversion engine or font RPC.
 
 The [Host provider configuration](../../packages/document/office-to-pdf/README.md#use-this-package) owns concurrency, deadlines, input/output limits, archive limits, image resolution, and font access. Native/WASM implementation and asset distribution belong to the kit workspace. System LibreOffice discovery, runtime engine downloads, persistent PDF caching, and model-facing rendering are outside this provider.
 
@@ -71,7 +71,7 @@ convert(request: OfficeToPdfRequest, signal?: AbortSignal): Promise<OfficeToPdfR
  * @param path - absolute or workspace-relative Office path.
  * @param priority - foreground preview or speculative background work.
  * @param signal - Remote cancellation; disposal also cancels outstanding reads and conversions.
- * @returns complete base64 PDF with original source identity and missing font families.
+ * @returns complete PDF bytes with original source identity and missing font families.
  */
 @Remote async render( workspaceFileScope: WorkspaceFileScope, path: string, priority: OfficeToPdfPriority, signal: AbortSignal, ): Promise<RenderedDocumentBytes>
 

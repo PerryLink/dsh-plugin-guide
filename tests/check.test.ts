@@ -93,6 +93,64 @@ describe('check command', () => {
     expect(statusOf(report.checks, 'manifest-bundle-patch')).toBe('fail')
   })
 
+  it('accepts an ordered dsh.bundle.patch list and reports the missing member', () => {
+    const ok = sandbox()
+    write(ok, 'package.json', JSON.stringify({ name: 'dsh-list', main: 'index.js', dsh: { bundle: { patch: ['./base.patch.yml', './web.patch.yml'] } } }))
+    write(ok, 'index.js', 'export const name = "dsh-list"\n')
+    write(ok, 'base.patch.yml', '- insert:\n    - id: base\n      name: dsh-list\n')
+    write(ok, 'web.patch.yml', '- insert:\n    - id: web\n      name: dsh-list\n')
+    expect(statusOf(runCheck({ root: ok, strict: false }).report.checks, 'manifest-bundle-patch')).toBe('pass')
+
+    const bad = sandbox()
+    write(bad, 'package.json', JSON.stringify({ name: 'dsh-list', main: 'index.js', dsh: { bundle: { patch: ['./base.patch.yml', './gone.patch.yml'] } } }))
+    write(bad, 'index.js', 'export const name = "dsh-list"\n')
+    write(bad, 'base.patch.yml', '- insert:\n    - id: base\n      name: dsh-list\n')
+    expect(statusOf(runCheck({ root: bad, strict: false }).report.checks, 'manifest-bundle-patch')).toBe('fail')
+  })
+
+  it('warns when display metadata is absent and passes when it is complete', () => {
+    const bare = sandbox()
+    goodFixture(bare)
+    expect(statusOf(runCheck({ root: bare, strict: false }).report.checks, 'display-meta')).toBe('warn')
+
+    const complete = sandbox()
+    goodFixture(complete)
+    write(complete, 'package.json', JSON.stringify({
+      name: 'dsh-demo',
+      version: '0.1.0',
+      main: 'index.js',
+      files: ['index.js', 'cordis.patch.yml', 'lib', 'locale/*.json', 'icon.svg'],
+      engines: { node: '^22.19.0 || >=24.0.0' },
+      packageManager: 'pnpm@11.7.0',
+      exports: { '.': './index.js', './locale/*.json': './locale/*.json', './icon': './icon.svg' },
+      peerDependencies: { '@deepseek-ai/cordis': '^4.0.2', '@deepseek-ai/schemastery': '^3.18.2' },
+      dsh: { bundle: { patch: './cordis.patch.yml' } },
+    }))
+    write(complete, 'locale/en.json', JSON.stringify({ meta: { title: 'Demo', description: 'A demo plugin.' } }))
+    write(complete, 'icon.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8"/></svg>')
+    expect(statusOf(runCheck({ root: complete, strict: false }).report.checks, 'display-meta')).toBe('pass')
+  })
+
+  it('rejects an oversized or non-image icon', () => {
+    const root = sandbox()
+    goodFixture(root)
+    write(root, 'package.json', JSON.stringify({
+      name: 'dsh-demo',
+      version: '0.1.0',
+      main: 'index.js',
+      icon: 'icon.txt',
+      files: ['index.js', 'cordis.patch.yml', 'lib', 'icon.txt'],
+      engines: { node: '^22.19.0 || >=24.0.0' },
+      packageManager: 'pnpm@11.7.0',
+      peerDependencies: { '@deepseek-ai/cordis': '^4.0.2', '@deepseek-ai/schemastery': '^3.18.2' },
+      dsh: { bundle: { patch: './cordis.patch.yml' } },
+    }))
+    write(root, 'icon.txt', 'not an image')
+    const result = runCheck({ root, strict: false }).report.checks.find((c) => c.id === 'display-meta')
+    expect(result?.status).toBe('warn')
+    expect((result?.detail ?? []).join(' ')).toContain('SVG, PNG, JPEG or WebP')
+  })
+
   it('reports warnings for missing five-language READMEs without failing', () => {
     const root = sandbox()
     goodFixture(root)

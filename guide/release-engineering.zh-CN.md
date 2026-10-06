@@ -41,8 +41,8 @@
 ```jsonc
 {
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.4",
-    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0"
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.3.0"
   },
   "devDependencies": {
     "@deepseek-ai/dsh-tools": "0.1.7-rc.2"
