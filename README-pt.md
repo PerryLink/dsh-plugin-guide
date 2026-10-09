@@ -34,6 +34,20 @@ Este plugin faz parte da [família de plugins DSH](https://github.com/PerryLink)
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 
+## What is dsh-plugin-guide?
+
+Tudo o que você precisa para construir plugins do [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).
+
+Arquivo de documentação oficial · primer de Cordis · deep-dives da comunidade · armadilhas testadas em batalha · agent skill · toolchain CLI
+
+![Demonstração de terminal do dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+
+## Comparison
+
+![Gráfico comparativo medido do dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-evidence.png)
+
+content counts as stated in the README (What you get)
+
 ## Compatibility
 
 | Surface | Status |
@@ -108,7 +122,7 @@ O `dsh-plugin-dev` é um candidato upstream para o CLI oficial de desenvolviment
 
 ```sh
 # 1. install the bundle into your profile
-dsh plugin --profile web add "github:PerryLink/dsh-plugin-guide#main"
+dsh plugin --profile web add github:PerryLink/dsh-plugin-guide
 
 # or from npm (published releases)
 dsh plugin --profile web add dsh-plugin-guide

@@ -38,6 +38,20 @@
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 
 
+## What is dsh-plugin-guide?
+
+Everything you need to build [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugins.
+
+Official docs archive · Cordis primer · community deep-dives · battle-tested pitfalls · agent skill · CLI toolchain
+
+![Terminal demo of dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+
+## Comparison
+
+![Measured comparison chart for dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-evidence.png)
+
+content counts as stated in the README (What you get)
+
 ## Compatibility
 
 | Surface | Status |
@@ -118,7 +132,7 @@ The CLI has no hardcoded tunables — each is a flag or an environment variable.
 
 ```sh
 # 1. install the bundle into your profile
-dsh plugin --profile web add "github:PerryLink/dsh-plugin-guide#main"
+dsh plugin --profile web add github:PerryLink/dsh-plugin-guide
 
 # or from npm (published releases)
 dsh plugin --profile web add dsh-plugin-guide

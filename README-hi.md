@@ -34,6 +34,20 @@
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 
+## What is dsh-plugin-guide?
+
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) प्लगइन बनाने के लिए आपकी ज़रूरत की हर चीज़।
+
+आधिकारिक दस्तावेज़ संग्रह · Cordis प्राइमर · सामुदायिक गहन-विश्लेषण · युद्ध-परीक्षित नुकसान · agent skill · CLI टूलचेन
+
+![dsh-plugin-guide का टर्मिनल डेमो: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+
+## Comparison
+
+![dsh-plugin-guide का मापा गया तुलना चार्ट](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-evidence.png)
+
+content counts as stated in the README (What you get)
+
 ## Compatibility
 
 | Surface | Status |
@@ -108,7 +122,7 @@ CLI में कोई हार्डकोडेड ट्यूनेबल 
 
 ```sh
 # 1. install the bundle into your profile
-dsh plugin --profile web add "github:PerryLink/dsh-plugin-guide#main"
+dsh plugin --profile web add github:PerryLink/dsh-plugin-guide
 
 # or from npm (published releases)
 dsh plugin --profile web add dsh-plugin-guide
