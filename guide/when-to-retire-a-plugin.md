@@ -34,6 +34,8 @@ One thing first: **this is not a purge, it is a self-audit.** The official proje
 
 Two earlier corridor packages, `dsh-plugin-upgrade-015` (stopped at npm `0.1.1`) and `dsh-plugin-upgrade-016` (never published), are also retired; plugin upgrades continue through the single `dsh-plugin-upgrade` line.
 
+> **Update 2026-10-12.** `dsh-memento` was unfrozen and is an actively maintained plugin again — it takes feature work. Everything below stays **the 2026-10-05 ruling's own record**, kept as written so the evidence is not rewritten after the fact; today's live frozen set is **6** (the five this account still freezes — the list above minus `dsh-memento` — plus the third-party `dsh-wechat`). Status is recorded once, in `dsh-plugin-kit/data/repos.json`, and each package's own README carries its current state.
+
 ## 2. The data, part one: the 3 retirements
 
 This tier used hard criterion A almost exclusively.
@@ -100,10 +102,10 @@ This section is for users.
 | Status | Will the package be deleted or unpublished? | Will bugs still be fixed? | npm state | Repository state |
 |---|---|---|---|---|
 | 🪦 **Retired** (3) | No | **No** — including compatibility updates | `deprecate` applied | Archived, read-only |
-| 🧊 **Frozen** (7) | No | **Yes** — but only a minimal compatibility fix, and only when a breaking host change makes the package completely unusable | Normal, **not** deprecated | Normal, **not** archived |
+| 🧊 **Frozen** (7 at the ruling; **6** since 2026-10-12) | No | **Yes** — but only a minimal compatibility fix, and only when a breaking host change makes the package completely unusable | Normal, **not** deprecated | Normal, **not** archived |
 | Everything else | No | Yes | Normal | Normal |
 
-**If you have one installed, there is nothing you need to do.** The seven frozen packages install and run exactly as before: no interface changes, no versions pulled. The only thing that would require action is a host upgrade that actually breaks one — in that case, please open an issue and I will fix it. **If what you want is new features, please use the rivals named in the section 3 table.** Every one of them is significantly better adopted on its surface, and that is precisely why the package is frozen.
+**If you have one installed, there is nothing you need to do.** The frozen packages install and run exactly as before: no interface changes, no versions pulled. The only thing that would require action is a host upgrade that actually breaks one — in that case, please open an issue and I will fix it. **If what you want is new features, please use the rivals named in the section 3 table.** Every one of them is significantly better adopted on its surface, and that is precisely why the package was frozen. (`dsh-memento` is the one exception since 2026-10-12: it was unfrozen, so feature work is being taken there again, although the rival named for it remains a reasonable choice.)
 
 **Why not express this by deleting packages?** Because deleting them means the next person cannot find the package, and cannot find the reason it was retired either. So the family tables **keep every row and only add a status note**: retired and frozen repositories stay listed in every family table with a `🚫 RETIRED` / `🧊 FROZEN` status column, and their original descriptions are left untouched.
 
@@ -116,11 +118,11 @@ This section is for users.
 5. **Can a second signal corroborate your download count?** `dsh-budget` has 1,079 weekly downloads and **10 stars** — high downloads look like CI and mirror noise, while low stars look like real appeal. In the other direction, `dsh-auto-review` carries **10 open issues**, which is what real use and real bug reports look like. Download counts alone mislead.
 6. **Is "do I still use it" your criterion?** If you no longer use it, it should not be (my own Web profile runs the stock bundle set today). Replace it with two questions: **does anyone out there still need this, and is the maintenance cost still worth it?**
 7. **How far behind do you have to be?** There is no threshold. `dsh-fast` is 43× behind and stays as it is; `dsh-defend` is 14× behind and is frozen. The price of freezing is admitting you are no longer the best choice on that surface, so it is only worth paying for packages where further investment will not produce anything distinctive.
-8. **Is your decision written into the README?** A decision that lives only in your head, or only in an internal report, does not exist. Each of the seven frozen packages carries a `## Maintenance status: 🧊 FROZEN` section with the measured comparison table and a note on where the rival is stronger; each of the three retired packages carries a RETIRED banner at the top of its README. **At a minimum, users should be able to learn from the README why you stopped.**
+8. **Is your decision written into the README?** A decision that lives only in your head, or only in an internal report, does not exist. Each frozen package carries a `## Maintenance status: 🧊 FROZEN` section with the measured comparison table and a note on where the rival is stronger (seven at the ruling, six since `dsh-memento` was unfrozen on 2026-10-12 — and its section is now `## Maintenance status: ✅ Active`, with the same table kept as a dated record); each of the three retired packages carries a RETIRED banner at the top of its README. **At a minimum, users should be able to learn from the README why you stopped.**
 
 ## 7. Statement of fact
 
-- **The family today**: the family tables list **44 plugin repositories** (45 rows in the tables that include `dsh-plugin-upgrade-015`), of which 🚫 **3 are retired** and 🧊 **7 are frozen**; the rest are maintained as active repositories. Licensing is predominantly Apache-2.0.
+- **The family today**: the family tables list **44 plugin repositories** (45 rows in the tables that include `dsh-plugin-upgrade-015`), of which 🚫 **3 are retired** and 🧊 **6 are frozen** (7 at the 2026-10-05 measurement, before `dsh-memento` was unfrozen on 2026-10-12); the rest are maintained as active repositories. Licensing is predominantly Apache-2.0.
 - **Where the repositories are**: https://github.com/PerryLink
 - **Measurement date**: 2026-10-05, from that self-audit — a full npm registry pull, live GitHub REST API measurements, and file-by-file evidence from the host source tree. **The conclusions are checkable**: each one points at a specific file or a specific API reading, and anything that could not was marked "unverified".
 

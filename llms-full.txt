@@ -52,6 +52,24 @@
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 
 
+## What is dsh-plugin-guide?
+
+Everything you need to build [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugins.
+
+Official docs archive · Cordis primer · community deep-dives · battle-tested pitfalls · agent skill · CLI toolchain
+
+![Terminal demo of dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+
+![Animated terminal demo of dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.gif)
+
+*The same run, animated.*
+
+## Comparison
+
+![Measured comparison chart for dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-evidence.png)
+
+content counts as stated in the README (What you get)
+
 ## Compatibility
 
 | Surface | Status |
@@ -132,7 +150,7 @@ The CLI has no hardcoded tunables — each is a flag or an environment variable.
 
 ```sh
 # 1. install the bundle into your profile
-dsh plugin --profile web add "github:PerryLink/dsh-plugin-guide#main"
+dsh plugin --profile web add github:PerryLink/dsh-plugin-guide
 
 # or from npm (published releases)
 dsh plugin --profile web add dsh-plugin-guide
@@ -253,21 +271,21 @@ pwsh -File scripts/verify-kit.ps1   # critical paths + link scan (+ docs drift w
 
 ## PerryLink DSH Plugin Family
 
-This project is one of the [40 DeepSeek Harness plugins](https://github.com/PerryLink) maintained by [PerryLink](https://github.com/PerryLink). If this one helps you, the others likely will too:
+This project is one of the **34 actively maintained** DeepSeek Harness plugins from [PerryLink](https://github.com/PerryLink) — the roster is **42**, of which **5** are frozen and **3** retired; every one keeps its row below, with the reason in the Status column. If this one helps you, the others likely will too:
 
-| Plugin | One-liner |
-|---|---|
+| Plugin | One-liner | Status |
+|---|---|---|
 | **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** | Second-model auto-review on the approval chain, fail-closed by default | |
-| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | |
-| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | 🚫 **RETIRED** — see the note above |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | 🧊 FROZEN — see the repo README |
 | **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** | Claude Code /rewind-equivalent: snapshots, session forks, one-shot restore | |
-| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | 🧊 FROZEN — see the repo README |
 | **[dsh-click](https://github.com/PerryLink/dsh-click)** | Cross-platform native desktop control for DeepSeek Harness — Windows first. | |
 | **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** | Terminal-style input history for the web composer: arrows, Ctrl+R search | |
 | **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | Dataset quality checks and citation cross-checks (the optional numeric bridge consumed here) | |
-| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
 | **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** | Engineering-discipline guard: requirements grill, test gates, adversary review | |
-| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
 | **[dsh-fast](https://github.com/PerryLink/dsh-fast)** | Read-only performance diagnostics for DeepSeek Harness. | |
 | **[dsh-fund-research](https://github.com/PerryLink/dsh-fund-research)** | Deterministic research reports for Chinese public mutual funds | |
 | **[dsh-github](https://github.com/PerryLink/dsh-github)** | GitHub PR/issues integration for DSH, every write gated by approval | |
@@ -281,17 +299,17 @@ This project is one of the [40 DeepSeek Harness plugins](https://github.com/Perr
 | **[dsh-observe](https://github.com/PerryLink/dsh-observe)** | OpenTelemetry and Langfuse observability exporter for DeepSeek Harness. | |
 | **[dsh-output-styles](https://github.com/PerryLink/dsh-output-styles)** | Claude Code outputStyles-equivalent runtime style switching | |
 | **[dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules)** | Claude Code-style declarative allow/deny/ask permission rules with audit | |
-| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console | 🧊 FROZEN — see the repo README |
 | **[dsh-research-report](https://github.com/PerryLink/dsh-research-report)** | Verifiable research-report engine: content-addressed evidence ledger and sealed versions | |
 | **[dsh-score](https://github.com/PerryLink/dsh-score)** | Multi-dimensional quality scoring for DeepSeek Harness plugins. | |
-| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | 🚫 **RETIRED** — see the note above |
 | **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** | Cross-device session sync for DeepSeek Harness — a dedicated git mirror of your session store. | |
 | **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** | Security-audit skill pack: secret scan, dependency and supply-chain review | |
 | **[dsh-talk](https://github.com/PerryLink/dsh-talk)** | Voice-first session loop for DeepSeek Harness: talk to it, hear it answer. | |
 | **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** | Isolated install-and-smoke test drives for DeepSeek Harness plugins. | |
-| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools | |
 | **[dsh-translate](https://github.com/PerryLink/dsh-translate)** | Vendor parameter translation and deterministic JSON repair for DeepSeek Harness. | |
-| **[dsh-wechat](https://github.com/pan17/dsh-wechat)** | WeChat ↔ DSH bridge (Tencent iLink bot): text/image/file/voice, approvals in chat |
+| **[dsh-wechat](https://github.com/pan17/dsh-wechat)** | WeChat ↔ DSH bridge (Tencent iLink bot): text/image/file/voice, approvals in chat | |
 | **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | Automatic strong/cheap model-tier routing with deterministic risk guards and a `/tier` command | |
 | **[dsh-catalog](https://github.com/PerryLink/dsh-catalog)** | DSH Desktop Market standard catalog source for the PerryLink family | |
 | **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | Read-only MCP server exposing the certification registry: grades, snapshots and five-dimension evidence | |
@@ -299,8 +317,8 @@ This project is one of the [40 DeepSeek Harness plugins](https://github.com/Perr
 | **[dsh-plugin-certification](https://github.com/PerryLink/dsh-plugin-certification)** | Community certification registry with repro-checkable grades and badges | |
 | **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | Shared zero-runtime-dependency toolkit for the PerryLink DSH plugins | |
 | **[dsh-plugin-portal](https://github.com/PerryLink/dsh-plugin-portal)** | Zero-dependency static portal rendering the whole plugin family as one page | |
-| **[dsh-plugin-upgrade-015](https://github.com/PerryLink/dsh-plugin-upgrade-015)** | Merged `0.1.3-alpha.1` → `0.1.5-rc.1` upgrade corridor card plus a zero-dependency seam scanner | |
-| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | |
+| **[dsh-plugin-upgrade-015](https://github.com/PerryLink/dsh-plugin-upgrade-015)** | Merged `0.1.3-alpha.1` → `0.1.5-rc.1` upgrade corridor card plus a zero-dependency seam scanner | 🚫 RETIRED — corridors carried by `dsh-plugin-upgrade` |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | 🚫 **RETIRED** — see the note above |
 | **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | Zero-dependency static + sandbox smoke detector for DSH plugins | |
 
 ## Disclaimer
@@ -1079,6 +1097,8 @@ One thing first: **this is not a purge, it is a self-audit.** The official proje
 
 Two earlier corridor packages, `dsh-plugin-upgrade-015` (stopped at npm `0.1.1`) and `dsh-plugin-upgrade-016` (never published), are also retired; plugin upgrades continue through the single `dsh-plugin-upgrade` line.
 
+> **Update 2026-10-12.** `dsh-memento` was unfrozen and is an actively maintained plugin again — it takes feature work. Everything below stays **the 2026-10-05 ruling's own record**, kept as written so the evidence is not rewritten after the fact; today's live frozen set is **6** (the five this account still freezes — the list above minus `dsh-memento` — plus the third-party `dsh-wechat`). Status is recorded once, in `dsh-plugin-kit/data/repos.json`, and each package's own README carries its current state.
+
 ## 2. The data, part one: the 3 retirements
 
 This tier used hard criterion A almost exclusively.
@@ -1145,10 +1165,10 @@ This section is for users.
 | Status | Will the package be deleted or unpublished? | Will bugs still be fixed? | npm state | Repository state |
 |---|---|---|---|---|
 | 🪦 **Retired** (3) | No | **No** — including compatibility updates | `deprecate` applied | Archived, read-only |
-| 🧊 **Frozen** (7) | No | **Yes** — but only a minimal compatibility fix, and only when a breaking host change makes the package completely unusable | Normal, **not** deprecated | Normal, **not** archived |
+| 🧊 **Frozen** (7 at the ruling; **6** since 2026-10-12) | No | **Yes** — but only a minimal compatibility fix, and only when a breaking host change makes the package completely unusable | Normal, **not** deprecated | Normal, **not** archived |
 | Everything else | No | Yes | Normal | Normal |
 
-**If you have one installed, there is nothing you need to do.** The seven frozen packages install and run exactly as before: no interface changes, no versions pulled. The only thing that would require action is a host upgrade that actually breaks one — in that case, please open an issue and I will fix it. **If what you want is new features, please use the rivals named in the section 3 table.** Every one of them is significantly better adopted on its surface, and that is precisely why the package is frozen.
+**If you have one installed, there is nothing you need to do.** The frozen packages install and run exactly as before: no interface changes, no versions pulled. The only thing that would require action is a host upgrade that actually breaks one — in that case, please open an issue and I will fix it. **If what you want is new features, please use the rivals named in the section 3 table.** Every one of them is significantly better adopted on its surface, and that is precisely why the package was frozen. (`dsh-memento` is the one exception since 2026-10-12: it was unfrozen, so feature work is being taken there again, although the rival named for it remains a reasonable choice.)
 
 **Why not express this by deleting packages?** Because deleting them means the next person cannot find the package, and cannot find the reason it was retired either. So the family tables **keep every row and only add a status note**: retired and frozen repositories stay listed in every family table with a `🚫 RETIRED` / `🧊 FROZEN` status column, and their original descriptions are left untouched.
 
@@ -1161,11 +1181,11 @@ This section is for users.
 5. **Can a second signal corroborate your download count?** `dsh-budget` has 1,079 weekly downloads and **10 stars** — high downloads look like CI and mirror noise, while low stars look like real appeal. In the other direction, `dsh-auto-review` carries **10 open issues**, which is what real use and real bug reports look like. Download counts alone mislead.
 6. **Is "do I still use it" your criterion?** If you no longer use it, it should not be (my own Web profile runs the stock bundle set today). Replace it with two questions: **does anyone out there still need this, and is the maintenance cost still worth it?**
 7. **How far behind do you have to be?** There is no threshold. `dsh-fast` is 43× behind and stays as it is; `dsh-defend` is 14× behind and is frozen. The price of freezing is admitting you are no longer the best choice on that surface, so it is only worth paying for packages where further investment will not produce anything distinctive.
-8. **Is your decision written into the README?** A decision that lives only in your head, or only in an internal report, does not exist. Each of the seven frozen packages carries a `## Maintenance status: 🧊 FROZEN` section with the measured comparison table and a note on where the rival is stronger; each of the three retired packages carries a RETIRED banner at the top of its README. **At a minimum, users should be able to learn from the README why you stopped.**
+8. **Is your decision written into the README?** A decision that lives only in your head, or only in an internal report, does not exist. Each frozen package carries a `## Maintenance status: 🧊 FROZEN` section with the measured comparison table and a note on where the rival is stronger (seven at the ruling, six since `dsh-memento` was unfrozen on 2026-10-12 — and its section is now `## Maintenance status: ✅ Active`, with the same table kept as a dated record); each of the three retired packages carries a RETIRED banner at the top of its README. **At a minimum, users should be able to learn from the README why you stopped.**
 
 ## 7. Statement of fact
 
-- **The family today**: the family tables list **44 plugin repositories** (45 rows in the tables that include `dsh-plugin-upgrade-015`), of which 🚫 **3 are retired** and 🧊 **7 are frozen**; the rest are maintained as active repositories. Licensing is predominantly Apache-2.0.
+- **The family today**: the family tables list **44 plugin repositories** (45 rows in the tables that include `dsh-plugin-upgrade-015`), of which 🚫 **3 are retired** and 🧊 **6 are frozen** (7 at the 2026-10-05 measurement, before `dsh-memento` was unfrozen on 2026-10-12); the rest are maintained as active repositories. Licensing is predominantly Apache-2.0.
 - **Where the repositories are**: https://github.com/PerryLink
 - **Measurement date**: 2026-10-05, from that self-audit — a full npm registry pull, live GitHub REST API measurements, and file-by-file evidence from the host source tree. **The conclusions are checkable**: each one points at a specific file or a specific API reading, and anything that could not was marked "unverified".
 
