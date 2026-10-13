@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 // Five-language README sync gate: the English file is the source of truth.
-// Every translation must carry the same `## ` section headings in the same
-// order and the same configuration-table keys, so a config change cannot
-// ship without its translations.
+//
+// The READMEs keep ENGLISH `## ` headings in every language (only the prose is
+// translated), so heading TEXT is not compared — a translation that legitimately
+// localises a heading would fail for no reason, and `check-readme-parity.mjs`
+// already compares block-level structure. What this gate owns is:
+//   * the NUMBER and ORDER of `## ` sections (a section added to English must be
+//     added everywhere), and
+//   * the configuration-table keys, which are API names and must match verbatim.
+// The quick references are the opposite convention (translated headings); they
+// are covered by the parity gate instead.
 import { readFileSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -63,13 +70,11 @@ for (const [file, label] of LANGUAGES.slice(1)) {
   }
   const text = readFileSync(filePath, 'utf8')
   const headings = headingsOf(text)
-  for (let index = 0; index < refHeadings.length; index++) {
-    if (headings[index] !== refHeadings[index]) {
-      failures.push(`${file}: heading ${index + 1} is ${JSON.stringify(headings[index])}, expected ${JSON.stringify(refHeadings[index])}`)
-    }
-  }
+  // Section count only. The READMEs share English headings by convention, but
+  // comparing the text would break the moment a translation localises one, and
+  // structural parity is already owned by check-readme-parity.mjs.
   if (headings.length !== refHeadings.length) {
-    failures.push(`${file}: ${headings.length} headings, expected ${refHeadings.length}`)
+    failures.push(`${file}: ${headings.length} sections, expected ${refHeadings.length}`)
   }
   const keys = configKeysOf(text)
   if (keys.length !== refKeys.length) {

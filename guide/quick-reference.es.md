@@ -181,3 +181,5 @@ Documentación comunitaria de desarrollo — plantillas/tutoriales/errores, list
 - Investigación del repo: `references/harness-repo.md`
 - Comunidad/ecosistema: `references/community-ecosystem.md` + `references/community-repo-deep-dive.md`
 - Todas las URLs de fuentes: `references/sources.md`
+- [Matriz de versiones](version-matrix.md) — los cuatro valores «latest», etiquetas `latest` congeladas, fallas de compatibilidad y selección de rango de peers.
+- [Lista de migración](migration-0.2.md) — §0–§12 cubren los cambios que rompen compatibilidad, **§13 los 19 seams de `0.2.1-alpha.2`**.

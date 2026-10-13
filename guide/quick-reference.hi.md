@@ -181,3 +181,5 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 - रिपो शोध: `references/harness-repo.md`
 - समुदाय/पारिस्थितिकी: `references/community-ecosystem.md` + `references/community-repo-deep-dive.md`
 - सभी स्रोत URL: `references/sources.md`
+- [संस्करण मैट्रिक्स](version-matrix.md) — चार "latest" मान, जमे हुए `latest` टैग, संगतता-भंग बिंदु और peer रेंज का चयन।
+- [माइग्रेशन सूची](migration-0.2.md) — §0–§12 संगतता-भंग बदलाव, **§13 में `0.2.1-alpha.2` के 19 seams**।

@@ -1,14 +1,20 @@
 <div align="center">
 
 # 🐳 dsh-plugin-guide
-- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-plugin-guide` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
+
+**Your agent stops inventing DSH plugin APIs.**
+
+The DeepSeek Harness plugin-development knowledge base, installed *as an agent skill* — official docs, a version-compatibility matrix, migration seams and battle-tested pitfalls, plus a scaffolder/checker CLI.
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+```
+
+Then just ask: *"Use the dsh-plugin-guide skill to build me a … plugin."*
+
 [![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-plugin-guide)
 [![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-plugin-guide?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-plugin-guide?ref=badge)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-plugin-guide/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-plugin-guide)
-
-**Everything you need to build [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugins.**
-
-*Official docs archive · Cordis primer · community deep-dives · battle-tested pitfalls · agent skill · CLI toolchain*
 
 > **Official repository.** This is the only official repository of dsh-plugin-guide, maintained by PerryLink. Same-name repositories under other accounts are not affiliated.
 
@@ -28,7 +34,27 @@
 
 ---
 
+## Why not just read the official docs?
+
+Because the official docs are written for someone who already knows which page to open, and DSH ships a **prerelease every 1.7–2.8 days** with breaking changes. This plugin closes the three gaps that costs authors the most time:
+
+| Gap | What this plugin adds |
+|---|---|
+| **"Which DSH am I even targeting?"** | A [version matrix](guide/version-matrix.md): the four different values that all call themselves "latest", the frozen sub-package `latest` tags, the breaking-change seams, and how to pick a `peerDependencies` range. **There is no stable line** — every published version is a prerelease. |
+| **"What does this break?"** | A [migration guide](guide/migration-0.2.md) covering `0.1.6-alpha.2` → `0.2.1-alpha.2` as **citable seams** with symptom *and* fix, each with its official source — including a data-loss hazard and a change that makes prompts fail before a model request is built. |
+| **"Is my plugin actually correct?"** | A [zero-dependency CLI](SKILL.md) (`dsh-plugin-dev new / check / verify`) plus an [offline verbatim mirror](references/official-docs/) of the official docs, so your agent can cite the exact page instead of guessing. |
+
+**Prove it works in 60 seconds:**
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+npx dsh-plugin-guide new hello-plugin      # scaffold a plugin
+cd hello-plugin && npx dsh-plugin-guide check --json   # 16 static checks
+```
+
 **📖 Prefer reading it as a site?** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) — every chapter as its own page, plus a machine-readable [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt) for assistants.
+
+**Also on the 1024 store channel:** `npm i -g dsh1024`, then `dsh1024 plugin --profile web add dsh-plugin-guide` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
 
 <!-- star-cta -->
 ## ⭐ 如果它帮到了你
@@ -43,6 +69,7 @@
 Everything you need to build [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugins.
 
 Official docs archive · Cordis primer · community deep-dives · battle-tested pitfalls · agent skill · CLI toolchain
+
 
 ![Terminal demo of dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
 
@@ -137,15 +164,18 @@ The CLI has no hardcoded tunables — each is a flag or an environment variable.
 ## Quick start
 
 ```sh
-# 1. install the bundle into your profile
-dsh plugin --profile web add github:PerryLink/dsh-plugin-guide
-
-# or from npm (published releases)
+# 1. install the bundle into your profile — npm first
 dsh plugin --profile web add dsh-plugin-guide
 
 # 2. restart and verify the row
 dsh --profile web --dump-config | grep -A3 'id: dsh-plugin-guide'
 ```
+
+⚠️ **Use the npm channel, not the git channel, for a first install.** The git channel pulls source, and
+`dist/` is not committed, so pnpm has to run this package's `prepare` build script — which pnpm 10+ blocks
+until you explicitly allowlist it (`allowBuilds`). That is a documented pitfall of git installs, not a
+defect, but it makes the git channel a poor first experience. See [Install & uninstall](#install--uninstall)
+for the git and tarball channels when you specifically want an unreleased commit.
 
 Then just ask your agent: *"Use the dsh-plugin-guide skill to build me a … plugin."*
 
@@ -159,8 +189,8 @@ npx dsh-plugin-guide verify                      # pack + clean-profile smoke
 
 ## Install & uninstall
 
-- **git channel** (latest `main`): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — pin a commit for reproducibility; the entry point is plain ESM JS, no build step.
-- **npm channel** (published releases): `dsh plugin --profile web add dsh-plugin-guide`.
+- **npm channel** (published releases — **the default; start here**): `dsh plugin --profile web add dsh-plugin-guide`. The published tarball already contains `dist/`, so no build step runs.
+- **git channel** (latest `main`, or an unreleased commit): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — pin a commit for reproducibility. ⚠️ `dist/` is not committed, so pnpm must run this package's `prepare` and will refuse until the build is allowlisted; add it to the profile's `allowBuilds` (see [publish.md](references/official-docs/docs/user/develop/basic/publish.md)).
 - **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
 - **uninstall**: `dsh plugin --profile web remove dsh-plugin-guide`.
 

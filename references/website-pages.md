@@ -2,6 +2,10 @@
 
 > **归档更正（2026-08-13 下载复核）**：本报告撰写时子代理沙箱无法直连外网，文档站"线上渲染页"标为 `[unverified]`。随后知识库下载脚本（`scripts/download-sources.ps1`）在更宽权限下**成功爬取了 GitHub Pages 全站 168 个 HTML 页面**（中英双语，内容已验证含中文正文），归档于 `downloads/web/site/`（下载明细见 `downloads/manifest.tsv`）——本报告中关于页面清单/正文的 `[unverified]` 项已由该爬取解决；`www.deepseek.com/harness/` 页面快照亦已归档于 `downloads/web/deepseek-com-harness.html`。
 
+> ⚠️ **基线声明（2026-10-13 追加）**：本文件是**某一时点的站点快照调研**，**不是现行手册**；
+> 其中的机制可能已被上游移除而原文不会自动更新。**引用任何 API/配置键前先到 `references/official-docs/` 核对现行版本。**
+> **已知内含已被移除的机制**：`DSH_TOOLS_MODE` 的 `both` 取值（见下方标注）、以及 `invariants`（运行时不变式，已整体移除）。
+
 > 调研目标：
 > - 官网入口：`https://www.deepseek.com/harness/`
 > - 文档站：`https://deepseek-harness.github.io/deepseek-harness/develop/basic/`（及其下所有可发现页面）
@@ -536,6 +540,7 @@
 - **插件管理**：`dsh plugin --profile <name> <args...>` 转发到 pnpm；成功后把 `dsh.profile.bundles` 与已安装状态对账（含 `dsh.bundle` 声明者加入层栈）。
 - **Web 别名**：`dsh web` = `--profile web`；生产 Web runner 需 `pnpm run build`，默认 `http://127.0.0.1:3080`；**不支持 `--host 0.0.0.0`**；`--trusted-host` 添加 `/api` 浏览器信任栅栏接受的主机名。
 - **部署行为**：所有模式把调用目录当默认工作区根，加载 `AGENTS.md`/`CLAUDE.md`（渲染预算 65536 字节），用内存 SQLite 会话内容索引；新会话默认 `workspace-write` 权限预设；`DSH_PERMISSION_MODE` 改进程 fallback；`DSH_TOOLS_MODE` 选 `native`/`code`/`both`；base bundle 挂原生 DeepSeek 适配器、settings/credentials provider、`web_search`、默认关闭会话遥测；凭据解析顺序 `环境 → $DSH_HOME/.credentials.yaml → 调用目录 .env → $DSH_HOME/.env`；`DSH_TELEMETRY_MODE`（FULL/FEEDBACK_ONLY）、`DSH_TELEMETRY_OTLP_URL`、`DSH_TELEMETRY_DISABLED`（硬退出开关）。
+  > ❌ **`both` 已不再合法（2026-10-13 标注）**：`DSH_TOOLS_MODE` 现只接受 `native` 或 `ptc`；传 `both` 会在加载期被拒。官方出处：`upgrade-guide/v0.2.1-alpha.1/tool-presentation-mode`。
 - **源码执行**：`pnpm run build` 后 `pnpm dsh <args...>`（经 `node --import tsx/esm` 跑 `apps/cli/src/bin.ts`，不构建）；安装形态跑构建后的 `apps/cli/lib/bin.js`。
 
 ---

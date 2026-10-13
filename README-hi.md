@@ -1,12 +1,15 @@
 <div align="center">
 
 # 🐳 dsh-plugin-guide
-- **1024 स्टोर चैनल**: एक बार `npm i -g dsh1024`, फिर `dsh1024 plugin --profile web add dsh-plugin-guide` ([deepseek1024.com](https://deepseek1024.com) इंस्टॉल रैंकिंग में गिना जाता है)।
 
 **[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) प्लगइन बनाने के लिए आपकी ज़रूरत की हर चीज़।**
 
 *आधिकारिक दस्तावेज़ संग्रह · Cordis प्राइमर · सामुदायिक गहन-विश्लेषण · युद्ध-परीक्षित नुकसान · agent skill · CLI टूलचेन*
 
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+```
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-plugin-guide)
 [![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
@@ -26,6 +29,22 @@
 ---
 
 **📖 इसे वेबसाइट के रूप में पढ़ना चाहें?** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) — हर अध्याय अपने पृष्ठ पर, साथ ही असिस्टेंट के लिए मशीन-पठनीय [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt)।
+
+## Why not just read the official docs?
+
+क्योंकि वे उसके लिए लिखे गए हैं जिसे पहले से पता है कौन-सा पृष्ठ खोलना है, और DSH **हर 1.7–2.8 दिन में एक प्रीरिलीज़** जारी करता है जिसमें संगतता तोड़ने वाले बदलाव होते हैं। यह प्लगइन वही तीन अंतराल भरता है जो सबसे अधिक समय लेते हैं:
+
+| अंतराल | यह प्लगइन क्या जोड़ता है |
+|---|---|
+| **"मैं किस संस्करण के लिए विकसित कर रहा हूँ?"** | एक [संस्करण मैट्रिक्स](guide/version-matrix.md): चार भिन्न मान जो स्वयं को "latest" कहते हैं, उप-पैकेजों के जमे हुए `latest` टैग, संगतता-भंग बिंदु, और `peerDependencies` रेंज कैसे चुनें। **कोई स्थिर पंक्ति नहीं है** — हर प्रकाशित संस्करण प्रीरिलीज़ है। |
+| **"यह संस्करण क्या तोड़ता है?"** | एक [माइग्रेशन गाइड](guide/migration-0.2.md) जो `0.1.6-alpha.2` → `0.2.1-alpha.2` को **उद्धरण-योग्य seams** के रूप में देता है, प्रत्येक में लक्षण *और* समाधान तथा आधिकारिक स्रोत — जिसमें एक डेटा-हानि जोखिम भी शामिल है। |
+| **"मेरा प्लगइन वास्तव में सही है?"** | एक [शून्य-निर्भरता CLI](SKILL.md) (`dsh-plugin-dev new / check / verify`) और आधिकारिक दस्तावेज़ों का [शब्दशः ऑफ़लाइन प्रतिबिंब](references/official-docs/), ताकि एजेंट अनुमान के बजाय सटीक पृष्ठ उद्धृत करे। |
+
+**60 सेकंड में सत्यापित करें:**
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+```
 
 <!-- star-cta -->
 ## ⭐ 如果它帮到了你
@@ -72,6 +91,10 @@ content counts as stated in the README (What you get)
 - **सामुदायिक गहन-विश्लेषण** — 114 सामुदायिक रिपॉज़िटरी संग्रहीत (15 गहन-विश्लेषित), साथ ही पूर्ण स्रोत सूची जहाँ हर तथ्य अपने मूल से जुड़ा है।
 - **CLI टूलचेन** — `dsh-plugin-dev new / check / verify`: DSH प्लगइन स्कैफ़ोल्ड करना, स्थैतिक जाँच और पैक-सत्यापन; हर जाँच उस skill अनुभाग से जुड़ती है जिसे वह लागू करती है।
 
+- **संस्करण अनुकूलनशीलता** — [guide/version-matrix.md](guide/version-matrix.md): चार "latest" मान, जमे हुए उप-पैकेज टैग, संगतता-भंग बिंदु, peer रेंज का चयन और `0.2.1-alpha.2` के 19 बदलाव।
+- **टूलचेन राउटर** — [guide/family-toolchain.md](guide/family-toolchain.md): कौन-सा प्रश्न किस टूल का है, `dsh-plugin-doctor` की पूरी 33-जाँच सूची, और इस रिपॉज़िटरी की 16 जाँचों से तुलना।
+- **मिरर स्कोप निर्णय** — [references/mirror-scope-decision.md](references/mirror-scope-decision.md): "संदर्भ-रहित सामग्री हटाकर 80% बचाने" का सुझाव दोबारा मापने पर **टिकता नहीं**।
+- **आधिकारिक skill का सार** — [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md): आधिकारिक `cordis-plugin-development` skill के निषेध, प्रदर्शन मेटाडेटा और UI/प्रदर्शन नियम।
 ## Knowledge base
 
 | Path | यह क्या है |
@@ -89,6 +112,10 @@ content counts as stated in the README (What you get)
 | `bin/` · `src/cli/` · `dist/` | `dsh-plugin-dev` CLI: स्कैफ़ोल्डर, जाँचकर्ता, सत्यापक (TypeScript, tsdown-बंडल) |
 | `templates/` | TS + JS स्कैफ़ोल्ड कंकाल: अनुबंध टेम्प्लेट, Config, टेस्ट, cordis.patch.yml, पाँच-भाषा README |
 | `downloads/` | कच्चे स्नैपशॉट — `scripts/` से उत्पन्न, कमिट नहीं |
+| `guide/version-matrix.md` | **संस्करण अनुकूलनशीलता मैट्रिक्स**: चार "latest" मान, जमे हुए टैग, संगतता-भंग बिंदु, peer रेंज चयन, सत्र-प्रारूप वंशावली और `0.2.1-alpha.2` के 19 बदलाव |
+| `guide/family-toolchain.md` | **टूलचेन राउटर**: प्रश्न → स्वामी → उद्धरण-योग्य कलाकृति; `dsh-plugin-doctor` की 33-जाँच सूची और इस रिपॉज़िटरी की 16 जाँचों से तुलना |
+| `guide/migration-0.2.md` | 0.2 पीढ़ी के संगतता-भंग बदलावों की माइग्रेशन गाइड (§0–§12 `0.2.1-alpha.1` तक; **§13 `0.2.1-alpha.2` के 19 seams**) |
+| `references/mirror-scope-decision.md` | मिरर स्कोप निर्णय रिकॉर्ड: "शून्य संदर्भ" के आधार पर कटौती क्यों नहीं, साथ में पुनरुत्पाद्य मापन स्क्रिप्ट |
 
 ## CLI toolchain
 

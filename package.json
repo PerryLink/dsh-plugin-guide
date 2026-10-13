@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.3.30",
+  "version": "0.3.31",
   "description": "DSH plugin development as an on-demand agent skill: official docs mirror, version-compatibility matrix, migration seams, measured pitfalls, plus a scaffolder, checker and pack verifier CLI.",
   "type": "module",
   "main": "index.js",
@@ -64,6 +64,7 @@
     "typecheck:checkout": "tsc -p tsconfig.checkout.json --noEmit",
     "test": "vitest run",
     "check:readmes": "node scripts/check-readme-sync.mjs",
+    "check:parity": "node scripts/check-readme-parity.mjs",
     "check:ps1-bom": "node scripts/check-ps1-bom.mjs",
     "build:llms": "node scripts/build-llms-full.mjs",
     "check:kit": "pwsh -File scripts/verify-kit.ps1",

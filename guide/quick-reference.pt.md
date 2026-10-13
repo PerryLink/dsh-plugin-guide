@@ -181,3 +181,5 @@ Documentação comunitária de desenvolvimento — modelos/tutoriais/armadilhas,
 - Pesquisa do repo: `references/harness-repo.md`
 - Comunidade/ecossistema: `references/community-ecosystem.md` + `references/community-repo-deep-dive.md`
 - Todas as URLs de fontes: `references/sources.md`
+- [Matriz de versões](version-matrix.md) — os quatro valores "latest", tags `latest` congeladas, falhas de compatibilidade e seleção de intervalo de peers.
+- [Lista de migração](migration-0.2.md) — §0–§12 cobrem as mudanças que quebram compatibilidade, **§13 os 19 seams de `0.2.1-alpha.2`**.

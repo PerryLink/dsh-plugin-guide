@@ -148,6 +148,37 @@ ctx.effect(() => { const t = setInterval(...); return () => clearInterval(t) }) 
 
 框架代管：`ctx.on` / 服务 `register()` / `ctx.effect()`。`HMR`（`@deepseek-ai/cordis-plugin-hmr`）正因注册全部可逆而成立。
 
+#### 3.3.1 ⚠️ async `apply()` 的注册顺序（最容易写成静默缺陷的一条）
+
+`apply` **可以是 async**，但**第一个 `await` 之后再做注册是错的**：从 `await` 返回到注册完成之间存在一个
+卸载窗口——插件已开始 `UNLOADING`、effect 却还没建立，于是那次注册**既不会被记入 fiber 的 disposer 集合，
+也不会报错**。表现为"插件装了、日志全绿、能力却时有时无"（高负载下才复现）。
+
+**规则：注册必须在第一个 `await` 之前完成。** 需要异步数据才能决定注册内容时，先取数据再注册：
+
+```ts
+// ✅ 正确：await 只用于取数据，注册全部落在 await 之前的同步段之后、但不再 await
+export async function apply(ctx) {
+  const cfg = await loadRemoteConfig()        // 允许 await
+  if (!cfg.enabled) return                    // 允许提前返回
+  ctx.effect(() => ctx.tools.register(buildTool(cfg)))   // 注册紧随其后，不再 await
+}
+```
+
+```ts
+// ❌ 错误：await 之后才注册，卸载窗口内注册会丢
+export async function apply(ctx) {
+  ctx.on('a', handlerA)
+  await something()
+  ctx.tools.register(toolB)                  // ← 这次注册可能永远不会被撤销
+}
+```
+
+**自查**：`dsh-plugin-dev check` 的 `redline-async-apply-registration` 就是本条的机械检测
+（家族内唯一检测器，见 [`family-toolchain.md`](family-toolchain.md) §3.2）。
+**官方契约**：`apply` 返回 disposer 函数 / `null` / `undefined` / `Promise<disposer>` / （异步）可迭代——
+async `apply` 合法，但**必须返回 `Promise<disposer>`**，不能靠"await 之后再注册"来隐式注册。
+
 ### 3.4 服务（Service）
 
 - **消费**：`export const inject = ['tools']` → `apply` 里 `ctx.tools` 已就绪。可选依赖：不写 inject，用 `ctx.get('metrics')?.method()`。
@@ -200,9 +231,10 @@ export function apply(ctx: Context, config: Config) { /* config 已校验+补默
 
 1. **注册即 effect**：所有贡献走 `ctx.effect()` / `ctx.on()`；registry 的 `register()` 返回 disposer。
 2. **waterfall 监听器必须调 `next()`**。
-3. **模型可见 ⟺ 已记录**（Model-visible ⟺ logged）：任何进入模型请求的内容必须能从会话日志重建；新增模型可见输入必须新增会话事件。运行时不变式会断言这一点。
+3. **模型可见 ⟺ 已记录**（Model-visible ⟺ logged）：任何进入模型请求的内容必须能从会话日志重建；新增模型可见输入必须新增会话事件。~~运行时不变式会断言这一点~~ —— ⚠️ **该强制手段已于 `0.2.1-alpha.1` 随运行时 invariants 整体移除**（`upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants`），所以这条**现在完全靠评审与自觉**，没有任何机械兜底。见 §3.6 与 [`migration-0.2.md`](migration-0.2.md) §4。
 4. **跨边界 opaque id 用 branded**：`Branded<B>`（`dsh-brand`，纯类型、零运行时依赖），从不裸 `string`；构造走 per-type factory（`SessionId` / `CallId` / `JobId` / `GoalId` 等），防止不同 id 在类型层互换。
 5. **会话事件版本规则**：`SessionEventMap` 成员默认 required-on-read——不认识该事件类型的 build 一律拒绝整份日志，除非该事件带信封的 `ignorable: true`。**插件不得新增事件类型**（见 §3.5 红线）：`Session.append()` 写不了信封标记。只有结构格式变更才 bump `SESSION_FORMAT_VERSION`（当前 **4**；V3→V4 把 results 提升为 tool-role 消息、把消息 source 改为生产者自有的 `source.kind`，V3 读方拒绝 V4 日志）。新增**模型可见输入**由宿主侧事件承担（红线 3），插件只消费。
+6. **注入的提示词段落要短、且以角色句开头**：插件写进系统提示词的段落（`systemPrompt.section()` 的正文）**第一句应当是说明"你是谁/做什么"的短句**，整段保持精简。原因有二：它是每轮请求都付费的固定前缀；而且段落开头若不是完整句子，模型会把后续内容当作它的延续来读。**自查**：`dsh-plugin-dev check` 的 `redline-persona-role`（段落首句需以 `。.?!` 收尾、首句 ≤200 字符、整段 ≤600 字符）。**这条是"工程卫生"而非官方硬门禁**——官方文档没有对应条款，别在 README 里把它说成官方要求。
 
 ---
 
@@ -306,6 +338,70 @@ declare module '@deepseek-ai/dsh-llm' {
 
 **工具的 `parameters` 是 DSH 自己的方言，不是 JSON Schema**；Remote 服务调用是**位置参数**而不是对象参数（`get()` 能用，最有欺骗性）；往 `ctx` 上写**未声明**的属性会抛错并可能静默杀掉整个插件的激活——可选服务一律 `ctx.get(name)`，**`ctx.<service>` 只对自己 `inject` 里声明过的服务合法**。
 
+### 4.9 插件内如何发布一个 skill（本仓库就是参考实现）
+
+一个插件可以**自己携带一份 agent 技能**——这是把"知识/流程"交付给宿主的标准做法，也是本仓库
+（`dsh-plugin-guide`）唯一在做的事。机制曾经在社区资料里被写错成"systemPrompt section + 工具注册"，
+**那不是这条路**。
+
+**契约**（官方 `docs/subsystems/skills.md`）：
+
+- `ctx.skills` 是 **provider 注册表**，注册是**同步**的，必须在 `apply()` 内完成。
+- 插件走的是**运行时贡献**入口 `ctx.skills.register(definition)`，其类型为
+  `SkillRegistration = Omit<SkillDefinition, 'invocation' | 'provider'> & { invocation?; provider? }`
+  ——`invocation` 省略即模型与用户两侧都可见，`provider` 省略即落到注册表自有的 runtime provider。
+- **返回的是 Cordis effect disposer**：撤销该贡献并使发现缓存失效。所以照例写成
+  `ctx.effect(() => ctx.skills.register({...}))`。
+- 要携带随包资料，给 **`resourceBase: { kind: 'directory', path: <包目录> }`**；技能正文里的
+  `./guide/...`、`./references/...` 相对路径就按该目录解析。**这是"渐进披露"得以成立的关键**：
+  技能正文只放路由，重资料留在包里按需读，不必一次塞进模型上下文。
+
+**最小可用实现**（取自本仓库 `index.js`，可直接抄）：
+
+```js
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+export const name = 'my-skill-plugin'
+export const inject = ['skills']
+
+const packageRoot = dirname(fileURLToPath(import.meta.url))
+
+export function apply(ctx) {
+  const { description, body } = splitFrontmatter(readFileSync(join(packageRoot, 'SKILL.md'), 'utf8'))
+  ctx.effect(() =>
+    ctx.skills.register({
+      name: 'my-skill-plugin',
+      source: 'bundled',
+      description,                                     // 决定"何时被加载"
+      content: body,                                   // 技能正文
+      resourceBase: { kind: 'directory', path: packageRoot },
+    }),
+  )
+}
+```
+
+**四个实测要点**（每一条都踩过）：
+
+1. **`description` 就是触发器，要写"何时使用"而不是"这是什么"。** 宿主只把 name + description 放进目录给模型挑，
+   所以写 `Use when developing, reviewing, packaging, debugging, or answering questions about …`
+   这类带场景动词的句子，而不是名词短语。
+2. **解析 frontmatter 要容忍 CRLF。** 用精确的 `startsWith('---\n')` 会在 Windows 检出（`core.autocrlf=true`）
+   上失配，后果是**静默退化**：描述掉回兜底字符串（技能变得不易被选中），且**整份文件连同 frontmatter 被当成技能正文**注入。
+   本仓库为此加了 `.gitattributes`（`* text=auto eol=lf`），并把解析改成行尾无关。
+3. **截断 frontmatter 与裁掉正文前导空行是两件事。** 只做前者，正文会以换行开头；宿主的 filesystem provider
+   自己会裁，但**不是所有 provider 都裁**，自己裁更稳。
+4. **单测要真的加载入口模块。** `index.js` 长期零测试，缺陷因此活到发布之后；测试只需一个
+   `{ effect, skills: { register } }` 桩，就能断言"注册的 name、用的是 frontmatter 描述还是兜底、
+   `resourceBase` 是否指向包目录"。本仓库 `tests/entry.test.ts` 就是这 8 条断言。
+
+**与"工具"的区别**：注册工具（`ctx.tools.register`）会让**每一次请求**都付该工具定义的 token；
+注册技能只在模型**按描述选中**它时才加载正文。给 agent 交付"资料/流程"用技能，交付"可执行动作"才用工具。
+
+**相关**：`references/official-plugin-dev-skill.md`（官方自带开发技能的要点）、
+`references/official-docs/docs/subsystems/skills.md`（完整契约与 ranked local discovery 表）。
+
 ---
 
 ## 5. 能力分层：Service Definition / Provider / Consumer
@@ -356,7 +452,7 @@ LLM 适配器同理：继承 `LlmAdapter` 实现 `stream(options)`，`ctx.llm.re
 | 子代理委派 | `ctx.subagents` provider 注册表 + `dsh-tool-subagent`（现有多家 provider：in-process spawn / fork / `dsh-subagent-acp` / `-codex` / `-claude-code` / `-dsh-sdk`） |
 | 多代理编排 | `ctx.workflowEngine` 缝（Definition/Provider/Consumer）+ PTC workflow engine + `workflow`/`ralph` 工具 Consumer |
 | MCP | 每服务器一个插件：发现工具 → `ctx.tools.register()` |
-| Skills | section + 工具注册；调用时 `inject()` 技能内容 |
+| Skills | ⚠️ **不是** section + 工具注册：插件用 **`ctx.skills.register()`** 注册一个运行时技能（`SkillRegistration` = `SkillDefinition` 去掉 `invocation`/`provider`，两者可省略走默认），**在同一 `apply()` 内同步注册**，返回的 disposer 撤销贡献并使发现缓存失效。随包携带资料时给 **`resourceBase: { kind: 'directory', path: <包目录> }`**，技能正文里的 `./...` 相对路径即按该目录解析。官方参考实现是 `dsh-skill-badge`（注册一个不可变的 `bundled` 候选 + 暴露打包资源目录）。**本仓库 `index.js` 是第二个可跑的例子**——见下方 §"插件内如何发布 skill" |
 | 定时任务 | 注册模型可调的调度工具；定时器 → 空闲 `followup(source:{kind:'cron'})` / 忙碌 `inject()` |
 | 遥测/回放 | `session/event` → JSONL；回放 = `sessions.create(id, {seed})` |
 | 上报通道（0.2 新增） | `ctx.otel`：`createEventReporter(options)` / `createSessionLogReporter(options)`——自带传输与批处理，未用时**不分配** provider/transport；**消费者必须在自己 fiber 释放时 drain 通道** |

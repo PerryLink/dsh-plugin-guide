@@ -8,6 +8,23 @@
 > 跳过 `node_modules` / `.git` / `dist` / `build` / `lib` / `coverage` 产物（但把“是否入库产物”作为一个事实记录）。
 > 本文是 `guide/plugin-dev-guide.md` §7.3 与 `guide/quick-reference.md`“社区实测坑速查”的**全文证据与出处**。
 
+> ⚠️ **基线声明与许可口径（2026-10-13 追加，读本文件前必看）**
+>
+> 1. **这是时点快照，不是现行 API 手册。** 被调研的仓库多数停在旧世代，**其中的代码示例可能使用已被上游移除的机制**。
+>    引用前先到 `references/official-docs/`（逐字镜像）核对；冲突时以镜像与官方代码为准。
+>    **已知本文内含已被移除的机制**（保留原文以便追溯，但**不得照抄**）：
+>    - **`ctx.get('invariants')` / `./invariant` 伴生**（§1.1 plugin-template 等）：运行时 invariants 已**整体移除**
+>      （`upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants`）。**新插件不要建 `src/invariant.ts`。**
+>    - **`source: { kind: 'plugin', … }`**（多处）：会话格式 V4 在消息准入处**拒绝**该形态，
+>      改用 `declare module '@deepseek-ai/dsh-llm'` 声明自有 kind。
+>    - **`@deepseek-ai/dsh-invariants` 依赖**：该包已被移除，出现在 `peerDependencies` 里会导致装不上。
+> 2. **许可**：本文件调研的部分仓库**没有 LICENSE 文件**（已逐仓复核）。凡无许可证者，
+>    本文**只做事实性转述并链回上游**，不复制其源码、配置或整句原文——
+>    §1.2（`dsh-plugin-dev`）与 §1.8（`fabric`→`stent`）两节已按此口径重写。
+>    **引用具体代码前请自行确认该仓库的许可证。**
+>
+> 见 [`guide/version-matrix.md`](../guide/version-matrix.md) §3、[`guide/migration-0.2.md`](../guide/migration-0.2.md) §4/§13。
+
 ---
 
 ## 0. 总览表
@@ -24,7 +41,7 @@
 | 5 | vlln/**plugin-registry** | 插件生态基建：薄控制台 + 开发引导 | bundle（console 包）+ docs + skill | TypeScript | `dsh plugin --profile web add "github:vlln/plugin-registry#main&path:/packages/plugin/console"` | 63 | 记录 repository-plugin 0809→0811 全时间线；bundle vs 纯插件双通道对比 |
 | 6 | omdsh-dev/**dsh-plugin-check** | 插件健康检查工具 | tool-bundle | TypeScript | `dsh plugin --profile web add "C:/path/to/dsh-plugin-check"` | 27 | `plugin_check` 工具 36 项检测项（清单/patch/构建/生态/hub）按形态分流 |
 | 7 | whyihaveyou/**dsh-suite** | 双语插件目录 + 脚手架 + 自研插件 | monorepo（脚手架 + 3 个第一方插件） | JS/TS | `npm create dsh-plugin@latest`；`dsh plugin add <pkg>` | 79 | 167+ 插件目录带日检兼容徽章 + `create-dsh-plugin` 三模板 + 15 条设计准则 |
-| 8 | omdsh-dev/**fabric** | MC-Fabric 风格 hook 处理器 | 3 包 workspace + bundle 载体 | TypeScript | `dsh plugin --profile web add github:dsh-external/fabric` | 91 | Orchestrion-JS 加载期代码变换；`before/after/around/replace` 四操作 |
+| 8 | omdsh-dev/**fabric** → **stent** | MC-Fabric 风格 hook 处理器 | 3 包 workspace + bundle 载体 | TypeScript | ⚠️ **安装命令已失效**（原 `github:dsh-external/fabric` 指向已改名仓；且无许可证） | 91 | Orchestrion-JS 加载期代码变换；`before/after/around/replace` 四操作；**与官方"不得改 agent-loop"红线相冲突，本库不建议当范例**——详见 §1.8 |
 | 9 | randerous/**dsh-turn-meta** | 最小首插件范例 | monorepo 包 | TypeScript | npm/tarball（`workspace:^` 依赖） | 11 | `agent/pre-step` `{prepend:true}` waterfall 注入 + source 归属 + `./invariant` 伴生 |
 | 10 | bobleer/**deepseek-harness-plugin-mcp** | 把 DSH 插件发布给外部 agent 的 MCP server | 双入口 npm 包（stdio/HTTP MCP + DSH bundle） | TypeScript | `npx deepseek-harness-plugin-mcp`；`dsh plugin add github:bobleer/...` | 46 | Catalog/Profile/Runtime 三平面；`ctx.tools`→MCP 工具桥接 + `tools/change` 联动 |
 | 11 | Nagi-ovo/**dsh-find-plugins** | 找插件/装插件 agent skill | skill（SKILL.md + script） | Markdown + Node ESM | 拷入 skills 目录 | 5 | 身份 = `dsh-plugin` topic；bundle/cordis/skill 四类装法优先级 |
@@ -67,6 +84,13 @@
     return { message: config.message ?? 'DSH plugin template loaded' }
   }
   ```
+
+  > ❌ **这一段已过时（2026-10-13 标注）**：下面的 `cordis.patch.yml` invariant 伴生行与随后的
+  > `src/invariant.ts` 写法**都已被上游移除**——运行时 invariants 在 `0.2.1-alpha.1` 整体删除。
+  > 该模板的 `src/{index,config,runtime,invariant}.ts` 四文件结构因此**只剩三文件有效**。
+  > **照抄会在启动期失败**。现行做法：不要建 `src/invariant.ts`，也不要注入 `invariants` 服务。
+  > 官方出处：`upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants`。
+  > 下文代码保留**仅为追溯该模板的历史形态**。
 
   bundle manifest（`package.json`）与 `cordis.patch.yml`（含 invariant 伴生行）：
   ```json
@@ -147,64 +171,36 @@
 
 ### 1.2 dsh-plugin-dev（omdsh-dev/dsh-plugin-dev）— 踩坑与做法档案
 
-- **目的**：把 DSH 公测期（dsh-external 组织）插件开发的真实踩坑固化下来；`README.md` 自述
-  “记录自 DSH 公测期间的插件开发实践：vendor cordis 双副本、tsconfig 三件套、Windows junction、多帧 zstd API……”。
-- **结构**：`skills/dsh-plugin-dev/SKILL.md` + `references/{overview,tool-plugin,build-pitfalls,bundle-patch,testing,publish}.md`；`README.md`/`README.en.md`（无 package.json）。
-- **一句话总纲**（`SKILL.md`）：
-  > "工具插件 = cordis 插件包 + `cordis.patch.yml`（bundle 形态）挂进 profile 就生效；但 bundle 不是唯一形态——registry（dsh.plugin.json）/ skill（SKILL.md）/ collection（catalog.json）各有合法协议，按需求选型"
-- **工具插件 package.json 与入口**（`references/tool-plugin.md`）：
-  ```jsonc
-  {
-    "name": "@deepseek-ai/dsh-tool-xxx",
-    "main": "lib/index.js", "types": "lib/types/index.d.ts",
-    "scripts": { "build": "tsc -p tsconfig.json", "prepack": "npm run build", "test": "vitest run tests" },
-    "peerDependencies": {
-      "@deepseek-ai/dsh-tools": "^0.0.1-rc.1",
-      "@deepseek-ai/cordis": "^4.0.1-rc.1",
-      "@deepseek-ai/dsh-invariants": "^0.0.1-rc.1" },
-    "dsh": { "bundle": { "patch": "./cordis.patch.yml" } },
-    "files": ["lib", "src", "cordis.patch.yml"]
-  }
-  ```
-  ```ts
-  import type { Context } from '@deepseek-ai/cordis'
-  import { defineTool } from '@deepseek-ai/dsh-tools'
-  export const name = '@deepseek-ai/dsh-tool-xxx'
-  export const inject = ['tools']
-  export function apply(ctx: Context): void {
-    ctx.tools.register(defineTool({
-      name: 'xxx', description: '…',
-      parameters: { action: { type: 'string', required: true, enum: ['a','b'] } },
-      output: { schema: { type: 'string' }, render: (_a, v) => [{ type: 'text', text: v }] },
-      execute: args => Promise.resolve(runAction(args)), timeoutMs: 2000,
-    }))
-  }
-  ```
-- **20 个实测坑**（`references/build-pitfalls.md`，每条含现象/根因/修法；节选最关键）：
-  - 坑 1 **cordis 双副本 → `Property 'tools' does not exist on type 'Context'`**：根因 “DSH monorepo vendor 了 cordis（`vendor/cordis`）……插件若从 `node_modules/.pnpm/cordis@.../` 副本解析，TypeScript 把两个物理副本视为两个不同模块，`@deepseek-ai/dsh-tools` 的 `declare module 'cordis'` 增强无法合并”。修法：构建期 junction 到 `<monorepo>/vendor/cordis`；npm rc.1 路径全链 scoped `@deepseek-ai/cordis`。
-  - 坑 1b **Windows junction 只有 PowerShell 成功**：`ln -s` → `Operation not permitted`；`cmd /c mklink /J` → MSYS 参数转换破坏 `/J`；`powershell -NoProfile -Command "New-Item -ItemType Junction ..."` ✅。`@types` 不能整体 junction（内部是 pnpm 符号链接），须直达 `.pnpm/@types+node@22.20.0/node_modules/@types/node` 真实路径。
-  - 坑 2 **tsconfig 三件套**：`allowImportingTsExtensions: true`（否则 TS5097）、`rewriteRelativeImportExtensions: true`（否则产物 `lib/index.js` 残留 `./x.ts` 导入→运行时 ESM 崩溃）、`lib: ["ES2024"]`（否则新 API TS2550）。
-  - 坑 6 **多帧 zstd 会话文件**：dsh 会话每批追加一个新 zstd frame（0808 起 200ms 窗口；19MB 会话 ≈ 12 万帧），单帧 API `decompressZstdFrame` 误判“只有 header”。修法：
-    ```ts
-    import { scanZstdFrames, createZstdFrameDecoder } from '@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts'
-    const { frames } = scanZstdFrames(buf)
-    for (const f of createZstdFrameDecoder().decode(buf, frames)) { /* 逐帧 */ }
-    ```
-  - 坑 7 **DSH_* 环境变量层**：“`DSH_*` 特殊变量放 `~/.dsh/.env` 会导致启动报错（启动方式相关变量必须由运行环境传入）；凭据已迁移到 `$DSH_HOME/.credentials.yaml`。”
-  - 坑 8 **tsc 报错仍 emit**：`noEmitOnError` 默认 false；修法 `tsc ... || exit 1` 或 `--noEmitOnError`；构建后 `grep -rE "from './[^']+\.ts'" lib/` 验证无 `.ts` 残留。
-  - 坑 13 **Windows 路径分隔符**：`path.resolve()` 返回反斜杠，与外部正斜杠比较恒 false → “路径逃逸”误报；比较前两侧都 `resolve()`。
-  - `README.md` 环境基线表还含 **`DSH_PERMISSION_MODE=danger-full-access` ⚠️ 高风险**：“Windows 无沙箱后端（bwrap/Landlock/Seatbelt），仅此模式可启动，且禁用审批提示——只应在可信的本地开发机临时使用；不要写进项目模板、CI 或共享机器”；以及 **MSYS 路径转换**：“启动用 `~/.local/bin/dsh` wrapper（不要直接跑 `bin/dsh`——Windows 下 MSYS 路径转换触发 `ERR_UNSUPPORTED_ESM_URL_SCHEME`，issue #388；wrapper 用 `file://` URL 启动 tsx 规避）”。
-  - 坑 14（plugin-check 审查轮教训）：“先定形态矩阵，再写规则……registry 原生插件可只有 `dsh.plugin.json + index.mjs`；bundle 可插入多个包，patch name 与包名不一致是合法的。”
-- **安装/发布指令**（verbatim，`references/bundle-patch.md`、`SKILL.md`）：
-  ```sh
-  dsh plugin --profile web add "C:/Users/admin/Desktop/dshext/dsh-tool-xxx"
-  dsh plugin --profile headless add "C:/Users/admin/Desktop/dshext/dsh-tool-xxx"  # dsh run 默认用 headless
-  dsh --profile web --dump-config | grep tool-xxx
-  dsh run "用 xxx 工具做一次端到端任务"
-  ```
-  npm rc.1 路径：`npx -p @deepseek-ai/dsh@0.0.1-rc.1 dsh web` → `npm pack` → `dsh plugin --profile compat add ./<pkg>.tgz`。
-  交付闭环：`npm run typecheck` → `grep -rE "from './[^']+\.ts'" lib/ || echo 无残留` → `npm run build && npm pack` → `--dump-config | grep <id>` → `npm run verify:execution` → `npm test`。
-- **.dsh-plugin / repository-plugin 机制演变**：无 repository-plugin 史，但 `references/overview.md` 把 **registry（`dsh.plugin.json` 清单 + cordis 入口，`dsh registry install`）** 列为 bundle 之外的合法形态，属“已并存、后被官方 0809 覆盖”的第二代协议（详见 1.5 plugin-registry 与 1.13 awesome-dsh-plugins 的时间线）。
+> ⚠️ **许可与引用口径（2026-10-13 复核）**：该仓库 **没有 LICENSE 文件**（GitHub API `license: null`），
+> 因此本节**只做事实性转述并链回原文**，**不再复制其代码块、配置文件或整句引文**。
+> 同组织的 `omdsh-dev/fabric` 现在**重定向到 `omdsh-dev/stent`**，同样无许可证。
+> 需要逐字内容请直接读上游；本知识库只保留"有什么、可用于什么"的索引级信息。
+
+- **目的**：把 DSH 公测期插件开发的真实踩坑固化成档案——vendor cordis 双副本、tsconfig 三件套、
+  Windows junction、多帧 zstd 会话 API 等。**无 `package.json`**，是纯文档 + skill 形态的仓库。
+- **结构**：一份 `SKILL.md` + 一组 `references/*.md` 分面文档（工具插件、构建坑、bundle patch、测试、发布），
+  外加中英双份 README。
+- **自述的核心主张**：工具插件等于"cordis 插件包 + `cordis.patch.yml`"，挂进 profile 即生效；
+  但 bundle 并非唯一形态，registry / skill / collection 各有其协议，应按需求选型。
+- **它记录并已被本库独立复核的坑**（本库在 [`plugin-dev-guide.md` §7.3](../guide/plugin-dev-guide.md) 保留同主题条目）：
+  1. **cordis 双副本** → `Property 'tools' does not exist on type 'Context'`（两个物理副本 = 两个模块，
+     `declare module` 合并失败）。
+  2. **Windows junction 只有 PowerShell 的 `New-Item -ItemType Junction` 可靠**；`ln -s` 与
+     `cmd /c mklink /J` 都会失败（后者被 MSYS 参数转换破坏）。
+  3. **tsconfig 三件套**：`allowImportingTsExtensions` + `rewriteRelativeImportExtensions` +
+     较新的 `lib`（否则分别报 TS5097 / 产物残留 `./x.ts` 导入导致运行时 ESM 崩溃 / TS2550）。
+  4. **多帧 zstd 会话文件**：每批追加一个 frame，单帧 API 会误判为"只有 header"——
+     必须逐帧扫。本库在 [`plugin-dev-guide.md`](../guide/plugin-dev-guide.md) 与
+     [`migration-0.2.md`](../guide/migration-0.2.md) 记有同一结论（按魔数 `28 B5 2F FD` 切分）。
+  5. **`DSH_*` 环境变量分层**：启动方式相关变量必须由运行环境传入，不能只放 `~/.dsh/.env`；
+     凭据已迁到 `$DSH_HOME/.credentials.yaml`。
+  6. **`tsc` 默认报错仍 emit**：需 `--noEmitOnError` 或显式 `|| exit 1`，并 grep 产物确认无 `.ts` 残留。
+  7. **Windows 路径分隔符**：`path.resolve()` 的反斜杠与正斜杠比较会恒定 false，造成"路径逃逸"误报。
+  8. **`DSH_PERMISSION_MODE=danger-full-access` 在其环境基线中被标为高风险**（当时 Windows 无沙箱后端）；
+     该模式禁用审批提示，**不应写进模板、CI 或共享机器**。
+- **本库不采纳的部分**：其环境基线锁定在早期 npm rc 线，且该仓库**无许可证**，
+  故**其代码骨架不作为本库的示例来源**——示例一律取自官方 `docs/` 或本仓库自己的实现（见 §4.9）。
+- **上游**：<https://github.com/omdsh-dev/dsh-plugin-dev>（读原文；注意无许可证）
 
 ### 1.3 deepseek-harness-plugin-from-scratch（Opr4Mp3r）— 代码审计式渐进教程
 
@@ -334,72 +330,41 @@
 - **目录收录标准**（`CONTRIBUTING.md`）：真是 DSH 插件/生态组件（npm 包带 `dsh.bundle` 或 GitHub 仓库明确面向 DSH）；有真实代码；repo+stars 可核实（`gh api`）；中英双语描述（≤140 字符）；`compat.status` 诚实（没实测留 unknown）。蹭 tag/工具链/占位进 `watchlist`。
 - **.dsh-plugin / repository-plugin 机制演变**：无（目录按现代 bundle/npm 名收录；全仓唯一命中“repository plugins”是第三方条目 plugin-registry 的英文描述文本，非本仓库机制）。
 
-### 1.8 fabric（omdsh-dev/fabric）— Fabric/Mixin 加载期变换层
+### 1.8 ~~fabric~~ → stent（omdsh-dev/fabric）— Fabric/Mixin 加载期变换层
 
-- **目的**：类 MC Fabric 的 hook 处理器——一个受信插件（A）无需改另一个插件（B）的源码即可改变其函数行为，通过注册 Fabric patch 针对 B 的 module/file/function 施加 `before`/`after`/`around`/`replace`（`docs/fabric.md`）。
-- **机制本质**（`docs/fabric.md` + `packages/cordis-fabric/package.json`）：**Orchestrion-JS 之上的加载期代码变换**（依赖 `@apm-js-collab/code-transformer ^0.18.1`），**不是** bundling Cordis、不是 shim。变换 hook 重写目标函数体，把调用记录发布到进程内 bridge channel，运行时派发给当前注册 handler；无 handler 时直接委托原始函数体。`before` 改入参 / `after` 观察或替换成功结果（含 async）/ `around` 决定原体是否运行并可替换（`invoke()` 委托）/ `replace` 完全接管。
-- **结构**：`packages/{cordis-fabric,cordis-fabric-api,cordis-fabric-dsh}` 三包 + 根 `cordis.patch.yml`（bundle 载体）；`patches/fabric-host-integration.patch` + `patches/README.md`（host 端 launcher/bootstrap + 浏览器 build seam）；`docs/{fabric,fabric-api,dsh-plugin-contracts}.md`。**不入库产物**：`lib/` 由 `prepare` 现建（`.gitignore`）。
-- **关键 snippet**（`docs/fabric.md`、`packages/cordis-fabric/src/service.ts`）：
-  ```ts
-  import { bootstrapFabric, FabricService } from 'cordis-fabric'
-  const disposeHooks = bootstrapFabric([])
-  await ctx.plugin(FabricService)
-  disposeHooks()
-  ```
-  ```ts
-  declare module 'cordis' { interface Context { fabric: FabricService } }
-  export class FabricService extends Service {
-    static provide = 'fabric'
-    constructor(ctx: Context) { super(ctx, 'fabric') }
-  }
-  ```
-  注册 patch（`ctx.fabric.register` 返回 disposer，handler 是运行时绑定的可信代码）：
-  ```ts
-  export const inject = ['fabric']
-  export function apply(ctx: Context & { fabric: FabricService }): void {
-    ctx.fabric.register({
-      id: 'my-vendor/rewrite-greeting',
-      target: { module: '@example/target-package', versionRange: '^1.0.0',
-                filePath: 'lib/index.js', functionQuery: { functionName: 'greet', kind: 'Sync' } },
-      operation: 'before',
-      handler(call: FabricCall) { call.arguments[0] = String(call.arguments[0]).toUpperCase() },
-    })
-  }
-  ```
-  `cordis.patch.yml`（显式 opt-in，两行 disabled）：
-  ```yaml
-  - insert:
-      - id: cordis-fabric
-        name: 'cordis-fabric'
-        disabled: true
-      - id: cordis-fabric-dsh
-        name: 'cordis-fabric-dsh'
-        disabled: true
-  ```
-  根 `package.json` 的 bundle 载体用 `&path:` 子目录依赖三包：
-  ```json
-  "dependencies": {
-    "cordis-fabric": "github:dsh-external/fabric#main&path:/packages/cordis-fabric",
-    "cordis-fabric-api": "github:dsh-external/fabric#main&path:/packages/cordis-fabric-api",
-    "cordis-fabric-dsh": "github:dsh-external/fabric#main&path:/packages/cordis-fabric-dsh"
-  }
-  ```
-  `cordis-fabric-dsh` 宿主门面 `inject = ['tools','systemPrompt','commands']`，`apply` 内逐个子插件 `ctx.plugin(FabricAgentService/FabricToolsService/FabricPromptService/FabricCommandsService)`（`packages/cordis-fabric-dsh/src/index.ts`）。窄 host 契约 `packages/cordis-fabric-dsh/src/host-contracts.ts` 是 `cordis-fabric-dsh` 对 DSH 运行时的**唯一视图**（官方 `@deepseek-ai/*` 私有不可装，只能声明最小结构面）。
-- **安全边界**（`README.md`）：Fabric patch handlers 是注册时绑定的可信代码；“patch descriptors are configuration metadata, but executable handlers are never deserialized from YAML or model input”。`required: true` + `checkRequiredPatches` 在 boot 后 fail loud（`filePath` 可能写错 launch form `src/index.ts` vs `lib/index.js`，或函数已迁移）。`docs/fabric.md` 另注：“`cordis_mount` temporary plugins and repository plugins must not receive Fabric capability without an explicit grant.”
-- **记录的坑**（`src/*.ts` + `patches/README.md`，root cause + fix）：
-  - `registerHooks` 无 unregister → disposer 停用状态（`active=false`）而非移除 hook（`src/node-loader.ts`）；
-  - **同步 `registerHooks` 与 tsx loader-thread hook 共存时 CJS 崩溃（版本边界）**：函数自 22.19.0 就有，但 **22.22.3 / 24.11.1 之前**同步 load chain 对 CJS 返回空 source 崩溃 → 版本门控 `supportsSyncHooks()`，低版本走 `./hook-entry` async `module.register`（bug 源 `nodejs/node#63060`、`#56241`）（`src/node-loader.ts`）；
-  - constructor 目标被显式拒绝（`super()`/`new.target` 无法搬进 traced closure）→ 改 patch 方法或工厂函数（`src/transform.ts`）；
-  - workspace 包无 `node_modules` 边界，`module-details-from-path` 无法命名 → 回退最近 `package.json`（`src/module-identity.ts`）；
-  - Node 加载期变换要求预编译 JS，`.ts` 源码直接给 load hook 会失败（`docs/fabric.md`）；
-  - src/lib 混用会分裂 bridge 监听器 → runner 与 launcher 都只 import package root（`lib/` half）（`patches/fabric-host-integration.patch`）；
-  - pnpm 11 封锁 git-resolved subdependencies / allowBuilds 只收精确 commit key → `dangerouslyAllowAllBuilds: true` + profile 模板 `blockExoticSubdeps: false`（`patches/README.md`、`patches/host-patch.config.json`）；
-  - pnpm 通过 SSH 解析 GitHub 依赖，装机需 SSH 权限（`README.md`）；
-  - RegExp `filePath` 无法通过 JSON 配置通道序列化（变 `{}`）→ `{ fabricRegexp: [source, flags] }` marker 重建（`src/node-loader.ts`）；
-  - 同一目标上的两个 `replace` patch 注册期被拒（`src/runtime.ts`）；箭头参数字面命名 `arguments` 遮蔽外层捕获被跳过（`src/transform.ts`）；patch 文件 trailing-space 被 git diff 误判 → `.gitattributes` `patches/*.patch whitespace=-trailing-space`。
-- **主机集成限制**（`README.md`）：host launcher 必须在任何 target module import 前调用 trio 的 bootstrap；官方 master 尚未做——source host 需打 `patches/fabric-host-integration.patch`（`pnpm run patch:host -- <checkout>`）；npm 安装的官方 `dsh` 无法打源码 patch，需等官方 merge wiring。
-- **安装**（verbatim，`README.md`）：`dsh plugin --profile web add github:dsh-external/fabric`；仓库不入库构建产物，`prepare` 在 git 安装时构建 `lib/`；需重启 web app，再在 profile composition 里 enable `cordis-fabric`/`cordis-fabric-dsh`。仓库自包含边界由 `verify:self-contained` 强制（拒绝 local-path 依赖、越界代码/编译器路径、绝对工作站路径）。
-- **.dsh-plugin / repository-plugin 机制演变**：无（纯现代 bundle + host patch 分层；无 `.dsh-plugin` 目录/字段）。
+> ⚠️ **仓库状态与引用口径（2026-10-13 复核）**：`omdsh-dev/fabric` 现在**重定向到 `omdsh-dev/stent`**，
+> 且上游已把 README 改写成一份 RFC；**该仓库没有 LICENSE 文件**。因此本节
+> **只保留事实性转述与本库自己的判断**，**不再复制其源码片段、配置或整句引文**——
+> 原先 §1.8 内的四段代码块与多处逐字引用已移除，需要原文请直接读上游。
+> 之前的 `github:dsh-external/fabric` 安装命令**已失效，不再提供**。
+
+- **目的**：类 MC Fabric 的 hook 处理器——受信插件 A 无需改插件 B 的源码即可改变其函数行为，
+  通过注册 patch 对 B 的 module / file / function 施加 before / after / around / replace 四类操作。
+- **机制本质**：**加载期代码变换**（建立在 Orchestrion-JS 的 code-transformer 之上），
+  **不是** bundling Cordis、也不是 shim。变换 hook 重写目标函数体，把调用记录发到进程内 bridge channel，
+  运行时再派发给当前注册的 handler；没有 handler 时直接委托原函数体。
+  四类操作的语义差异是这条路的重点：before 改入参、after 观察或替换成功结果（含 async）、
+  around 决定原体是否运行并可替换、replace 完全接管。
+- **结构**（三包 workspace + 一个 bundle 载体）：一个核心包 + 一个 API 包 + 一个 DSH 宿主门面包，
+  根 `cordis.patch.yml` 作为 bundle 载体；另有一份 host 端 launcher/bootstrap 的 patch 与说明；
+  构建产物 `lib/` 不入库，由 `prepare` 现建。
+- **DSH 集成的两点设计**：宿主门面把 Host 契约收窄成**唯一视图**（因为官方 `@deepseek-ai/*` 私有不可装，
+  只能声明最小结构面）；bundle 载体用 pnpm 的 `&path:` 子目录选择器依赖 workspace 内的三个包。
+- **安全边界（值得借鉴的设计）**：patch handler 是**注册时绑定的可信代码**，
+  配置只承载描述符元数据，**可执行 handler 绝不由 YAML 或模型输入反序列化**；
+  必需 patch 在 boot 后 fail loud（`filePath` 写错 launch form 或目标函数已迁移都会被抓到）。
+- **它记录的坑（本库只做转述）**：Node 加载期变换要求预编译 JS（`.ts` 源码直接给 load hook 会失败）；
+  src/lib 混用会分裂 bridge 监听器；同步 registerHooks 在特定 Node 版本区间对 CJS 崩溃，需版本门控并回退
+  到 async `module.register`；constructor 目标无法被变换；workspace 包缺少 `node_modules` 边界导致模块身份
+  无法命名；RegExp 形式的 `filePath` 过不了 JSON 配置通道，需要用 marker 重建；
+  同一目标上的两个 replace patch 在注册期即被拒。
+- **主机集成限制**：host launcher 必须在任何 target module import **之前**完成 bootstrap，
+  而官方 master 尚未提供这个接线点——源码宿主需自行打 patch，npm 安装的官方 `dsh` 打不了源码 patch，
+  只能等官方 merge wiring。**这是该方案没能落地的真实原因。**
+- **本库的结论**：**不建议把它当插件开发范例**。它是"绕过扩展点去改别人函数体"的路线，
+  与官方"新行为必须挂到已文档化扩展点、不得改 agent-loop"的红线相冲突；
+  加上仓库无许可证、上游已改写成 RFC、安装命令失效，**引用价值仅在于它记录的 Node 加载期变换坑**。
+- **上游**：<https://github.com/omdsh-dev/stent>（原 fabric 重定向至此；无许可证）
 
 ### 1.9 dsh-turn-meta（randerous/dsh-turn-meta）— 最小首插件范例
 

@@ -1,7 +1,6 @@
 <div align="center">
 
 # 🐳 dsh-plugin-guide
-- **1024 商店渠道**：先 `npm i -g dsh1024`，再 `dsh1024 plugin --profile web add dsh-plugin-guide`（计入 [deepseek1024.com](https://deepseek1024.com) 安装排行）。
 
 **构建 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 插件所需的一切。**
 
@@ -9,6 +8,10 @@
 
 > **官方仓库。** 本仓库是 dsh-plugin-guide 的唯一官方仓库，由 PerryLink 维护。其他账号下的同名仓库与本项目无关。
 
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+```
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-plugin-guide)
 [![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
@@ -28,6 +31,22 @@
 ---
 
 **📖 想在网页上读？** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) —— 每章独立成页，另有给助手用的机器可读 [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt)。
+
+## Why not just read the official docs?
+
+因为官方文档是写给"已经知道该翻哪一页"的人的，而 DSH **每 1.7–2.8 天发一个 prerelease**，且带破坏性变更。本插件补的正是最耗时间的三处缺口：
+
+| 缺口 | 本插件补什么 |
+|---|---|
+| **"我到底在对着哪一版开发？"** | [版本矩阵](guide/version-matrix.md)：四个都自称"最新"的值、子包 `latest` 冻结陷阱、破坏性变更断层，以及 `peerDependencies` 区间怎么选。**不存在稳定版**——所有已发布版本都是 prerelease。 |
+| **"这一版破坏了什么？"** | [迁移指南](guide/migration-0.2.md)：把 `0.1.6-alpha.2` → `0.2.1-alpha.2` 整理成**可引用的 seam**，每条含症状*与*修法并附官方出处——其中包括一处数据丢失风险和一处"模型请求还没发出就失败"的变更。 |
+| **"我的插件真的对吗？"** | [零依赖 CLI](SKILL.md)（`dsh-plugin-dev new / check / verify`）+ [官方文档逐字离线镜像](references/official-docs/)，让 agent 能引确切页面而不是靠猜。 |
+
+**60 秒自证：**
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+```
 
 <!-- star-cta -->
 ## ⭐ 如果它帮到了你
@@ -75,6 +94,9 @@ content counts as stated in the README (What you get)
 - **社区深读** —— 归档 114 个社区仓库（15 个深读），外加每条事实都链回出处的完整来源索引。
 - **CLI 工具链** —— `dsh-plugin-dev new / check / verify`：脚手架、静态检查、打包验证 DSH 插件；每个检查项都链回它强制执行的技能章节。
 
+- **家族工具链路由** —— [guide/family-toolchain.md](guide/family-toolchain.md)：哪个工具负责哪个问题、`dsh-plugin-doctor` 33 项检查全表，以及与本库 16 项检查的交叉对照。
+- **镜像范围决策** —— [references/mirror-scope-decision.md](references/mirror-scope-decision.md)：为什么"删掉零引用内容以省 80% 体积"经复测**不成立**（它们被本库自己声明的宽 glob 覆盖）。
+- **官方自带技能要点** —— [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md)：官方 `cordis-plugin-development` 技能的禁则、展示元数据清单与 UI/性能规则。
 ## Knowledge base
 
 | Path | 是什么 |
@@ -93,6 +115,9 @@ content counts as stated in the README (What you get)
 | `bin/` · `src/cli/` · `dist/` | `dsh-plugin-dev` CLI：脚手架、检查器、验证器（TypeScript，tsdown 打包） |
 | `templates/` | TS + JS 脚手架骨架：契约模板、Config、tests、cordis.patch.yml、五语 README |
 | `downloads/` | 原始快照 —— 由 `scripts/` 生成、不入库 |
+| `guide/family-toolchain.md` | **家族工具链路由**：问题→所有者→可引用产物；`dsh-plugin-doctor` 33 项检查全表与裁定语义；本库 16 项检查的交叉对照 |
+| `guide/migration-0.2.md` | 0.2 世代破坏性变更迁移指南（§0–§12 覆盖到 `0.2.1-alpha.1`，**§13 覆盖 `0.2.1-alpha.2` 的 19 个 seam**） |
+| `references/mirror-scope-decision.md` | 镜像范围决策记录：为什么不按"零引用"裁剪（附可复跑的测量脚本） |
 
 ## CLI toolchain
 

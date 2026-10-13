@@ -3,6 +3,22 @@
 > 调研对象：本地完整 checkout `D:\deepseek-harness`（只读）+ 公开仓库 `https://github.com/deepseek-ai/deepseek-harness`。
 > 结论来源以本地仓库文档为准；每条事实标注具体文件路径或 URL。本地 checkout 未覆盖或无法核实的内容标注 `[unverified]`。
 
+> ⚠️ **基线声明（2026-10-13 追加，读本文件前必看）**
+>
+> 本文件是**某一时点的仓库调研快照**，**不是现行 API 手册**。其中的机制可能已被上游移除，
+> 而原文不会自动更新。**引用任何 API/配置键之前，先到 `references/official-docs/`（逐字镜像）核对现行版本**；
+> 冲突时以镜像与官方代码为准。
+>
+> **已知本文件内含已被移除的机制**（保留原文以便追溯，但**不得照抄**）：
+>
+> | 位置 | 文中表述 | 现行状态 |
+> |---|---|---|
+> | §（`agent.inject` 一条） | `source: { kind: 'plugin', plugin: '<name>' }` | ❌ **已退役**。会话格式 V4 在消息准入处拒绝该形态；改用 `declare module '@deepseek-ai/dsh-llm'` 声明自有 kind |
+> | §（`ctx.tools` 一条） | config `mode: native \| code \| both` | ❌ **`both` 已被拒绝**（官方 `upgrade-guide/v0.2.1-alpha.1/tool-presentation-mode`）；只接受 `native` / `ptc` |
+> | §（包不变式一条） | 每个包拥有 `./invariant`，由 `verify-package-invariants` 强制 | ❌ **运行时 invariants 已整体移除**（官方 `upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants`），`./invariant` 子路径不复存在 |
+>
+> 见 [`guide/version-matrix.md`](../guide/version-matrix.md) §3 与 [`guide/migration-0.2.md`](../guide/migration-0.2.md) §4/§13。
+
 DeepSeek Harness（DSH）是一个**基于 vendored Cordis 框架的插件式 agent harness**，公开宣传语为 **"Everything is a Plugin"（一切都是插件）**（见 GitHub 仓库标题 `deepseek-ai/deepseek-harness: DeepSeek Harness: Everything is a Plugin.`）。模型适配器、工具注册表、会话日志、甚至 agent loop 本身都是插件，因此每一部分都能从配置替换。
 
 ---
@@ -425,6 +441,7 @@ export function apply(ctx: Context) {
 - **遵守 `exec.signal`**（取消在途工作）。
 - 可选 `output.presentationMeta(args, value)` 派生可回放的 JSON（持久到 `tool/result`）。
 - 可选 `exec.agent` 用于异步通知：`agent.inject({ content, source: { kind: 'plugin', plugin: '<name>' } })` 是下一次请求看到的持久上下文，不是唤醒（idle agent 保持 idle）。
+  > ❌ **已退役（2026-10-13 标注）**：`{ kind: 'plugin', plugin }` 这个形态在会话格式 V4 起**被消息准入处拒绝**。改用 `declare module '@deepseek-ai/dsh-llm' { interface MessageSourceMap { '<your-kind>': { kind: '<your-kind>' } } }` 声明自有 kind，再传 `{ kind: '<your-kind>' }`。见 [`guide/plugin-dev-guide.md`](../guide/plugin-dev-guide.md) §3 与 [`guide/migration-0.2.md`](../guide/migration-0.2.md)。
 - 后台工作：`run_in_background` 用 producer config 门控，经 `ctx.jobs.start({ kind, label, owner: exec.agent, run })` 注册。
 
 **执行策略与观察**（L57–L59）：`tools/pre-execute`（可扩展 allow/deny/ask）、`ctx.tools.guard()`（最终单调 deny）、`tools/execute`（包裹 dispatch 加 deadline/retry/metrics）、`tools/post-execute`（替换呈现/值、block、附加上下文）、`tools/result`（观察不可变最终结果）。
@@ -434,6 +451,7 @@ export function apply(ctx: Context) {
 **UI 呈现**（L67–L90）：`output.render` 是模型内容；UI card 由纯函数 `presentCall`/`presentResult` 声明，返回 `card`-tagged render intent（`generic`/`terminal`/`diff`/`search`/`read`/`web`）。硬规则：**纯度**（live streaming 与 REPLAY 都要跑，必须只是 `args`(+result) 的纯函数，无 I/O/session state/clock/random）；UI-only 格式不进 model result；`defineTool` 对显示路径软校验（malformed args 返回 `undefined` 走 generic fallback 而非 throw）。
 
 `packages/core/tools/README.md` 给出 `ctx.tools` 服务（`ToolRuntime`）的完整 API：`register`/`presentAs`/`restrict`/`get`/`schemas`/`guard`/`execute`/`executionMode`，以及 config `mode: native | code | both`、`defineTool` schema DSL（`ParameterSchemaSpec`/`ValueSchemaSpec`、`oneOf`、`additionalProperties`）、Code Mode 的 `run_code` 保留 transport、并行执行、`ToolDefinition`/`ToolExecution`/`PreToolDecision`/`PostToolDecision`/`ToolGuard` 等关键类型（L1–L198）。
+> ❌ **`both` 已不再合法（2026-10-13 标注）**：`mode` 现只接受 **`native`** 或 **`ptc`**（`code` 线已改名为 PTC）。传 `both`（含环境变量 `DSH_TOOLS_MODE=both` 与 `ctx.tools.presentAs('both')`）会被直接拒绝。官方出处：`upgrade-guide/v0.2.1-alpha.1/tool-presentation-mode`。
 
 ### 3.4 Skill 插件机制（packages/skill）
 
@@ -493,6 +511,7 @@ skill 目录结构：`packages/skill/` 下有 `skill`（registry/Service Definit
 - switch 用 discriminant tags：closed union 结尾 `assertNever`；merge-extensible union 走文档化 default。
 - opaque 跨边界 id 用 branded（`Branded<B>` from `dsh-brand`），从不裸 `string`。
 - 每个包拥有 `./invariant`（注册 manifest 名；检查 event/data 关系或给空 installer 一个包特定 `No runtime invariant:` 理由），由 `verify-package-invariants` 强制（`packages/AGENTS.md` L18）。
+  > ❌ **整条机制已移除（2026-10-13 标注）**：运行时 invariant 插件及各包的 `./invariant` 导出已在 `0.2.1-alpha.1` 删除，`verify-package-invariants` 门禁随之不复存在。官方出处：`upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants`。**不要在新插件里建 `src/invariant.ts`**，也不要按本节校验清单照做。
 - package README 的 Model Experience 格式（canonical Model Experience format，`docs/cookbook/adding-a-package.md` §4）+ `Known Limitations and Deferred Work` 段落由 `verify-package-readme-model-experience.ts` / `verify-package-readme-limitations.ts` 门禁。
 
 ### 4.4 双语文档

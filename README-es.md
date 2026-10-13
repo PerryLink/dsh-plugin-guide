@@ -1,12 +1,15 @@
 <div align="center">
 
 # 🐳 dsh-plugin-guide
-- **Canal 1024 store**: `npm i -g dsh1024` una vez, luego `dsh1024 plugin --profile web add dsh-plugin-guide` (cuenta para el ranking de instalaciones de [deepseek1024.com](https://deepseek1024.com)).
 
 **Todo lo que necesitas para construir plugins de [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).**
 
 *Archivo de documentación oficial · primer de Cordis · deep-dives de la comunidad · trampas probadas en batalla · agent skill · toolchain CLI*
 
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+```
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-plugin-guide)
 [![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
@@ -26,6 +29,22 @@
 ---
 
 **📖 ¿Prefieres leerlo como sitio web?** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) — cada capítulo en su propia página, más un [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt) legible por máquina para asistentes.
+
+## Why not just read the official docs?
+
+Porque está escrita para quien ya sabe qué página abrir, y DSH publica **una versión preliminar cada 1,7–2,8 días** con cambios que rompen compatibilidad. Este plugin cubre las tres brechas que más tiempo cuestan:
+
+| Brecha | Qué añade este plugin |
+|---|---|
+| **"¿Contra qué versión estoy desarrollando?"** | Una [matriz de versiones](guide/version-matrix.md): los cuatro valores que se llaman "latest", las etiquetas `latest` congeladas de los subpaquetes, las fallas de compatibilidad y cómo elegir un rango en `peerDependencies`. **No existe una línea estable** — toda versión publicada es preliminar. |
+| **"¿Qué rompe esta versión?"** | Una [guía de migración](guide/migration-0.2.md) que expone `0.1.6-alpha.2` → `0.2.1-alpha.2` como **seams citables**, cada uno con síntoma *y* arreglo y su fuente oficial — incluida una pérdida de datos y un cambio que hace fallar los prompts antes de construir la petición al modelo. |
+| **"¿Mi plugin es realmente correcto?"** | Una [CLI sin dependencias](SKILL.md) (`dsh-plugin-dev new / check / verify`) y un [espejo literal y sin conexión](references/official-docs/) de la documentación oficial, para que el agente cite la página exacta. |
+
+**Compruébalo en 60 segundos:**
+
+```sh
+dsh plugin --profile web add dsh-plugin-guide
+```
 
 <!-- star-cta -->
 ## ⭐ 如果它帮到了你
@@ -72,6 +91,10 @@ content counts as stated in the README (What you get)
 - **Deep-dives de la comunidad** — 114 repositorios de la comunidad archivados (15 con deep-dive), más un índice fuente completo donde cada hecho enlaza a su origen.
 - **Toolchain CLI** — `dsh-plugin-dev new / check / verify`: genera, verifica estáticamente y valida el empaquetado de plugins DSH; cada check enlaza a la sección de la skill que aplica.
 
+- **Adaptabilidad de versión** — [guide/version-matrix.md](guide/version-matrix.md): los cuatro valores "latest", las etiquetas `latest` congeladas, las fallas de compatibilidad, cómo elegir el rango de peers y los 19 cambios de `0.2.1-alpha.2`.
+- **Enrutador de la cadena de herramientas** — [guide/family-toolchain.md](guide/family-toolchain.md): qué herramienta responde a cada pregunta, el catálogo completo de 33 comprobaciones de `dsh-plugin-doctor` y su cruce con las 16 de este repositorio.
+- **Decisión sobre el alcance del espejo** — [references/mirror-scope-decision.md](references/mirror-scope-decision.md): por qué "eliminar lo no referenciado para ahorrar un 80%" **no se sostiene** al volver a medirlo.
+- **Destilado de la skill oficial** — [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md): prohibiciones, metadatos de presentación y reglas de UI/rendimiento de la skill oficial `cordis-plugin-development`.
 ## Knowledge base
 
 | Path | Qué es |
@@ -89,6 +112,10 @@ content counts as stated in the README (What you get)
 | `bin/` · `src/cli/` · `dist/` | El CLI `dsh-plugin-dev`: scaffolder, checker, verifier (TypeScript, empaquetado con tsdown) |
 | `templates/` | Esqueletos TS + JS: plantilla de contrato, Config, tests, cordis.patch.yml, READMEs en cinco idiomas |
 | `downloads/` | Instantáneas crudas — generadas por `scripts/`, no confirmadas |
+| `guide/version-matrix.md` | **Matriz de adaptabilidad de versión**: los cuatro valores "latest", etiquetas congeladas, fallas de compatibilidad, selección de rango de peers, linaje del formato de sesión y los 19 cambios de `0.2.1-alpha.2` |
+| `guide/family-toolchain.md` | **Enrutador de la cadena de herramientas**: pregunta → propietario → artefacto citable; catálogo completo de 33 comprobaciones de `dsh-plugin-doctor` y cruce con las 16 de este repositorio |
+| `guide/migration-0.2.md` | Guía de cambios que rompen compatibilidad de la generación 0.2 (§0–§12 hasta `0.2.1-alpha.1`; **§13 cubre los 19 seams de `0.2.1-alpha.2`**) |
+| `references/mirror-scope-decision.md` | Registro de decisión sobre el alcance del espejo: por qué no se recorta por "cero referencias", con el script de medición reproducible |
 
 ## CLI toolchain
 
