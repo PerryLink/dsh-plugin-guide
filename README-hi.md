@@ -125,6 +125,7 @@ content counts as stated in the README (What you get)
 dsh-plugin-dev new <name> [--lang ts|js] [--dir <path>] [--force] [--git]
 dsh-plugin-dev check [--cwd <dir>] [--json] [--strict]
 dsh-plugin-dev verify [--cwd <dir>] [--dsh <bin>] [--pnpm <bin>]
+dsh-plugin-dev seams <query> | --since <version>   # क्या यह API मेरे लक्ष्य होस्ट में है?
 ```
 
 | उप-कमांड | क्या करता है |
@@ -258,6 +259,10 @@ pnpm test
 pnpm run build
 pnpm run verify:artifacts        # आत्म-जाँच + स्कैफ़ोल्ड स्मोक (कोई नेटवर्क नहीं)
 pnpm run verify:self-contained   # पैक + साफ़ प्रोफ़ाइल इंस्टॉल/स्टार्ट/अनइंस्टॉल स्मोक
+pnpm run check:readmes           # five READMEs share section structure
+pnpm run check:parity            # translations have identical block counts
+pnpm run check:facts             # self-stated numbers match data/facts.json
+pnpm run check:ps1-bom           # PowerShell scripts keep their UTF-8 BOM
 pnpm pack
 pwsh -File scripts/verify-kit.ps1   # महत्वपूर्ण पथ + लिंक स्कैन (-Checkout <checkout> से दस्तावेज़ विचलन)
 ```

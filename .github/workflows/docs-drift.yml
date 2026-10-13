@@ -21,11 +21,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The detail probe below needs the pinned commit present locally so it
+          # can compare two trees. Without history it can only report the SHA
+          # mismatch, which is the report nobody acts on.
+          fetch-depth: 0
 
       - name: Probe official-docs drift
         id: drift
         shell: pwsh
         run: ./scripts/check-docs-drift.ps1
+
+      # A drift report that names no file is why this job could sit red for weeks
+      # without action. Fetch upstream and list exactly which in-scope paths were
+      # added, removed, or modified.
+      - name: Fetch upstream for the detail probe
+        if: steps.drift.outputs.drift == 'yes'
+        run: |
+          git clone --filter=blob:none --no-checkout --depth 1 \
+            https://github.com/deepseek-ai/deepseek-harness.git /tmp/harness
+
+      - name: Name the changed files
+        id: detail
+        if: steps.drift.outputs.drift == 'yes'
+        run: |
+          # Clone only fetches the head; fetch the pinned commit too so both trees exist.
+          PINNED="$(grep -oE '^\| Source commit \| `[0-9a-f]{40}`' references/official-docs/SNAPSHOT.md | grep -oE '[0-9a-f]{40}')"
+          git -C /tmp/harness fetch --depth 1 origin "$PINNED"
+          node scripts/check-docs-drift-detail.mjs --checkout /tmp/harness --commit "$PINNED" > drift-detail.txt || true
+          {
+            echo 'detail<<DRIFT_EOF'
+            head -60 drift-detail.txt
+            echo 'DRIFT_EOF'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Open drift issue
         if: steps.drift.outputs.drift == 'yes'
@@ -34,4 +62,4 @@ jobs:
         run: |
           gh issue create \
             --title "docs drift: references/official-docs is stale" \
-            --body "Upstream \`deepseek-ai/deepseek-harness\` (\`master\`) has moved while the KB mirror at \`references/official-docs\` is pinned to an older commit. Run \`pwsh -File scripts/sync-official-docs.ps1\` to refresh the mirror; do not hand-edit the mirror."
+            --body "$(printf 'Upstream `deepseek-ai/deepseek-harness` (`master`) has moved while the KB mirror at `references/official-docs` is pinned to an older commit.\n\n### What changed upstream\n\n```\n%s\n```\n\nRun `pwsh -File scripts/sync-official-docs.ps1` to refresh the mirror; do not hand-edit the mirror.' "${{ steps.detail.outputs.detail }}")"

@@ -3,6 +3,8 @@ import { UsageError, flagBool, flagString, parseArgs } from './lib/args'
 import { readCliVersion } from './meta'
 import { runCheck, printCheckReport } from './commands/check'
 import { runNew } from './commands/new'
+import { runSeams } from './commands/seams'
+import { loadSeamIndex } from './lib/seams'
 import {
   resolveDsh,
   resolvePnpm,
@@ -29,6 +31,13 @@ Commands:
                   Flags: --cwd <dir> --dsh <bin> --pnpm <bin> --profile <name>
                          --base <spec> --headless <spec> --timeout <ms>
                          --smoke-timeout <ms>
+  seams <query>   Ask whether an API or capability exists in a target host:
+                  a seam id (L3), a capability id (A20), a version, or a word.
+                  Exits 3 when the knowledge base does not establish an answer —
+                  which is NOT a "no". Flags: --json
+  seams --since <version>
+                  List every recorded breaking change that lands AFTER a version
+                  you target, flagging which ones static inspection cannot see.
 
 Global:
   -h, --help      Show this help
@@ -86,6 +95,9 @@ export async function main(argv: string[], cwd: string = process.cwd()): Promise
     'headless',
     'timeout',
     'smoke-timeout',
+    // seams
+    'since',
+    'query',
   ] as const
 
   let parsed
@@ -137,8 +149,7 @@ export async function main(argv: string[], cwd: string = process.cwd()): Promise
         return exitCode
       }
 
-      case 'verify': {
-        const root = flagString(flags, 'cwd', cwd) ?? cwd
+      case 'verify': {        const root = flagString(flags, 'cwd', cwd) ?? cwd
         const result = await runVerify({
           root,
           dshBin: resolveDsh(flagString(flags, 'dsh')),
@@ -164,6 +175,14 @@ export async function main(argv: string[], cwd: string = process.cwd()): Promise
           process.stdout.write('verify: OK\n')
         }
         return result.exitCode
+      }
+
+      case 'seams': {
+        // Two spellings: `seams <query>` looks one thing up, `seams --since <v>`
+        // lists every recorded change that lands after a target version.
+        const since = flagString(flags, 'since')
+        const query = positionals[1] ?? flagString(flags, 'query')
+        return runSeams(loadSeamIndex(), { query, since, json: flagBool(flags, 'json') })
       }
 
       default:

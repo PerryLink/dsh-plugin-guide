@@ -36,6 +36,9 @@ jobs:
       - name: Translation block parity (READMEs + quick references)
         run: pnpm run check:parity
 
+      - name: Self-stated numbers match reality (data/facts.json)
+        run: pnpm run check:facts
+
       - name: PowerShell scripts keep their UTF-8 BOM
         run: pnpm run check:ps1-bom
       - name: Removed session-API grep (zero hits in src/)

@@ -125,6 +125,7 @@ El bundle incluye el CLI `dsh-plugin-dev` sin dependencias de runtime (`bin/` �
 dsh-plugin-dev new <name> [--lang ts|js] [--dir <path>] [--force] [--git]
 dsh-plugin-dev check [--cwd <dir>] [--json] [--strict]
 dsh-plugin-dev verify [--cwd <dir>] [--dsh <bin>] [--pnpm <bin>]
+dsh-plugin-dev seams <query> | --since <version>   # ¿existe esta API en mi host destino?
 ```
 
 | Subcomando | Qué hace |
@@ -258,6 +259,10 @@ pnpm test
 pnpm run build
 pnpm run verify:artifacts        # auto-check + smoke de scaffold (sin red)
 pnpm run verify:self-contained   # pack + smoke de instalación/inicio/desinstalación en perfil limpio
+pnpm run check:readmes           # five READMEs share section structure
+pnpm run check:parity            # translations have identical block counts
+pnpm run check:facts             # self-stated numbers match data/facts.json
+pnpm run check:ps1-bom           # PowerShell scripts keep their UTF-8 BOM
 pnpm pack
 pwsh -File scripts/verify-kit.ps1   # rutas críticas + escaneo de enlaces (+ deriva de docs con -Checkout <checkout>)
 ```

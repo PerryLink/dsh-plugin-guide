@@ -4,6 +4,33 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.33] - 2026-10-13
+
+Closes the last of the audit backlog: the version-adaptivity gap, a drift probe that says *what* changed, a single home for the numbers this project states about itself, and the CLI positioning question the audits raised but left open.
+
+### Added
+
+- **`dsh-plugin-dev seams` — a machine-readable answer to "does this API exist in my target host?"** `guide/version-matrix.md` gives capability introductions at package/path granularity and says so, which is honest but does not answer the question authors actually ask. `seams <query>` resolves a seam id (`L3`), a capability id (`A20`), a version, or any word against `data/seams/index.json` (19 `L` corridor seams, 6 mechanism seams, 22 capability areas, each with its official source); `seams --since <version>` lists every recorded breaking change landing after a version you target and marks which ones static inspection cannot see.
+  - **The third state is mandatory.** An unmatched query exits **3** and states that this is an absence of evidence in the knowledge base, *not* evidence the API is absent from the host. Nine of the nineteen corridor seams are recorded `detectable: false` with the reason (data loss, runtime state, deployment-dependent behaviour), so nothing built on this data can report them as passing. This mirrors the verdict discipline in `guide/family-toolchain.md` §2.1.
+  - A version-comparison bug found while testing would have made `--since <anything>` return the **entire** index — the most dangerous possible failure for this command, because it reads as "everything changed for you". The pre-release pattern required a dot inside the counter, so `0.2.1-alpha.2` ranked as `NaN`, every comparison against `NaN` is false, and the filter passed everything. An unparseable target now returns an empty list rather than everything.
+- **`scripts/check-docs-drift-detail.mjs`** — answers *what* changed, which `check-docs-drift.ps1` never did. It compares the pinned commit's tree against the upstream head's tree and lists added, removed, and modified paths inside the mirror's exact scope. A drift report that names no file is why the weekly job could sit red without action; the workflow now opens an issue containing the file list.
+- **`scripts/check-facts.mjs` and `data/facts.json`** — one home for the numbers this project states about itself, with 13 machine-checked assertions (mirror page and zh-pair counts counted independently, README section and bullet counts, `guide/` and `references/` inventories, CLI check count, corridor seam and capability counts, and that a CHANGELOG section exists for the shipped version). This is the defect class the audits kept finding: the roster was written four ways, the pitfall list was "30+" in English and "20+" in three translations, and the mirror was "215 pages" long after it reached 429.
+- **`references/cli-positioning-decision.md`** — the audits asked whether the 16-check CLI is a weaker duplicate of the 33-check `dsh-plugin-doctor` and should be cut. It records the measured facts on both sides, why the answer is "keep, with a fixed division of labour", and the three conditions that would reverse it.
+
+### Fixed
+
+- **A shipped file that no gate would have caught.** `data/seams/index.json` was missing from `package.json` `files[]` while the new `seams` command already read it at runtime: the command worked from the source tree and would have failed for every installed user. `verify-artifacts.mjs` now asserts that every runtime input is declared in `files[]`, and exercises the built bundle rather than the source tree.
+- **Two audit figures were wrong and are corrected.** The audit claimed 14 of 19 corridor seams are statically detectable; counting the records gives **10 detectable and 9 advisory-only**, and `references/` holds **10** documents rather than 9. Both were written into `data/facts.json` from the audit before `check-facts.mjs` caught them — which is the point of having it.
+
+### Changed
+
+- Attach the packed tarball to each GitHub Release. npm reports downloads only as a rolling total through the registry API, so a release asset is the only public per-release download figure this package can show.
+- `check:readmes`, `check:parity`, `check:facts` and `check:ps1-bom` are documented in the Development block of all five READMEs.
+
+### Verification
+
+typecheck 0 errors · **80 tests** (was 64) · `verify:artifacts` OK including four new shipped-surface assertions · readme-sync OK · translation parity 0 drift · `check-facts` 13 assertions OK · dogfood `check` 14 passed / 0 warned · `verify-kit.ps1` `VERIFY-OK` on PowerShell 5.1 · `seams --since` ordering verified (25 / 22 / 0 changes for three targets, unparseable → 0).
+
 ## [0.3.32] - 2026-10-13
 
 Publishes the evidence behind the mirror-scope decision, and corrects two numbers in it.

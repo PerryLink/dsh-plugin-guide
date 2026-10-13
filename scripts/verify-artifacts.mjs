@@ -32,6 +32,43 @@ check(existsSync(join(root, 'bin', 'dsh-plugin-dev.js')), 'bin/dsh-plugin-dev.js
 check(existsSync(join(root, 'templates', 'ts')), 'templates/ts exists')
 check(existsSync(join(root, 'templates', 'js')), 'templates/js exists')
 
+// Files a subcommand reads at RUNTIME but that nothing else asserts are shipped.
+// `data/seams/index.json` was missing from package.json `files[]` while the
+// `seams` command already depended on it: the command worked from the source
+// tree and would have failed for every installed user with "seam index not
+// found". Reading the file in-repo cannot catch that, so assert the manifest
+// declares it.
+{
+  const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
+  const declared = (p) => pkg.files.some((f) => f === p || f.startsWith(`${p}/`) || f === `${p}`)
+  const runtimeInputs = [
+    ['data', 'data/seams/index.json read by `seams`'],
+    ['data', 'data/facts.json read by check-facts'],
+    ['SKILL.md', 'SKILL.md registered as the agent skill'],
+  ]
+  for (const [entry, why] of runtimeInputs) {
+    check(declared(entry), `package.json files[] ships ${why}`)
+  }
+  const seamIndex = JSON.parse(readFileSync(join(root, 'data', 'seams', 'index.json'), 'utf8'))
+  check(Array.isArray(seamIndex.seams) && seamIndex.seams.length > 0, 'seam index parses and is non-empty')
+}
+
+// The `seams` command must resolve its data through the BUILT bundle, since that
+// is what ships; a source-tree-only path resolution works in tests and fails in
+// the published artifact.
+{
+  const seams = runNode(['dist/dsh-plugin-dev.js', 'seams', 'L3', '--json'], { stdio: ['ignore', 'pipe', 'pipe'] })
+  let parsed = null
+  try { parsed = JSON.parse(seams.stdout) } catch { parsed = null }
+  check(seams.status === 0 && parsed?.state === 'found', `bundled \`seams L3\` resolves its data (exit ${seams.status})`)
+
+  // The third state must survive bundling: an unmatched query reports unknown.
+  const unknown = runNode(['dist/dsh-plugin-dev.js', 'seams', 'zzz-nothing', '--json'], { stdio: ['ignore', 'pipe', 'pipe'] })
+  let u = null
+  try { u = JSON.parse(unknown.stdout) } catch { u = null }
+  check(unknown.status === 3 && u?.state === 'unknown', `bundled \`seams\` reports unknown with exit 3 (exit ${unknown.status})`)
+}
+
 // 2. Version + dogfood self-check.
 const version = runNode(['dist/dsh-plugin-dev.js', '--version'])
 check(version.status === 0 && /\d+\.\d+\.\d+/.test(version.stdout.trim()), `--version prints a semver (${version.stdout.trim()})`)

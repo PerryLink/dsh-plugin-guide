@@ -102,8 +102,11 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 - `new <name>`：参数化脚手架，生成 TS 或 JS 插件仓库骨架（`src/index.ts` 契约模板、Schemastery Config、tests、tsdown/vitest、注释齐全的 `cordis.patch.yml`、五语 README），模板与 `references/official-docs` 同步更新。标志：`--lang <ts|js>`、`--dir <path>`、`--force`、`--git`。
 - `check [--json] [--strict] [--cwd <dir>]`：静态检查（`cordis.patch.yml` 合法性、`package.json` 元数据（`dsh.bundle.patch` 指向/peer 依赖/engines/files 白名单）、五语 README 一致性、工程红线模式），输出 CI 可消费的结构化 JSON；每个检查项在输出里引用本知识库对应章节（skill 联动），agent 可继续人工审计。**这 16 项是同族 `dsh-plugin-doctor` 33 项的子集**（逐项对照见 `guide/family-toolchain.md` §3）；发布前建议两个都跑。
 - `verify [--cwd <dir>] [--base <spec>] [--headless <spec>] [--profile <name>]`：`pnpm pack` 后装入干净临时 `DSH_HOME` profile 做安装+启动+卸载冒烟（对齐官方 verify:self-contained）；失败给出日志尾部与建议。
+- `seams <query>` / `seams --since <version>`：**回答"这个 API 在我目标宿主里存不存在"**，而不是让你去翻 429 页镜像。`query` 可以是 seam id（`L3`）、能力 id（`A20`）、版本号或任意词。`--since 0.2.0-rc.2` 列出**在该版本之后落地**的所有破坏性变更，并标出哪些**静态检查看不到**。
+  - **第三态是强制的**：知识库没有依据时**退出码 3 并明确说"这是知识库没有依据，不等于该 API 不存在"**——绝不把"不知道"渲染成"没有"。
+  - 数据源 `data/seams/index.json`：19 条 `L` 走廊 seam + 6 条机制 seam + 22 个能力区，每条带 `confidence`（`documented`/`inferred`/`unknown`）与官方出处；**其中 9 条标 `detectable: false` 并写明原因**（数据丢失、运行时状态、部署相关行为），任何消费者都不得把它们算作通过。
 
-三个子命令均可逆/幂等；网络/子进程尊重超时与 AbortSignal；只清理自己 mkdtemp 的目录。CLI 零运行时依赖，构建产物经 tsdown 打包为单文件 `dist/dsh-plugin-dev.js`。
+四个子命令均可逆/幂等；网络/子进程尊重超时与 AbortSignal；只清理自己 mkdtemp 的目录。CLI 零运行时依赖，构建产物经 tsdown 打包为单文件 `dist/dsh-plugin-dev.js`。
 
 ## 边界
 

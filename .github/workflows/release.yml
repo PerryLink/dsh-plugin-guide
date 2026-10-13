@@ -173,6 +173,22 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      # npm reports downloads only as a rolling total through the registry API and
+      # the badge services throttle it. A release asset gets a per-file download
+      # count on the release page, which is the only public, per-release figure
+      # available for this package.
+      - name: Build the tarball to attach
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run build
+          pnpm pack
+
       - name: Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -184,8 +200,10 @@ jobs:
           else
             REF_NAME="v$(node -p "require('./package.json').version")"
           fi
+          TARBALL="$(ls dsh-plugin-guide-*.tgz | head -1)"
           if gh release view "${REF_NAME}" >/dev/null 2>&1; then
-            echo "release ${REF_NAME} already exists; skipping"
+            echo "release ${REF_NAME} already exists; uploading the tarball if missing"
+            gh release upload "${REF_NAME}" "${TARBALL}" --clobber
             exit 0
           fi
-          gh release create "${REF_NAME}" --generate-notes
+          gh release create "${REF_NAME}" "${TARBALL}" --generate-notes

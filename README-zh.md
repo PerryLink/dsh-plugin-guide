@@ -127,6 +127,7 @@ bundle 附带零运行时依赖的 `dsh-plugin-dev` CLI（`bin/` → tsdown 打�
 dsh-plugin-dev new <name> [--lang ts|js] [--dir <path>] [--force] [--git]
 dsh-plugin-dev check [--cwd <dir>] [--json] [--strict]
 dsh-plugin-dev verify [--cwd <dir>] [--dsh <bin>] [--pnpm <bin>]
+dsh-plugin-dev seams <query> | --since <version>   # 这个 API 在我目标宿主里存在吗？
 ```
 
 | 子命令 | 作用 |
@@ -260,6 +261,10 @@ pnpm test
 pnpm run build
 pnpm run verify:artifacts        # 自检 + 脚手架冒烟（无网络）
 pnpm run verify:self-contained   # 打包 + 干净 profile 安装/启动/卸载冒烟
+pnpm run check:readmes           # five READMEs share section structure
+pnpm run check:parity            # translations have identical block counts
+pnpm run check:facts             # self-stated numbers match data/facts.json
+pnpm run check:ps1-bom           # PowerShell scripts keep their UTF-8 BOM
 pnpm pack
 pwsh -File scripts/verify-kit.ps1   # 关键路径 + 链接扫描（加 -Checkout <checkout> 做文档漂移）
 ```

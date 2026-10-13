@@ -137,6 +137,7 @@ The bundle ships the zero-runtime-dependency `dsh-plugin-dev` CLI (`bin/` → ts
 dsh-plugin-dev new <name> [--lang ts|js] [--dir <path>] [--force] [--git]
 dsh-plugin-dev check [--cwd <dir>] [--json] [--strict]
 dsh-plugin-dev verify [--cwd <dir>] [--dsh <bin>] [--pnpm <bin>]
+dsh-plugin-dev seams <query> | --since <version>   # is this API in my target host?
 ```
 
 | Subcommand | What it does |
@@ -274,6 +275,10 @@ pnpm test
 pnpm run build
 pnpm run verify:artifacts        # dogfood self-check + scaffold smoke (no network)
 pnpm run verify:self-contained   # pack + clean-profile install/start/uninstall smoke
+pnpm run check:readmes           # five READMEs share section structure
+pnpm run check:parity            # translations have identical block counts
+pnpm run check:facts             # self-stated numbers match data/facts.json
+pnpm run check:ps1-bom           # PowerShell scripts keep their UTF-8 BOM
 pnpm pack
 pwsh -File scripts/verify-kit.ps1   # critical paths + link scan (+ docs drift with -Checkout <checkout>)
 ```
