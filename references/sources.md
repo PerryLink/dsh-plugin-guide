@@ -122,6 +122,7 @@
 - 重跑：脚本均幂等，可随时刷新；`sync-official-docs.ps1` 同步官方文档副本（本次扩展了根文件范围与 `:(top)` pathspec/修剪）。
 - **08-14 晚环境限制记录**：`gh` CLI token 失效（401）后，GitHub 全部查询改走 git 协议（ls-remote/clone）与 codeload；api.github.com 匿名配额 60/h 仅用于 Discussions 评论精选抓取；本机网络直连 github.com 网页与 raw.githubusercontent.com 失败（curl 000），git https 与 codeload 正常。
 - **编码约定（重要）**：Windows PowerShell 5.1 无 BOM 的 UTF-8 脚本会按 ANSI 解析，中文注释尾字节可能吞换行导致代码行并入注释（本次真实踩坑）；`scripts/*.ps1` 必须保持 **UTF-8 with BOM**，编辑后务必复核 BOM。
+  - **2026-10-13 复核（约定被违反的实例）**：实测 `scripts/` 下 9 个 `.ps1`，**8 个带 BOM 且 5.1 解析 0 错**；唯一无 BOM 的 `verify-kit.ps1` 有 **1644 个非 ASCII 字节**、在 5.1 下报 **5–6 个解析错误**（`Missing ')' in method call`）——**而它正是发布门禁**（`release.yml` 用 `shell: pwsh` 调它，所以 CI 从没发现；本机没有 pwsh 时才暴露）。已补回 BOM 并实测 `VERIFY-OK` / exit 0（82 项关键路径全在）。**根因不是约定错，而是这一个文件丢了 BOM**——另加 `.gitattributes` 固定行尾，避免同类问题复现。
 - 时间戳：下载会话 2026-08-14 22:45–23:59（+08:00）；dsh-plugin topic 快照共三期（2026-08-13T15:15Z/08-13T18:36Z/08-14T08:16Z）+ 08-14 晚扫描（total_count 2034，见 §D.2）。
 - 官网 deepseek.com 页面受 Cloudflare 保护时可能失败——以 manifest 记录为准，正文内容以 GitHub Pages 同源文档为准。
 - **备注**：用户清单中 `ess-plugin-mcp` 经 GitHub 搜索无精确匹配（最接近者为 Skyrim .ess 插件工具的 MCP，与 DSH 无关）；按 DSH 生态语义定位到 `bobleer/deepseek-harness-plugin-mcp`（让任意 agent 经 MCP 发现/安装/运行 DSH 插件）并归档，如用户所指另有其仓，请告知后补充。

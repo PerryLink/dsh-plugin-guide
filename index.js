@@ -21,18 +21,33 @@ const packageRoot = dirname(fileURLToPath(import.meta.url))
 
 /**
  * Strip the YAML frontmatter block from SKILL.md and return the description
- * plus the instruction body. A malformed or missing block fails loud through
- * the read itself or falls back to the full text as the body.
+ * plus the instruction body. A malformed or missing block falls back to the
+ * full text as the body.
+ *
+ * CRLF tolerance is deliberate and load-bearing, not cosmetic. Without
+ * `.gitattributes`, git's `core.autocrlf=true` checks this repository out with
+ * CRLF while the published tarball and every CI checkout use LF. An exact
+ * `startsWith('---\n')` guard therefore took a different branch on a Windows
+ * working tree and the skill silently registered its generic fallback
+ * description instead of the trigger-phrase description from the frontmatter —
+ * the text that decides when the host loads the skill at all. `.gitattributes`
+ * now pins LF; this function no longer depends on that being true.
+ *
  * @param text - raw SKILL.md content.
  * @returns parsed description (when the frontmatter carries one) and body.
  */
-function splitFrontmatter(text) {
-  if (!text.startsWith('---\n')) return { description: undefined, body: text }
-  const end = text.indexOf('\n---', 4)
-  if (end < 0) return { description: undefined, body: text }
-  const meta = text.slice(4, end)
-  const body = text.slice(end + 4).replace(/^\n+/, '')
-  const match = /^description:\s*(.+)$/m.exec(meta)
+export function splitFrontmatter(text) {
+  // Match the opening fence with either ending, then find the closing fence.
+  const open = /^---\r?\n/.exec(text)
+  if (!open) return { description: undefined, body: text }
+  const rest = text.slice(open[0].length)
+  const close = /\r?\n---[ \t]*(?:\r?\n|$)/.exec(rest)
+  if (!close) return { description: undefined, body: text }
+  const meta = rest.slice(0, close.index)
+  // Trim the separating blank lines so the body starts at the first heading,
+  // matching the host provider's own body trimming.
+  const body = rest.slice(close.index + close[0].length).replace(/^(?:[ \t]*\r?\n)+/, '')
+  const match = /^description:[ \t]*(.+?)[ \t]*$/m.exec(meta)
   return { description: match?.[1]?.trim(), body }
 }
 

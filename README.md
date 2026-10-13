@@ -60,7 +60,7 @@ content counts as stated in the README (What you get)
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.2` (`d743267388641bc76f17c45ce8b4c231aed1d32c`, the newest master tag **and** master HEAD, 2026-10-09); npm `latest` = `next` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.2`. **There is no stable line** — all 31 npm versions and all 26 GitHub Releases are prereleases. The official-docs mirror and `guide/migration-0.2.md` are pinned one release back, at `dsh-v0.2.1-alpha.1` (`5badb15009`, 2026-10-03); the 20 breaking-change guides added since are captured in [guide/version-matrix.md](guide/version-matrix.md) §3. |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.2` (`d743267388641bc76f17c45ce8b4c231aed1d32c`, the newest master tag **and** master HEAD, 2026-10-09); npm `latest` = `next` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.2`. **There is no stable line** — all 31 npm versions and all 26 GitHub Releases are prereleases. The official-docs mirror is pinned to that same commit (429 md pages, re-synced 2026-10-13; see [references/official-docs/SNAPSHOT.md](references/official-docs/SNAPSHOT.md)). `guide/migration-0.2.md` covers `0.1.6-alpha.2` → `0.2.1-alpha.1` in §0–§12 and `0.2.1-alpha.1` → `0.2.1-alpha.2` as 19 citable seams in §13; the 20 breaking-change guides added since the previous baseline (19 under `v0.2.1-alpha.1` plus one backfilled into `v0.2.0-rc.2`) are all in the mirror. |
 | Node | `^22.19.0 || >=24.0.0` (DeepSeek Harness runtime) |
 | Platforms | All (plain ESM bundle; no native code, no network) |
 | Model | Any (no model interaction) |

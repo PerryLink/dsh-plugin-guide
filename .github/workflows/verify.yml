@@ -32,6 +32,9 @@ jobs:
 
       - name: README sync (five languages)
         run: pnpm run check:readmes
+
+      - name: PowerShell scripts keep their UTF-8 BOM
+        run: pnpm run check:ps1-bom
       - name: Removed session-API grep (zero hits in src/)
         shell: pwsh
         run: |

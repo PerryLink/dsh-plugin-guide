@@ -58,6 +58,32 @@ try {
     const readmeCount = readdirSync(target).filter((f) => /^README(-\w{2})?\.md$/.test(f)).length
     check(result.status === 0 && hasEntry && hasPatch, `${lang} scaffold produces entry + cordis.patch.yml (exit ${result.status})`)
     check(readmeCount === 5, `${lang} scaffold produces 5 README languages (${readmeCount})`)
+
+    // Round-trip the scaffolder through the checker. This is the assertion whose
+    // absence let `new --lang js` fail `check` for as long as it did: the
+    // scaffolder and the checker disagreed about whether a build-artifact
+    // directory is mandatory, and nothing ever ran one against the other. The
+    // golden path a user follows is exactly this pair, so it is the pair the
+    // artifact gate must exercise.
+    const scaffoldCheck = runNode(['dist/dsh-plugin-dev.js', 'check', '--cwd', target, '--json'], { stdio: ['ignore', 'pipe', 'pipe'] })
+    let scaffoldOk = false
+    let scaffoldDetail = ''
+    try {
+      const parsed = JSON.parse(scaffoldCheck.stdout)
+      scaffoldOk = parsed.ok === true
+      if (!scaffoldOk) {
+        scaffoldDetail = (parsed.checks ?? [])
+          .filter((c) => c.status === 'fail')
+          .map((c) => c.id)
+          .join(', ')
+      }
+    } catch {
+      scaffoldDetail = 'unparseable --json output'
+    }
+    check(
+      scaffoldCheck.status === 0 && scaffoldOk,
+      `${lang} scaffold passes the checker (exit ${scaffoldCheck.status}${scaffoldDetail ? `; failing: ${scaffoldDetail}` : ''})`,
+    )
   }
 
   // 3b. Extension contract for the TS scaffold. `platform: node` makes tsdown

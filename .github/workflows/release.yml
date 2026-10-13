@@ -43,6 +43,27 @@ jobs:
         shell: pwsh
         run: ./scripts/verify-kit.ps1
 
+      - name: Assert the tag matches package.json
+        run: |
+          # Without this, the two halves of a release can disagree and the run is
+          # still green. The changelog gate below keys off the TAG while the guard
+          # and the publish key off package.json, so `v0.3.30` on a tree whose
+          # package.json still says 0.3.29 used to pass the changelog check, skip
+          # the publish ("0.3.29 is already published"), and open a GitHub Release
+          # page for a version npm never received - on an immutable tag, so it
+          # cannot be corrected in place.
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            PKG_VERSION="$(node -p "require('./package.json').version")"
+            echo "tag=${TAG_VERSION} package.json=${PKG_VERSION}"
+            if [ "${TAG_VERSION}" != "${PKG_VERSION}" ]; then
+              echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version ${PKG_VERSION}"
+              exit 1
+            fi
+          else
+            echo "not a tag push; skipping the tag/package.json assertion"
+          fi
+
       - name: Verify the changelog names this version
         run: |
           # A tag push names the version in the ref; a workflow_dispatch run on a
@@ -67,6 +88,7 @@ jobs:
           if [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then echo "OIDC request TOKEN: present"; else echo "OIDC request TOKEN: MISSING"; fi
 
       - name: Publish to npm
+        id: publish
         env:
           # npm's OIDC exchange never throws: a failure is only visible at verbose
           # level, otherwise the step just fails with ENEEDAUTH and no reason.
@@ -75,8 +97,67 @@ jobs:
           version="$(node -p "require('./package.json').version")"
           if npm view "dsh-plugin-guide@${version}" version >/dev/null 2>&1; then
             echo "dsh-plugin-guide@${version} is already published; skipping npm publish"
+            echo "published=false" >> "$GITHUB_OUTPUT"
           else
             npm publish --provenance --access public
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The registry answers the publish with `PUT -> 202 Accepted` ("your package
+      # is being processed"), so a green publish step does NOT mean the version is
+      # served. On the 0.3.29 release the step finished at 13:20:11Z while the
+      # packument was not readable until 13:22:01Z - a 110-second window in which
+      # the GitHub Release already existed and the package did not. A maintainer
+      # had no way to tell the difference from CI.
+      - name: Verify the version is actually served by the registry
+        if: steps.publish.outputs.published == 'true'
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          expected_git_head="$(git rev-parse HEAD)"
+          url="https://registry.npmjs.org/dsh-plugin-guide/${version}"
+
+          # Poll rather than sleep-and-hope: the registry accept is asynchronous.
+          served=false
+          for i in $(seq 1 40); do
+            if curl -fsS --max-time 20 "$url" -o manifest.json; then served=true; break; fi
+            echo "  not served yet (attempt ${i}/40); sleeping 10s"
+            sleep 10
+          done
+          if [ "$served" != "true" ]; then
+            echo "::error::dsh-plugin-guide@${version} was accepted by npm but is not served after ~400s"
+            exit 1
+          fi
+
+          node -e '
+            const fs = require("node:fs");
+            const m = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+            const problems = [];
+            if (m.version !== process.env.VERSION) problems.push(`version ${m.version} != ${process.env.VERSION}`);
+            if (m.gitHead !== process.env.EXPECTED_GIT_HEAD) problems.push(`gitHead ${m.gitHead} != tag commit ${process.env.EXPECTED_GIT_HEAD}`);
+            const att = m.dist && m.dist.attestations;
+            if (!att || !att.provenance) problems.push("no SLSA provenance attestation on the served manifest");
+            if (problems.length) { console.error("::error::" + problems.join("; ")); process.exit(1); }
+            console.log(`served: ${m.name}@${m.version}`);
+            console.log(`gitHead: ${m.gitHead}`);
+            console.log(`provenance: ${att.provenance.predicateType}`);
+            console.log(`files: ${m.dist.fileCount}, unpacked: ${m.dist.unpackedSize} bytes`);
+          '
+        env:
+          VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          EXPECTED_GIT_HEAD: ${{ github.sha }}
+
+      - name: Confirm dist-tags.latest advanced
+        if: steps.publish.outputs.published == 'true' && github.ref_type == 'tag'
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          curl -fsS --max-time 20 https://registry.npmjs.org/-/package/dsh-plugin-guide/dist-tags -o dist-tags.json
+          latest="$(node -p "require('./dist-tags.json').latest")"
+          echo "dist-tags.latest = ${latest} (expected ${version})"
+          if [ "${latest}" != "${version}" ]; then
+            echo "::error::dist-tags.latest is ${latest}, not ${version} - the publish did not take the latest tag"
+            exit 1
           fi
 
   release:

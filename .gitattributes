@@ -1,0 +1,49 @@
+# Normalise line endings to LF in the repository and in every working tree.
+#
+# Why this file exists: without it, git's `core.autocrlf=true` (a common Windows
+# default) checks this repository out with CRLF, while the published npm
+# tarball and every CI checkout use LF. Two shipped code paths parse files with
+# an exact LF guard, so the CRLF checkout silently took a different branch:
+#
+#   * index.js:30  — `text.startsWith('---\n')` failed, so the skill registered
+#                    its generic fallback description instead of the 355-char
+#                    trigger-phrase description from SKILL.md frontmatter, and
+#                    registered the raw file (frontmatter included) as the body.
+#   * src/cli/commands/check.ts:487 — the same guard failed, so the SKILL.md
+#                    frontmatter was never stripped and `redline-persona-role`
+#                    judged the `name:` line as the opening paragraph, emitting a
+#                    false warning on every local run.
+#
+# The published artifact escaped both only because release.yml builds in CI.
+# Pinning `eol=lf` here makes the checkout match the artifact. The parsers are
+# additionally CRLF-tolerant as defence in depth; this file removes the class of
+# bug rather than one instance of it.
+* text=auto eol=lf
+
+# Binary assets: never touch these.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.zip binary
+*.gz binary
+*.tgz binary
+
+# Windows tooling that legitimately needs CRLF to run.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+# Note: scripts/*.ps1 must ALSO keep a UTF-8 BOM. Per references/sources.md:124
+# that is the repository convention, because PowerShell 5.1 decodes a BOM-less
+# script as ANSI and the Chinese comments then break the parser - which is
+# exactly what had happened to verify-kit.ps1 (5 parse errors at HEAD, silently
+# hidden because CI runs it under pwsh). `eol` does not affect the BOM, but do
+# not let a linter strip it.
+*.ps1 text eol=crlf
+
+# Lockfiles and generated artifacts: keep them byte-stable.
+pnpm-lock.yaml text eol=lf
+llms-full.txt text eol=lf

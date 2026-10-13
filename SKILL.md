@@ -19,7 +19,14 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 
 ## 开发前置（第一步必做）
 
-0. **先认版本**：`dsh --version`，然后读 `guide/version-matrix.md`（**版本适配矩阵**：五个"最新"的区分、子包 `latest` 冻结陷阱、破坏性变更断层、peer 区间选择、会话格式谱系）。要点：`0.1.7-alpha.1`（2026-09-22）起包含本世代全部破坏性变更（会话格式 V4、settings 重写、`readBytes`、Messages-only 适配器）；**npm `latest`=`0.2.0-rc.2`、`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.2`，而 master 最新 tag 是 `dsh-v0.2.1-alpha.2`——这四个"最新"不是同一个东西**。**不存在稳定版**：全部 31 个 npm 版本都是 prerelease。目标宿主不是 matrix 基线时，按 `guide/migration-0.2.md` 逐条对照；目标宿主**更新**（如 `0.2.1-alpha.2`）时另见 `guide/version-matrix.md` §3 的 19 条新破坏性变更。
+0. **先认版本**：跑 `dsh --version`，然后按下表决定读什么。**不要跳过这一步**——本库 17 篇文档里对当前宿主不适用的部分不会自己标注。
+   | 你的 `dsh --version` | 含义 | 读什么 |
+   |---|---|---|
+   | `< 0.1.7-alpha.1` | 旧基线 | 本世代破坏性变更**全部适用** → `guide/migration-0.2.md` §0–§12 逐条改 |
+   | `0.1.7-alpha.1` – `0.2.1-alpha.1` | 中间线 | 会话格式 V4 已生效；§13 的 19 条**不适用** |
+   | `0.2.1-alpha.2` 或更新 | 最新线 | §13 的 19 条**适用** → `guide/version-matrix.md` §3 |
+   | **npm `latest`（= `0.2.0-rc.2`）** | **默认安装拿到的就是这一版** | ⚠️ 它**早于** master 一版：§13 不适用，但 `version-matrix.md` §1.1 的"不存在稳定版"警告适用 |
+   **四个"最新"不是同一个东西**：npm `latest`=`next`=`0.2.0-rc.2`、npm `alpha`=`0.2.1-alpha.2`、master 最新 tag = `dsh-v0.2.1-alpha.2`。**不存在稳定版**（全部 31 个 npm 版本都是 prerelease）。完整谱系、子包 `latest` 冻结陷阱与 peer 区间选择见 `guide/version-matrix.md`。
 1. 若未读过 Cordis 概念：读 `references/official-docs/docs/cordis-primer.md`（5 个概念，5 分钟）；需要动手跟练时跑 `references/official-docs/docs/cordis-tutorial/` 01-07（无 API key 可跑）。
 2. 打开 `guide/quick-reference.md`（契约速查）+ `guide/plugin-dev-guide.md`（完整路径）。官方/社区文档 URL 对照见 `guide/links.md`。排查官方运行时行为/未修复 bug 时查 `guide/unfixed-issues.md`（master 基线源码核实的问题清单 + 已修复提交号 + 设计行为对照 + 本世代新核实的 T1–T11）。决定一个插件**该不该继续维护**（官方已进内核 / 第三方采用度显著更高）时查 `guide/when-to-retire-a-plugin.md`（判据 + 实测倍数表）；判断某个能力面谁领先时查 `guide/choosing-a-plugin.md`。
 2b. **要判断"该改哪一行 / 该找哪个工具"时**，读 `guide/family-toolchain.md`（家族工具链路由：问题→所有者→可引用产物；`dsh-plugin-doctor` 33 项检查全表与裁定语义；本库 16 项检查与 doctor 的交叉对照）。发布流水线（多插件组合的持续可安装/可发布/可升级）见 `guide/release-engineering.md`。
@@ -55,7 +62,7 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 - **新服务/能力**：`docs/user/develop/framework/service.md` + `docs/user/develop/practice/`（三层拆分完整代码）。
 - **拦截/策略/hook**：`docs/cookbook/extension-cookbook.md`（permission-gate 范例）+ `docs/event-producer-consumer.md`（全事件矩阵）。
 - **新 LLM 提供商**：`docs/user/develop/practice/llm-adapter.md`（StreamChunk 协议）。
-- **UI 插件（Web）**：`references/official-plugin-dev-skill.md` §3.2 + `docs/subsystems/slots.md`、`sidebar-right.md`、`client-modules.md`、`web-client.md`、`ui-radius.md`；Chat 行业务节点用 `ctx.uiConversation.events.register()` + `conversation.chat.node` slot。
+- **UI 插件（Web）**：`references/official-plugin-dev-skill.md` §3.2 + `docs/subsystems/slots.md`、`sidebar-right.md`、`client-modules.md`、`web-client.md`、**`docs/ui-radius.md`**（注意 `ui-radius` 在 `docs/` 顶层，**不在** `docs/subsystems/` 下）；Chat 行业务节点用 `ctx.uiConversation.events.register()` + `conversation.chat.node` slot。
 - **插件配置表单**：`docs/subsystems/settings.md`（已改名 "Plugin Configuration Forms"）+ `docs/cookbook/adding-a-settings-card.md`（已重写）。
 - **打包/发布**：`docs/user/develop/basic/publish.md`（bundle/profile、层顺序、多 patch 数组、peer 解析、git 安装坑）。
 - **升级/迁移**：`guide/version-matrix.md`（**版本适配矩阵：先读这个**——五个"最新"、子包 `latest` 冻结、破坏性变更断层、peer 区间选择、会话格式 V0→V4）→ `guide/migration-0.2.md`（本库综述，0.1.6→0.2.1-alpha.1）→ `docs/upgrade-guide/**`（官方逐版本迁移指南）+ `docs/persistence-changes/**`（持久化类型变更记录）+ `docs/session-format-status.md`（会话格式版本权威）。⚠️ **目标宿主是 `0.2.1-alpha.2` 或更新时**：`version-matrix.md` §3 列了该版落的 **19 条破坏性变更**（`webRuntime`→`webStartup`、`mode: both` 被拒、`backgroundMode`/`run_in_background` 移除、`{{cwd}}` 移除、`BundleInfo` 新增必填字段、`dsh plugin --profile` 位置强制等），`migration-0.2.md` **尚未并入**。
@@ -82,11 +89,16 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 
 ## CLI 工具链（dsh-plugin-dev）
 
-本仓库随 bundle 附带零依赖 CLI `dsh-plugin-dev`，把机械检查自动化（知识库仍是认知层，CLI 是机械层）：
+本仓库随 bundle 附带零依赖 CLI `dsh-plugin-dev`，把机械检查自动化（知识库仍是认知层，CLI 是机械层）。
 
-- `dsh-plugin-dev new <name>`：参数化脚手架，生成 TS 或 JS 插件仓库骨架（`src/index.ts` 契约模板、Schemastery Config、tests、tsdown/vitest、注释齐全的 `cordis.patch.yml`、五语 README），模板与 `references/official-docs` 同步更新。
-- `dsh-plugin-dev check [--json] [--strict]`：静态检查（`cordis.patch.yml` 合法性、`package.json` 元数据（`dsh.bundle.patch` 指向/peer 依赖/engines/files 白名单）、五语 README 一致性、工程红线模式），输出 CI 可消费的结构化 JSON；每个检查项在输出里引用本知识库对应章节（skill 联动），agent 可继续人工审计。
-- `dsh-plugin-dev verify`：`pnpm pack` 后装入干净临时 `DSH_HOME` profile 做安装+启动+卸载冒烟（对齐官方 verify:self-contained）；失败给出日志尾部与建议。
+> ⚠️ **调用方式**：`dsh-plugin-dev` **通常不在 PATH 上**（bundle 安装只登记技能，不安装二进制）。
+> 用本 SKILL.md 所在目录下的入口调用：`node "<resourceBase>/bin/dsh-plugin-dev.js" <子命令>`。
+> bundle 安装的包已带 `dist/`；从源码副本用则先跑一次 `pnpm run build`。
+> 只有全局 `npm i -g dsh-plugin-guide` 之后才可以直接敲 `dsh-plugin-dev`。
+
+- `new <name>`：参数化脚手架，生成 TS 或 JS 插件仓库骨架（`src/index.ts` 契约模板、Schemastery Config、tests、tsdown/vitest、注释齐全的 `cordis.patch.yml`、五语 README），模板与 `references/official-docs` 同步更新。标志：`--lang <ts|js>`、`--dir <path>`、`--force`、`--git`。
+- `check [--json] [--strict] [--cwd <dir>]`：静态检查（`cordis.patch.yml` 合法性、`package.json` 元数据（`dsh.bundle.patch` 指向/peer 依赖/engines/files 白名单）、五语 README 一致性、工程红线模式），输出 CI 可消费的结构化 JSON；每个检查项在输出里引用本知识库对应章节（skill 联动），agent 可继续人工审计。**这 16 项是同族 `dsh-plugin-doctor` 33 项的子集**（逐项对照见 `guide/family-toolchain.md` §3）；发布前建议两个都跑。
+- `verify [--cwd <dir>] [--base <spec>] [--headless <spec>] [--profile <name>]`：`pnpm pack` 后装入干净临时 `DSH_HOME` profile 做安装+启动+卸载冒烟（对齐官方 verify:self-contained）；失败给出日志尾部与建议。
 
 三个子命令均可逆/幂等；网络/子进程尊重超时与 AbortSignal；只清理自己 mkdtemp 的目录。CLI 零运行时依赖，构建产物经 tsdown 打包为单文件 `dist/dsh-plugin-dev.js`。
 

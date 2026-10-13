@@ -1,4 +1,4 @@
-# dsh-plugin-guide 完整性检查器
+﻿# dsh-plugin-guide 完整性检查器
 # 用法: pwsh -File scripts/verify-kit.ps1 -Root <路径>
 # 校验范围: 本知识库自有文档(SKILL/README/NOTICE/guide/references 顶层);
 # 官方文档副本(references/official-docs)是逐字副本,其内部链接指向 deepseek-harness checkout,不在校验范围。
@@ -11,6 +11,9 @@ $info = New-Object System.Collections.Generic.List[string]
 # ---- 1) 关键路径 ----
 $critical = @(
   'SKILL.md','README.md','README-zh.md','README-es.md','README-pt.md','README-hi.md','LICENSE','NOTICE.md','.gitignore',
+  # 2026-10-13: 入口点与行尾策略。index.js/index.d.ts 曾是唯一无测试、也不受门禁保护的出厂代码，
+  # CRLF 缺陷就是从那里进的（见 tests/entry.test.ts 顶部注释）；.gitattributes 是那类缺陷的根治手段。
+  'index.js','index.d.ts','.gitattributes',
   'CONTRIBUTING.md','SECURITY.md','.github/ISSUE_TEMPLATE/bug_report.yml','.github/ISSUE_TEMPLATE/feature_request.yml','.github/PULL_REQUEST_TEMPLATE.md',
   'guide/plugin-dev-guide.md','guide/quick-reference.md','guide/links.md','guide/quick-reference.zh-CN.md','guide/quick-reference.es.md','guide/quick-reference.pt.md','guide/quick-reference.hi.md',
   # 2026-10-13: 补齐 gated 文件——这些曾被漏掉，导致陈旧内容能存活到发布

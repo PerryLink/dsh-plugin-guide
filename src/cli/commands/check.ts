@@ -333,8 +333,15 @@ function checkManifestFiles(_root: string, pkg?: PackageJson): CheckResult {
   if (main && !files.includes(main) && !files.some((f) => main.startsWith(`${f.replace(/\/$/, '')}/`))) {
     problems.push(`files whitelist is missing the main entry "${main}"`)
   }
-  const hasArtifactDir = files.some((f) => f === 'lib' || f === 'dist')
-  if (!hasArtifactDir) problems.push('files whitelist has no built-artifact directory (`lib` or `dist`)')
+  // An artifact directory is only required when the entry point actually lives in
+  // one. A plain-JavaScript plugin ships its entry at the package root and has no
+  // build step at all, so demanding `lib`/`dist` unconditionally made
+  // `dsh-plugin-dev new --lang js` fail this tool's own `check` - the scaffolder
+  // and the checker disagreed on the golden path.
+  const entryDir = main?.includes('/') ? main.slice(0, main.indexOf('/')) : undefined
+  if (entryDir && (entryDir === 'lib' || entryDir === 'dist') && !files.includes(entryDir)) {
+    problems.push(`files whitelist has no built-artifact directory ("${entryDir}"), but main points into it`)
+  }
   if (problems.length > 0) {
     return { id: 'manifest-files', severity: 'error', kind: 'deterministic', status: 'fail', message: 'files whitelist incomplete', skillRef: ref, detail: problems }
   }
@@ -480,14 +487,26 @@ function checkReadmeConsistency(root: string): CheckResult {
 
 // ---- 11-14. engineering red-line patterns (heuristic) ----
 
-/** Body of SKILL.md after its YAML frontmatter, or undefined. */
+/**
+ * Body of SKILL.md after its YAML frontmatter, or undefined when the file is
+ * absent. Falls back to the whole text when there is no well-formed block.
+ *
+ * CRLF tolerance is load-bearing: without `.gitattributes`, a Windows checkout
+ * (`core.autocrlf=true`) delivers CRLF while CI and the published tarball
+ * deliver LF. An exact `startsWith('---\n')` guard therefore failed locally,
+ * leaving the frontmatter in the "body" — so `redline-persona-role` judged the
+ * `name:` line as the opening paragraph and emitted a false warning on every
+ * local run while CI stayed green. Keep this in step with `index.js`.
+ */
 function skillBody(root: string): string | undefined {
   const text = readText(join(root, 'SKILL.md'))
   if (!text) return undefined
-  if (!text.startsWith('---\n')) return text
-  const end = text.indexOf('\n---', 4)
-  if (end < 0) return text
-  return text.slice(end + 4).replace(/^\n+/, '')
+  const open = /^---\r?\n/.exec(text)
+  if (!open) return text
+  const rest = text.slice(open[0].length)
+  const close = /\r?\n---[ \t]*(?:\r?\n|$)/.exec(rest)
+  if (!close) return text
+  return rest.slice(close.index + close[0].length).replace(/^(?:[ \t]*\r?\n)+/, '')
 }
 
 function checkRedlinePersonaRole(root: string): CheckResult {

@@ -1,5 +1,5 @@
 // `dsh-plugin-dev` CLI entry: argument dispatch and top-level error handling.
-import { flagBool, flagString, parseArgs } from './lib/args'
+import { UsageError, flagBool, flagString, parseArgs } from './lib/args'
 import { readCliVersion } from './meta'
 import { runCheck, printCheckReport } from './commands/check'
 import { runNew } from './commands/new'
@@ -60,7 +60,46 @@ function timeoutMs(flags: Record<string, string | boolean>, key: string, envKey:
  * @param cwd - working directory (injectable for tests).
  */
 export async function main(argv: string[], cwd: string = process.cwd()): Promise<number> {
-  const { positionals, flags } = parseArgs(argv)
+  // Union of every subcommand's flags. The allowlist exists so a mistyped flag
+  // fails loudly instead of being silently dropped: `check --stirct` used to
+  // exit 0 without running the strict pass, which makes the tool unusable as a
+  // CI gate - green runs that never evaluated what they claimed to.
+  const KNOWN_FLAGS = [
+    'help',
+    'h',
+    'version',
+    'V',
+    // new
+    'lang',
+    'dir',
+    'force',
+    'git',
+    // check
+    'cwd',
+    'json',
+    'strict',
+    // verify
+    'dsh',
+    'pnpm',
+    'profile',
+    'base',
+    'headless',
+    'timeout',
+    'smoke-timeout',
+  ] as const
+
+  let parsed
+  try {
+    parsed = parseArgs(argv, KNOWN_FLAGS)
+  } catch (err) {
+    if (err instanceof UsageError) {
+      // 2 = usage error, matching the documented exit-code contract.
+      process.stderr.write(`dsh-plugin-dev: ${err.message}\n`)
+      return 2
+    }
+    throw err
+  }
+  const { positionals, flags } = parsed
 
   if (flagBool(flags, 'version') || flags.V === true) {
     process.stdout.write(`${readCliVersion()}\n`)

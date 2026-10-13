@@ -15,14 +15,33 @@ const LONG_ALIASES: Record<string, string> = {
   version: 'version',
 }
 
+/** Raised for a malformed or unrecognised argument. */
+export class UsageError extends Error {}
+
 /**
  * Parse an argv slice (without the node/script prefix) into positionals and flags.
+ *
+ * `allowed` is the set of long flag names the caller accepts (aliases included).
+ * Passing it turns an unrecognised flag into a `UsageError` instead of a silently
+ * ignored one: `dsh-plugin-dev check --stirct` used to parse the typo, check
+ * nothing extra, and exit 0 — a gate that can be disabled by a spelling mistake
+ * is worse than no gate, because CI stays green and everyone believes it ran.
+ *
  * @param argv - process.argv.slice(2) style input.
+ * @param allowed - optional allowlist of accepted long flag names.
  * @returns the parsed structure.
  */
-export function parseArgs(argv: string[]): ParsedArgs {
+export function parseArgs(argv: string[], allowed?: readonly string[]): ParsedArgs {
   const positionals: string[] = []
   const flags: Record<string, string | boolean> = {}
+  const permitted = allowed ? new Set(allowed) : undefined
+
+  const assertAllowed = (key: string): void => {
+    if (permitted && !permitted.has(key)) {
+      const known = [...permitted].sort().join(', ')
+      throw new UsageError(`unknown option "--${key}" (accepted: ${known})`)
+    }
+  }
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
@@ -34,10 +53,14 @@ export function parseArgs(argv: string[]): ParsedArgs {
       const body = arg.slice(2)
       const eq = body.indexOf('=')
       if (eq >= 0) {
-        setFlag(flags, body.slice(0, eq), body.slice(eq + 1))
+        const key = body.slice(0, eq)
+        const canonical = LONG_ALIASES[key] ?? key
+        assertAllowed(canonical)
+        setFlag(flags, key, body.slice(eq + 1))
         continue
       }
       const key = body
+      assertAllowed(LONG_ALIASES[key] ?? key)
       const next = argv[i + 1]
       if (next !== undefined && !next.startsWith('-')) {
         setFlag(flags, key, next)
@@ -49,7 +72,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
     if (arg.startsWith('-') && arg.length > 1) {
       // Short flags; a trailing short flag with a value is not supported.
-      for (const ch of arg.slice(1)) flags[ch] = true
+      for (const ch of arg.slice(1)) {
+        assertAllowed(ch)
+        flags[ch] = true
+      }
       continue
     }
     positionals.push(arg)
