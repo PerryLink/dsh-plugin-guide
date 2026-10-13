@@ -114,7 +114,7 @@ jobs:
         run: |
           set -euo pipefail
           version="$(node -p "require('./package.json').version")"
-          expected_git_head="$(git rev-parse HEAD)"
+          git rev-parse HEAD > expected-head.txt
           url="https://registry.npmjs.org/dsh-plugin-guide/${version}"
 
           # Poll rather than sleep-and-hope: the registry accept is asynchronous.
@@ -133,8 +133,15 @@ jobs:
             const fs = require("node:fs");
             const m = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
             const problems = [];
-            if (m.version !== process.env.VERSION) problems.push(`version ${m.version} != ${process.env.VERSION}`);
-            if (m.gitHead !== process.env.EXPECTED_GIT_HEAD) problems.push(`gitHead ${m.gitHead} != tag commit ${process.env.EXPECTED_GIT_HEAD}`);
+            // Problem: read the expected version from a github.* expression. GitHub
+            // evaluates `ref_type == 'tag' && ref_name || ''` to the BOOLEAN false,
+            // so the check compared the served version against an empty string and
+            // failed every release with "version 0.3.30 != " even though the
+            // registry poll had already succeeded.
+            const expectedVersion = JSON.parse(fs.readFileSync("package.json", "utf8")).version;
+            const expectedGitHead = fs.readFileSync("expected-head.txt", "utf8").trim();
+            if (m.version !== expectedVersion) problems.push(`version ${m.version} != ${expectedVersion}`);
+            if (m.gitHead !== expectedGitHead) problems.push(`gitHead ${m.gitHead} != tag commit ${expectedGitHead}`);
             const att = m.dist && m.dist.attestations;
             if (!att || !att.provenance) problems.push("no SLSA provenance attestation on the served manifest");
             if (problems.length) { console.error("::error::" + problems.join("; ")); process.exit(1); }
@@ -143,16 +150,14 @@ jobs:
             console.log(`provenance: ${att.provenance.predicateType}`);
             console.log(`files: ${m.dist.fileCount}, unpacked: ${m.dist.unpackedSize} bytes`);
           '
-        env:
-          VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
-          EXPECTED_GIT_HEAD: ${{ github.sha }}
 
       - name: Confirm dist-tags.latest advanced
         if: steps.publish.outputs.published == 'true' && github.ref_type == 'tag'
         run: |
           set -euo pipefail
-          version="${GITHUB_REF_NAME#v}"
-          curl -fsS --max-time 20 https://registry.npmjs.org/-/package/dsh-plugin-guide/dist-tags -o dist-tags.json
+          version="$(node -p "require('./package.json').version")"
+          name="$(node -p "require('./package.json').name")"
+          curl -fsS --max-time 20 "https://registry.npmjs.org/-/package/${name}/dist-tags" -o dist-tags.json
           latest="$(node -p "require('./dist-tags.json').latest")"
           echo "dist-tags.latest = ${latest} (expected ${version})"
           if [ "${latest}" != "${version}" ]; then

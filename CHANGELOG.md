@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **The publish-verification step added in 0.3.30 failed every release, so the GitHub Release was never created — while npm published correctly.** The step read its expected version from a `github.*` expression, `VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '' }}`. GitHub evaluates that to the boolean `false` and renders it as an empty string, so the check compared the served version against `''` and reported `version 0.3.30 != ` after the poll had already succeeded. Both the version and the commit under test are now read from files the step already has (`package.json` and `git rev-parse HEAD`), and the dist-tag step derives the package name from `package.json` instead of hardcoding it. Re-verified against the real published `0.3.30` manifest (passes, and a deliberately wrong expected version is still rejected).
+
+  This is worth recording because of how it failed: it is a false *negative* introduced by the very check meant to prevent false *positives*. The 0.3.30 publish itself was completely successful — `dsh-plugin-guide@0.3.30` is served with SLSA provenance and `gitHead` matching `2e6cc49` — but the run went red and `release` was skipped, so no GitHub Release exists for 0.3.30. It is also a reminder that `npm publish`'s own success is the only signal that matters here: the pink run did not mean the package was missing. Nothing in the published artifact is affected; `.github/workflows/` is not shipped.
+
 ## [0.3.30] - 2026-10-13
 
 Eight parallel audits of this plugin's own design — runtime/agent integration, token and install footprint, content consistency, CLI hardening, release durability, forward compatibility, mirror cost/benefit and licensing, and adoption — converged on one root cause: **this pipeline had several places where the local checkout and the published artifact disagree, and no gate checked any of them.** Three instances were shipping defects; all are fixed here, each with the test or gate whose absence allowed it.
