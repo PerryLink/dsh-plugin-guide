@@ -60,7 +60,7 @@ content counts as stated in the README (What you get)
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (`5badb15009`, the newest master tag, 2026-10-03); npm `latest` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.1`. Re-verified 2026-10-06 against that checkout (gate chain + profile install smoke). The knowledge base, the official-docs mirror and `guide/migration-0.2.md` all carry this baseline. |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.2` (`d743267388641bc76f17c45ce8b4c231aed1d32c`, the newest master tag **and** master HEAD, 2026-10-09); npm `latest` = `next` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.2`. **There is no stable line** — all 31 npm versions and all 26 GitHub Releases are prereleases. The official-docs mirror and `guide/migration-0.2.md` are pinned one release back, at `dsh-v0.2.1-alpha.1` (`5badb15009`, 2026-10-03); the 20 breaking-change guides added since are captured in [guide/version-matrix.md](guide/version-matrix.md) §3. |
 | Node | `^22.19.0 || >=24.0.0` (DeepSeek Harness runtime) |
 | Platforms | All (plain ESM bundle; no native code, no network) |
 | Model | Any (no model interaction) |
@@ -71,6 +71,7 @@ content counts as stated in the README (What you get)
 
 - **Plugin contract & hard rules** — effects/disposers, waterfall `next()`, host-owned session events, `MessageSourceMap`, the weakest-mechanism ordering, Schemastery config, UI and performance rules.
 - **Official docs archive** — a verbatim copy of the official repo docs (EN + ZH), byte-identical to upstream at the last verified snapshot, including the pages that never reach the documentation site.
+- **Version adaptivity** — [guide/version-matrix.md](guide/version-matrix.md): the five different "latest" values, the frozen sub-package `latest` tags, the four breaking-change seams, the canonical peer range and how to pick one, the session-format lineage V0→V4, and the 19 breaking changes that landed in `0.2.1-alpha.2`.
 - **Migration guide** — [guide/migration-0.2.md](guide/migration-0.2.md): every breaking change from `0.1.6-alpha.2` to `0.2.1-alpha.1` (session format V4, the settings rebuild, invariant removal, `readBytes`, new slots, retired `plugin` message source), each with its official source and a 12-item checklist.
 - **Official in-repo skill, distilled** — [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md): the harness's own `cordis-plugin-development` workflow, prohibitions, display-metadata checklist, practices, and UI/performance rules.
 - **Cordis primer** — the five concepts and the mechanism timeline (repository-plugin introduced 0809, removed 0811; the two install channels).
@@ -86,6 +87,7 @@ content counts as stated in the README (What you get)
 | `SKILL.md` | The `dsh-plugin-guide` agent skill: hard rules + task-based development paths |
 | `package.json` · `cordis.patch.yml` · `index.js` · `locale/` · `icon.svg` | The installable DSH bundle: `dsh.bundle.patch` manifest, entry point that registers the skill, and the display metadata Plugin Manager reads |
 | `guide/plugin-dev-guide.md` | The complete development guide (10 chapters) |
+| `guide/version-matrix.md` | **Version adaptivity matrix**: the five "latest" values, frozen sub-package `latest` tags, breaking-change seams, peer-range selection, session-format lineage, and the 19 changes in `0.2.1-alpha.2` |
 | `guide/migration-0.2.md` | Breaking-change migration guide for the 0.2 generation |
 | `guide/unfixed-issues.md` | Source-verified bug index + fixed-on-master list + design-vs-bug table |
 | `guide/quick-reference.md` | One-page cheat sheet (5 languages) |

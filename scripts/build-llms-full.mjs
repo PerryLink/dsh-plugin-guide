@@ -18,13 +18,21 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 // Reading order: what a plugin author needs first, then the evidence base.
 const SOURCES = [
   ['README.md', 'Overview'],
+  // SKILL.md first among the authored docs: it carries the contract red lines,
+  // and llms-full previously omitted it entirely.
+  ['SKILL.md', 'Agent skill: contract red lines and task-based development paths'],
+  ['guide/version-matrix.md', 'Version adaptivity matrix (latest values, seams, peer ranges, session format)'],
   ['guide/plugin-dev-guide.md', 'Plugin development guide (10 chapters)'],
   ['guide/quick-reference.md', 'Quick reference'],
+  ['guide/migration-0.2.md', 'Migration to the 0.2 generation (breaking changes)'],
+  ['guide/family-toolchain.md', 'Family toolchain router (check catalogs and crosswalk)'],
   ['guide/when-to-retire-a-plugin.md', 'When to retire or freeze a plugin'],
   ['guide/choosing-a-plugin.md', 'Choosing a plugin: who leads each capability surface'],
   ['guide/release-engineering.md', 'Release engineering'],
   ['guide/unfixed-issues.md', 'Unfixed upstream issues (source-verified)'],
   ['guide/links.md', 'Curated links'],
+  ['references/official-plugin-dev-skill.md', 'Distilled official in-repo plugin-development skill'],
+  ['references/dev-resource-landscape.md', 'Competing and adjacent plugin-development resources'],
   ['references/harness-repo.md', 'Harness repository reference'],
   ['references/upstream-cordis.md', 'Upstream Cordis reference'],
   ['references/cordis-paper-and-community.md', 'Cordis paper and community'],

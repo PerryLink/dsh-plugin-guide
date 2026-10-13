@@ -33,7 +33,7 @@
 
 ## C. 本地 checkout 文档副本（references/official-docs/）
 
-- `docs/**`（**369 个 md**，含 182 个 `.zh.md` 双语对）— 教程/架构/子系统/API/cookbook/upgrade-guide/persistence-changes 全量（计数以 `references/official-docs/SNAPSHOT.md` 为准）
+- `docs/**`（**429 个 md**，含 212 个 `.zh.md` 双语对；2026-10-13 重同步到 `dsh-v0.2.1-alpha.2`）— 教程/架构/子系统/API/cookbook/upgrade-guide/persistence-changes 全量（计数以 `references/official-docs/SNAPSHOT.md` 为准）
 - 仓库根文件（**2026-08-14 晚新增**）：`AGENTS.md`、`CLAUDE.md`（上游为 symlink→AGENTS.md，副本存其目标文本）、`BENCHMARK.md`、`CONTRIBUTING.md`/`.zh.md`/`.i18n.yaml`、`README.zh.md`/`.i18n.yaml`、`THIRD_PARTY_NOTICES.md`、`LICENSE`
 - `packages/AGENTS.md` · `packages/README.md` · `vendor/README.md`
 - `website-docs.ts`（站点投影清单）

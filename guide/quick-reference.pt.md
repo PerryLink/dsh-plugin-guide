@@ -53,7 +53,7 @@ Outras formas: objeto `export default { name, inject, apply }`; classe `class X 
 
 Ciclo de vida: `PENDING → LOADING → ACTIVE` (apply lança erro → FAILED); `ACTIVE → UNLOADING → DISPOSED`. Se um serviço necessário desaparece, o plugin descarrega; recarrega quando o serviço volta.
 
-## Modos de despacho de eventos + bail
+## Modos de despacho de eventos (cinco, incluindo bail)
 
 | Modo | await | Ordem | Valor de retorno |
 |---|---|---|---|
@@ -61,6 +61,7 @@ Ciclo de vida: `PENDING → LOADING → ACTIVE` (apply lança erro → FAILED); 
 | waterfall | não | ordem de registro | sim (**não chamar `next()` causa curto-circuito**) |
 | parallel | sim | paralelo | nenhum |
 | serial | sim | ordem de registro | sim (o primeiro não vazio para) |
+| bail | não | ordem de registro | sim (o primeiro não null/false/undefined curto-circuita e PARA o resto) |
 
 Eventos tipados (declaration merging):
 
@@ -136,7 +137,7 @@ Protocolo de chunks: `block-start` → `text-delta*` → `block-end` (bloco comp
 3. **O mecanismo mais fraco que basta**: `ctx.tools.restrict()` (só remove) < `ctx.tools.guard()` (só nega) < reescrita por waterfall (depende da ordem) < `system-prompt/assemble` (substitui tudo). Observe resultados finais em `tools/result`; use `tools/post-execute` só para transformar.
 4. Visível-para-o-modelo ⇔ registrado: nova entrada visível exige novo evento de sessão (`SessionEventMap`) — **adicionado pelo host**, não por você (ver regra 10).
 5. Nunca codifique valores ajustáveis (teste: o cordis.yml consegue mudá-los?); má configuração falha em voz alta. Campos editáveis ao vivo usam `Volatile<T>` + `loader/volatile-update` (o namespace do formulário é o id da entrada do perfil).
-6. Pacotes de plugin independentes: cordis é peerDependency com a mesma identidade do host (misturar scoped `@deepseek-ai/cordis` e unscoped divide identidades); ESM; manifesto `dsh.bundle` (`patch` pode ser uma lista ordenada); instalações git precisam de `prepare` + `allowBuilds`; publique `lib/` ou um tarball. Pacotes dsh de instância compartilhada ficam **só em peerDependencies + devDependencies**, nunca em `dependencies` (uma cópia no perfil sombreia o runtime em silêncio, e o DSH **não valida** faixas de peer).
+6. Pacotes de plugin independentes: cordis é peerDependency com a mesma identidade do host (misturar scoped `@deepseek-ai/cordis` e unscoped divide identidades); ESM; manifesto `dsh.bundle` (`patch` pode ser uma lista ordenada); instalações git precisam de `prepare` + `allowBuilds`; publique `lib/` ou um tarball. Pacotes dsh de instância compartilhada ficam **só em peerDependencies + devDependencies**, nunca em `dependencies` (uma cópia no perfil sombreia o runtime em silêncio). ⚠️ Corrigido: **faixas de peer SÃO aplicadas na instalação** — `dsh plugin add` compara a versão do runtime com a faixa declarada de `@deepseek-ai/dsh-*` e recusa a instalação; apenas `engines.dsh` é declarativo e não aplicado. Uma faixa diz "dá para instalar", não "esta API existe": mantenha a sondagem em runtime (escolha de faixa: `version-matrix.md` §4).
 7. Publique metadados de exibição: `locale/*.json` com `meta.title`/`meta.description` e um `./icon` exportado (SVG/PNG/JPEG/WebP, ≤256 KiB, dentro do pacote). Plugins de subcaminho **nunca** leem o próprio `package.json`.
 8. Documentação bilíngue em pares; descrições/prompts são comportamento; mudanças não triviais levam Agent Note; rode o conjunto mínimo de verificações antes de empurrar (dsh-pre-push-checks).
 9. IDs opacos entre limites são branded (`Branded<B>` de `dsh-brand`), nunca `string` crua.
@@ -153,7 +154,7 @@ Protocolo de chunks: `block-start` → `text-delta*` → `block-end` (bloco comp
 - Junctions do Windows via PowerShell `New-Item -ItemType Junction`; letra de unidade do vitest em maiúscula `C:/`.
 - `DSH_PERMISSION_MODE=danger-full-access` é de alto risco (sem backend de sandbox no Windows, aprovações desativadas); `DSH_*` em `~/.dsh/.env` quebra a inicialização.
 - Arquivos de sessão são zstd multiframe: use `scanZstdFrames`/`createZstdFrameDecoder` (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`).
-- npm: o `dsh` sem escopo é o projeto alheio node-dsh (um shell) — instale `@deepseek-ai/dsh` (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.1); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` e `@deepseek-ai/dsh-session-persistence-jsonl` ainda publicam um `latest` obsoleto (0.0.1-rc.1), fixe `next` (0.2.0-rc.2) ou `alpha` (0.2.1-alpha.1); `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 com a nova tag `dsh-0-2-1-alpha-1` em 4.0.5-alpha.1; dsh-core/dsh-sdk seguem não publicados (verificado em 2026-10-06).
+- npm: o `dsh` sem escopo é o projeto alheio node-dsh (um shell) — instale `@deepseek-ai/dsh` (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.2); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` e `@deepseek-ai/dsh-session-persistence-jsonl` ainda publicam um `latest` obsoleto (0.0.1-rc.1), fixe `next` (0.2.0-rc.2) ou `alpha` (0.2.1-alpha.1); `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 com a nova tag `dsh-0-2-1-alpha-1` em 4.0.5-alpha.1; dsh-core/dsh-sdk seguem não publicados (verificado em 2026-10-06).
 - Aplique `resolve()` nos dois lados antes de comparar caminhos (armadilha da barra invertida do Windows).
 
 ## Links de documentação

@@ -25,11 +25,21 @@ export type TemplateLang = 'ts' | 'js'
  * The 0.2 line is load-bearing: `dsh` enforces peer ranges at install time and
  * rejects any plugin whose declared range excludes the running runtime, so a
  * range that stops at 0.1.x makes every scaffolded plugin uninstallable on a
- * 0.2.x harness (`installation rejected: ... is incompatible with dsh
- * 0.2.1-alpha.1`).
+ * 0.2.x harness (`installation rejected: ... is incompatible with dsh <runtime>`).
  */
 export const DSH_PEER_RANGE =
   '>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0'
+
+/**
+ * The DSH release this scaffold was last verified against, single-sourced here
+ * and substituted into template prose through the `{{dshBaseline}}` placeholder.
+ *
+ * Keep it in step with `guide/version-matrix.md` §1 and the root README
+ * compatibility table. It is deliberately a *prerelease*: DSH has no stable
+ * line (every published version and GitHub release carries `-alpha.N`/`-rc.N`),
+ * so a scaffold that claimed a stable baseline would be lying.
+ */
+export const DSH_BASELINE = '0.2.1-alpha.2'
 
 /** Placeholder values substituted into template files. */
 export interface TemplateContext {
@@ -76,6 +86,7 @@ export function renderTemplate(text: string, context: TemplateContext): string {
     .replaceAll('{{version}}', context.version)
     .replaceAll('{{year}}', context.year)
     .replaceAll('{{dshPeerRange}}', DSH_PEER_RANGE)
+    .replaceAll('{{dshBaseline}}', DSH_BASELINE)
 }
 
 /** One rendered scaffold file. */

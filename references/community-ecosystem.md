@@ -31,7 +31,8 @@
 |---|---|---|
 | [omdsh-dev/plugin-template](https://github.com/omdsh-dev/plugin-template) | 生产级独立插件模板：src/index+config+runtime+invariant 四文件、7 个 dsh-plugin-* 开发 skill、tsdown 自包含 `prepare`、契约文档 | `downloads/community-repos/plugin-template/` |
 | [omdsh-dev/dsh-plugin-dev](https://github.com/omdsh-dev/dsh-plugin-dev) | 踩坑档案：20 个实测坑（cordis 双副本、tsconfig 三件套、junction、多帧 zstd、DSH_* 环境变量……）+ 环境基线 | `downloads/community-repos/dsh-plugin-dev/` |
-| [vlln/plugin-registry](https://github.com/vlln/plugin-registry) | 薄控制台 + `make-dsh-plugin` skill + 插件类型对比（bundle vs 纯 cordis 双通道） | `downloads/community-repos/plugin-registry/` |
+| [vlln/dsh-skills](https://github.com/vlln/dsh-skills) | ✅ **现行继任者**（2026-10-03 创建）：`make-dsh-plugin` skill + 0.1.6→0.2.0 改名症状表 + 22.7 KB `gotchas.md`。基线对齐 0.2.0-rc.2 | 未归档（建议纳入下一批 `download-community-repos.ps1`） |
+| ~~[vlln/plugin-registry](https://github.com/vlln/plugin-registry)~~ | ⚠️ **已归档 2026-10-03**。历史价值：薄控制台 + 插件类型对比（bundle vs 纯 cordis 双通道）+ **repository-plugin 机制时间线**（0809 引入 → 0811 移除）。冻结在 0.1.5 基线 | `downloads/community-repos/plugin-registry/` |
 | [Opr4Mp3r/deepseek-harness-plugin-from-scratch](https://github.com/Opr4Mp3r/deepseek-harness-plugin-from-scratch) | 代码审计式渐进教程：checkpoint 阅读器、17 反模式、交付检查单（锁 harness@47f9438、npm 0.1.0-rc.6） | `downloads/community-repos/deepseek-harness-plugin-from-scratch/` |
 | [whyihaveyou/dsh-suite](https://github.com/whyihaveyou/dsh-suite) | 双语插件目录（167+ 插件、每日兼容性 CI）+ `npm create dsh-plugin` 脚手架 + 自有插件 | `downloads/community-repos/dsh-suite/` |
 | [randerous/dsh-turn-meta](https://github.com/randerous/dsh-turn-meta) | 最小首插件模板：agent/pre-step + prepend:true + source 归属注入 | `downloads/community-repos/dsh-turn-meta/` |

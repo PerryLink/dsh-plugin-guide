@@ -1,7 +1,10 @@
 # 迁移到 0.2 世代（migration-0.2.md）
 
 > **适用对象**：所有针对 DeepSeek Harness `0.1.6-alpha.2` 及更早版本开发的第三方插件（bundle / 纯 cordis 插件 / UI 插件 / MCP 配置包）。
-> **基线**：本文件对照 `5badb15009ae1756c3afe0ae0cef1faafc290ccc`（tag `dsh-v0.2.1-alpha.1`，2026-10-03，master 最新）核验；区间起点为 `ddefc45fbc7f8e46dd73185e68295696d1297887`（tag `dsh-v0.1.6-alpha.2`，2026-09-17）。
+> **基线**：本文件对照 `d743267388641bc76f17c45ce8b4c231aed1d32c`（tag `dsh-v0.2.1-alpha.2`，2026-10-09，master HEAD）核验；区间起点为 `ddefc45fbc7f8e46dd73185e68295696d1297887`（tag `dsh-v0.1.6-alpha.2`，2026-09-17）。
+> **覆盖范围**：§0–§12 覆盖 `0.1.6-alpha.2` → `0.2.1-alpha.1`；
+> **§13 覆盖 `0.2.1-alpha.1` → `0.2.1-alpha.2`（19 个 seam，`L1`–`L19`）**。
+> 两段跨度都已有稳定 ID，可被扫描器引用（`dsh-plugin-upgrade` 的走廊目前只到 `legC`）。
 > **权威优先级**：官方 `docs/upgrade-guide/**`（原文副本 `references/official-docs/docs/upgrade-guide/`）> 本文件 > 社区文章。官方每一条"next release removes X"都对应本文件的一节。
 > 事实核实方式：源码 `path:line` + 提交号，全部可在 `D:\deepseek-harness`（或你的 checkout）复核；无法核实的项已标注 `UNVERIFIED`。
 
@@ -13,11 +16,12 @@
 
 ## 1. 版本与发布线（先认清"最新"是哪一个）
 
-| 问题 | 答案（2026-10-06 核验） |
+| 问题 | 答案（**2026-10-09 复核**；完整谱系见 [version-matrix.md](version-matrix.md)） |
 |---|---|
-| master 最新 tag | `dsh-v0.2.1-alpha.1`（2026-10-03，`5badb15`） |
+| master 最新 tag | `dsh-v0.2.1-alpha.2`（2026-10-09，`d743267388641bc76f17c45ce8b4c231aed1d32c`；**= master HEAD**） |
 | npm `latest` dist-tag | `0.2.0-rc.2`（**不是** master 最新 tag） |
-| npm `alpha` / `next` | `alpha`=`0.2.1-alpha.1`、`next`=`0.2.0-rc.2` |
+| npm `alpha` / `next` | `alpha`=`0.2.1-alpha.2`、`next`=`0.2.0-rc.2` |
+| 是否存在稳定版 | **否**。全部 31 个 npm 版本都是 `-alpha.N`/`-rc.N`，全部 26 个 GitHub Release 都是 `prerelease: true` |
 | 区间内发布线（9 个） | `0.1.6-alpha.2`(09-17) → `0.1.7-alpha.1`(09-22) → `0.1.5-rc.3`(09-22) → `0.1.7-alpha.2`(09-22) → `0.1.7-rc.1`(09-23) → `0.1.7-rc.2`(09-24) → `0.2.0-rc.1`(09-28) → `0.2.0-rc.2`(09-29) → `0.2.1-alpha.1`(10-03) |
 | Node 门槛 | `^22.19.0 \|\| >=24.0.0`，**区间内未变**（无 `.nvmrc`/`.node-version` 文件） |
 | `dsh.version` 字段 | **不存在**。DSH 的包清单只有 `dsh.bundle` / `dsh.profile` / `dsh.client` 三组键 |
@@ -39,7 +43,7 @@
 | `SESSION_FORMAT_VERSION`（`c36a83ff6b` = `dsh-v0.1.7-alpha.1` 及之后） | **`4`**（`packages/core/session/src/types.ts`） |
 | 首次写入 V4 的 tag | `dsh-v0.1.7-alpha.1`（2026-09-22）——**你本机装的 0.1.7-alpha.2 CLI 已经在写 V4** |
 | 转换包 | `@deepseek-ai/dsh-session-format-v3-to-v4`（npm 自 `0.1.7-alpha.1` 起） |
-| 官方 `docs/session-format-status.md` 的记录 | `latestFinalizedVersion: 4` 但 `latestReleasedVersion: 3`（evidenceTag `dsh-v0.1.5-alpha.1`）——**与代码和 npm 不一致**；官方文档自己写明"缺少发布记录不等于未发布"，按 **V4 已发布** 处理 |
+| 官方 `docs/session-format-status.md` 的记录 | ✅ **已解决**（2026-10-09 复核）：上游已更新为 `latestReleasedVersion: 4` / `evidenceTag: dsh-v0.2.0-rc.2`。本项目镜像快照早于该更正（仍写 `latestReleasedVersion: 3` / `dsh-v0.1.5-alpha.1`），**以官方 live 为准** |
 
 对插件作者的后果：
 
@@ -202,12 +206,64 @@ DSH 自带的 preset 里有一整套**官方插件开发技能**，这是本世�
 - [ ] 若把 patch 拆成多文件：改成 `dsh.bundle.patch` 数组，确认每个文件里的相对路径按各自目录解析。
 - [ ] 若覆盖 `schedule` / `time-context` / `ui-schedule` / `schedule_*`：按 §6 核对 preset 分叉与 bundle 撤并。
 - [ ] 依赖里没有 `"latest"` 形式的 `@deepseek-ai/*`（库包 `latest` 仍是 `0.0.1-rc.1`）。
-- [ ] peer 范围覆盖两条线（如 `>=0.1.2-rc.1 <0.3.0`），并知道它**不被校验**——关键兼容靠自己探测。
+- [ ] ⚠️ peer 范围覆盖**每条线一个 clause**（六子句规范形，见 [version-matrix.md](version-matrix.md) §4.1），且知道它**会被安装期强制**——不是文档意图：`dsh plugin add` 拿运行时版本比对，不匹配直接**拒绝安装**。**不要写 `>=0.1.2-rc.1 <0.3.0` 这种跨代开区间**：它放行安装，但运行时会炸。范围之外仍要配运行时探测。
 - [ ] `pnpm pack` 后装进干净 `DSH_HOME` profile 冒烟（`dsh-plugin-dev verify` 已对此对齐）。
 
-## 12. 已知分歧与未核实项（诚实标注）
+## 13. 新走廊：`0.2.1-alpha.1` → `0.2.1-alpha.2`（19 个 seam）
 
-1. **官方会话格式发布记录与代码/npm 矛盾**：`docs/session-format-status.md` 写 `latestReleasedVersion: 3`，而 `SESSION_FORMAT_VERSION` 自 `dsh-v0.1.7-alpha.1` 起为 4 且转换包已上 npm。按 V4 已发布处理（代码与 npm 一致），但记录本身未更新。
+> **本节解决本文件此前的最大缺口**：`dsh-plugin-upgrade` 的走廊只覆盖到 `legC`（`0.1.5-rc.2 → 0.1.6-alpha.2`），
+> 而本文件此前是 `0.2.1-alpha.1` 之前唯一有内容的文档，且**没有任何 seam ID**——没法被扫描器引用。
+> 本节给该跨度**稳定 ID（`L1`–`L19`）**、**症状**、**修法**与**官方出处**。
+>
+> **适用判定**：`dsh --version` 落在 `0.2.1-alpha.2`（或更新）时，**逐条核对**；
+> 停在 `0.2.0-rc.2` 及更早的**与本节无关**。
+> 官方出处全部已随镜像落地：`references/official-docs/docs/upgrade-guide/v0.2.1-alpha.1/<item>/guide.md`。
+>
+> ⚠️ **目录名陷阱**：`v0.2.1-alpha.1/` 是**变更被引入时仓库的版本号**，描述的是
+> **从该版升到下一版**的变更——即这 19 条**落在 `0.2.1-alpha.2`**。原文措辞是
+> *"In v0.2.1-alpha.1, X was so; the next release no longer…"*。
+
+| ID | 官方项 | 受影响面 | 症状（不修的后果） | 修法 |
+|---|---|---|---|---|
+| **L1** | `subagent-activations` | 子代理工具/服务 | `backgroundMode`、`enableRunInBackground`、`run_in_background` 全部失效；`dsh-subagent-in-process-driver` 包**被删**；`ctx.subagents.start()` 不存在 | 删两个配置键与工具参数；`startActivation({ …, delivery: 'caller' })` 后 `await activation.result`；自定义本地 provider 要实现 `prepareContinuable()` |
+| **L2** | `tool-presentation-mode` | 工具呈现 | **`mode: both` 被拒绝**；`DSH_TOOLS_MODE=both` 与 `ctx.tools.presentAs('both')` 同样被拒 | 改为 `native` 或 `ptc` |
+| **L3** | `web-listener-trust-config` | Web profile / 覆盖层 | **`webRuntime` 服务消失** → 注入它的 patch **永久等待**，Connection 起不来；`ctx.webRuntime.lanAddresses` 没了；**通配 host 加载期被拒** | `inject: [webRuntime]` → `[webStartup]`；`trustedHosts` 换服务；删 `lanAddresses`；通配 host 换具体 IP 字面量 |
+| **L4** | `working-directory` | 提示词模板 / ACP·SDK 子代理 / `presentationMeta` | **保留 `{{cwd}}` 的自定义模板在发出模型请求前就失败**；`config.cwd` 被移除；嵌套 PTC 调用里的投影错误会让该次调用以 `ToolOutputError` 失败 | 删提示词里的目录子句并清空；`cwd` 改由子请求传或先调 `working_directory({ cd })`；保证投影纯且 JSON 安全 |
+| **L5** | `session-title-provider-strategy` | 会话标题 | 三个导出符号消失（`registerSessionTitleLlmProvider` / `generateSessionTitleWithLlm` / `SessionTitleLlmMessageSelector`）；`targetWords`/`targetCjkCharacters` 移出共享 Config | 改用 `ctx.sessionTitle.register({ id, automatic, generate })`，自己搭 system/input；拒绝 `tool-calls`/`max-tokens` 收尾 |
+| **L6** | `session-title-adapters` | LLM 适配器 | 标题请求改走 `ctx.llm.prepareCall()`；只挂 `llm/stream` 中间件的组合不再被服务；`reasoning.efforts` 顺序错会被拒 | 用 `ctx.llm.registerAdapter()` 注册标题路由；`efforts` **从低到高**排 |
+| **L7** | `ssh-helper-launch` | SSH / 远端 PTC | `node`/`bootstrapPath`/`bootstrapHash` 三键消失；**要求 SSH protocol 2**；helper 与 hash 不同步即失败 | 改 `launch: { kind: 'node-script' }` 或 `{ kind: 'executable' }`；helper 与 hash **必须同改** |
+| **L8** | `team-direct-inbox` | Agent Teams（**数据丢失**） | `send_message` 只回 `{"sent":true}`（无 id、无 queued）；`maxPendingMessagesPerMember` 被移除；**未投递的排队消息永不派发** | ⚠️ **升级前**让待发消息跑完；升级后必需的显式重发；改读 `sent` |
+| **L9** | `instruction-home-override` | 指令加载 | `dsh-agent-instructions` 的 `dshHome` 字段被移除，**残留键被静默忽略**（不报错） | 删 `dshHome`；改用进程环境变量 `DSH_HOME`；用 `--dump-config` 复核 |
+| **L10** | `experimental-package-composition` | profile 组合 | CLI 与 Python runtime 的安装依赖**不再含 hook 桥**；**装了不等于挂上**；只"启用"已被删行的 patch **不会把它插回来** | 显式装 peer；选 bundle **先于**覆盖其行；用完整 `insert` 替代对已删行的 override |
+| **L11** | `native-subagent-bundle-tools` | Bundle 元数据（**类型破坏**） | 选中 bundle 会额外注册 Host 全局工具，对最小预设也可见；**构造或严格校验 `BundleInfo` 必须补两个必填字段 `official`/`availability`**，`PluginPackageRef` 同理 | 补必填字段；删同名冗余 Host 行（会被遮蔽） |
+| **L12** | `python-ptc-sandbox` | Python PTC | Python runtime **要求 `sandbox` + `sandboxPolicy` 服务**，默认 `read-only`；受限运行以 `sandbox-unavailable` 失败 | 挂 `dsh-sandbox-local` + `dsh-sandbox-policy`；设 `sandbox-policy` 行的 `mode`/`workspaceRoot` |
+| **L13** | `python-optional-resources` | Python 运行时资源 | wheels **不再内置** Office sidecar 与 authoring 解释器；SDK 启动不再自动下载 | 用前显式 `download_office()` / `download_primary_runtime()`；离线预置 `DSH_RESOURCE_CACHE` |
+| **L14** | `plugin-option-placement` | CLI 调用 | **`dsh plugin add <pkg> --profile <name>` 现在直接失败** | 改为 `dsh plugin --profile <name> add <package>`（`--profile` 必须在转发参数之前） |
+| **L15** | `terminal-command-labels` | 终端 UI 插件（**类型破坏**） | `TerminalBlockLabels` 新增**必填** `commandLine(line: number): string` | 给每个 labels 对象补 `commandLine`，返回本地化名称 |
+| **L16** | `deepseek-model-discovery` | 模型发现 | `deepseek-official` 路由**无 key 时返回空目录** → Desktop/Web 隐藏 DeepSeek 组 | 配 key 或用 `apiKeyEnv`（默认 `DEEPSEEK_API_KEY`）指定的环境变量；消费方要处理空目录 |
+| **L17** | `new-session-generations` | 客户端集成 | 新建会话**同时新建 Agent**，不再复用空会话（改过预设定义后旧会话不会自动跟上） | 改预设后用 New Session；要复用用 `openWorkspace`/`connectWorkspace` |
+| **L18** | `mock-messages-events` | 测试支撑 | `dsh-llm-mock-server` 会在结构化 SSE 负载旁**同时发具名 Messages 事件** | 消费具名事件与其 `data` 字段，别只筛匿名消息 |
+| **L19** | `desktop-test-auth-popup` | Desktop 测试构建 | 所有**测试**认证弹窗默认关闭；测试网关 cookie 不过重启 | 需要时设 `updates.allowTestAuthPopupWindow: true` 并**完全重启** |
+
+**另有一条回填**（在 `v0.2.0-rc.2/` 目录里、但基线之后才加入）：
+`bundled-python-tests` —— 打包的 NumPy/pandas **测试目录**被移除；要跑上游测试套件请
+**另建** Python 环境（别用会被升级替换的托管运行时目录）。它放在旧目录属于例外——
+上游自己的规则是"版本号 bump 后旧版本目录冻结"。
+
+**官方发布说明**（双语，点名上述变更）：
+`https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2`。
+
+> **本节与 `guide/version-matrix.md` §3 是同一批事实的两种形态**：矩阵按"作者视角的破坏清单"写，
+> 本节按"可被扫描器引用的 seam 表"写（`L1`–`L19` + 症状 + 修法）。
+> **给 `dsh-plugin-upgrade` 提议 `legD` 走廊时，直接引用本节 ID。**
+> 本库的 `dsh-plugin-dev check` 中 `redline-async-apply-registration` 是家族内该缺陷的唯一检测器，
+> 已被 `legC` 的 W0 卡引用为 E2 的预防门——同一条联动可以复用到本节。
+
+---
+
+## 14. 已知分歧与未核实项（诚实标注）
+
+1. ✅ **已解决（2026-10-13）**：上游 `docs/session-format-status.md` 已是 `latestReleasedVersion: 4` / `evidenceTag: dsh-v0.2.0-rc.2`，与代码和 npm 一致；本项目 `references/official-docs/` 镜像**已重同步**到 `d743267388641bc76f17c45ce8b4c231aed1d32c`（`dsh-v0.2.1-alpha.2`，2026-10-13），该矛盾在本库内部也一并消失。
 2. `UNVERIFIED`：未解包已发布的 npm tarball 逐字节确认产物与 tag 一致。
 3. `UNVERIFIED`：仓库内无 `CHANGELOG.md`、无 `docs/persistence-changes/releases/*` 新条目，因此**没有官方逐版本 release notes 可引**；tag 对应的提交主题是唯一线索。
 4. `ctx.agent` 在两个基线都**不存在**（不是"被移除"）。

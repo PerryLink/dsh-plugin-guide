@@ -53,7 +53,7 @@ Other forms: object `export default { name, inject, apply }`; class `class X ext
 
 Lifecycle: `PENDING → LOADING → ACTIVE` (apply throws → FAILED); `ACTIVE → UNLOADING → DISPOSED`. A required service disappearing unloads the plugin; it reloads when the service returns.
 
-## Event dispatch modes + bail
+## Event dispatch modes (five, including bail)
 
 | Mode | awaited | Order | Return value |
 |---|---|---|---|
@@ -61,6 +61,7 @@ Lifecycle: `PENDING → LOADING → ACTIVE` (apply throws → FAILED); `ACTIVE �
 | waterfall | no | registration order | yes (**not calling next() short-circuits**) |
 | parallel | yes | parallel | none |
 | serial | yes | registration order | yes (first non-empty stops) |
+| bail | no | registration order | yes (first non-null/false/undefined short-circuits and stops the rest) |
 
 Typed events (declaration merging):
 
@@ -136,7 +137,7 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 3. Weakest mechanism that suffices: `ctx.tools.restrict()` (remove only) < `ctx.tools.guard()` (deny only) < waterfall rewrite (order-dependent) < `system-prompt/assemble` (replaces everything). Observe final outcomes on `tools/result`; use `tools/post-execute` only to transform.
 4. Model-visible ⇔ logged: new model-visible input requires a new session event (`SessionEventMap`) — added by the host, never by appending a new `type` yourself (see rule 8).
 5. Never hardcode tunables (test: can cordis.yml change it?); misconfiguration fails loud. Live-editable user fields use `Volatile<T>` + `loader/volatile-update` (the form namespace is the profile entry id).
-6. Standalone plugin packages: cordis is a peerDependency matching the host identity (mixing scoped `@deepseek-ai/cordis` and unscoped splits identities); ESM; `dsh.bundle` manifest (`patch` may be an ordered array); git installs need `prepare` + `allowBuilds`; ship `lib/` or a tarball. Shared-instance dsh packages go in **peerDependencies + devDependencies only** — never `dependencies` (a profile copy silently shadows the runtime, and DSH does not validate peer ranges).
+6. Standalone plugin packages: cordis is a peerDependency matching the host identity (mixing scoped `@deepseek-ai/cordis` and unscoped splits identities); ESM; `dsh.bundle` manifest (`patch` may be an ordered array); git installs need `prepare` + `allowBuilds`; ship `lib/` or a tarball. Shared-instance dsh packages go in **peerDependencies + devDependencies only** — never `dependencies` (a profile copy silently shadows the runtime). ⚠️ Corrected: **peer ranges ARE enforced at install time** — `dsh plugin add` compares the runtime version against the declared `@deepseek-ai/dsh-*` range and refuses the install; only `engines.dsh` is declarative and unenforced. A range says "can it install", not "does this API exist" — keep runtime probing (range selection: `version-matrix.md` §4).
 7. Ship display metadata: `locale/*.json` `meta.title`/`meta.description` plus an exported `./icon` (SVG/PNG/JPEG/WebP, ≤256 KiB, inside the package). Subpath plugins never read their own `package.json`.
 8. Bilingual docs in pairs; tool descriptions/prompts are behavior; non-trivial changes need an Agent Note; run the minimal check set before pushing (dsh-pre-push-checks).
 9. Opaque cross-boundary ids are branded (`Branded<B>` from `dsh-brand`), never bare `string`.
@@ -153,7 +154,7 @@ Chunk protocol: `block-start` → `text-delta*` → `block-end` (complete block)
 - Windows junctions via PowerShell `New-Item -ItemType Junction`; vitest drive letter must be uppercase `C:/`.
 - `DSH_PERMISSION_MODE=danger-full-access` is high-risk (no sandbox backend on Windows, approvals disabled); `DSH_*` vars in `~/.dsh/.env` break startup.
 - Session files are multi-frame zstd: use `scanZstdFrames`/`createZstdFrameDecoder` (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`).
-- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh` (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.1); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` and `@deepseek-ai/dsh-session-persistence-jsonl` still ship a stale `latest` (0.0.1-rc.1), so pin `next` (0.2.0-rc.2) or `alpha` (0.2.1-alpha.1); `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 with a new `dsh-0-2-1-alpha-1` tag at 4.0.5-alpha.1; dsh-core/dsh-sdk still unpublished (verified 2026-10-06).
+- npm: unscoped `dsh` is the unrelated node-dsh shell — install `@deepseek-ai/dsh` (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.2); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` and `@deepseek-ai/dsh-session-persistence-jsonl` still ship a stale `latest` (0.0.1-rc.1), so pin `next` (0.2.0-rc.2) or `alpha` (0.2.1-alpha.1); `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 with a new `dsh-0-2-1-alpha-1` tag at 4.0.5-alpha.1; dsh-core/dsh-sdk still unpublished (verified 2026-10-06).
 - `resolve()` both sides before path comparisons (Windows backslash trap).
 
 ## Documentation links
@@ -171,8 +172,8 @@ Community dev docs — templates/tutorials/pitfalls, full list in [references/co
 
 ## Key source index
 
-- Official docs verbatim: `references/official-docs/docs/**` (369 md pages, all 182 `.zh.md` pairs included); the pages **not on the documentation site** (session-format-status, `upgrade-guide/**`, `persistence-changes/**`, ui-radius, web-styling, module-graph) are listed in [links.md](links.md) §2.1
-- Migration checklist: [migration-0.2.md](migration-0.2.md) (every breaking change from 0.1.6-alpha.2 → 0.2.1-alpha.1, with the official upgrade-guide source for each)
+- Official docs verbatim: `references/official-docs/docs/**` (429 md pages, all 212 `.zh.md` pairs included, mirror at `dsh-v0.2.1-alpha.2`); the pages **not on the documentation site** (session-format-status, `upgrade-guide/**`, `persistence-changes/**`, ui-radius, web-styling, module-graph) are listed in [links.md](links.md) §2.1
+- Migration checklist: [migration-0.2.md](migration-0.2.md) — §0–§12 cover every breaking change from `0.1.6-alpha.2` → `0.2.1-alpha.1`, and §13 covers `0.2.1-alpha.1` → `0.2.1-alpha.2` as 19 citable seams (`L1`–`L19`); each entry cites its official upgrade-guide source
 - The official in-repo plugin-development skill: [references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)
 - Repo-root constraints: `references/official-docs/AGENTS.md`, `references/official-docs/packages/AGENTS.md`, `references/official-docs/vendor/README.md`; sync state in `references/official-docs/SNAPSHOT.md`
 - Site crawl HTML: `downloads/web/site/**` (EN+ZH full site) + `downloads/manifest.tsv` (download ledger)

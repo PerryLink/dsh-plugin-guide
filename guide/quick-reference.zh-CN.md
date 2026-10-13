@@ -52,7 +52,7 @@ export function apply(ctx: Context, config: Config) {
 
 生命周期：`PENDING → LOADING → ACTIVE`（apply 抛错 → FAILED）；`ACTIVE → UNLOADING → DISPOSED`。依赖服务消失 → 自动卸载，恢复 → 自动重载。
 
-## 事件派发四模式 + bail
+## 事件派发五模式（含 bail）
 
 | 模式 | await | 顺序 | 返回值 |
 |---|---|---|---|
@@ -60,6 +60,7 @@ export function apply(ctx: Context, config: Config) {
 | waterfall | 否 | 注册序 | 有（**不调 next() 即短路**） |
 | parallel | 是 | 并行 | 无 |
 | serial | 是 | 注册序 | 有（首个非空即止） |
+| bail | 否 | 注册序 | 有（首个非 null/false/undefined 即短路，**并停止后续监听器**） |
 
 类型声明（declaration merging）：
 
@@ -135,7 +136,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 3. **用最弱的够用机制**：`ctx.tools.restrict()`（只移除）< `ctx.tools.guard()`（只拒绝）< waterfall 改写（依赖顺序）< `system-prompt/assemble`（整段替换）。最终结果只看 `tools/result`；只有要变换结果才用 `tools/post-execute`。
 4. 模型可见 ⟺ 已记录：新模型可见输入必须新增会话事件（`SessionEventMap`）——**由宿主侧新增**，不是插件自己写（见第 10 条）。
 5. 不得硬编码可调参数（判断：cordis.yml 能否改）；misconfig fail loud。要暴露给用户的实时字段用 `Volatile<T>` + `loader/volatile-update`（表单命名空间=profile 条目 id）。
-6. 独立插件包：cordis 是 peerDependency（与宿主同身份：scoped `@deepseek-ai/cordis` 与 unscoped 混用会"双 Cordis 分裂"）；ESM；`dsh.bundle` 清单（`patch` **可为有序数组**）；git 安装配 `prepare` + `allowBuilds`；发布带 `lib/` 或 tarball。**共享实例的 dsh 包只放 peer + dev，绝不放 dependencies**（profile 内副本会静默遮蔽运行时；且 DSH **不校验** peer 范围）。
+6. 独立插件包：cordis 是 peerDependency（与宿主同身份：scoped `@deepseek-ai/cordis` 与 unscoped 混用会"双 Cordis 分裂"）；ESM；`dsh.bundle` 清单（`patch` **可为有序数组**）；git 安装配 `prepare` + `allowBuilds`；发布带 `lib/` 或 tarball。**共享实例的 dsh 包只放 peer + dev，绝不放 dependencies**（profile 内副本会静默遮蔽运行时）。⚠️ **已更正：peer 范围会被安装期强制**——`dsh plugin add` 拿运行时版本比对声明的 `@deepseek-ai/dsh-*` 范围，不匹配即**拒绝安装**；只有 `engines.dsh` 是纯声明、零强制。范围只能表达"能不能装"，**表达不了某个 API 在不在**——仍要配运行时探测（区间选择见 `version-matrix.md` §4）。
 7. 必须交展示元数据：`locale/*.json` 的 `meta.title`/`meta.description` + 导出的 `./icon`（SVG/PNG/JPEG/WebP，≤256 KiB，必须在包内）。子路径插件**不读**自己的 `package.json`。
 8. 文档双语成对；工具描述/提示词即行为；非平凡变更加 Agent Note；提交前跑最小检查集（dsh-pre-push-checks）。
 9. 跨边界 opaque id 用 branded（`Branded<B>` from `dsh-brand`），从不裸 `string`。
@@ -152,7 +153,7 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 - Windows junction 用 PowerShell `New-Item -ItemType Junction`；vitest 盘符大写 `C:/`。
 - `DSH_PERMISSION_MODE=danger-full-access` 高风险（Windows 无沙箱后端、禁用审批）；`DSH_*` 放 `~/.dsh/.env` 会报错。
 - 会话文件多帧 zstd：用 `scanZstdFrames`/`createZstdFrameDecoder`（`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`）。
-- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`（`latest`=`next`=0.2.0-rc.2、`alpha`=0.2.1-alpha.1）；`@deepseek-ai/dsh-tools`、`@deepseek-ai/dsh-base`、`@deepseek-ai/dsh-headless`、`@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 仍是过期版本（0.0.1-rc.1），要钉 `next`（0.2.0-rc.2）或 `alpha`（0.2.1-alpha.1）；`create-dsh-plugin` latest=0.2.3；`@deepseek-ai/cordis` latest=4.0.4，另有新标签 `dsh-0-2-1-alpha-1`=4.0.5-alpha.1；dsh-core/dsh-sdk 仍未发布（2026-10-06 复核）。
+- npm：无作用域 `dsh` 是无关项目 node-dsh（shell）——官方包是 `@deepseek-ai/dsh`（`latest`=`next`=0.2.0-rc.2、`alpha`=0.2.1-alpha.2）；`@deepseek-ai/dsh-tools`、`@deepseek-ai/dsh-base`、`@deepseek-ai/dsh-headless`、`@deepseek-ai/dsh-session-persistence-jsonl` 的 `latest` 仍是过期版本（0.0.1-rc.1），要钉 `next`（0.2.0-rc.2）或 `alpha`（0.2.1-alpha.1）；`create-dsh-plugin` latest=0.2.3；`@deepseek-ai/cordis` latest=4.0.4，另有新标签 `dsh-0-2-1-alpha-1`=4.0.5-alpha.1；dsh-core/dsh-sdk 仍未发布（2026-10-06 复核）。
 - 路径比较前两侧都 `resolve()`（Windows 反斜杠陷阱）。
 
 ## 文档链接
@@ -170,8 +171,8 @@ Chunk 协议：`block-start` → `text-delta*` → `block-end`（完整块）→
 
 ## 关键源索引
 
-- 本地官方文档全文：`references/official-docs/docs/**`（369 篇，含全部 182 个 `.zh.md`）；**没上文档站**的那些页（session-format-status、`upgrade-guide/**`、`persistence-changes/**`、ui-radius、web-styling、module-graph）见 [links.md](links.md) §2.1
-- 迁移清单：[migration-0.2.md](migration-0.2.md)（0.1.6-alpha.2 → 0.2.1-alpha.1 的全部破坏性变更，逐条附官方 upgrade-guide 出处）
+- 本地官方文档全文：`references/official-docs/docs/**`（429 篇，含全部 212 个 `.zh.md`；镜像基线 `dsh-v0.2.1-alpha.2`）；**没上文档站**的那些页（session-format-status、`upgrade-guide/**`、`persistence-changes/**`、ui-radius、web-styling、module-graph）见 [links.md](links.md) §2.1
+- 迁移清单：[migration-0.2.md](migration-0.2.md) —— §0–§12 覆盖 `0.1.6-alpha.2` → `0.2.1-alpha.1` 的全部破坏性变更，**§13 把 `0.2.1-alpha.1` → `0.2.1-alpha.2` 整理成 19 个可引用 seam（`L1`–`L19`）**；每条都附官方 upgrade-guide 出处
 - 官方自带插件开发技能：[references/official-plugin-dev-skill.md](../references/official-plugin-dev-skill.md)
 - 仓库根约束：`references/official-docs/AGENTS.md`、`references/official-docs/packages/AGENTS.md`、`references/official-docs/vendor/README.md`；同步状态见 `references/official-docs/SNAPSHOT.md`
 - 站点爬取 HTML：`downloads/web/site/**`（中英双语全站）+ `downloads/manifest.tsv`（下载清单）

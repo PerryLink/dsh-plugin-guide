@@ -13,15 +13,19 @@ dsh plugin --profile web add dsh-plugin-guide
 
 ## Start here
 
+- [Version adaptivity matrix](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/version-matrix.md): the five different "latest" values, the frozen sub-package `latest` tags, the breaking-change seams, how to pick a peer range, the session-format lineage V0→V4, and the 19 breaking changes in `0.2.1-alpha.2`. **Read this first — DSH has no stable line.**
 - [Plugin development guide (10 chapters)](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/plugin-dev-guide.md): the contract, the capability seams, session/event vocabulary, the 20+ measured pitfalls, and the shipping checklist.
 - [Quick reference](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/quick-reference.md): one page, five languages.
+- [Migration to the 0.2 generation](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/migration-0.2.md): every breaking change from `0.1.6-alpha.2` to `0.2.1-alpha.1`, each with its official source.
 - [When to retire or freeze a plugin](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/when-to-retire-a-plugin.md): the criteria, the measured npm multipliers against each rival, what frozen does and does not mean, and eight self-check questions. (Chinese: `guide/when-to-retire-a-plugin.zh-CN.md`)
 
 ## Reference
 
+- [Family toolchain router](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/family-toolchain.md): which tool owns which question, the full 33-check `dsh-plugin-doctor` catalog with verdict semantics, and the crosswalk against this repo's 16 checks.
 - [Release engineering](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/release-engineering.md): tagging, npm provenance, the `-0` prerelease floor, and why the tag workflow owns the GitHub Release.
 - [Unfixed upstream issues](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/unfixed-issues.md): every entry carries `path:line` against a named host commit, the workaround, and the fixing commit when one exists.
 - [Curated links](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/guide/links.md): official development docs, site URL against local mirror copy.
+- [Distilled official plugin-development skill](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/official-plugin-dev-skill.md) · [Competing plugin-development resources](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/dev-resource-landscape.md)
 - [Community ecosystem](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/community-ecosystem.md) · [Community repository deep dive](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/community-repo-deep-dive.md)
 - [Harness repository reference](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/harness-repo.md) · [Upstream Cordis](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/upstream-cordis.md) · [Cordis paper and community](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/cordis-paper-and-community.md) · [Official website pages](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/references/website-pages.md)
 

@@ -58,7 +58,7 @@ content counts as stated in the README (What you get)
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1`（`5badb15009`，master 最新 tag，2026-10-03）；npm `latest`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`。已于 2026-10-06 对照该 checkout 重核（完整门禁链 + profile 安装冒烟）。知识库、官方文档副本与 [guide/migration-0.2.md](guide/migration-0.2.md) 均以该基线为准。 |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.2`（`d743267388641bc76f17c45ce8b4c231aed1d32c`，master 最新 tag **且** = master HEAD，2026-10-09）；npm `latest`=`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.2`。**不存在稳定版**——全部 31 个 npm 版本与 26 个 GitHub Release 都是 prerelease。官方文档副本与 [guide/migration-0.2.md](guide/migration-0.2.md) 钉在上一版 `dsh-v0.2.1-alpha.1`（`5badb15009`，2026-10-03）；此后新增的 20 份破坏性变更指南收录于 [guide/version-matrix.md](guide/version-matrix.md) §3。 |
 | Node | `^22.19.0 || >=24.0.0`（DeepSeek Harness 运行时） |
 | Platforms | 全部（纯 ESM bundle；无原生代码、无网络） |
 | Model | 任意（无模型交互） |
@@ -68,6 +68,7 @@ content counts as stated in the README (What you get)
 `dsh-plugin-guide` 是 DSH 插件开发知识库加 CLI 工具链，打包为一个可安装 bundle。知识库注册为 `dsh-plugin-guide` agent 技能（在每个会话目录可见，按需加载工作流步骤、官方文档与社区深读）；`dsh-plugin-dev` CLI 在其之上提供三个机械层。
 
 - **插件契约与红线** —— effect/disposer、waterfall `next()`、模型可见 ⟺ 已记录、Schemastery 配置。
+- **版本适配** —— [guide/version-matrix.md](guide/version-matrix.md)：五个"最新"的区别、子包 `latest` 冻结陷阱、四个破坏性变更断层、peer 区间怎么选、会话格式 V0→V4 谱系，以及 `0.2.1-alpha.2` 落的 19 条破坏性变更。
 - **官方文档档案** —— 官方仓库文档（英 + 中）逐字副本，在最近核验快照处与上游逐字节一致。
 - **Cordis 入门** —— 五个概念与机制时间线（repository-plugin 0809 引入、0811 移除；两条安装通道）。
 - **20+ 个实战踩坑** —— 附根因 + 修法（cordis 双副本、tsconfig 三件套、多帧 zstd 会话、Windows junction、过期 npm `latest`…）。
@@ -81,6 +82,7 @@ content counts as stated in the README (What you get)
 | `SKILL.md` | `dsh-plugin-guide` agent 技能：红线 + 按任务类型的开发路径 |
 | `package.json` · `cordis.patch.yml` · `index.js` | 可安装 DSH bundle：`dsh.bundle.patch` 清单 + 注册技能的入口 |
 | `guide/plugin-dev-guide.md` | 完整开发指南（10 章） |
+| `guide/version-matrix.md` | **版本适配矩阵**：五个"最新"的区别、子包 `latest` 冻结、破坏性变更断层、peer 区间选择、会话格式谱系、`0.2.1-alpha.2` 的 19 条变更 |
 | `guide/quick-reference.md` | 一页速查表（5 语言） |
 | `guide/links.md` | 精选 URL 索引：官方开发文档（站点 ↔ 本地副本）+ 社区文档链接 |
 | `guide/when-to-retire-a-plugin.md` | 插件退役与冻结：一次组合审计的判据与实测数据（中英双语） |

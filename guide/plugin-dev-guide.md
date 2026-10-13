@@ -157,16 +157,18 @@ ctx.effect(() => { const t = setInterval(...); return () => clearInterval(t) }) 
 
 ### 3.5 事件（Events）
 
-派发模式（事件契约的一部分，新事件必须用 `@mode` 标注）：
+派发模式（事件契约的一部分，新事件必须用 `@mode` 标注）。**官方共五种**——
+权威定义见 `references/official-docs/docs/cordis-api/events.md`（`'emit' | 'parallel' | 'serial' | 'bail' | 'waterfall'`）：
 
 | 模式 | await？ | 顺序 | 返回值 |
 |---|---|---|---|
 | `emit` | 否 | 注册序 | 无 |
-| `waterfall` | 否 | 注册序 | 有（管线结果） |
 | `parallel` | 是 | 并行 | 无 |
 | `serial` | 是 | 注册序 | 有（首个非空即止） |
+| `bail` | 否 | 注册序 | 有（首个非 `null/false/undefined` 即短路，**停止后续**） |
+| `waterfall` | 否 | 注册序 | 有（管线结果，逐级传递） |
 
-- `ctx.bail`：首个非 `null/false/undefined` 结果即短路返回。
+- **`serial` 与 `bail` 的区别是"停不停"**：`serial` 在首个非空值后停止后续监听器；`bail` 同样短路，但语义归类为"放弃/否决"，`ctx.bail` 是其对应调用式。二者都**不是** `emit`（`emit` 永远跑完所有监听器）。
 - **waterfall 铁律**：监听器签名 `(payload, next)`，**必须调 `next()` 才能下传**；不调即短路（这正是拦截/网关的语义）。协作式监听器改共享对象后 `next()`；替换结果的监听器负责让下游只看到替换后的结果。仅在"必须最先执行"时才用 `prepend: true`。
 - **类型安全**：`declare module '@deepseek-ai/cordis' { interface Events { 'my-plugin/ready': (p: {id: string}) => void } }`。
 - **命名空间**：`namespace/action`（`agent/step`、`tools/result`、`session/event`……）。
@@ -372,7 +374,7 @@ Hook 的"原生 hook"就是挂在拦截点上的普通 Cordis 插件，不需要
 
 ### 7.0 插件形态选型：bundle vs 纯 cordis（两条官方安装通道）
 
-> 时间线（社区实测记录，vlln/plugin-registry）：官方 0809 推出 repository-plugin 机制（`.dsh-plugin`），**0811 已从 `vendor/loader/src/repository.ts` 移除**（−258 行，`plugin_search/install/uninstall/status` 四个工具随之不复存在）。此后外部插件只有 web profile 一条官方路径，按是否声明 `dsh.bundle` 分两类。
+> 时间线（社区实测记录，归档仓库 `vlln/plugin-registry`，**该仓 2026-10-03 已归档**，继任者 `vlln/dsh-skills`）：官方 0809 推出 repository-plugin 机制（`.dsh-plugin`），**0811 已从 `vendor/loader/src/repository.ts` 移除**（−258 行，`plugin_search/install/uninstall/status` 四个工具随之不复存在）。此后外部插件只有 web profile 一条官方路径，按是否声明 `dsh.bundle` 分两类。
 > **预览期漂移提示**：官方文档里可能仍有残留旧表述（如 `docs/subsystems/skills.md` 的 "repository plugins land in the global layer"），且服务名在快照间会改名（0812 批量重命名：`httpServer→webServer`、`tasks→jobs`、`bash→shell`、`compact→compaction` 等 17 项）——遇到矛盾以**当前宿主的生成式参考**（subsystems 页 Cordis API 区）与社区事实源（`references/community-repo-deep-dive.md` §1.5）为准。
 
 | 需求 | 类型 | 安装通道 | 生效 |
@@ -487,7 +489,7 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 - **官方社群**：[Discord](https://discord.gg/Ycq5dCaS4) · [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) · 发布插件时给仓库加 [`dsh-plugin` topic](https://github.com/topics/dsh-plugin) 提升可见度。
 - **话题清单**：[GitHub topic `dsh-plugin`](https://github.com/topics/dsh-plugin)（三期早期快照 304/550/993 供续期对比；**08-15 第四期快照** `downloads/topic-snapshots/dsh-plugin-topic-2026-08-15/`：去重 998 个、抓取期间 API total_count 2668→2671 持续增长——search API 分页上限 1000 条）。
 - **精选列表**：[awesome-dsh-plugins](https://github.com/AdamPlatin123/awesome-dsh-plugins)（每日兼容性追踪）、[awesome-deepseek-harness](https://github.com/0xsline/awesome-deepseek-harness)、[Alex-Yanggg/awesome-DSH-plugin](https://github.com/Alex-Yanggg/awesome-DSH-plugin)、[bruc3van/awesome-dsh-plugin](https://github.com/bruc3van/awesome-dsh-plugin)；08-14 新增 [walkinglabs](https://github.com/walkinglabs/awesome-deepseek-harness-plugins)、[vvlife](https://github.com/vvlife/awesome-deepseek-harness-plugins) 的 awesome-deepseek-harness-plugins 与 [cccakeee/awesome-dsh-plugins](https://github.com/cccakeee/awesome-dsh-plugins)（完整清单见 community-ecosystem.md §5）。
-- **插件注册/分发中心**：[vlln/plugin-registry](https://github.com/vlln/plugin-registry)（薄控制台 + `make-dsh-plugin` skill；注意其记录的机制时间线：repository-plugin 0809 推出、0811 移除）、[omdsh-dev/dsh-hub-workshop](https://github.com/omdsh-dev/dsh-hub-workshop)（插件市场/注册 workshop；dsh-external/hub 08-14 核查已 404）；08-14 另出现多个 Web GUI 内插件市场（[DSH-Plugins-Marketplace](https://github.com/bradeGithub/DSH-Plugins-Marketplace)、[dsh-plugin-installer](https://github.com/Toukaiteio/dsh-plugin-installer)、[dsh-plugin-marketplace](https://github.com/Scorp1o117/dsh-plugin-marketplace)，未深读，信任边界同 dsh-hub-workshop"发现 ≠ 安装权限"）。
+- **插件注册/分发中心**：[vlln/dsh-skills](https://github.com/vlln/dsh-skills)（✅ **现行**：`make-dsh-plugin` 开发引导 skill + 0.1.6→0.2.0 改名症状表 + 实测踩坑，基线 0.2.0-rc.2）；~~[vlln/plugin-registry](https://github.com/vlln/plugin-registry)~~（⚠️ **2026-10-03 归档**，冻结在 0.1.5 基线；其**机制时间线**仍可引用：repository-plugin 0809 推出、0811 移除）、[omdsh-dev/dsh-hub-workshop](https://github.com/omdsh-dev/dsh-hub-workshop)（插件市场/注册 workshop，`INTAKE.md` 是收录权威；dsh-external/hub 08-14 核查已 404）；08-14 另出现多个 Web GUI 内插件市场（[DSH-Plugins-Marketplace](https://github.com/bradeGithub/DSH-Plugins-Marketplace)、[dsh-plugin-installer](https://github.com/Toukaiteio/dsh-plugin-installer)、[dsh-plugin-marketplace](https://github.com/Scorp1o117/dsh-plugin-marketplace)，未深读，信任边界同 dsh-hub-workshop"发现 ≠ 安装权限"）。
 - **模板与脚手架**：[omdsh-dev/plugin-template](https://github.com/omdsh-dev/plugin-template)（完整生产模板：src 四文件结构 + 7 个开发 skill + tsdown 自包含 prepare + 契约文档 docs/dsh-plugin-contracts.md）、[`npm create dsh-plugin@latest`](https://github.com/whyihaveyou/dsh-suite)（whyihaveyou/dsh-suite 的脚手架，tool/events/webui 三模板）、[omdsh-dev/dsh-plugin-skills](https://github.com/omdsh-dev/dsh-plugin-skills)、[omdsh-dev/dsh-plugin-dev](https://github.com/omdsh-dev/dsh-plugin-dev)（踩坑档案 skill+文档，20 个实测坑）。
 - **教程与最小模板**：[Opr4Mp3r/deepseek-harness-plugin-from-scratch](https://github.com/Opr4Mp3r/deepseek-harness-plugin-from-scratch)（代码审计式渐进教程：checkpoint + 反模式 17 坑 + 交付检查单，锁 harness@47f9438/npm rc.6）、[randerous/dsh-turn-meta](https://github.com/randerous/dsh-turn-meta)（最小首插件：agent/pre-step + prepend:true + source 归属注入范例）、[omdsh-dev/fabric](https://github.com/omdsh-dev/fabric)（类 MC Fabric 的 hook 处理器）、[omdsh-dev/dsh-plugin-check](https://github.com/omdsh-dev/dsh-plugin-check)（插件健康检查：清单协议/patch 格式/构建陷阱）、[bobleer/deepseek-harness-plugin-mcp](https://github.com/bobleer/deepseek-harness-plugin-mcp)（经 MCP 发现/安装/运行插件）、[Nagi-ovo/dsh-find-plugins](https://github.com/Nagi-ovo/dsh-find-plugins)、[omdsh-dev/dsh-hub-workshop](https://github.com/omdsh-dev/dsh-hub-workshop)（插件市场/注册 workshop）。
 - **兼容性追踪**：[whyihaveyou/dsh-suite](https://github.com/whyihaveyou/dsh-suite)（双语目录 + 每日兼容性 CI，167+ 插件带 🟢/⚪ 徽章）、[AdamPlatin123/awesome-dsh-plugins](https://github.com/AdamPlatin123/awesome-dsh-plugins)（每日兼容性追踪）。
@@ -503,7 +505,7 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 
 ## 9.1 版本兼容与迁移（0.2 世代必读）
 
-- **先认版本**：`dsh --version`。`0.1.7-alpha.1` 起包含本世代全部破坏性变更（会话格式 V4）。npm 上 `latest`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.1`，而 master 最新 tag 是 `0.2.1-alpha.1`——**三个"最新"不是一个东西**。
+- **先认版本**：`dsh --version`，然后读 [version-matrix.md](version-matrix.md)（版本适配矩阵：五个"最新"的区分、子包 `latest` 冻结陷阱、破坏性变更断层、peer 区间选择、会话格式谱系）。`0.1.7-alpha.1` 起包含本世代全部破坏性变更（会话格式 V4）。npm 上 `latest`=`next`=`0.2.0-rc.2`、`alpha`=`0.2.1-alpha.2`，而 master 最新 tag 是 `dsh-v0.2.1-alpha.2`——**这四个"最新"不是同一个东西**；**不存在稳定版**（全部 31 个 npm 版本都是 prerelease）。
 - **peer 范围要写全两侧的 prerelease 元组**（如 `>=0.1.2-rc.1 <0.2.0 || … || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0`）。⚠️ **这个范围会被安装期强制**，不是文档意图：`dsh plugin add` 用运行时版本比对它，不匹配就拒绝安装并打印你声明的范围。所以少一个 0.2.x clause，插件在 0.2.x 宿主上**根本装不上**（拦在安装期，不是运行期）。范围之外仍要靠运行时特性探测——范围只表达"能不能装"，表达不了"某个 API 在不在"。
 - **共享实例的 dsh 包只放 peer + dev**，绝不放 dependencies（否则 profile 内副本会遮蔽运行时版本）。
 - **升级后必做**：`dsh --profile <name> --dump-config` 看有没有 `patch: entry <id> not found`（上游删行/改名后，你的 override 会**静默失效**）；再跑一次真实能力。

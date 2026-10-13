@@ -110,7 +110,7 @@ export async function main(argv: string[], cwd: string = process.cwd()): Promise
           // so a stale pin here makes `verify` fail on every newer harness with
           // "Plugin @deepseek-ai/dsh-headless@<old> is incompatible with dsh
           // <new>" — a failure that names the base bundle, not the plugin under
-          // test. Verified working line: 0.2.1-alpha.1 (npm `alpha`).
+          // test. Verified working line: 0.2.1-alpha.2 (npm `alpha`).
           base: flagString(flags, 'base', VERIFY_BASE_SPEC) ?? VERIFY_BASE_SPEC,
           headless: flagString(flags, 'headless', VERIFY_HEADLESS_SPEC) ?? VERIFY_HEADLESS_SPEC,
           timeoutMs: timeoutMs(flags, 'timeout', 'DSH_PLUGIN_DEV_TIMEOUT', DEFAULT_TIMEOUT_MS),

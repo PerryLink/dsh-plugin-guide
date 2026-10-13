@@ -42,13 +42,15 @@ The pattern that admits all windows (one clause per prerelease tuple; each `-0` 
 {
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.2",
-    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.3.0"
+    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-tools": "0.1.7-rc.2"
+    "@deepseek-ai/dsh-tools": "0.2.1-alpha.2"
   }
 }
 ```
+
+⚠️ **Do not write the open form `>=0.1.2-rc.1 <0.3.0`.** It looks like the widest safe range and is the opposite: it spans an entire breaking-change generation, so the gate admits a `0.2.x` host while your plugin still calls `0.1.x` APIs — an install-time pass followed by a runtime break. **Upper bounds must be cut per generation** (`<0.2.0` / `<0.3.0`), and the six-clause shape above is the canonical range recorded in `dsh-plugin-kit`'s `data/peer-range.json` (`canonicalRange`, updated 2026-09-26). `dsh-plugin-doctor`'s R8 flags the open form.
 
 A range is only as wide as its newest clause, and semver makes this easy to get wrong in a way that looks right: **a range admits a prerelease only if some comparator carries that same `[major, minor, patch]` tuple AND a prerelease.** So a band ending at `>=0.1.6-0 <0.2.0` admits `0.1.6-alpha.2` but *not* `0.1.7-alpha.2` — it reads as "everything up to 0.2" and behaves as "nothing after the 0.1.6 tuple". Adding the line's own clause is the whole fix; check it with `semver.satisfies('0.1.7-alpha.2', range)`, never by eye.
 

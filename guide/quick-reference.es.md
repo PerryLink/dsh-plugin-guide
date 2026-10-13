@@ -53,7 +53,7 @@ Otras formas: objeto `export default { name, inject, apply }`; clase `class X ex
 
 Ciclo de vida: `PENDING → LOADING → ACTIVE` (si apply lanza → FAILED); `ACTIVE → UNLOADING → DISPOSED`. Si un servicio requerido desaparece, el plugin se descarga; se recarga cuando el servicio vuelve.
 
-## Modos de despacho de eventos + bail
+## Modos de despacho de eventos (cinco, incluido bail)
 
 | Modo | await | Orden | Valor de retorno |
 |---|---|---|---|
@@ -61,6 +61,7 @@ Ciclo de vida: `PENDING → LOADING → ACTIVE` (si apply lanza → FAILED); `AC
 | waterfall | no | orden de registro | sí (**no llamar `next()` cortocircuita**) |
 | parallel | sí | paralelo | ninguno |
 | serial | sí | orden de registro | sí (el primero no vacío detiene) |
+| bail | no | orden de registro | sí (el primero no null/false/undefined cortocircuita y DETIENE el resto) |
 
 Eventos tipados (declaration merging):
 
@@ -136,7 +137,7 @@ Protocolo de chunks: `block-start` → `text-delta*` → `block-end` (bloque com
 3. **El mecanismo más débil que baste**: `ctx.tools.restrict()` (solo quita) < `ctx.tools.guard()` (solo deniega) < reescritura por waterfall (depende del orden) < `system-prompt/assemble` (reemplaza todo). Observa resultados finales en `tools/result`; usa `tools/post-execute` solo para transformar.
 4. Visible-para-el-modelo ⇔ registrado: una nueva entrada visible requiere un nuevo evento de sesión (`SessionEventMap`) — **lo añade el host**, no tú (ver regla 10).
 5. Nunca codifiques valores ajustables (prueba: ¿puede cambiarlos cordis.yml?); la mala configuración falla en voz alta. Los campos editables en vivo usan `Volatile<T>` + `loader/volatile-update` (el namespace del formulario es el id de la entrada del perfil).
-6. Paquetes de plugin independientes: cordis es peerDependency con la misma identidad del host (mezclar scoped `@deepseek-ai/cordis` y unscoped divide identidades); ESM; manifiesto `dsh.bundle` (`patch` puede ser una lista ordenada); instalaciones git necesitan `prepare` + `allowBuilds`; publica `lib/` o un tarball. Los paquetes dsh de instancia compartida van **solo en peerDependencies + devDependencies**, nunca en `dependencies` (una copia en el perfil ensombrece el runtime en silencio, y DSH **no valida** los rangos de peers).
+6. Paquetes de plugin independientes: cordis es peerDependency con la misma identidad del host (mezclar scoped `@deepseek-ai/cordis` y unscoped divide identidades); ESM; manifiesto `dsh.bundle` (`patch` puede ser una lista ordenada); instalaciones git necesitan `prepare` + `allowBuilds`; publica `lib/` o un tarball. Los paquetes dsh de instancia compartida van **solo en peerDependencies + devDependencies**, nunca en `dependencies` (una copia en el perfil ensombrece el runtime en silencio). ⚠️ Corregido: **los rangos de peers SÍ se aplican al instalar** — `dsh plugin add` compara la versión del runtime con el rango declarado de `@deepseek-ai/dsh-*` y rechaza la instalación; solo `engines.dsh` es declarativo y no se aplica. Un rango indica "se puede instalar", no "esta API existe": mantén la sonda en runtime (selección de rango: `version-matrix.md` §4).
 7. Publica metadatos de presentación: `locale/*.json` con `meta.title`/`meta.description` y un `./icon` exportado (SVG/PNG/JPEG/WebP, ≤256 KiB, dentro del paquete). Los plugins de subruta **nunca** leen su propio `package.json`.
 8. Documentación bilingüe en pares; descripciones/prompts son comportamiento; cambios no triviales llevan Agent Note; ejecuta el conjunto mínimo de checks antes de empujar (dsh-pre-push-checks).
 9. Los ids opacos entre límites son branded (`Branded<B>` de `dsh-brand`), nunca `string` pelado.

@@ -1,4 +1,4 @@
-﻿# dsh-plugin-guide 完整性检查器
+# dsh-plugin-guide 完整性检查器
 # 用法: pwsh -File scripts/verify-kit.ps1 -Root <路径>
 # 校验范围: 本知识库自有文档(SKILL/README/NOTICE/guide/references 顶层);
 # 官方文档副本(references/official-docs)是逐字副本,其内部链接指向 deepseek-harness checkout,不在校验范围。
@@ -13,7 +13,14 @@ $critical = @(
   'SKILL.md','README.md','README-zh.md','README-es.md','README-pt.md','README-hi.md','LICENSE','NOTICE.md','.gitignore',
   'CONTRIBUTING.md','SECURITY.md','.github/ISSUE_TEMPLATE/bug_report.yml','.github/ISSUE_TEMPLATE/feature_request.yml','.github/PULL_REQUEST_TEMPLATE.md',
   'guide/plugin-dev-guide.md','guide/quick-reference.md','guide/links.md','guide/quick-reference.zh-CN.md','guide/quick-reference.es.md','guide/quick-reference.pt.md','guide/quick-reference.hi.md',
+  # 2026-10-13: 补齐 gated 文件——这些曾被漏掉，导致陈旧内容能存活到发布
+  'guide/version-matrix.md','guide/family-toolchain.md','guide/migration-0.2.md','guide/unfixed-issues.md',
+  'guide/release-engineering.md','guide/release-engineering.zh-CN.md',
+  'guide/when-to-retire-a-plugin.md','guide/when-to-retire-a-plugin.zh-CN.md',
+  'guide/choosing-a-plugin.md','guide/choosing-a-plugin.zh-CN.md',
   'references/sources.md','references/harness-repo.md','references/website-pages.md',
+  'references/official-plugin-dev-skill.md','references/dev-resource-landscape.md',
+  'src/cli/skill-sections.ts','src/cli/templates.ts',
   'references/upstream-cordis.md','references/cordis-paper-and-community.md',
   'references/community-ecosystem.md','references/community-repo-deep-dive.md',
   'references/official-docs/docs/cordis-primer.md',

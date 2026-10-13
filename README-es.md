@@ -56,7 +56,7 @@ content counts as stated in the README (What you get)
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (`5badb15009`, el tag más nuevo de master, 2026-10-03); npm `latest` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.1`. Re-verificado el 2026-10-06 contra ese checkout (cadena de gates + smoke de instalación de perfil). La base de conocimiento, el espejo de docs oficiales y [guide/migration-0.2.md](guide/migration-0.2.md) usan esta línea base. |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.2` (`d743267388641bc76f17c45ce8b4c231aed1d32c`, el tag más nuevo de master **y** HEAD, 2026-10-09); npm `latest` = `0.2.0-rc.2`, `alpha` = `0.2.1-alpha.2`. Re-verificado el 2026-10-06 contra ese checkout (cadena de gates + smoke de instalación de perfil). La base de conocimiento, el espejo de docs oficiales y [guide/migration-0.2.md](guide/migration-0.2.md) usan esta línea base. |
 | Node | `^22.19.0 || >=24.0.0` (runtime de DeepSeek Harness) |
 | Platforms | Todas (bundle ESM plano; sin código nativo, sin red) |
 | Model | Cualquiera (sin interacción con el modelo) |

@@ -44,7 +44,7 @@
 
 | 主题 | 本地副本 | GitHub 直链 |
 |---|---|---|
-| 会话格式版本状态（**版本权威**） | `docs/session-format-status.md`（含 `latestFinalizedVersion: 4` / `latestReleasedVersion: 3` 记录） | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md) |
+| 会话格式版本状态（**版本权威**） | `docs/session-format-status.md`（**版本权威**；镜像基线已更新为 `latestReleasedVersion: 4` / `evidenceTag: dsh-v0.2.0-rc.2`） | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md) |
 | 逐版本迁移指南（**无 index、无入链**，6 篇） | `docs/upgrade-guide/v0.1.7-rc.2/**`、`docs/upgrade-guide/v0.2.0-rc.2/**`（schedule-optional-bundle、transcript-view-legacy-normal、account-sign-in-errors、remove-runtime-invariants、schedule-bundle-retired、subpath-plugin-display-manifest） | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/upgrade-guide) |
 | 持久化类型变更记录（含 V4 声明） | `docs/persistence-changes/**`（`2026-09-16-session-format-v4.md`、`finalized/v4.json`、`historical-formats/v3.md`…） | [目录](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/persistence-changes) |
 | 圆角规范 | `docs/ui-radius.md` | [blob](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/ui-radius.md) |
@@ -77,7 +77,8 @@
 | [omdsh-dev/plugin-template](https://github.com/omdsh-dev/plugin-template) | 生产级独立插件模板：src 四文件结构 + 7 个开发 skill + 自包含 prepare + 契约文档 |
 | [omdsh-dev/dsh-plugin-dev](https://github.com/omdsh-dev/dsh-plugin-dev) | 踩坑档案：20 个实测坑 + 环境基线 |
 | [Opr4Mp3r/deepseek-harness-plugin-from-scratch](https://github.com/Opr4Mp3r/deepseek-harness-plugin-from-scratch) | 代码审计式渐进教程：17 反模式 + 交付检查单 |
-| [vlln/plugin-registry](https://github.com/vlln/plugin-registry) | 插件注册中心 + make-dsh-plugin skill + 机制时间线（repository 0809→0811） |
+| [vlln/dsh-skills](https://github.com/vlln/dsh-skills) | ✅ **现行**（`plugin-registry` 于 2026-10-03 归档后的继任者）：`make-dsh-plugin` 开发引导 skill + 0.1.6→0.2.0 改名症状表 + 实测踩坑（`gotchas.md`） |
+| ~~[vlln/plugin-registry](https://github.com/vlln/plugin-registry)~~ | ⚠️ **已归档（2026-10-03）**，冻结在 0.1.5 基线。仍可引其 repository-plugin 0809→0811 机制时间线，但**不要再当作活项目** |
 | [whyihaveyou/dsh-suite](https://github.com/whyihaveyou/dsh-suite) | 双语插件目录 + `npm create dsh-plugin` 脚手架 + 每日兼容性 CI |
 | [omdsh-dev/dsh-plugin-check](https://github.com/omdsh-dev/dsh-plugin-check) | 插件健康检查：清单协议 / patch 格式 / 构建陷阱 |
 | [omdsh-dev/dsh-plugin-skills](https://github.com/omdsh-dev/dsh-plugin-skills) | agent 会话内搭建/测试插件的 skill 集 |

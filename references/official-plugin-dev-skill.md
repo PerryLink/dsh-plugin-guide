@@ -2,7 +2,7 @@
 
 > **这是什么**：DeepSeek Harness 自带的 preset（`packages/preset/agent-preset/`）里有一整套**官方插件开发技能**，是 0.2 世代最重要的新增资料——它描述的正是"在当前 Harness 里、由 agent 自己写并安装插件"的官方流程。
 > **本文件性质**：**要点摘录 + 原文定位**（不是逐字全文；逐字全文随官方文档副本一起在 `references/official-docs/` 之外的仓库路径，需 checkout 才能读）。凡写"官方明确"的地方都能在上游文件里逐字查到。
-> **基线**：`5badb15009ae1756c3afe0ae0cef1faafc290ccc`（`dsh-v0.2.1-alpha.1`，2026-10-03）。升级宿主后若与上游冲突，以上游为准。
+> **基线**：`d743267388641bc76f17c45ce8b4c231aed1d32c`（`dsh-v0.2.1-alpha.2`，2026-10-09）。升级宿主后若与上游冲突，以上游为准。
 > **上游路径**（在 checkout 里，如 `D:\deepseek-harness`）：`packages/preset/agent-preset/skills/`
 
 ## 1. 四个技能与各自职责
@@ -121,4 +121,4 @@
 
 - 本文件是**索引与摘录**；机制细节（精确签名、事件 `@mode`、Config schema）永远以 **inspection** 与 `references/official-docs/docs/**` 为准。
 - 官方这份技能覆盖"在会话里让 agent 写并安装插件"；本知识库另外覆盖**对外发布**（npm/tarball/git 通道、`prepare` + `allowBuilds`、五语 README、质量门禁）与**版本迁移**（[migration-0.2.md](../guide/migration-0.2.md)）。
-- 上游路径随宿主版本变化（本文件基线 `5badb15009`）；`preset/agent-presets` → `preset/agent-preset` 的改名发生在 `d1e22a7e24`。
+- 上游路径随宿主版本变化（本文件基线 `d743267`）；`preset/agent-presets` → `preset/agent-preset` 的改名发生在 `d1e22a7e24`。

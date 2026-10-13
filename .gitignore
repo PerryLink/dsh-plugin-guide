@@ -14,6 +14,9 @@ _check/
 *.tgz
 *.tmp
 
+# 竞品深读与调研的中间产物（一次性工作稿，含第三方抓取内容，不入版本库）
+_analysis/
+
 # 系统
 node_modules/
 Thumbs.db

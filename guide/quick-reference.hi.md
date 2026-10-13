@@ -53,7 +53,7 @@ export function apply(ctx: Context, config: Config) {
 
 जीवनचक्र: `PENDING → LOADING → ACTIVE` (apply में त्रुटि → FAILED); `ACTIVE → UNLOADING → DISPOSED`। आवश्यक सेवा गायब होने पर प्लगइन अनलोड होता है; सेवा लौटने पर पुनः लोड होता है।
 
-## इवेंट डिस्पैच मोड + bail
+## इवेंट डिस्पैच मोड (पाँच, bail सहित)
 
 | मोड | await | क्रम | रिटर्न मान |
 |---|---|---|---|
@@ -61,6 +61,7 @@ export function apply(ctx: Context, config: Config) {
 | waterfall | नहीं | पंजीकरण क्रम | हाँ (**`next()` न बुलाना शॉर्ट-सर्किट करता है**) |
 | parallel | हाँ | समानांतर | कोई नहीं |
 | serial | हाँ | पंजीकरण क्रम | हाँ (पहला गैर-खाली रुकता है) |
+| bail | नहीं | पंजीकरण क्रम | हाँ (पहला non-null/false/undefined शॉर्ट-सर्किट करता है और बाकी रोक देता है) |
 
 टाइप्ड इवेंट (declaration merging):
 
@@ -136,7 +137,7 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 3. **जो सबसे कमज़ोर mechanism काम करे वही लें**: `ctx.tools.restrict()` (केवल हटाता है) < `ctx.tools.guard()` (केवल मना करता है) < waterfall rewrite (क्रम पर निर्भर) < `system-prompt/assemble` (सब बदल देता है)। अंतिम परिणाम `tools/result` पर देखें; बदलने के लिए ही `tools/post-execute` लें।
 4. मॉडल-दृश्य ⇔ लॉग: नई मॉडल-दृश्य इनपुट के लिए नया सत्र इवेंट चाहिए (`SessionEventMap`) — **होस्ट जोड़ता है**, आप नहीं (नियम 10 देखें)।
 5. समायोज्य मान कभी हार्डकोड न करें (कसौटी: क्या cordis.yml इसे बदल सकता है?); गलत कॉन्फ़िग ज़ोर से विफल हो। लाइव-संपादन योग्य फ़ील्ड `Volatile<T>` + `loader/volatile-update` से (फ़ॉर्म namespace = profile entry id)।
-6. स्वतंत्र प्लगइन पैकेज: cordis peerDependency है और होस्ट पहचान से मेल खाना चाहिए (scoped `@deepseek-ai/cordis` और unscoped मिलाना पहचान बाँट देता है); ESM; `dsh.bundle` मैनिफ़ेस्ट (`patch` क्रमबद्ध array हो सकता है); git इंस्टॉल को `prepare` + `allowBuilds` चाहिए; `lib/` या tarball प्रकाशित करें। साझा-इंस्टेंस वाले dsh पैकेज **केवल peerDependencies + devDependencies** में रखें, `dependencies` में कभी नहीं (profile की प्रति runtime को चुपचाप ढक देती है, और DSH peer रेंज **सत्यापित नहीं** करता)।
+6. स्वतंत्र प्लगइन पैकेज: cordis peerDependency है और होस्ट पहचान से मेल खाना चाहिए (scoped `@deepseek-ai/cordis` और unscoped मिलाना पहचान बाँट देता है); ESM; `dsh.bundle` मैनिफ़ेस्ट (`patch` क्रमबद्ध array हो सकता है); git इंस्टॉल को `prepare` + `allowBuilds` चाहिए; `lib/` या tarball प्रकाशित करें। साझा-इंस्टेंस वाले dsh पैकेज **केवल peerDependencies + devDependencies** में रखें, `dependencies` में कभी नहीं (profile की प्रति runtime को चुपचाप ढक देती है)। ⚠️ सुधार: **peer रेंज इंस्टॉल के समय लागू होती है** — `dsh plugin add` runtime संस्करण की तुलना घोषित `@deepseek-ai/dsh-*` रेंज से करता है और इंस्टॉल अस्वीकार कर देता है; केवल `engines.dsh` घोषणात्मक है और लागू नहीं होता। रेंज बताती है "इंस्टॉल हो सकता है", यह नहीं कि "यह API मौजूद है" — runtime probing रखें (रेंज चयन: `version-matrix.md` §4)।
 7. प्रदर्शन मेटाडेटा ज़रूर भेजें: `locale/*.json` में `meta.title`/`meta.description` और export किया हुआ `./icon` (SVG/PNG/JPEG/WebP, ≤256 KiB, पैकेज के भीतर)। subpath प्लगइन अपना `package.json` **कभी नहीं** पढ़ते।
 8. दस्तावेज़ द्विभाषी जोड़ों में; टूल विवरण/प्रॉम्प्ट ही व्यवहार हैं; गैर-तुच्छ बदलाव में Agent Note चाहिए; पुश से पहले न्यूनतम जाँच सेट चलाएँ (dsh-pre-push-checks)।
 9. सीमाओं के पार अपारदर्शी ids branded होते हैं (`Branded<B>` from `dsh-brand`), कभी भी नंगे `string` नहीं।
@@ -153,7 +154,7 @@ Consumer (`dsh-tool-my-cap`): `inject = ['tools','myCap']`, `ctx.tools.register(
 - Windows junctions PowerShell `New-Item -ItemType Junction` से; vitest ड्राइव अक्षर बड़ा `C:/`।
 - `DSH_PERMISSION_MODE=danger-full-access` उच्च जोखिम है (Windows पर सैंडबॉक्स बैकएंड नहीं, अनुमोदन बंद); `~/.dsh/.env` में `DSH_*` स्टार्टअप तोड़ता है।
 - सत्र फ़ाइलें मल्टी-फ़्रेम zstd हैं: `scanZstdFrames`/`createZstdFrameDecoder` उपयोग करें (`@deepseek-ai/dsh-session-persistence-jsonl/src/zstd.ts`)।
-- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.1); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` अब भी पुराना है (0.0.1-rc.1), इसलिए `next` (0.2.0-rc.2) या `alpha` (0.2.1-alpha.1) पिन करें; `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 और नया टैग `dsh-0-2-1-alpha-1`=4.0.5-alpha.1; dsh-core/dsh-sdk अभी भी अप्रकाशित (2026-10-06 को सत्यापित)।
+- npm: बिना स्कोप वाला `dsh` असंबंधित node-dsh प्रोजेक्ट (एक shell) है — `@deepseek-ai/dsh` इंस्टॉल करें (`latest`=`next`=0.2.0-rc.2, `alpha`=0.2.1-alpha.2); `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-headless` और `@deepseek-ai/dsh-session-persistence-jsonl` का `latest` अब भी पुराना है (0.0.1-rc.1), इसलिए `next` (0.2.0-rc.2) या `alpha` (0.2.1-alpha.1) पिन करें; `create-dsh-plugin` latest=0.2.3; `@deepseek-ai/cordis` latest=4.0.4 और नया टैग `dsh-0-2-1-alpha-1`=4.0.5-alpha.1; dsh-core/dsh-sdk अभी भी अप्रकाशित (2026-10-06 को सत्यापित)।
 - पथ तुलना से पहले दोनों ओर `resolve()` करें (Windows बैकस्लैश जाल)।
 
 ## दस्तावेज़ लिंक
