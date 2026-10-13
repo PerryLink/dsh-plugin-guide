@@ -4,6 +4,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.32] - 2026-10-13
+
+Publishes the evidence behind the mirror-scope decision, and corrects two numbers in it.
+
+### Added
+
+- **`scripts/measure-mirror-references.mjs`** — the measurement that `references/mirror-scope-decision.md` cites, shipped with the package so the conclusion is reproducible by anyone who reads it rather than resting on a one-off script. It reports how many offline-mirror files are reached by an exact path, by a declared directory glob, by basename, or by nothing at all.
+
+### Fixed
+
+- **Two figures in the mirror-scope decision were from an ad-hoc run and did not match the shipped script.** Re-measured: 79 files (2.29 MB) are named by exact path, 617 (20.10 MB) are reached only through a directory glob the knowledge base declares, 5 (0.04 MB) by basename, and **3 (≈4 KB) by nothing** — the last figure is the one that matters, because it is the entire set a "drop the unreferenced content" policy could safely remove. The document now also states the matching rule that produced the original audit's wrong "~80% unreferenced" figure: a glob only covers a path when the glob directory is a **prefix** of it. Matching a directory name appearing anywhere inflated the unreferenced set enormously.
+
+### Verification
+
+typecheck 0 errors · 64 tests · readme-sync OK · translation parity 0 drift · dogfood `check` 14 passed / 0 warned · `measure-mirror-references.mjs` reproduces the numbers in the decision document.
+
 ## [0.3.31] - 2026-10-13
 
 Works through the rest of the backlog the eight audits produced. Two of these are corrections to claims this repository makes about other people's projects, which is the category where being wrong matters most.
