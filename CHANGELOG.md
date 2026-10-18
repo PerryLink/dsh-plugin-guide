@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.36] - 2026-10-19
+
+### Docs
+
+- Refresh `references/official-docs` to deepseek-harness `master` `687f282e8625c6b8d11ff58211a90524be2e4317` (docs/: 481 md, 238 .zh.md pairs). The powershell sync script was replicated with `git archive` because pwsh is unavailable on this host; `check-docs-drift-detail.mjs --checkout /home/yy/deepseek-harness` reports FRESH. Closes the docs-drift reports #12/#13/#15.
+
 ## [0.3.35] - 2026-10-18
 
 ### Changed

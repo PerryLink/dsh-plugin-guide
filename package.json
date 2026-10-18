@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.3.35",
+  "version": "0.3.36",
   "description": "DSH plugin development as an on-demand agent skill: official docs mirror, version-compatibility matrix, migration seams, measured pitfalls, plus a scaffolder, checker and pack verifier CLI.",
   "type": "module",
   "main": "index.js",
