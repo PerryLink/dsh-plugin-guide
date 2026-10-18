@@ -30,9 +30,21 @@ Then just ask: *"Use the dsh-plugin-guide skill to build me a … plugin."*
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-plugin-guide
+```
+
+
 </div>
 
 ---
+
+## Install & uninstall
+
+- **npm channel** (published releases — **the default; start here**): `dsh plugin --profile web add dsh-plugin-guide`. The published tarball already contains `dist/`, so no build step runs.
+- **git channel** (latest `main`, or an unreleased commit): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — pin a commit for reproducibility. ⚠️ `dist/` is not committed, so pnpm must run this package's `prepare` and will refuse until the build is allowlisted; add it to the profile's `allowBuilds` (see [publish.md](references/official-docs/docs/user/develop/basic/publish.md)).
+- **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
+- **uninstall**: `dsh plugin --profile web remove dsh-plugin-guide`.
 
 ## Why not just read the official docs?
 
@@ -187,13 +199,6 @@ npx dsh-plugin-guide new hello-plugin            # scaffold a TS plugin repo
 npx dsh-plugin-guide check --json                # static-check it
 npx dsh-plugin-guide verify                      # pack + clean-profile smoke
 ```
-
-## Install & uninstall
-
-- **npm channel** (published releases — **the default; start here**): `dsh plugin --profile web add dsh-plugin-guide`. The published tarball already contains `dist/`, so no build step runs.
-- **git channel** (latest `main`, or an unreleased commit): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — pin a commit for reproducibility. ⚠️ `dist/` is not committed, so pnpm must run this package's `prepare` and will refuse until the build is allowlisted; add it to the profile's `allowBuilds` (see [publish.md](references/official-docs/docs/user/develop/basic/publish.md)).
-- **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
-- **uninstall**: `dsh plugin --profile web remove dsh-plugin-guide`.
 
 ## Copy as a plain agent skill
 

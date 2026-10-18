@@ -26,11 +26,23 @@ dsh plugin --profile web add dsh-plugin-guide
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-plugin-guide
+```
+
+
 </div>
 
 ---
 
 **📖 想在网页上读？** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) —— 每章独立成页，另有给助手用的机器可读 [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt)。
+
+## Install & uninstall
+
+- **git channel**（最新 `main`）：`dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` —— 固定提交以可复现；入口是纯 ESM JS，无构建步骤。
+- **npm channel**（发布版本）：`dsh plugin --profile web add dsh-plugin-guide`。
+- **tarball channel**：在本仓库执行 `pnpm pack`，然后 `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`。
+- **uninstall**：`dsh plugin --profile web remove dsh-plugin-guide`。
 
 ## Why not just read the official docs?
 
@@ -174,13 +186,6 @@ npx dsh-plugin-guide new hello-plugin            # 脚手架生成 TS 插件仓�
 npx dsh-plugin-guide check --json                # 静态检查
 npx dsh-plugin-guide verify                      # 打包 + 干净 profile 冒烟
 ```
-
-## Install & uninstall
-
-- **git channel**（最新 `main`）：`dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` —— 固定提交以可复现；入口是纯 ESM JS，无构建步骤。
-- **npm channel**（发布版本）：`dsh plugin --profile web add dsh-plugin-guide`。
-- **tarball channel**：在本仓库执行 `pnpm pack`，然后 `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`。
-- **uninstall**：`dsh plugin --profile web remove dsh-plugin-guide`。
 
 ## Copy as a plain agent skill
 

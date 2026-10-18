@@ -24,11 +24,23 @@ dsh plugin --profile web add dsh-plugin-guide
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-plugin-guide
+```
+
+
 </div>
 
 ---
 
 **📖 इसे वेबसाइट के रूप में पढ़ना चाहें?** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) — हर अध्याय अपने पृष्ठ पर, साथ ही असिस्टेंट के लिए मशीन-पठनीय [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt)।
+
+## Install & uninstall
+
+- **git चैनल** (नवीनतम `main`): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — पुनरुत्पादन के लिए एक कमिट पिन करें; प्रवेश बिंदु सादा ESM JS है, कोई बिल्ड चरण नहीं।
+- **npm चैनल** (प्रकाशित रिलीज़): `dsh plugin --profile web add dsh-plugin-guide`.
+- **tarball चैनल**: इस रेपो में `pnpm pack`, फिर `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
+- **uninstall**: `dsh plugin --profile web remove dsh-plugin-guide`.
 
 ## Why not just read the official docs?
 
@@ -172,13 +184,6 @@ npx dsh-plugin-guide new hello-plugin            # TS प्लगइन रे�
 npx dsh-plugin-guide check --json                # स्थैतिक जाँच
 npx dsh-plugin-guide verify                      # पैक + साफ़ प्रोफ़ाइल स्मोक
 ```
-
-## Install & uninstall
-
-- **git चैनल** (नवीनतम `main`): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — पुनरुत्पादन के लिए एक कमिट पिन करें; प्रवेश बिंदु सादा ESM JS है, कोई बिल्ड चरण नहीं।
-- **npm चैनल** (प्रकाशित रिलीज़): `dsh plugin --profile web add dsh-plugin-guide`.
-- **tarball चैनल**: इस रेपो में `pnpm pack`, फिर `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
-- **uninstall**: `dsh plugin --profile web remove dsh-plugin-guide`.
 
 ## Copy as a plain agent skill
 

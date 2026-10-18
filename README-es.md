@@ -24,11 +24,23 @@ dsh plugin --profile web add dsh-plugin-guide
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-plugin-guide
+```
+
+
 </div>
 
 ---
 
 **📖 ¿Prefieres leerlo como sitio web?** [perrylink.github.io/dsh-plugin-guide](https://perrylink.github.io/dsh-plugin-guide/) — cada capítulo en su propia página, más un [llms.txt](https://perrylink.github.io/dsh-plugin-guide/llms.txt) legible por máquina para asistentes.
+
+## Install & uninstall
+
+- **canal git** (último `main`): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — fija un commit para reproducibilidad; el punto de entrada es JS ESM plano, sin paso de build.
+- **canal npm** (versiones publicadas): `dsh plugin --profile web add dsh-plugin-guide`.
+- **canal tarball**: `pnpm pack` en este repo, luego `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
+- **desinstalar**: `dsh plugin --profile web remove dsh-plugin-guide`.
 
 ## Why not just read the official docs?
 
@@ -172,13 +184,6 @@ npx dsh-plugin-guide new hello-plugin            # genera un repo de plugin TS
 npx dsh-plugin-guide check --json                # check estático
 npx dsh-plugin-guide verify                      # pack + smoke de perfil limpio
 ```
-
-## Install & uninstall
-
-- **canal git** (último `main`): `dsh plugin --profile web add github:PerryLink/dsh-plugin-guide#<sha>` — fija un commit para reproducibilidad; el punto de entrada es JS ESM plano, sin paso de build.
-- **canal npm** (versiones publicadas): `dsh plugin --profile web add dsh-plugin-guide`.
-- **canal tarball**: `pnpm pack` en este repo, luego `dsh plugin --profile web add ./dsh-plugin-guide-<version>.tgz`.
-- **desinstalar**: `dsh plugin --profile web remove dsh-plugin-guide`.
 
 ## Copy as a plain agent skill
 
