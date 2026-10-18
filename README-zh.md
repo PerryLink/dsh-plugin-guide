@@ -61,7 +61,7 @@ dsh plugin --profile web add dsh-plugin-guide
 
 官方文档档案 · Cordis 入门 · 社区深读 · 实战踩坑 · agent 技能 · CLI 工具链
 
-![dsh-plugin-guide 终端演示：dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+![dsh-plugin-guide 终端演示：dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-hero.png)
 
 ![Animated terminal demo of dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.gif)
 
@@ -276,6 +276,7 @@ pwsh -File scripts/verify-kit.ps1   # 关键路径 + 链接扫描（加 -Checkou
 ## Contributors
 
 - [PerryLink](https://github.com/PerryLink) —— 创建者与维护者：知识库内容、可安装 bundle 改造、生态提交与社区工程。
+- [@Yisa-yi](https://github.com/Yisa-yi) —— **产品经理**。全流程参与项目设计，从最初的大纲到最终发布的 bundle，负责的是产品形态而非代码：确定它以「可安装 bundle + 按需注册 agent skill」的形态交付（文档站只渲染同一批源文件，不另立一套内容）；确定 10 章开发指南的信息架构；确立「每条事实必须链接出处」的纪律；以及把认知层（`SKILL.md` + `guide/`）与机械层（`dsh-plugin-dev new / check / verify`）分开的分层设计。也确定了 `guide/unfixed-issues.md` 的证据标准——每条都带针对指定宿主提交的 `path:line`、设计取舍与真 bug 对照表，以及明确的「无法复现」小节——以及 `guide/when-to-retire-a-plugin.md` 的冻结/退役判据。守住范围边界（只读、不联网、不调用模型、无配置项）与五语 README 同步的要求。
 - 日常维护由 DeepSeek Harness agents 辅助（它们无 GitHub 账号，为透明起见列于此，不作贡献者）。
 
 ## PerryLink DSH Plugin Family

@@ -1,6 +1,14 @@
-{
-  "screenshots": [
-    "docs/assets/dsh-plugin-guide-demo.png",
-    "docs/assets/dsh-plugin-guide-evidence.png"
-  ]
-}
+[
+  {
+    "path": "docs/assets/dsh-plugin-guide-hero.png",
+    "kind": "hero",
+    "alt": "dsh-plugin-guide terminal output",
+    "caption": "Real dsh-plugin-guide test run; 80 tests passed."
+  },
+  {
+    "path": "docs/assets/dsh-plugin-guide-demo.gif",
+    "kind": "demo",
+    "alt": "Animated dsh-plugin-guide terminal session",
+    "caption": "The same run, assembled line by line."
+  }
+]

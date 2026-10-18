@@ -71,7 +71,7 @@ Everything you need to build [DeepSeek Harness](https://github.com/deepseek-ai/d
 Official docs archive · Cordis primer · community deep-dives · battle-tested pitfalls · agent skill · CLI toolchain
 
 
-![Terminal demo of dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+![Terminal demo of dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-hero.png)
 
 ![Animated terminal demo of dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.gif)
 
@@ -290,6 +290,7 @@ pwsh -File scripts/verify-kit.ps1   # critical paths + link scan (+ docs drift w
 ## Contributors
 
 - [PerryLink](https://github.com/PerryLink) — creator and maintainer: knowledge-base content, the installable-bundle transformation, ecosystem submissions, and community engineering.
+- [@Yisa-yi](https://github.com/Yisa-yi) — **product manager**. Took part in the whole design arc, from the first outline to the shipped bundle, and owned the shape of the product rather than its code: the call to ship it as an installable bundle that registers an on-demand agent skill (the docs site renders those same sources rather than carrying a separate content set), the information architecture of the 10-chapter guide, the "every fact links to its origin" rule, and the split between the cognitive layer (`SKILL.md` + `guide/`) and the mechanical layer (`dsh-plugin-dev new / check / verify`). Set the evidence standard behind `guide/unfixed-issues.md` — `path:line` against a named host commit, a design-vs-bug table, and an explicit unreproducible section — and the freeze/retire criteria in `guide/when-to-retire-a-plugin.md`. Held the scope line (read-only, no network, no model calls, no tunable keys) and the five-language README parity requirement.
 - Day-to-day maintenance is assisted by DeepSeek Harness agents (they hold no GitHub account and are listed here for transparency, not as contributors).
 
 ## PerryLink DSH Plugin Family

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.35] - 2026-10-18
+
+### Changed
+
+- Add a 1280×720 hero and a 960×540, 4-second terminal GIF rendered from the test run; `screenshots.json` is an object array and `capture.json` records the command.
+
+## [0.3.34] - 2026-10-18
+
+### Changed
+
+- Compatibility: declare `engines.dsh` `>=0.2.1-0 <0.3.0`; devDependencies to `0.2.1-rc.2`; add `@deepseek-ai/dsh-working-directory`; `dshVersions` includes `0.2.1-rc.2`.
+
 All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -77,6 +89,10 @@ Works through the rest of the backlog the eight audits produced. Two of these ar
 typecheck 0 errors · **64 tests** (was 61) · `verify:artifacts` OK · readme-sync OK · **translation parity 0 drift** · ps1-bom OK · dogfood `check` 14 passed / 0 failed / 0 warned · `verify-kit.ps1` `VERIFY-OK` on PowerShell 5.1 · all 26 documentation paths in `SKILL.md` resolve.
 
 ## [Unreleased]
+
+### Changed
+
+- **The Contributors section of all five READMEs now credits the product manager.** [@Yisa-yi](https://github.com/Yisa-yi) is listed as **product manager**, with the shape of the product rather than its code: the installable-bundle + on-demand-agent-skill form (with the docs site rendering the same sources rather than a separate content set), the 10-chapter information architecture, the "every fact links to its origin" rule, the split between the cognitive layer (`SKILL.md` + `guide/`) and the mechanical layer (`dsh-plugin-dev new / check / verify`), the evidence standard behind `guide/unfixed-issues.md` (`path:line` against a named host commit, a design-vs-bug table, an explicit unreproducible section), the freeze/retire criteria in `guide/when-to-retire-a-plugin.md`, the scope line (read-only, no network, no model calls, no tunable keys), and the five-language README parity requirement. One bullet was added to each of the five files, so `check:readmes`, the block-level `check:parity` gate and the `data/facts.json` README assertions are all unaffected. `llms-full.txt` regenerated, as `scripts/build-llms-full.mjs` requires after any edit to a source document.
 
 ### Fixed
 

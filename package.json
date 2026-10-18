@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.3.33",
+  "version": "0.3.35",
   "description": "DSH plugin development as an on-demand agent skill: official docs mirror, version-compatibility matrix, migration seams, measured pitfalls, plus a scaffolder, checker and pack verifier CLI.",
   "type": "module",
   "main": "index.js",
@@ -79,13 +79,14 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@deepseek-ai/dsh-attachment": "0.2.1-alpha.2",
+    "@deepseek-ai/dsh-attachment": "0.2.1-rc.2",
     "@types/node": "^22.20.1",
     "@types/semver": "^7.8.0",
     "semver": "^7.8.5",
     "tsdown": "^0.22.14",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.7"
+    "vitest": "^3.2.7",
+    "@deepseek-ai/dsh-working-directory": "0.2.1-rc.2"
   },
   "peerDependencies": {
     "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0"
@@ -101,7 +102,8 @@
     }
   },
   "engines": {
-    "node": "^22.19.0 || >=24.0.0"
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.1-0 <0.3.0"
   },
   "packageManager": "pnpm@11.7.0",
   "dshWorkshop": {
@@ -133,7 +135,8 @@
         "0.1.7-rc.2",
         "0.2.0-rc.2",
         "0.2.1-alpha.1",
-        "0.2.1-alpha.2"
+        "0.2.1-alpha.2",
+        "0.2.1-rc.2"
       ]
     },
     "capability": {

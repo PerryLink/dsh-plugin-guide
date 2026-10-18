@@ -59,7 +59,7 @@ dsh plugin --profile web add dsh-plugin-guide
 
 आधिकारिक दस्तावेज़ संग्रह · Cordis प्राइमर · सामुदायिक गहन-विश्लेषण · युद्ध-परीक्षित नुकसान · agent skill · CLI टूलचेन
 
-![dsh-plugin-guide का टर्मिनल डेमो: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+![dsh-plugin-guide का टर्मिनल डेमो: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-hero.png)
 
 ![Animated terminal demo of dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.gif)
 
@@ -274,6 +274,7 @@ pwsh -File scripts/verify-kit.ps1   # महत्वपूर्ण पथ + �
 ## Contributors
 
 - [PerryLink](https://github.com/PerryLink) — निर्माता और अनुरक्षक: ज्ञान-आधार सामग्री, इंस्टॉल-योग्य बंडल रूपांतरण, पारिस्थितिकी योगदान और सामुदायिक अभियांत्रिकी।
+- [@Yisa-yi](https://github.com/Yisa-yi) — **product manager** (उत्पाद प्रबंधक)। शुरुआती रूपरेखा से लेकर प्रकाशित bundle तक पूरी डिज़ाइन यात्रा में शामिल रहे, और कोड के बजाय उत्पाद का स्वरूप संभाला: यह तय करना कि यह इंस्टॉल-योग्य bundle के रूप में आए जो माँग पर agent skill रजिस्टर करे (दस्तावेज़-साइट उन्हीं स्रोतों को प्रस्तुत करती है, अलग सामग्री नहीं); 10 अध्यायों वाली गाइड की सूचना-संरचना; “हर तथ्य अपने स्रोत से जुड़ा हो” का नियम; और संज्ञानात्मक परत (`SKILL.md` + `guide/`) तथा यांत्रिक परत (`dsh-plugin-dev new / check / verify`) का अलगाव। `guide/unfixed-issues.md` का प्रमाण-मानक तय किया — नामित host commit के सामने `path:line`, design-vs-bug तालिका, और स्पष्ट “पुनरुत्पादन-असंभव” अनुभाग — तथा `guide/when-to-retire-a-plugin.md` के फ़्रीज़/सेवानिवृत्ति मानदंड। दायरे की सीमा (केवल-पठन, कोई नेटवर्क नहीं, कोई मॉडल कॉल नहीं, कोई कॉन्फ़िगर करने योग्य विकल्प नहीं) और पाँच-भाषा README समानता की शर्त बनाए रखी।
 - दैनिक अनुरक्षण में DeepSeek Harness एजेंट सहायता करते हैं (उनका कोई GitHub खाता नहीं है और वे पारदर्शिता हेतु यहाँ सूचीबद्ध हैं, योगदानकर्ता के रूप में नहीं)।
 
 ## PerryLink DSH Plugin Family

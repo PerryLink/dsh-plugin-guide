@@ -59,7 +59,7 @@ Todo lo que necesitas para construir plugins de [DeepSeek Harness](https://githu
 
 Archivo de documentación oficial · primer de Cordis · deep-dives de la comunidad · trampas probadas en batalla · agent skill · toolchain CLI
 
-![Demostración de terminal de dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.png)
+![Demostración de terminal de dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-hero.png)
 
 ![Animated terminal demo of dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.gif)
 
@@ -274,6 +274,7 @@ pwsh -File scripts/verify-kit.ps1   # rutas críticas + escaneo de enlaces (+ de
 ## Contributors
 
 - [PerryLink](https://github.com/PerryLink) — creador y mantenedor: contenido de la base de conocimiento, la transformación a bundle instalable, envíos al ecosistema e ingeniería de comunidad.
+- [@Yisa-yi](https://github.com/Yisa-yi) — **product manager**. Participó en todo el arco de diseño, desde el primer esquema hasta el bundle publicado, y se ocupó de la forma del producto más que de su código: la decisión de que se entregara como bundle instalable que registra una agent skill bajo demanda (el sitio de documentación renderiza esas mismas fuentes y no un conjunto de contenido aparte), la arquitectura de la información de la guía de 10 capítulos, la regla de que cada hecho enlace con su origen, y la separación entre la capa cognitiva (`SKILL.md` + `guide/`) y la capa mecánica (`dsh-plugin-dev new / check / verify`). Fijó el estándar de evidencia de `guide/unfixed-issues.md` — `path:line` contra un commit concreto del host, la tabla diseño-vs-bug y una sección explícita de no reproducible — y los criterios de congelación y retirada de `guide/when-to-retire-a-plugin.md`. Sostuvo la línea de alcance (solo lectura, sin red, sin llamadas al modelo, sin claves configurables) y el requisito de paridad de los README en cinco idiomas.
 - El mantenimiento diario está asistido por agentes de DeepSeek Harness (no tienen cuenta de GitHub y se listan aquí por transparencia, no como contribuyentes).
 
 ## PerryLink DSH Plugin Family
