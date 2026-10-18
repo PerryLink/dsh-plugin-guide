@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.37] - 2026-10-19
+
+### Fixed
+
+- **`verify` defaults now target the current `0.2.1-rc.2` harness line (issue #14).** `VERIFY_BASE_SPEC` / `VERIFY_HEADLESS_SPEC` and the compat workflow were still pinned to `0.2.1-alpha.2`; the smoke gate already accepts `TRANSPORT:` and `MISSING_CREDENTIAL`. The defaults and compat pin are now `0.2.1-rc.2`.
+
 ## [0.3.36] - 2026-10-19
 
 ### Docs

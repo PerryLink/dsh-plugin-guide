@@ -24,8 +24,8 @@ import { run, tailOf, type RunResult } from '../lib/subprocess'
  * `tests/verify.test.ts` asserts these match compat.yml, so the two cannot drift
  * apart silently again. Override per run with `--base` / `--headless`.
  */
-export const VERIFY_BASE_SPEC = '@deepseek-ai/dsh-base@0.2.1-alpha.2'
-export const VERIFY_HEADLESS_SPEC = '@deepseek-ai/dsh-headless@0.2.1-alpha.2'
+export const VERIFY_BASE_SPEC = '@deepseek-ai/dsh-base@0.2.1-rc.2'
+export const VERIFY_HEADLESS_SPEC = '@deepseek-ai/dsh-headless@0.2.1-rc.2'
 
 /** Options for the verify command. */
 export interface VerifyOptions {
@@ -181,7 +181,7 @@ function findTarball(dir: string): string | undefined {
 function suggestionsFor(step: string, result: RunResult): string[] {  const base = [`tail of "${step}":\n${tailOf(result)}`]
   if (result.timedOut) base.push(`command timed out; raise --timeout or --smoke-timeout`)
   if (step === 'install') {
-    base.push('ensure the dsh CLI is @deepseek-ai/dsh@0.2.1-alpha.2 (older builds such as the rc.6 line do not satisfy the compat pin)')
+    base.push('ensure the dsh CLI is @deepseek-ai/dsh@0.2.1-rc.2 (older builds such as the rc.6 line do not satisfy the compat pin)')
     base.push('confirm the profile allowlist matches the repo compat workflow (native builds allowlisted)')
   }
   if (step === 'headless') {
