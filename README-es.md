@@ -391,7 +391,9 @@ Este proyecto es uno de los **87 plugins activamente mantenidos** de DeepSeek Ha
 
 </details>
 
-</details>## Disclaimer
+</details>
+
+## Disclaimer
 
 Mantenido por la comunidad, **no** es un producto oficial de DeepSeek. DeepSeek Harness está en vista previa de desarrollador y publica cambios rompedores; ante la duda, la documentación oficial en `references/official-docs/` es la fuente de verdad.
 

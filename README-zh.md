@@ -393,7 +393,9 @@ pwsh -File scripts/verify-kit.ps1   # 关键路径 + 链接扫描（加 -Checkou
 
 </details>
 
-</details>## Disclaimer
+</details>
+
+## Disclaimer
 
 社区维护，**非** DeepSeek 官方产品。DeepSeek Harness 处于开发者预览期并发布破坏性变更；有疑问时，以 `references/official-docs/` 中的官方文档为准。
 

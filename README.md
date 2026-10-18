@@ -407,7 +407,9 @@ This project is one of the **87 actively maintained** DeepSeek Harness plugins f
 
 </details>
 
-</details>## Disclaimer
+</details>
+
+## Disclaimer
 
 Community-maintained, **not** an official DeepSeek product. DeepSeek Harness is in developer preview and ships breaking changes; when in doubt, the official docs in `references/official-docs/` are the source of truth.
 
