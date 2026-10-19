@@ -232,6 +232,22 @@ L3  webRuntime service replaced by webStartup
 
 *स्रोत `README.md:152 (CLI toolchain); src/cli/commands/seams.ts:54; data/seams/index.json:44`*
 
+#### विफलता शाखा
+
+**इनपुट**
+
+~~~text
+node bin/dsh-plugin-dev.js seams no-such-seam-xyz
+~~~
+
+**आउटपुट**
+
+~~~text
+no seam or capability matches "no-such-seam-xyz". This is an absence of evidence in the knowledge base, not evidence that the API is absent from your target host — check references/official-docs/ before concluding either way.
+~~~
+
+*स्रोत `plugins/dsh-plugin-guide/src/cli/lib/seams.ts:122-130; plugins/dsh-plugin-guide/src/cli/commands/seams.ts:87-92; plugins/dsh-plugin-guide/tests/seams.test.ts:88-90`*
+
 #### संक्षिप्त उदाहरण
 
 
