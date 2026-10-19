@@ -284,7 +284,7 @@ pwsh -File scripts/verify-kit.ps1   # 关键路径 + 链接扫描（加 -Checkou
 - [@Yisa-yi](https://github.com/Yisa-yi) —— **产品经理**。全流程参与项目设计，从最初的大纲到最终发布的 bundle，负责的是产品形态而非代码：确定它以「可安装 bundle + 按需注册 agent skill」的形态交付（文档站只渲染同一批源文件，不另立一套内容）；确定 10 章开发指南的信息架构；确立「每条事实必须链接出处」的纪律；以及把认知层（`SKILL.md` + `guide/`）与机械层（`dsh-plugin-dev new / check / verify`）分开的分层设计。也确定了 `guide/unfixed-issues.md` 的证据标准——每条都带针对指定宿主提交的 `path:line`、设计取舍与真 bug 对照表，以及明确的「无法复现」小节——以及 `guide/when-to-retire-a-plugin.md` 的冻结/退役判据。守住范围边界（只读、不联网、不调用模型、无配置项）与五语 README 同步的要求。
 - 日常维护由 DeepSeek Harness agents 辅助（它们无 GitHub 账号，为透明起见列于此，不作贡献者）。
 
-## PerryLink DSH 插件家族
+## PerryLink DSH Plugin Family
 
 本项目是 [PerryLink](https://github.com/PerryLink) 维护的 DeepSeek Harness 插件家族成员。完整名单默认折叠，避免每个 README 的首屏被长表淹没；点击展开可查看每一行及其状态。
 
