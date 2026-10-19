@@ -403,7 +403,9 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 RETIRED — see the repo README |
 | **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 RETIRED — see the repo README |
 
-</details>## Disclaimer
+</details>
+
+## Disclaimer
 
 Community-maintained, **not** an official DeepSeek product. DeepSeek Harness is in developer preview and ships breaking changes; when in doubt, the official docs in `references/official-docs/` are the source of truth.
 

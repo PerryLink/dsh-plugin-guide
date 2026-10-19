@@ -387,7 +387,9 @@ pwsh -File scripts/verify-kit.ps1   # महत्वपूर्ण पथ + �
 | **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 सेवानिवृत्त — रिपॉज़िटरी README देखें |
 | **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 सेवानिवृत्त — रिपॉज़िटरी README देखें |
 
-</details>## Disclaimer
+</details>
+
+## Disclaimer
 
 सामुदायिक-अनुरक्षित, **नहीं** एक आधिकारिक DeepSeek उत्पाद। DeepSeek Harness डेवलपर पूर्वावलोकन में है और ब्रेकिंग बदलाव प्रकाशित करता है; संदेह होने पर `references/official-docs/` में आधिकारिक दस्तावेज़ सत्य का स्रोत हैं।
 
