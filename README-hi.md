@@ -71,9 +71,10 @@ dsh plugin --profile web add dsh-plugin-guide
 
 आधिकारिक दस्तावेज़ संग्रह · Cordis प्राइमर · सामुदायिक गहन-विश्लेषण · युद्ध-परीक्षित नुकसान · agent skill · CLI टूलचेन
 
-![dsh-plugin-guide का टर्मिनल डेमो: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-hero.png)
+![dsh-plugin-guide कार्यप्रवाह आरेख: अनुरोध → नीति/समीक्षा → निर्णय।](docs/assets/dsh-plugin-guide-flow.svg)
 
-![Animated terminal demo of dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.gif)
+*कार्यप्रवाह: अनुरोध → नीति/समीक्षा → निर्णय। नीचे के उदाहरण वास्तविक कमांड सतह का उपयोग करते हैं।*
+
 
 *वही रन, एनिमेटेड।*
 
@@ -201,6 +202,18 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 ```
 
 इंस्टॉलर `downloads/` (उत्पन्न) और `.github/` को छोड़ता है, फिर हर कॉपी की गई फ़ाइल को बाइट-दर-बाइट सत्यापित करता है। पूरे फ़ोल्डर की मैन्युअल `Copy-Item -Recurse` भी काम करती है।
+
+### उदाहरण
+
+ये वास्तविक प्रवेश बिंदु हैं; इंस्टॉल के बाद एक चलाएँ।
+
+#### विस्तृत उदाहरण
+
+- `dsh-plugin-dev`
+
+#### संक्षिप्त उदाहरण
+
+
 
 ## Configuration
 

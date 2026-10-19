@@ -83,11 +83,11 @@ Everything you need to build [DeepSeek Harness](https://github.com/deepseek-ai/d
 Official docs archive · Cordis primer · community deep-dives · battle-tested pitfalls · agent skill · CLI toolchain
 
 
-![Terminal demo of dsh-plugin-guide: dsh-plugin-guide — install the bundle, then run the checker](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-hero.png)
+![Workflow diagram for dsh-plugin-guide: request → policy / review → verdict.](docs/assets/dsh-plugin-guide-flow.svg)
 
-![Animated terminal demo of dsh-plugin-guide](https://raw.githubusercontent.com/PerryLink/dsh-plugin-guide/main/docs/assets/dsh-plugin-guide-demo.gif)
+*Workflow overview: request → policy / review → verdict. The examples below use the real command surface.*
 
-*The same run, animated.*
+
 
 ## Comparison
 
@@ -216,6 +216,18 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 ```
 
 The installer skips `downloads/` (generated) and `.github/`, then verifies every copied file byte-for-byte. A manual `Copy-Item -Recurse` of the whole folder also works.
+
+### Examples
+
+These are the plugin's real entry points; install once, then call one.
+
+#### Detailed example
+
+- `dsh-plugin-dev`
+
+#### Brief examples
+
+
 
 ## Configuration
 
