@@ -1,19 +1,19 @@
 {
   "schema": "dsh-plugin-guide/facts/v1",
-  "measuredAt": "2026-10-13",
+  "measuredAt": "2026-10-19",
   "notes": [
     "One home per fact. Prose, tables and badges must agree with these numbers; `scripts/check-facts.mjs` enforces the ones a machine can check.",
     "These are the counts that caused real defects when they drifted: the family roster was stated four different ways, the pitfall list was '30+' in one language and '20+' in another, and the mirror page count was '215' long after it reached 429."
   ],
   "mirror": {
-    "mdPages": 429,
-    "zhPairs": 212,
-    "pinnedCommit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
-    "pinnedTag": "dsh-v0.2.1-alpha.2",
-    "syncedAt": "2026-10-13"
+    "mdPages": 481,
+    "zhPairs": 238,
+    "pinnedCommit": "687f282e8625c6b8d11ff58211a90524be2e4317",
+    "pinnedTag": "dsh-v0.2.1-rc.2",
+    "syncedAt": "2026-10-18"
   },
   "readme": {
-    "sections": 24,
+    "sections": 23,
     "whatYouGetEntries": 10,
     "knowledgeBaseRows": 17
   },
@@ -31,14 +31,25 @@
     "capabilityAreas": 22,
     "staticallyDetectable": 10,
     "advisoryOnly": 9,
-    "detectableIds": ["L1", "L2", "L3", "L4", "L5", "L7", "L9", "L11", "L14", "L15"],
+    "detectableIds": [
+      "L1",
+      "L2",
+      "L3",
+      "L4",
+      "L5",
+      "L7",
+      "L9",
+      "L11",
+      "L14",
+      "L15"
+    ],
     "note": "An audit claimed 14 detectable / 5 advisory. Counting the records in data/seams/index.json gives 10 / 9. The audit figure was never verified; these are the counted values, and scripts/check-facts.mjs asserts them against the index."
   },
   "host": {
-    "npmLatest": "0.2.0-rc.2",
-    "npmNext": "0.2.0-rc.2",
-    "npmAlpha": "0.2.1-alpha.2",
-    "newestTag": "dsh-v0.2.1-alpha.2",
+    "npmLatest": "0.2.1-rc.2",
+    "npmNext": "0.2.1-rc.2",
+    "npmAlpha": "0.2.1-alpha.5",
+    "newestTag": "dsh-v0.2.1-rc.2",
     "npmVersionCount": 31,
     "githubReleaseCount": 26,
     "stableLines": 0

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.38] - 2026-10-19
+
+### Fixed
+
+- Refresh `data/facts.json` to the 2026-10-18 official-docs snapshot (687f282, 481 md, 238 zh pairs), README sections 23, and the 0.2.1-rc.2 host tags; `check-facts` is green again.
+
 ## [0.3.37] - 2026-10-19
 
 ### Fixed
