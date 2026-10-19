@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.39] - 2026-10-19
+
+### Fixed
+
+- README now has 24 sections after the license heading normalization; update `data/facts.json` so `check-facts` is green.
+
 ## [0.3.38] - 2026-10-19
 
 ### Fixed
