@@ -209,7 +209,28 @@ pwsh -File scripts/install-skill.ps1 -Target ~/.deepseek/skills/dsh-plugin-guide
 
 #### विस्तृत उदाहरण
 
-- `dsh-plugin-dev`
+**कमांड**
+
+~~~sh
+dsh-plugin-dev seams L3
+~~~
+
+**आउटपुट**
+
+~~~text
+1 seam(s):
+
+L3  webRuntime service replaced by webStartup
+    kind        service-renamed
+    lands in    0.2.1-alpha.2
+    confidence  documented
+    official    docs/upgrade-guide/v0.2.1-alpha.1/web-listener-trust-config/guide.md
+    removed     service webRuntime; row web-runtime; ctx.webRuntime.lanAddresses; wildcard --host
+    instead     webStartup (row web-startup), concrete host literals
+    detectable  yes — inspect: src/**/*.ts, cordis.patch.yml
+~~~
+
+*स्रोत `README.md:152 (CLI toolchain); src/cli/commands/seams.ts:54; data/seams/index.json:44`*
 
 #### संक्षिप्त उदाहरण
 
