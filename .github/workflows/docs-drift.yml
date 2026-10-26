@@ -48,7 +48,7 @@ jobs:
           # Clone only fetches the head; fetch the pinned commit too so both trees exist.
           PINNED="$(grep -oE '^\| Source commit \| `[0-9a-f]{40}`' references/official-docs/SNAPSHOT.md | grep -oE '[0-9a-f]{40}')"
           git -C /tmp/harness fetch --depth 1 origin "$PINNED"
-          node scripts/check-docs-drift-detail.mjs --checkout /tmp/harness --commit "$PINNED" > drift-detail.txt || true
+          node scripts/check-docs-drift-detail.mjs --checkout /tmp/harness > drift-detail.txt || true
           {
             echo 'detail<<DRIFT_EOF'
             head -60 drift-detail.txt
