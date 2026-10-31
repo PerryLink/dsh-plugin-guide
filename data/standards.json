@@ -18,7 +18,7 @@
       "34-三层分级模型-GB-GBT-GBZ类比.md"
     ],
     "auditStatus": "planned; not bundled with this guide and may not exist in the current snapshot",
-    "entryChecker": "https://github.com/PerryLink/dsh-standards/blob/main/40-checker/bin/dsh-plugin-verify.mjs",
+    "entryChecker": "40-checker/bin/dsh-plugin-verify.mjs",
     "private": true
   },
   "disclaimer": "Not an official DeepSeek standard, not a certification, not a security audit, and not a legal GB/GB-T/GB-Z instrument. The GB analogy is a communication aid only. Certification grades A-D are orthogonal to the three levels.",
@@ -271,20 +271,21 @@
   "tools": {
     "audit": {
       "path": "40-checker/scripts/level-audit.mjs",
-      "url": "https://github.com/PerryLink/dsh-standards/blob/main/40-checker/scripts/level-audit.mjs",
+      "url": "40-checker/scripts/level-audit.mjs",
       "status": "planned",
       "command": "node 40-checker/scripts/level-audit.mjs <plugin-dir>",
       "note": "Not bundled with this guide; run only if the file exists in your checkout."
     },
     "entryChecker": {
       "path": "40-checker/bin/dsh-plugin-verify.mjs",
-      "url": "https://github.com/PerryLink/dsh-standards/blob/main/40-checker/bin/dsh-plugin-verify.mjs",
+      "url": "40-checker/bin/dsh-plugin-verify.mjs",
       "command": "node 40-checker/bin/dsh-plugin-verify.mjs <plugin-dir> --scope entry --entry-claim static"
     },
     "localStatic": {
       "command": "dsh-plugin-dev check --json",
       "note": "16 static checks (a subset of dsh-plugin-doctor's 33); not a level audit."
-    }
+    },
+    "private": true
   },
   "certification": {
     "orthogonal": true,
