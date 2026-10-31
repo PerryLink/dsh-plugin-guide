@@ -1560,7 +1560,7 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 
 # DSH plugin adoption levels: ENTRY, FLOW, BOOST
 
-> **Status: community draft, non-official.** This chapter explains the three-level model published by the [dsh-standards](https://github.com/PerryLink/dsh-standards) repository. It is teaching material, not a certificate, ranking, security audit, or official DeepSeek position. The canonical clause text and [`spec/levels.json`](https://github.com/PerryLink/dsh-standards/blob/main/spec/levels.json) win over this summary whenever they disagree. Chinese version: [standards.zh-CN.md](standards.zh-CN.md).
+> **Status: community draft, non-official.** This chapter explains the three-level model maintained in the `dsh-standards` project (a private draft at the time of writing; ask the maintainer for access). It is teaching material, not a certificate, ranking, security audit, or official DeepSeek position. If your copy of the canonical clause text or `spec/levels.json` disagrees with this summary, the canonical files win. Chinese version: [standards.zh-CN.md](standards.zh-CN.md).
 
 ## Three levels, three different questions
 
@@ -1636,7 +1636,7 @@ G0–G2 and G4 pass in static inspection, which supports `recognized`; `runtime`
 
 **What it answers.** Once installed, can a user install it, configure it, use it, recover from errors, upgrade, and uninstall it without surprises?
 
-**Required evidence.** The eight user journeys J1–J8: install and first run; configuration and validation; error recovery and rollback; upgrade and migration; README and discoverability; uninstall and cleanup; client states (loading/empty/error/offline); and long-running work with cancellation. Each journey records the command, environment, result, log path, and time. A manual journey is valid evidence when it says `manual`; a journey that was not run is `not-run`, not a pass. (The draft's human-readable clause table and `spec/levels.json` currently order the same eight concerns slightly differently — cite the journey **name** together with its J-number.)
+**Required evidence.** The eight user journeys J1–J8: install/remove; enable/disable; configuration and validation; first success (quickstart and error triad); permissions and disclosure; upgrade/rollback/uninstall; observability and diagnostics; and client/server shapes (headless, web, client-off). Each journey records the command, environment, result, log path, and time. A manual journey is valid evidence when it says `manual`; a journey that was not run is `not-run`, not a pass.
 
 **What it does not claim.** Certification, ranking, security review, every UI layout, every platform, or that a journey tested on one host generalizes to another.
 
@@ -1666,16 +1666,16 @@ Certification grades A–D describe quality and evidence depth; ENTRY/FLOW/BOOST
 
 ## Canonical source and checker commands
 
-- Canonical repository (draft): <https://github.com/PerryLink/dsh-standards> — clauses `31` (ENTRY), `32` (FLOW), `33` (BOOST), `34` (the GB analogy), and `spec/levels.json`.
-- The standards repo will publish the audit at <https://github.com/PerryLink/dsh-standards/blob/main/40-checker/scripts/level-audit.mjs>. **It is not bundled with this guide and may not exist in your snapshot yet**; if the URL 404s, use `spec/levels.json` for the definitions and the existing checker below.
-- Existing entry checker: <https://github.com/PerryLink/dsh-standards/blob/main/40-checker/bin/dsh-plugin-verify.mjs>.
+- Canonical repository (private draft): `PerryLink/dsh-standards` — clauses `31` (ENTRY), `32` (FLOW), `33` (BOOST), `34` (the GB analogy), and `spec/levels.json`. Ask the maintainer for access.
+- Audit tool in that repository: `40-checker/scripts/level-audit.mjs`. It is not bundled with this guide; if your checkout does not have it, use `spec/levels.json` for definitions and the entry checker below.
+- Existing entry checker: `40-checker/bin/dsh-plugin-verify.mjs`.
 
 ```sh
-git clone https://github.com/PerryLink/dsh-standards
+git clone <your-access-url-for-PerryLink/dsh-standards>
 cd dsh-standards
 # entry, static only (does not claim runtime)
 node 40-checker/bin/dsh-plugin-verify.mjs <plugin-dir> --scope entry --entry-claim static
-# planned audit (run only if the file exists in your checkout)
+# audit (run only if the file exists in your checkout)
 node 40-checker/scripts/level-audit.mjs <plugin-dir>
 ```
 
@@ -1696,7 +1696,7 @@ node 40-checker/scripts/level-audit.mjs <plugin-dir>
 
 ---
 
-*Canonical model: [PerryLink/dsh-standards](https://github.com/PerryLink/dsh-standards). This chapter is non-official and grants no certification. Corrections should go to the canonical repo first, then be mirrored here.*
+*Canonical model: the private `dsh-standards` project. This chapter is non-official and grants no certification. Corrections should go to the canonical repo first, then be mirrored here.*
 
 
 <!-- source: guide/quick-reference.md -->
