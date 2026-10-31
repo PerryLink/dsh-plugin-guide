@@ -19,7 +19,7 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 
 ## 开发前置（第一步必做）
 
-0. **先认版本**：跑 `dsh --version`，然后按下表决定读什么。**不要跳过这一步**——本库 17 篇文档里对当前宿主不适用的部分不会自己标注。
+0. **先认版本**：跑 `dsh --version`，然后按下表决定读什么。**不要跳过这一步**——本库 19 篇文档里对当前宿主不适用的部分不会自己标注。
    | 你的 `dsh --version` | 含义 | 读什么 |
    |---|---|---|
    | `< 0.1.7-alpha.1` | 旧基线 | 本世代破坏性变更**全部适用** → `guide/migration-0.2.md` §0–§12 逐条改 |
@@ -30,6 +30,7 @@ description: Use when developing, reviewing, packaging, debugging, or answering 
 1. 若未读过 Cordis 概念：读 `references/official-docs/docs/cordis-primer.md`（5 个概念，5 分钟）；需要动手跟练时跑 `references/official-docs/docs/cordis-tutorial/` 01-07（无 API key 可跑）。
 2. 打开 `guide/quick-reference.md`（契约速查）+ `guide/plugin-dev-guide.md`（完整路径）。官方/社区文档 URL 对照见 `guide/links.md`。排查官方运行时行为/未修复 bug 时查 `guide/unfixed-issues.md`（master 基线源码核实的问题清单 + 已修复提交号 + 设计行为对照 + 本世代新核实的 T1–T11）。决定一个插件**该不该继续维护**（官方已进内核 / 第三方采用度显著更高）时查 `guide/when-to-retire-a-plugin.md`（判据 + 实测倍数表）；判断某个能力面谁领先时查 `guide/choosing-a-plugin.md`。
 2b. **要判断"该改哪一行 / 该找哪个工具"时**，读 `guide/family-toolchain.md`（家族工具链路由：问题→所有者→可引用产物；`dsh-plugin-doctor` 33 项检查全表与裁定语义；本库 16 项检查与 doctor 的交叉对照）。发布流水线（多插件组合的持续可安装/可发布/可升级）见 `guide/release-engineering.md`。
+2c. **要回答"这个插件算哪一级 / 怎么升级"时**，读 `guide/standards.md`（DSH-ENTRY / DSH-FLOW / DSH-BOOST：每层回答什么、需要什么证据、不声称什么、怎么自检；"采用深度 × 证据状态"两轴；ENTRY → FLOW → BOOST 的升级路径）。中文稿 `guide/standards.zh-CN.md`。**三层非官方、非认证**，A–D 认证等级与三层正交；`static` 不是 `runtime`，`runtime` 不是 UI 已渲染，`not-measured` 不是通过。
 3. 确认目标扩展点：读 `references/official-docs/docs/architecture.md` 的「Where new behavior goes」表与 `references/official-docs/docs/cookbook/extension-cookbook.md` 的 feature→mechanism 表——**新行为必须挂到已文档化扩展点，不得改 agent-loop**；**用最弱的够用机制**（restrict < guard < waterfall 改写 < system-prompt/assemble）。
 4. 要写 UI / 要让 agent 自己装插件时，读 `references/official-plugin-dev-skill.md`（官方自带技能的要点与硬性规定）。
 

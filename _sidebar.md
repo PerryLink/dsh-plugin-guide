@@ -1,6 +1,7 @@
 - [Overview](README.md)
 - **Guide**
   - [Plugin development (10 chapters)](guide/plugin-dev-guide.md)
+  - [Adoption levels (ENTRY / FLOW / BOOST)](guide/standards.md)
   - [Quick reference](guide/quick-reference.md)
   - [When to retire or freeze a plugin](guide/when-to-retire-a-plugin.md)
   - [何时退役或冻结一个插件](guide/when-to-retire-a-plugin.zh-CN.md)

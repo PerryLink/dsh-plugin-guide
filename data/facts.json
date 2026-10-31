@@ -3,7 +3,8 @@
   "measuredAt": "2026-10-19",
   "notes": [
     "One home per fact. Prose, tables and badges must agree with these numbers; `scripts/check-facts.mjs` enforces the ones a machine can check.",
-    "These are the counts that caused real defects when they drifted: the family roster was stated four different ways, the pitfall list was '30+' in one language and '20+' in another, and the mirror page count was '215' long after it reached 429."
+    "These are the counts that caused real defects when they drifted: the family roster was stated four different ways, the pitfall list was '30+' in one language and '20+' in another, and the mirror page count was '215' long after it reached 429.",
+    "Recounted 2026-11-01 after adding guide/standards.md and guide/standards.zh-CN.md: guideDocuments 19, whatYouGetEntries 11 (the standards bullet was added to all five READMEs)."
   ],
   "mirror": {
     "mdPages": 481,
@@ -14,11 +15,11 @@
   },
   "readme": {
     "sections": 24,
-    "whatYouGetEntries": 10,
+    "whatYouGetEntries": 11,
     "knowledgeBaseRows": 17
   },
   "knowledgeBase": {
-    "guideDocuments": 17,
+    "guideDocuments": 19,
     "referenceDocuments": 11
   },
   "cli": {

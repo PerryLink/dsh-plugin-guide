@@ -108,6 +108,7 @@ content counts as stated in the README (What you get)
 - **टूलचेन राउटर** — [guide/family-toolchain.md](guide/family-toolchain.md): कौन-सा प्रश्न किस टूल का है, `dsh-plugin-doctor` की पूरी 33-जाँच सूची, और इस रिपॉज़िटरी की 16 जाँचों से तुलना।
 - **मिरर स्कोप निर्णय** — [references/mirror-scope-decision.md](references/mirror-scope-decision.md): "संदर्भ-रहित सामग्री हटाकर 80% बचाने" का सुझाव दोबारा मापने पर **टिकता नहीं**।
 - **आधिकारिक skill का सार** — [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md): आधिकारिक `cordis-plugin-development` skill के निषेध, प्रदर्शन मेटाडेटा और UI/प्रदर्शन नियम।
+- **अपनाने के स्तर (अनौपचारिक)** — [guide/standards.md](guide/standards.md): DSH-ENTRY / DSH-FLOW / DSH-BOOST मॉडल, दो-अक्षीय (गहराई × प्रमाण) तालिका, हर स्तर क्या दावा **नहीं** करता, और ऊपर कैसे जाएँ। GB / GB-T / GB-Z केवल एक उपमा है; प्रमाणन ग्रेड A–D इन स्तरों से स्वतंत्र हैं।
 ## Knowledge base
 
 | Path | यह क्या है |

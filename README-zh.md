@@ -110,6 +110,7 @@ content counts as stated in the README (What you get)
 - **家族工具链路由** —— [guide/family-toolchain.md](guide/family-toolchain.md)：哪个工具负责哪个问题、`dsh-plugin-doctor` 33 项检查全表，以及与本库 16 项检查的交叉对照。
 - **镜像范围决策** —— [references/mirror-scope-decision.md](references/mirror-scope-decision.md)：为什么"删掉零引用内容以省 80% 体积"经复测**不成立**（它们被本库自己声明的宽 glob 覆盖）。
 - **官方自带技能要点** —— [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md)：官方 `cordis-plugin-development` 技能的禁则、展示元数据清单与 UI/性能规则。
+- **采用分级（非官方）** —— [guide/standards.md](guide/standards.md)：DSH-ENTRY / DSH-FLOW / DSH-BOOST 三层模型、"采用深度 × 证据状态"两轴表、每层**不**声称什么，以及升级路径。GB / GB-T / GB-Z 仅为类比；认证 A–D 与三层正交。
 ## Knowledge base
 
 | Path | 是什么 |

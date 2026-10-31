@@ -1,0 +1,299 @@
+{
+  "schema": "dsh-plugin-guide-standards/1",
+  "version": "1.0.0",
+  "nonOfficial": true,
+  "updatedAt": "2026-11-01",
+  "localized": {
+    "en": "guide/standards.md",
+    "zh-CN": "guide/standards.zh-CN.md"
+  },
+  "canonical": {
+    "repo": "PerryLink/dsh-standards",
+    "version": "1.0.0-rc.1",
+    "status": "draft",
+    "clauses": [
+      "31-DSH-ENTRY入门规范.md",
+      "32-DSH-FLOW顺畅规范.md",
+      "33-DSH-BOOST加速实践.md",
+      "34-三层分级模型-GB-GBT-GBZ类比.md"
+    ],
+    "auditStatus": "planned; not bundled with this guide and may not exist in the current snapshot",
+    "entryChecker": "https://github.com/PerryLink/dsh-standards/blob/main/40-checker/bin/dsh-plugin-verify.mjs",
+    "private": true
+  },
+  "disclaimer": "Not an official DeepSeek standard, not a certification, not a security audit, and not a legal GB/GB-T/GB-Z instrument. The GB analogy is a communication aid only. Certification grades A-D are orthogonal to the three levels.",
+  "axes": {
+    "depth": [
+      "entry",
+      "flow",
+      "boost"
+    ],
+    "evidence": [
+      "not-run",
+      "recognized",
+      "static",
+      "runtime",
+      "manual",
+      "measured",
+      "blocked",
+      "failed",
+      "stale"
+    ],
+    "rules": [
+      "Depth and evidence are independent; never collapse them into one score.",
+      "static is not runtime; runtime is not UI-rendered; not-measured is not a pass.",
+      "blocked is not failed; failed needs evidence attributable to the plugin.",
+      "Certification grades A-D describe quality, not adoption depth."
+    ]
+  },
+  "levels": [
+    {
+      "id": "entry",
+      "label": "DSH-ENTRY",
+      "analogy": "GB",
+      "question": "Can an existing plugin be recognized, installed, and booted on a target DSH line with little or no code change?",
+      "claim": "compatibility baseline",
+      "evidence": [
+        "recognized",
+        "static",
+        "runtime",
+        "blocked",
+        "failed",
+        "not-run",
+        "stale"
+      ],
+      "gates": [
+        {
+          "id": "G0",
+          "check": "dsh.bundle.patch parses",
+          "owner": "plugin"
+        },
+        {
+          "id": "G1",
+          "check": "base + sample compose; inserted row names resolve",
+          "owner": "plugin"
+        },
+        {
+          "id": "G2",
+          "check": "evaluatePluginCompatibility admits, or an explicit exact-version exemption applies",
+          "owner": "host"
+        },
+        {
+          "id": "G3",
+          "check": "real boot() leaves every target row ACTIVE or disabled",
+          "owner": "plugin/host/fixture"
+        },
+        {
+          "id": "G4",
+          "check": "when dsh.client exists: exports['./client'] and a package-root row (static)",
+          "owner": "plugin"
+        },
+        {
+          "id": "G5",
+          "check": "report carries host version/commit and artifact mtime; expired evidence is stale",
+          "owner": "process"
+        }
+      ],
+      "notClaimed": [
+        "security",
+        "UI correctness",
+        "production readiness",
+        "full feature correctness",
+        "official endorsement",
+        "untested DSH lines"
+      ],
+      "selfCheck": [
+        "record dsh --version, host commit, and artifact mtime",
+        "run dsh-plugin-dev check --json (16 static checks, a subset of dsh-plugin-doctor's 33)",
+        "for bundles: dsh --profile <name> --dump-config, then boot and read row states",
+        "write the claim with level, evidence state, dsh version, commit, and date"
+      ]
+    },
+    {
+      "id": "flow",
+      "label": "DSH-FLOW",
+      "analogy": "GB/T",
+      "question": "Once installed, can a user install, configure, use, recover, upgrade, and uninstall the plugin without surprises?",
+      "claim": "recommended adoption experience",
+      "evidence": [
+        "manual",
+        "runtime",
+        "not-run",
+        "failed",
+        "stale"
+      ],
+      "journeys": [
+        {
+          "id": "J1",
+          "name": "install and remove"
+        },
+        {
+          "id": "J2",
+          "name": "enable and disable"
+        },
+        {
+          "id": "J3",
+          "name": "configuration and validation"
+        },
+        {
+          "id": "J4",
+          "name": "first success (quickstart and error triad)"
+        },
+        {
+          "id": "J5",
+          "name": "permissions and disclosure"
+        },
+        {
+          "id": "J6",
+          "name": "upgrade, rollback and uninstall"
+        },
+        {
+          "id": "J7",
+          "name": "observability and diagnostics"
+        },
+        {
+          "id": "J8",
+          "name": "client/server shapes (headless, web, client-off)"
+        }
+      ],
+      "notClaimed": [
+        "certification",
+        "ranking",
+        "security review",
+        "every UI layout",
+        "every platform",
+        "generalizing one host to another"
+      ],
+      "selfCheck": [
+        "throwaway DSH_HOME: add -> dump-config -> remove, no layer or dependency left",
+        "toggle enabled/disabled; dump diff is correct and the id is stable",
+        "boot with {} and an invalid value (loud failure with a field path)",
+        "follow the README as a new user with a five-minute timer and check the error triad",
+        "check capabilities/labels/commitments against README permissions",
+        "upgrade then rollback; uninstall leaves no layer/dependency/file",
+        "exercise normal, missing-service and port-in-use diagnostics",
+        "for client plugins test headless, web and client-off"
+      ]
+    },
+    {
+      "id": "boost",
+      "label": "DSH-BOOST",
+      "analogy": "GB/Z",
+      "question": "Does the plugin use Cordis primitives to make development and use measurably cheaper, and is the claimed saving reproducible?",
+      "claim": "guiding practice recorded as evidence cards, not a badge",
+      "evidence": [
+        "measured",
+        "not-measured",
+        "failed",
+        "stale"
+      ],
+      "practices": [
+        {
+          "id": "LEV-1",
+          "check": "effects, timers, connections, watchers, and subprocesses return to baseline"
+        },
+        {
+          "id": "LEV-2",
+          "check": "required services use inject; optional services use ctx.get; no polling"
+        },
+        {
+          "id": "LEV-3",
+          "check": "hot config uses volatile() and does not remount"
+        },
+        {
+          "id": "LEV-4",
+          "check": "event modes match; waterfall observers call next()"
+        },
+        {
+          "id": "LEV-5",
+          "check": "seams/isolate/group are used only when needed"
+        },
+        {
+          "id": "LEV-6",
+          "check": "tool and prompt prefixes are byte-stable; volatile data uses systemPrompt.context"
+        },
+        {
+          "id": "LEV-7",
+          "check": "long work uses jobs; parallel calls are bounded; cancellation propagates"
+        },
+        {
+          "id": "LEV-8",
+          "check": "bundle/preset differences are expressed in patches; every practice has an evidence card"
+        }
+      ],
+      "evidenceCardFields": [
+        "environment",
+        "input scale",
+        "command",
+        "negative control",
+        "result",
+        "version anchor",
+        "limitations"
+      ],
+      "notClaimed": [
+        "production benchmark",
+        "billing or cache-hit rate",
+        "total score",
+        "ranking",
+        "generalizing one fixture to another workload"
+      ],
+      "selfCheck": [
+        "pick one LEV and write the card before optimizing the next",
+        "run the negative control and record it",
+        "record dsh, cordis, Node, and the commit; a number without an anchor is not evidence"
+      ]
+    }
+  ],
+  "chapters": {
+    "entry": [
+      "guide/standards.md#dsh-entry-compatibility-baseline",
+      "guide/plugin-dev-guide.md#81-社区三层采用标准",
+      "guide/plugin-dev-guide.md#7-打包安装与分发踩坑重点",
+      "guide/quick-reference.md",
+      "guide/family-toolchain.md"
+    ],
+    "flow": [
+      "guide/standards.md#dsh-flow-adoption-experience",
+      "guide/plugin-dev-guide.md#81-社区三层采用标准",
+      "guide/plugin-dev-guide.md#7-打包安装与分发踩坑重点",
+      "guide/release-engineering.md#7-the-pre-tag-gate",
+      "guide/quick-reference.md"
+    ],
+    "boost": [
+      "guide/standards.md#dsh-boost-guiding-practice",
+      "guide/plugin-dev-guide.md#81-社区三层采用标准",
+      "guide/plugin-dev-guide.md#33-注册即-effect",
+      "guide/plugin-dev-guide.md#36-配置config",
+      "guide/plugin-dev-guide.md#43-后台任务长任务",
+      "guide/family-toolchain.md"
+    ]
+  },
+  "tools": {
+    "audit": {
+      "path": "40-checker/scripts/level-audit.mjs",
+      "url": "https://github.com/PerryLink/dsh-standards/blob/main/40-checker/scripts/level-audit.mjs",
+      "status": "planned",
+      "command": "node 40-checker/scripts/level-audit.mjs <plugin-dir>",
+      "note": "Not bundled with this guide; run only if the file exists in your checkout."
+    },
+    "entryChecker": {
+      "path": "40-checker/bin/dsh-plugin-verify.mjs",
+      "url": "https://github.com/PerryLink/dsh-standards/blob/main/40-checker/bin/dsh-plugin-verify.mjs",
+      "command": "node 40-checker/bin/dsh-plugin-verify.mjs <plugin-dir> --scope entry --entry-claim static"
+    },
+    "localStatic": {
+      "command": "dsh-plugin-dev check --json",
+      "note": "16 static checks (a subset of dsh-plugin-doctor's 33); not a level audit."
+    }
+  },
+  "certification": {
+    "orthogonal": true,
+    "grades": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "note": "Grades describe quality and evidence depth; ENTRY/FLOW/BOOST describe adoption depth. Never compute a total from grade plus level."
+  }
+}

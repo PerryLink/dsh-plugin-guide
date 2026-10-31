@@ -108,6 +108,7 @@ O `dsh-plugin-guide` é a base de conhecimento de desenvolvimento de plugins DSH
 - **Roteador da cadeia de ferramentas** — [guide/family-toolchain.md](guide/family-toolchain.md): qual ferramenta responde a cada pergunta, o catálogo completo de 33 verificações do `dsh-plugin-doctor` e o cruzamento com as 16 deste repositório.
 - **Decisão sobre o escopo do espelho** — [references/mirror-scope-decision.md](references/mirror-scope-decision.md): por que "remover o não referenciado para economizar 80%" **não se sustenta** ao medir de novo.
 - **Destilado da skill oficial** — [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md): proibições, metadados de apresentação e regras de UI/desempenho da skill oficial `cordis-plugin-development`.
+- **Níveis de adoção (não oficiais)** — [guide/standards.md](guide/standards.md): o modelo DSH-ENTRY / DSH-FLOW / DSH-BOOST, a tabela de dois eixos (profundidade × evidência), o que cada nível *não* afirma e como subir de nível. A comparação GB / GB-T / GB-Z é apenas uma analogia; as notas de certificação A–D são ortogonais.
 ## Knowledge base
 
 | Path | O que é |

@@ -118,6 +118,7 @@ content counts as stated in the README (What you get)
 - **30+ real-world pitfalls** with root cause + fix (cordis dual copies, tsconfig trio, multi-frame zstd sessions, Windows junctions, stale npm `latest`, `file:` installs loading a copy, live patch writes, …).
 - **Community deep-dives** — 114 community repositories archived (15 deep-dived), plus a full source index where every fact links to its origin.
 - **CLI toolchain** — `dsh-plugin-dev new / check / verify`: scaffold, static-check (including display metadata and multi-patch manifests), and pack-verify DSH plugins; every check links back to the skill section it enforces.
+- **Adoption levels (non-official)** — [guide/standards.md](guide/standards.md): the DSH-ENTRY / DSH-FLOW / DSH-BOOST model, the two-axis (depth × evidence) table, what each level does *not* claim, and how to move up. The GB / GB-T / GB-Z comparison is an analogy only; certification grades A–D are orthogonal.
 
 ## Knowledge base
 

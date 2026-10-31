@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Docs
+
+- Add `guide/standards.md` (EN) and `guide/standards.zh-CN.md` (ZH): the DSH-ENTRY / DSH-FLOW / DSH-BOOST adoption-level model — the three questions, the GB / GB-T / GB-Z analogy (analogy only, non-official), the two-axis adoption-depth × evidence-state table, per-level evidence and limits, the upgrade path, and a reviewer checklist. Add `data/standards.json` as the machine-readable mapping. Link the chapter from `_sidebar.md`, `SKILL.md` (§开发前置 2c), `guide/plugin-dev-guide.md` §8.1, and one bullet in each of the five READMEs; refresh `data/facts.json` for 19 guide documents and 11 "What you get" entries. Add the chapter to `scripts/build-llms-full.mjs`, regenerate `llms-full.txt`, and index it in `llms.txt`. Non-official; no certification claim and no npm version bump.
+
 ## [0.3.39] - 2026-10-19
 
 ### Fixed

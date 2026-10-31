@@ -578,6 +578,10 @@ bundle 挂一个普通 provider 插件：`inject = ['cmdlineArgs']`，用 `@deep
 - **switch 按 discriminant tags**：closed union 以 `assertNever` 收尾；merge-extensible union 落入文档化 default（`SessionEvent` 是后者，见 §3.5）。
 - **独立插件包测试路径**：包级 vitest（fixtures 跨平台回放）+ keyless snapshot（模型/产品可见行为必须有组装后转录快照）+ `pnpm pack` 后装进干净 profile 冒烟（含 `lib/` 构建产物）；社区现成的健康检查见 omdsh-dev/dsh-plugin-check，测试结构范例见 plugin-template 的 `tests/`。
 
+### 8.1 社区三层采用标准
+
+社区标准仓 [`PerryLink/dsh-standards`](https://github.com/PerryLink/dsh-standards) 把 DSH 插件的"合格"拆成三个不同问题：**DSH-ENTRY**（兼容底线，G0–G5）、**DSH-FLOW**（采用体验，J1–J8）与 **DSH-BOOST**（Cordis 增效实践，LEV-1–LEV-8）。三者用"采用深度 × 证据状态"两轴记录，不折算成总分；`static` 不是 `runtime`，`runtime` 不是 UI 已渲染，`not-measured` 不是通过；认证 A–D 与三层正交。完整定义、GB / GB-T / GB-Z 类比（仅类比，非官方）、逐层自检与升级路径见 [standards.md](standards.md)（中文稿 [standards.zh-CN.md](standards.zh-CN.md)），本节不重复。
+
 ---
 
 ## 9. 生态与社区（找参考实现、发插件）

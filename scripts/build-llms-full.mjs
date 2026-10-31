@@ -23,6 +23,7 @@ const SOURCES = [
   ['SKILL.md', 'Agent skill: contract red lines and task-based development paths'],
   ['guide/version-matrix.md', 'Version adaptivity matrix (latest values, seams, peer ranges, session format)'],
   ['guide/plugin-dev-guide.md', 'Plugin development guide (10 chapters)'],
+  ['guide/standards.md', 'Adoption levels: DSH-ENTRY / DSH-FLOW / DSH-BOOST (non-official)'],
   ['guide/quick-reference.md', 'Quick reference'],
   ['guide/migration-0.2.md', 'Migration to the 0.2 generation (breaking changes)'],
   ['guide/family-toolchain.md', 'Family toolchain router (check catalogs and crosswalk)'],

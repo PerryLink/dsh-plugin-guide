@@ -108,6 +108,7 @@ content counts as stated in the README (What you get)
 - **Enrutador de la cadena de herramientas** — [guide/family-toolchain.md](guide/family-toolchain.md): qué herramienta responde a cada pregunta, el catálogo completo de 33 comprobaciones de `dsh-plugin-doctor` y su cruce con las 16 de este repositorio.
 - **Decisión sobre el alcance del espejo** — [references/mirror-scope-decision.md](references/mirror-scope-decision.md): por qué "eliminar lo no referenciado para ahorrar un 80%" **no se sostiene** al volver a medirlo.
 - **Destilado de la skill oficial** — [references/official-plugin-dev-skill.md](references/official-plugin-dev-skill.md): prohibiciones, metadatos de presentación y reglas de UI/rendimiento de la skill oficial `cordis-plugin-development`.
+- **Niveles de adopción (no oficiales)** — [guide/standards.md](guide/standards.md): el modelo DSH-ENTRY / DSH-FLOW / DSH-BOOST, la tabla de dos ejes (profundidad × evidencia), lo que cada nivel *no* afirma y cómo subir de nivel. La comparación GB / GB-T / GB-Z es solo una analogía; las calificaciones de certificación A–D son ortogonales.
 ## Knowledge base
 
 | Path | Qué es |
