@@ -17,7 +17,7 @@
       "33-DSH-BOOST加速实践.md",
       "34-三层分级模型-GB-GBT-GBZ类比.md"
     ],
-    "auditStatus": "planned; not bundled with this guide and may not exist in the current snapshot",
+    "auditStatus": "available in the private standards repository; not bundled with this guide",
     "entryChecker": "40-checker/bin/dsh-plugin-verify.mjs",
     "private": true
   },
