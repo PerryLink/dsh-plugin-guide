@@ -34,7 +34,8 @@
     "README-es.md",
     "README-pt.md",
     "README-hi.md",
-    "STANDARDS.md"
+    "STANDARDS.md",
+    "PRIVACY.md"
   ],
   "keywords": [
     "dsh",
@@ -171,5 +172,6 @@
   "funding": {
     "type": "individual",
     "url": "https://github.com/sponsors/PerryLink"
-  }
+  },
+  "icon": "icon.svg"
 }
