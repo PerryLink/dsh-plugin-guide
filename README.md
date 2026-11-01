@@ -2,6 +2,9 @@
 
 # 🐳 dsh-plugin-guide
 
+> **Non-official companion tool.** Part of the DSH standards family; not a certification, accreditation, security audit, or official endorsement. Standard: https://github.com/PerryLink/dsh-standards. The `dsh.standards` block is a `not-run` placeholder, not a pass.
+
+
 **Your agent stops inventing DSH plugin APIs.**
 
 The DeepSeek Harness plugin-development knowledge base, installed *as an agent skill* — official docs, a version-compatibility matrix, migration seams and battle-tested pitfalls, plus a scaffolder/checker CLI.
