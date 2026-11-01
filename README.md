@@ -2,6 +2,10 @@
 
 # 🐳 dsh-plugin-guide
 
+> **Moved:** this project is now **[dsh-primer](https://github.com/PerryLink/dsh-primer)**. This repository stays as a pointer/backup; new work happens in the new home. Old npm package `dsh-plugin-guide` is deprecated.
+
+
+
 > **Non-official companion tool.** Part of the DSH standards family; not a certification, accreditation, security audit, or official endorsement. Standard: https://github.com/PerryLink/dsh-standards. The `dsh.standards` block is a `not-run` placeholder, not a pass.
 
 
