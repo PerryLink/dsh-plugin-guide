@@ -214,7 +214,7 @@ pnpm `ignored-builds` 阻断（`environment`，报为 `skip`）。
 | 家族花名册 | `dsh-plugin-kit` → `data/repos.json` | **95 条**（94 插件 + 1 基建）；活跃 87 / 冻结 5 / 退役 3 |
 | 家族检查 ID 空间 | `dsh-plugin-doctor` → `SPEC.md` | 33 项，已冻结 |
 | 认证等级定义 | `dsh-plugin-certification` → README（即规范） | 五维 A–E，等级 A–D |
-| 认证注册表内容 | 同上 → `data/certified.json` | 截至 2026-10-13：**仅 1 条**（`dsh-auto-review`，A 级，快照 2026-09-07） |
+| 认证注册表内容 | 同上 → `data/attestations.json` | 截至 2026-10-13：**仅 1 条**（`dsh-auto-review`，A 级，快照 2026-09-07） |
 | 已核验仓名单 | `dsh-plugin-doctor` → `data/verified-repos.json` | **40 条** |
 | 升级走廊与 seam | `dsh-plugin-upgrade` | `legAB` 20 seams；`legC` E1–E5 |
 | DSH 版本谱系与 peer 区间选择 | **本知识库** | [`version-matrix.md`](version-matrix.md) |
