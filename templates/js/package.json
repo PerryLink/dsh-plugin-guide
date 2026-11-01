@@ -33,6 +33,12 @@
     "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "standards": {
+      "schema": "dsh-levels/1",
+      "entry": { "status": "not-run", "evidence": null },
+      "flow": { "status": "not-run", "evidence": null },
+      "boost": { "status": "not-measured", "evidence": null }
     }
   },
   "engines": {

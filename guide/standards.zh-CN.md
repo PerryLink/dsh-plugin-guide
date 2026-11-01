@@ -119,6 +119,8 @@ node 40-checker/bin/dsh-plugin-verify.mjs <plugin-dir> --scope entry --entry-cla
 node 40-checker/scripts/level-audit.mjs <plugin-dir>
 ```
 
+`dsh-plugin-dev new` 生成的插件自带 `dsh.standards` 占位——`entry`/`flow` = `not-run`，`boost` = `not-measured`，`evidence` 全为 `null`。只有拿到审计记录的输出才替换它；没有证据就保持 `not-run`，任何层级都不能据此读成通过。
+
 `dsh-plugin-dev check` 是静态辅助工具，不是分级审计；`dsh-plugin-doctor` 把 R/K/D/X 结果映射成 ENTRY 状态，不覆盖 FLOW 或 BOOST。两者都不能单独给出级别。
 
 ## 评审者清单

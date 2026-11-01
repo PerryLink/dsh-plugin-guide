@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **`dsh-plugin-dev new` now emits a `dsh.standards` placeholder** in both `templates/ts/package.json` and `templates/js/package.json`: `schema: "dsh-levels/1"`, `entry`/`flow` = `not-run`, `boost` = `not-measured`, and `evidence: null` for every level. The block is merged into the existing `dsh` object, so `manifestVersion` and `dsh.bundle.patch` are unchanged. The scaffolder copies template files with placeholder substitution, so the field survives generation; tests render both skeletons and generate temporary TS/JS projects to assert the placeholder is present and that no level reads as a pass. Each template README gains a `## Standards` section stating that the block is a placeholder to replace after a `level-audit` run, and that without evidence it stays `not-run`. `guide/standards.md` (EN/ZH) says the same. Non-official; no certification claim and no npm version bump.
+
 ### Docs
 
 - Add `guide/standards.md` (EN) and `guide/standards.zh-CN.md` (ZH): the DSH-ENTRY / DSH-FLOW / DSH-BOOST adoption-level model — the three questions, the GB / GB-T / GB-Z analogy (analogy only, non-official), the two-axis adoption-depth × evidence-state table, per-level evidence and limits, the upgrade path, and a reviewer checklist. Add `data/standards.json` as the machine-readable mapping. Link the chapter from `_sidebar.md`, `SKILL.md` (§开发前置 2c), `guide/plugin-dev-guide.md` §8.1, and one bullet in each of the five READMEs; refresh `data/facts.json` for 19 guide documents and 11 "What you get" entries. Add the chapter to `scripts/build-llms-full.mjs`, regenerate `llms-full.txt`, and index it in `llms.txt`. Non-official; no certification claim and no npm version bump.

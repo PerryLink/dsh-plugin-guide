@@ -39,6 +39,10 @@ pnpm test
 pnpm run build
 ```
 
+## Standards
+
+The `dsh.standards` block in `package.json` is a placeholder, not a claim: every level starts as `not-run` (BOOST as `not-measured`). Run `level-audit` with recorded evidence and replace only those levels; with no evidence, keep `not-run` — an untested level is not a pass.
+
 ## License
 
 [Apache License 2.0](LICENSE) © {{year}} {{pkgName}} contributors.

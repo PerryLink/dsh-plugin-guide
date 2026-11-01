@@ -39,6 +39,10 @@ pnpm test
 pnpm run build
 ```
 
+## Standards
+
+`package.json` 里的 `dsh.standards` 是占位，不是结论：所有层级初始为 `not-run`（BOOST 为 `not-measured`）。拿到记录下来的证据后跑 `level-audit`，只替换有证据的层级；没有证据就保持 `not-run`——未测不等于通过。
+
 ## License
 
 [Apache License 2.0](LICENSE) © {{year}} {{pkgName}} contributors.

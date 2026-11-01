@@ -30,6 +30,22 @@ describe('scaffold templates', () => {
     }
   })
 
+  it('ships dsh.standards as a not-run placeholder in both skeletons', () => {
+    const placeholder = { entry: 'not-run', flow: 'not-run', boost: 'not-measured' } as const
+    for (const lang of ['ts', 'js'] as const) {
+      const pkg = JSON.parse(files(lang).get('package.json') ?? '{}')
+      // Merging the placeholder must not displace the bundle wiring.
+      expect(pkg.dsh.bundle.patch).toBe('./cordis.patch.yml')
+      expect(pkg.dsh.standards.schema).toBe('dsh-levels/1')
+      for (const [level, status] of Object.entries(placeholder)) {
+        expect(pkg.dsh.standards[level]).toEqual({ status, evidence: null })
+        expect(pkg.dsh.standards[level].evidence).toBeNull()
+      }
+      // A scaffold states "not tested", never a pass or a certification claim.
+      expect(JSON.stringify(pkg.dsh.standards)).not.toMatch(/PASS|certified|official|recommended|secure/iu)
+    }
+  })
+
   it('ships the display metadata Plugin Manager reads without activating the plugin', () => {
     for (const lang of ['ts', 'js'] as const) {
       const set = files(lang)

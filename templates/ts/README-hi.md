@@ -39,6 +39,10 @@ pnpm test
 pnpm run build
 ```
 
+## Standards
+
+`package.json` में `dsh.standards` एक प्लेसहोल्डर है, कोई दावा नहीं: सभी स्तर `not-run` से शुरू होते हैं (BOOST `not-measured` से)। दर्ज प्रमाण के साथ `level-audit` चलाएँ और केवल उन्हीं स्तरों को बदलें; प्रमाण न हो तो `not-run` ही रखें — बिना परीक्षण किया गया स्तर पास नहीं होता।
+
 ## License
 
 [Apache License 2.0](LICENSE) © {{year}} {{pkgName}} contributors.

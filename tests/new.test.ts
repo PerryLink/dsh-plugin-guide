@@ -56,6 +56,24 @@ describe('runNew', () => {
     expect(pkg.main).toBe('index.js')
   })
 
+  it('writes the dsh.standards placeholder into a freshly generated project', async () => {
+    const placeholder = { entry: 'not-run', flow: 'not-run', boost: 'not-measured' } as const
+    for (const lang of ['ts', 'js'] as const) {
+      const dir = sandbox()
+      const name = `standards-${lang}`
+      await runNew(dir, { name, lang, force: false, git: false })
+      const pkg = JSON.parse(readFileSync(join(dir, name, 'package.json'), 'utf8'))
+      expect(pkg.dsh.bundle.patch).toBe('./cordis.patch.yml')
+      expect(pkg.dsh.standards.schema).toBe('dsh-levels/1')
+      for (const [level, status] of Object.entries(placeholder)) {
+        expect(pkg.dsh.standards[level].status).toBe(status)
+      }
+      expect(pkg.dsh.standards.entry.status).toBe('not-run')
+      expect(pkg.dsh.standards.boost.status).toBe('not-measured')
+      expect(JSON.stringify(pkg.dsh.standards)).not.toMatch(/pass/iu)
+    }
+  })
+
   it('refuses to overwrite a non-empty target without --force, then succeeds with --force', async () => {
     const dir = sandbox()
     await runNew(dir, { name: 'demo-plugin', lang: 'ts', force: false, git: false })

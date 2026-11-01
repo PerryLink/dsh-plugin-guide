@@ -1679,6 +1679,8 @@ node 40-checker/bin/dsh-plugin-verify.mjs <plugin-dir> --scope entry --entry-cla
 node 40-checker/scripts/level-audit.mjs <plugin-dir>
 ```
 
+Scaffolded plugins (`dsh-plugin-dev new`) ship `dsh.standards` as a placeholder — `entry`/`flow` = `not-run`, `boost` = `not-measured`, every `evidence` = `null`. Replace it only with the audit's recorded output; without evidence it stays `not-run`, and no level is read as a pass.
+
 `dsh-plugin-dev check` is a static assistance tool, not a level audit; `dsh-plugin-doctor` maps its R/K/D/X results to an ENTRY status and does not cover FLOW or BOOST. Neither tool can issue a level by itself.
 
 ## For reviewers: a short checklist

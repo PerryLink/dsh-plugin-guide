@@ -37,6 +37,10 @@ pnpm install
 pnpm test
 ```
 
+## Standards
+
+El bloque `dsh.standards` de `package.json` es un marcador de posición, no una afirmación: todos los niveles empiezan en `not-run` (BOOST en `not-measured`). Ejecuta `level-audit` con la evidencia registrada y sustituye solo esos niveles; sin evidencia, déjalo en `not-run`: un nivel sin probar no es un aprobado.
+
 ## License
 
 [Apache License 2.0](LICENSE) © {{year}} {{pkgName}} contributors.
