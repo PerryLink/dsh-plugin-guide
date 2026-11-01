@@ -1,6 +1,6 @@
 # DSH plugin adoption levels: ENTRY, FLOW, BOOST
 
-> **Status: community draft, non-official.** This chapter explains the three-level model maintained in the `dsh-standards` project (a private draft at the time of writing; ask the maintainer for access). It is teaching material, not a certificate, ranking, security audit, or official DeepSeek position. If your copy of the canonical clause text or `spec/levels.json` disagrees with this summary, the canonical files win. Chinese version: [standards.zh-CN.md](standards.zh-CN.md).
+> **Status: community draft, non-official.** This chapter explains the three-level model maintained in the `dsh-standards` project (public since 2026-11-01). It is teaching material, not a certificate, ranking, security audit, or official DeepSeek position. If your copy of the canonical clause text or `spec/levels.json` disagrees with this summary, the canonical files win. Chinese version: [standards.zh-CN.md](standards.zh-CN.md).
 
 ## Three levels, three different questions
 
@@ -106,12 +106,12 @@ Certification grades A–D describe quality and evidence depth; ENTRY/FLOW/BOOST
 
 ## Canonical source and checker commands
 
-- Canonical repository (private draft): `PerryLink/dsh-standards` — clauses `31` (ENTRY), `32` (FLOW), `33` (BOOST), `34` (the GB analogy), and `spec/levels.json`. Ask the maintainer for access.
+- Canonical repository (public): https://github.com/PerryLink/dsh-standards — clauses `31` (ENTRY), `32` (FLOW), `33` (BOOST), `34` (the GB analogy), and `spec/levels.json`.
 - Audit tool in that repository: `40-checker/scripts/level-audit.mjs`. It is not bundled with this guide; if your checkout does not have it, use `spec/levels.json` for definitions and the entry checker below.
 - Existing entry checker: `40-checker/bin/dsh-plugin-verify.mjs`.
 
 ```sh
-git clone <your-access-url-for-PerryLink/dsh-standards>
+git clone https://github.com/PerryLink/dsh-standards
 cd dsh-standards
 # entry, static only (does not claim runtime)
 node 40-checker/bin/dsh-plugin-verify.mjs <plugin-dir> --scope entry --entry-claim static
@@ -138,4 +138,4 @@ Scaffolded plugins (`dsh-plugin-dev new`) ship `dsh.standards` as a placeholder 
 
 ---
 
-*Canonical model: the private `dsh-standards` project. This chapter is non-official and grants no certification. Corrections should go to the canonical repo first, then be mirrored here.*
+*Canonical model: the public `dsh-standards` project. This chapter is non-official and grants no certification. Corrections should go to the canonical repo first, then be mirrored here.*

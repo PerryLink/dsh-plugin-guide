@@ -1,6 +1,6 @@
 # DSH 插件三层采用标准：ENTRY、FLOW、BOOST
 
-> **状态：社区草案，非官方。** 本章解释 `dsh-standards` 项目（写作时为私有草案，向维护者申请访问）维护的三层模型。它是教学材料，不是认证、排名、安全审计，也不代表 DeepSeek 官方立场。如果你手上的条款原文或 `spec/levels.json` 与本摘要冲突，以原文和该文件为准。英文版：[standards.md](standards.md)。
+> **状态：社区草案，非官方。** 本章解释 `dsh-standards` 项目（2026-11-01 起公开）维护的三层模型。它是教学材料，不是认证、排名、安全审计，也不代表 DeepSeek 官方立场。如果你手上的条款原文或 `spec/levels.json` 与本摘要冲突，以原文和该文件为准。英文版：[standards.md](standards.md)。
 
 ## 三层，三个不同的问题
 
@@ -106,12 +106,12 @@ G0–G2 与 G4 在静态检查里通过，支持 `recognized`；`runtime` 需要
 
 ## 标准来源与检查器命令
 
-- 标准仓（私有草案）：`PerryLink/dsh-standards` —— 条款 `31`（ENTRY）、`32`（FLOW）、`33`（BOOST）、`34`（GB 类比），以及 `spec/levels.json`。向维护者申请访问。
+- 标准仓（公开）：https://github.com/PerryLink/dsh-standards —— 条款 `31`（ENTRY）、`32`（FLOW）、`33`（BOOST）、`34`（GB 类比），以及 `spec/levels.json`。
 - 该仓的审计工具：`40-checker/scripts/level-audit.mjs`。它不随本指南分发；如果你的 checkout 没有，先用 `spec/levels.json` 读定义，再用下面已有的检查器。
 - 已有的 entry 检查器：`40-checker/bin/dsh-plugin-verify.mjs`。
 
 ```sh
-git clone <your-access-url-for-PerryLink/dsh-standards>
+git clone https://github.com/PerryLink/dsh-standards
 cd dsh-standards
 # entry，仅静态（不声明 runtime）
 node 40-checker/bin/dsh-plugin-verify.mjs <plugin-dir> --scope entry --entry-claim static
@@ -138,4 +138,4 @@ node 40-checker/scripts/level-audit.mjs <plugin-dir>
 
 ---
 
-*标准模型：私有的 `dsh-standards` 项目。本章非官方，不授予任何认证。修正应先提到标准仓，再同步回本库。*
+*标准模型：公开的 `dsh-standards` 项目。本章非官方，不授予任何认证。修正应先提到标准仓，再同步回本库。*
