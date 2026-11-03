@@ -25,22 +25,23 @@ An evidence card is per practice, per plugin, with a baseline and an after
 measurement. Example shape:
 
 ```yaml
-practice: LEV-6
-plugin: "@acme/dsh-hello@0.1.0"
-baseline:
-  startupMs: 180
-  tokensPerTurn: 1200
-after:
-  startupMs: 150
-  tokensPerTurn: 900
-environment:
-  dsh: 0.2.2-alpha.2
-  cordis: 4.0.6-alpha.1
-  node: 24
+subject: "@acme/dsh-hello@0.1.0"          # what was measured
+host: "dsh 0.2.2-alpha.2 / cordis 4.0.6-alpha.1 / node 24"
+method: "bench: startup ms and tokens per turn"
+scope: "single machine, 5 runs, synthetic prompt"
 command: "node bench/hello.mjs"
-result: "startup -17%, tokens -25%"
-caveats: "single machine, single run, not a performance baseline"
+result: "startup 180→150 ms; tokens 1200→900"
+negativeControl: "same bench with the plugin disabled"
+generatedAt: "2026-11-03"
+expiresAt: "2027-05-03"
+recordHash: "sha256:<64 hex of this record>"
+claimLevel: "self-assessed"               # self-reported | self-assessed | host-reviewed | independent | reference
+issuer: "author"
+selfAssessed: true
 ```
+
+All thirteen fields are required. A missing or malformed field makes the card
+`not-measured`; a status word alone is not evidence.
 
 If an effect cannot be measured (developer hours, maintenance cost, “fewer
 pitfalls”), record it as a WARN or a note. Do not invent a number.
@@ -56,7 +57,7 @@ pitfalls”), record it as a WARN or a note. Do not invent a number.
 ## Run the audit
 
 ```sh
-npx dsh-levels audit ./my-plugin \
+npx -p dsh-standards dsh-levels ./my-plugin \
   --boost-evidence boost.json --format json
 ```
 

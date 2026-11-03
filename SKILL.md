@@ -37,7 +37,7 @@ It defines the three layers and the difference between a check and advice.
 
 - **Run a check:** `npx dsh-standards <plugin-dir> --scope entry --entry-claim static`
   for recognition; add a host/runtime when claiming runtime.
-- **Three-layer self-check:** `npx dsh-levels audit <plugin-dir> --format json`.
+- **Three-layer self-check:** `npx -p dsh-standards dsh-levels <plugin-dir> --format json`.
 - **Build or scaffold a plugin:** use the `dsh-primer` skill/CLI. The old
   `dsh-plugin-dev` command belongs to `dsh-primer`, not to this guide.
 - **Read the rules:** `dsh-plugin-spec`; **read the guide:** this package;

@@ -6,6 +6,15 @@
 
 - Align with DeepSeek Harness `0.2.2-alpha.3`: Node `>=24.9.0`, `engines.dsh`/peer `>=0.2.2-0 <0.3.0`.
 - Verified: `node --test` 5/5.
+- Fixed the documented three-layer command: `npx dsh-levels` installs a
+  third-party placeholder package, so the docs now use
+  `npx -p dsh-standards dsh-levels`.
+- `docs/entry.md`: added the `dsh.capabilities` and `dsh.labels` fields with
+  the allowed values, so `DSC-11`/`DSC-13` findings are actionable.
+- `docs/boost.md`: the evidence-card example now uses the thirteen fields the
+  level audit actually requires.
+- `docs/flow.md`: status vocabulary aligned with the implementation
+  (`runtime` / `failed` / `not-run`; no `flow-warn`).
 
 ## [0.4.0] - 2026-11-03
 

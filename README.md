@@ -58,7 +58,7 @@ The skill routes checks to `dsh-standards` and points build work at
 npx dsh-standards ./my-plugin --scope entry --entry-claim static
 
 # Three-layer audit; unrun layers stay not-run / not-measured
-npx dsh-levels audit ./my-plugin --format json
+npx -p dsh-standards dsh-levels ./my-plugin --format json
 ```
 
 A `recognized` result is not a pass. A `static` result is not a pass. A

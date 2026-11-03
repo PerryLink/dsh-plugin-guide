@@ -58,7 +58,7 @@ Start here: [BOOST guide](boost.md) and the canonical
 npx dsh-standards ./my-plugin --scope entry --entry-claim static
 
 # Three-layer audit; FLOW/BOOST are only reported when evidence is supplied
-npx dsh-levels audit ./my-plugin --format json
+npx -p dsh-standards dsh-levels ./my-plugin --format json
 ```
 
 The checker and level audit ship in

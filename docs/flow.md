@@ -23,10 +23,12 @@ The canonical text is
 
 | Status | Meaning |
 |---|---|
-| `flow-pass` | all required journeys pass, or a WARN has a documented alternative |
-| `flow-warn` | at least one WARN; not a pass |
-| `flow-fail` | at least one attributable FAIL |
-| `flow-not-run` | not run, or the environment is insufficient |
+| `runtime` | all eight journeys have pass evidence |
+| `failed` | at least one journey has an attributable FAIL |
+| `not-run` | no evidence, or fewer than eight journeys have pass evidence |
+
+Each journey is recorded as `pass` / `fail` / `not-run` / `manual`. There is no
+`flow-warn` status — a partial run is `not-run`, not a soft pass.
 
 `not-run` is never a pass. Do not publish a pass rate or a grade from FLOW.
 
@@ -44,7 +46,7 @@ and
 The three-layer audit reads FLOW evidence through `--flow-evidence`:
 
 ```sh
-npx dsh-levels audit ./my-plugin --flow-evidence flow.json --format json
+npx -p dsh-standards dsh-levels ./my-plugin --flow-evidence flow.json --format json
 ```
 
 ## Author checklist

@@ -50,9 +50,37 @@ pass.
 - `package.json` has a resolvable entry and, for bundles, a `dsh.bundle.patch`.
 - The patch target row exists; ordered patch arrays are allowed.
 - `engines.dsh` or an `@deepseek-ai/dsh*` peer range is declared.
+- `dsh.capabilities` lists every host surface the plugin touches (see below).
+- `dsh.labels` is declared when the plugin modifies prompts, runs red-team
+  workloads, adds a model provider, exposes remote access, or mirrors another
+  project.
 - The license is present; a missing license is advisory, not a fabricated pass.
 - README says how to install and what it needs.
 - No “official”, “certified”, “secure”, or ranking claim.
+
+## Declaration fields
+
+Two optional fields become checks `DSC-11` and `DSC-13` once they exist:
+
+```json
+{
+  "dsh": {
+    "capabilities": ["fs:read", "network:egress"],
+    "labels": ["remote-access"]
+  }
+}
+```
+
+Allowed `capabilities`: `fs:read`, `fs:write`, `shell`, `subprocess`,
+`network:egress`, `network:ingress`, `credentials:read`, `credentials:list`,
+`credentials:provider`, `llm:adapter`, `sessions:read`, `system-prompt:write`,
+`tools:register`, `remote:expose`, `plugin:install`.
+
+Allowed `labels`: `prompt-modification`, `red-team`,
+`third-party-model-provider`, `remote-access`, `mirror`.
+
+Do not label a plugin `official`, `verified`, `certified`, `secure`, or
+`audited` — those words are treated as an endorsement claim and fail `DSC-13`.
 
 ## What ENTRY does not do
 

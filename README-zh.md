@@ -56,7 +56,7 @@ dsh plugin --profile web add dsh-plugin-guide
 npx dsh-standards ./my-plugin --scope entry --entry-claim static
 
 # 三层审计；没跑的层保持 not-run / not-measured
-npx dsh-levels audit ./my-plugin --format json
+npx -p dsh-standards dsh-levels ./my-plugin --format json
 ```
 
 `recognized` 不是通过，`static` 不是通过，`not-run` 也不是通过。
