@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0] - 2026-11-03
+
+### Changed
+
+- **Product split.** The old agent skill and `dsh-plugin-dev` CLI moved to
+  `dsh-primer`; `dsh-plugin-guide` is now the prose guide and guide skill.
+- Added `docs/levels.md`, `docs/entry.md`, `docs/flow.md`, and `docs/boost.md`.
+- The skill now routes checks to `dsh-standards` and build/scaffold work to
+  `dsh-primer`; it does not carry a second checker.
+- `dsh.standards` remains an explicit `not-run` / `not-measured` placeholder.
+- The 0.3.x npm line is deprecated in favor of the old skill's new home,
+  `dsh-primer`. This is a breaking product change, not a compatible 0.3 update.
+
 ## [0.3.40] - 2026-11-02
 
 ### Changed

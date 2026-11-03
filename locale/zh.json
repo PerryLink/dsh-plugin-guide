@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "dsh-plugin-guide",
-    "description": "DeepSeek Harness 插件开发知识库：官方文档副本、契约红线、迁移指南、源码核实的问题索引，以及 dsh-plugin-dev 命令行工具。"
+    "title": "DSH 插件指南",
+    "description": "DSH 插件质量指南：ENTRY 检查、FLOW 用户旅程、BOOST 实践。检查交给 dsh-standards；不是认证，也不排名。"
   }
 }

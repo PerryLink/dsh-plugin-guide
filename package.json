@@ -1,97 +1,57 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.3.40",
-  "description": "DSH plugin development as an on-demand agent skill: official docs mirror, version-compatibility matrix, migration seams, measured pitfalls, plus a scaffolder, checker and pack verifier CLI.",
+  "version": "0.4.0",
+  "description": "A practical guide to DSH plugin quality: ENTRY checks, FLOW checks, and BOOST guidance. Community guide; not official, not a certification, not a ranking.",
   "type": "module",
   "main": "index.js",
-  "bin": {
-    "dsh-plugin-dev": "./bin/dsh-plugin-dev.js"
-  },
   "exports": {
     ".": "./index.js",
-    "./package.json": "./package.json",
-    "./locale/*.json": "./locale/*.json",
-    "./icon": "./icon.svg"
+    "./package.json": "./package.json"
   },
   "files": [
     "index.js",
-    "index.d.ts",
-    "bin",
-    "dist",
-    "templates",
-    "cordis.patch.yml",
+    "SKILL.md",
+    "docs",
     "locale/*.json",
     "icon.svg",
-    "SKILL.md",
-    "data",
-    "guide",
-    "references",
-    "scripts",
-    "LICENSE",
-    "NOTICE.md",
+    "cordis.patch.yml",
     "README.md",
     "README-zh.md",
-    "README-es.md",
-    "README-pt.md",
-    "README-hi.md",
     "STANDARDS.md",
+    "LICENSE",
+    "NOTICE.md",
     "PRIVACY.md"
   ],
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "test:pack": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.1-0 <0.3.0"
+  },
   "keywords": [
     "dsh",
     "dsh-plugin",
-    "dsh-plugin-development",
-    "dsh-skill",
-    "deepseek",
     "deepseek-harness",
     "cordis",
     "plugin-development",
-    "agent-skill",
-    "agent-skills",
-    "knowledge-base",
-    "documentation",
-    "cli",
-    "scaffold",
-    "checker",
-    "typescript"
+    "standards",
+    "checklist",
+    "guide",
+    "documentation"
   ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PerryLink/dsh-plugin-guide.git"
   },
-  "scripts": {
-    "build": "tsdown",
-    "typecheck": "tsc --noEmit",
-    "typecheck:ci": "tsc --noEmit --pretty false",
-    "typecheck:checkout": "tsc -p tsconfig.checkout.json --noEmit",
-    "test": "vitest run",
-    "check:readmes": "node scripts/check-readme-sync.mjs",
-    "check:parity": "node scripts/check-readme-parity.mjs",
-    "check:facts": "node scripts/check-facts.mjs",
-    "check:docs-drift-detail": "node scripts/check-docs-drift-detail.mjs",
-    "measure:mirror": "node scripts/measure-mirror-references.mjs",
-    "check:ps1-bom": "node scripts/check-ps1-bom.mjs",
-    "build:llms": "node scripts/build-llms-full.mjs",
-    "check:kit": "pwsh -File scripts/verify-kit.ps1",
-    "verify:artifacts": "node scripts/verify-artifacts.mjs",
-    "verify:self-contained": "pnpm run build && node dist/dsh-plugin-dev.js verify",
-    "prepare": "tsdown",
-    "prepack": "tsdown"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "@deepseek-ai/dsh-attachment": "0.2.1-rc.2",
-    "@types/node": "^22.20.1",
-    "@types/semver": "^7.8.0",
-    "semver": "^7.8.5",
-    "tsdown": "^0.23.1",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.7",
-    "@deepseek-ai/dsh-working-directory": "0.2.1-rc.2"
+  "homepage": "https://github.com/PerryLink/dsh-plugin-guide#readme",
+  "bugs": {
+    "url": "https://github.com/PerryLink/dsh-plugin-guide/issues"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0"
+    "@deepseek-ai/dsh": ">=0.2.1-0 <0.3.0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {
@@ -118,11 +78,6 @@
       }
     }
   },
-  "engines": {
-    "node": "^22.19.0 || >=24.0.0",
-    "dsh": ">=0.2.1-0 <0.3.0"
-  },
-  "packageManager": "pnpm@11.7.0",
   "dshWorkshop": {
     "schema": "omdsh-workshop-package/v1",
     "type": "plugin",
@@ -145,14 +100,6 @@
     ],
     "compatibility": {
       "dshVersions": [
-        "0.1.2-rc.1",
-        "0.1.5-rc.2",
-        "0.1.7-alpha.2",
-        "0.1.7-rc.1",
-        "0.1.7-rc.2",
-        "0.2.0-rc.2",
-        "0.2.1-alpha.1",
-        "0.2.1-alpha.2",
         "0.2.1-rc.2"
       ]
     },
@@ -160,7 +107,7 @@
       "id": "dsh-plugin-guide",
       "kind": "service",
       "invocation": "ctx.skills.get('dsh-plugin-guide') resolves a complete SkillDefinition",
-      "expected": "session skill catalog lists dsh-plugin-guide and the loaded body carries the SKILL.md workflow with a directory resourceBase"
+      "expected": "session skill catalog lists dsh-plugin-guide and the loaded body points at docs/levels.md"
     },
     "evidence": {
       "install": null,

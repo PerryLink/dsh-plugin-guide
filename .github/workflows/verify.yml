@@ -1,59 +1,27 @@
-name: verify-kit
+name: verify
 
 on:
   push:
-    branches: [main]
+    branches: [main, rewrite/0.4.0]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  verify:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
     steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          version: 11.7.0
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Typecheck
-        run: pnpm run typecheck:ci
-
-      - name: Test
-        run: pnpm test
-
-      - name: README sync (five languages)
-        run: pnpm run check:readmes
-
-      - name: Translation block parity (READMEs + quick references)
-        run: pnpm run check:parity
-
-      - name: Self-stated numbers match reality (data/facts.json)
-        run: pnpm run check:facts
-
-      - name: PowerShell scripts keep their UTF-8 BOM
-        run: pnpm run check:ps1-bom
-      - name: Removed session-API grep (zero hits in src/)
-        shell: pwsh
-        run: |
-          $hits = Get-ChildItem -Path src -Recurse -File | Select-String -Pattern 'snapshotEvents','eventAt\(','ownEvents\('
-          if ($hits) { $hits | ForEach-Object { Write-Error "removed session API referenced: $($_.Path):$($_.LineNumber)" }; exit 1 }
-          Write-Output 'zero hits: snapshotEvents/eventAt(/ownEvents('
-
-      - name: Build
-        run: pnpm run build
-
-      - name: Artifact gate (dogfood self-check + scaffold smoke)
-        run: pnpm run verify:artifacts
-
-      - name: Run integrity checker (critical paths + relative link scan)
-        shell: pwsh
-        run: ./scripts/verify-kit.ps1
+          node-version: ${{ matrix.node }}
+      - name: Unit tests
+        run: node --test tests/*.test.mjs
+      - name: Package dry-run
+        run: npm pack --dry-run
