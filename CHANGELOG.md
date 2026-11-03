@@ -1,3 +1,9 @@
+## [0.4.2] - 2026-11-03
+
+### Changed
+
+- Published from GitHub Actions with npm provenance (OIDC).
+
 # Changelog
 
 ## [0.4.1] - 2026-11-03
