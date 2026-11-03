@@ -7,10 +7,10 @@ import { apply, splitFrontmatter } from '../index.js'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 
-test('package is the 0.4.0 guide, not the old CLI', () => {
+test('package is a 0.4.x guide, not the old CLI', () => {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
   assert.equal(pkg.name, 'dsh-plugin-guide')
-  assert.equal(pkg.version, '0.4.0')
+  assert.match(pkg.version, /^0\.4\./)
   assert.equal(pkg.bin, undefined)
   assert.equal(pkg.dependencies, undefined)
 })

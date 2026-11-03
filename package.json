@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A practical guide to DSH plugin quality: ENTRY checks, FLOW checks, and BOOST guidance. Community guide; not official, not a certification, not a ranking.",
   "type": "module",
   "main": "index.js",
@@ -27,8 +27,8 @@
     "test:pack": "npm pack --dry-run"
   },
   "engines": {
-    "node": "^22.19.0 || >=24.0.0",
-    "dsh": ">=0.2.1-0 <0.3.0"
+    "node": ">=24.9.0",
+    "dsh": ">=0.2.2-0 <0.3.0"
   },
   "keywords": [
     "dsh",
@@ -51,7 +51,7 @@
     "url": "https://github.com/PerryLink/dsh-plugin-guide/issues"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": ">=0.2.1-0 <0.3.0"
+    "@deepseek-ai/dsh": ">=0.2.2-0 <0.3.0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {

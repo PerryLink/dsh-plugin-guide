@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1] - 2026-11-03
+
+### Changed
+
+- Align with DeepSeek Harness `0.2.2-alpha.3`: Node `>=24.9.0`, `engines.dsh`/peer `>=0.2.2-0 <0.3.0`.
+- Verified: `node --test` 5/5.
+
 ## [0.4.0] - 2026-11-03
 
 ### Changed
