@@ -90,7 +90,8 @@ Do not label a plugin `official`, `verified`, `certified`, `secure`, or
 `DSC-10` is advisory — it never changes the verdict — but it records module-scope
 work that runs before `apply()`: top-level `await`, timers, `process.on`, fs
 writes, and subprocess spawns. The check is scoped to the entry module; the same
-line in a shipped helper script is `not-run`, not a hit. Move the work inside
+line in a shipped helper script that the entry does not import is not a hit.
+Move the work inside
 `apply()` and tie cleanup to `ctx.effect()`.
 
 ```js
