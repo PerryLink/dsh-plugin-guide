@@ -7,6 +7,7 @@ market, index, or user hits.
 
 - package manifest: name, version, license, entry, `dsh.bundle.patch`
 - engines/peer range for the DSH and Cordis generation being claimed
+- Node `>=24.9.0` for the 0.2.2 line; `engines.dsh`, when declared, decides alone since 0.2.1-alpha.4 (prereleases participate)
 - the declared entry point actually resolves
 - the bundle patch parses and its target row resolves
 - display metadata, labels, and forbidden-claim checks
@@ -49,7 +50,7 @@ pass.
 
 - `package.json` has a resolvable entry and, for bundles, a `dsh.bundle.patch`.
 - The patch target row exists; ordered patch arrays are allowed.
-- `engines.dsh` or an `@deepseek-ai/dsh*` peer range is declared.
+- `engines.dsh` or an `@deepseek-ai/dsh*` peer range is declared. For 0.2.2, prefer `>=0.2.2-0 <0.3.0`; npm default semver needs an explicit `^0.2.2-alpha.3` union arm.
 - `dsh.capabilities` lists every host surface the plugin touches (see below).
 - `dsh.labels` is declared when the plugin modifies prompts, runs red-team
   workloads, adds a model provider, exposes remote access, or mirrors another

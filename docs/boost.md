@@ -25,10 +25,18 @@ An evidence card is per practice, per plugin, with a baseline and an after
 measurement. Example shape:
 
 ```yaml
-subject: "@acme/dsh-hello@0.1.0"          # what was measured
-host: "dsh 0.2.2-alpha.2 / cordis 4.0.6-alpha.1 / node 24"
-method: "bench: startup ms and tokens per turn"
-scope: "single machine, 5 runs, synthetic prompt"
+practice: LEV-6
+plugin: "@acme/dsh-hello@0.1.0"
+baseline:
+  startupMs: 180
+  tokensPerTurn: 1200
+after:
+  startupMs: 150
+  tokensPerTurn: 900
+environment:
+  dsh: 0.2.2-alpha.3
+  cordis: 4.0.6-alpha.2
+  node: 24.9
 command: "node bench/hello.mjs"
 result: "startup 180→150 ms; tokens 1200→900"
 negativeControl: "same bench with the plugin disabled"

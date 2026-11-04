@@ -1,10 +1,18 @@
+# Changelog
+
+## [0.4.3] - 2026-11-04
+
+### Changed
+
+- Document the 0.2.2-alpha.3 baseline in `docs/levels.md`, `docs/entry.md` and the `docs/boost.md` evidence card.
+- Add `0.2.2-alpha.3` to the bundle's `dsh.compatibility.dshVersions`.
+- Verified: `node --test` 5/5.
+
 ## [0.4.2] - 2026-11-03
 
 ### Changed
 
 - Published from GitHub Actions with npm provenance (OIDC).
-
-# Changelog
 
 ## [0.4.1] - 2026-11-03
 
