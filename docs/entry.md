@@ -55,6 +55,9 @@ pass.
   workloads, adds a model provider, exposes remote access, or mirrors another
   project.
 - The license is present; a missing license is advisory, not a fabricated pass.
+- Module scope stays side-effect free: no top-level `await`, timer, `process.on`,
+  fs write, or subprocess spawn. Do that work in `apply()` and clean up with
+  `ctx.effect()`.
 - README says how to install and what it needs.
 - No “official”, “certified”, “secure”, or ranking claim.
 
@@ -81,6 +84,27 @@ Allowed `labels`: `prompt-modification`, `red-team`,
 
 Do not label a plugin `official`, `verified`, `certified`, `secure`, or
 `audited` — those words are treated as an endorsement claim and fail `DSC-13`.
+
+## Import-time side effects
+
+`DSC-10` is advisory — it never changes the verdict — but it records module-scope
+work that runs before `apply()`: top-level `await`, timers, `process.on`, fs
+writes, and subprocess spawns. The check is scoped to the entry module; the same
+line in a shipped helper script is `not-run`, not a hit. Move the work inside
+`apply()` and tie cleanup to `ctx.effect()`.
+
+```js
+// avoid: this runs when the package is imported, before the host can inject
+writeFileSync(cacheFile, '')
+
+export function apply(ctx) {
+  // prefer: runs when the plugin is applied, with a cleanup hook
+  ctx.effect(() => {
+    mkdirSync(dir, { recursive: true })
+    return () => rmSync(dir, { recursive: true, force: true })
+  })
+}
+```
 
 ## What ENTRY does not do
 
