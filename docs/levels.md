@@ -33,8 +33,8 @@ modes.
 
 - The current FLOW harness is a draft. Some J1–J8 checks have runtime evidence;
   others are static preflight or `not-run`.
-- `flow-warn`, `flow-fail`, and `flow-not-run` are real outcomes. Do not turn a
-  missing run into a pass.
+- `runtime`, `failed`, and `not-run` are the FLOW statuses. A partial run is
+  `not-run`, never a soft pass.
 
 Start here: [FLOW guide](flow.md) and the canonical
 [32-DSH-FLOW](https://github.com/PerryLink/dsh-standards/blob/main/32-DSH-FLOW%E9%A1%BA%E7%95%85%E8%A7%84%E8%8C%83.md).
@@ -75,4 +75,4 @@ The legacy build skill/CLI is [`dsh-primer`](https://github.com/PerryLink/dsh-pr
 - `not-run` ≠ `pass`
 - `boost-evidenced` ≠ plugin grade
 - `A–D` grades (where they exist) are orthogonal to ENTRY/FLOW/BOOST
-- No official, certified, secure, recommended, or ranked claim
+- No official, certified, verified, audited, secure, recommended, or ranked claim

@@ -56,4 +56,4 @@ npx -p dsh-standards dsh-levels ./my-plugin --flow-evidence flow.json --format j
 - Errors say what happened, what to run next, and where the doc is.
 - Permissions say what the plugin can/cannot do and how to turn it off.
 - Upgrade and uninstall are tested against real data, not only a clean install.
-- No “certified”, “official”, or “secure” wording.
+- No “certified”, “verified”, “audited”, “official”, “secure”, or “ranked” wording.

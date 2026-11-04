@@ -31,7 +31,7 @@ test('three-layer docs exist and keep the non-grade boundary', () => {
   const levels = readFileSync(join(root, 'docs', 'levels.md'), 'utf8')
   assert.match(levels, /three tracks, not three grades/i)
   assert.match(levels, /not-run.*not.*pass/is)
-  assert.match(levels, /no official, certified, secure, recommended, or ranked claim/i)
+  assert.match(levels, /no official, certified, verified, audited, secure, recommended, or ranked claim/i)
 })
 
 test('old CLI entry points are gone', () => {
