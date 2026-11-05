@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-label="dsh-plugin-guide flow">
+<title>dsh-plugin-guide flow</title>
+<rect width="1200" height="400" rx="18" fill="#ffffff"/>
+<text x="60" y="62" fill="#1f2328" font-family="ui-sans-serif,system-ui,sans-serif" font-size="30" font-weight="700">dsh-plugin-guide</text>
+<text x="60" y="94" fill="#57606a" font-family="ui-monospace,monospace" font-size="16">bundle patch · skills service · dsh-standards</text>
+<line x1="60" y1="116" x2="1140" y2="116" stroke="#d0d7de"/>
+<rect x="60" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#d0d7de" stroke-width="2"/>
+<text x="150" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">cordis.patch.yml</text>
+<text x="150" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">insert: guide-row</text>
+<path d="M246 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M277 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="285" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#4B67B4" stroke-width="2"/>
+<text x="375" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">index.js</text>
+<text x="375" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">ctx.skills.register</text>
+<path d="M471 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M502 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="510" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#d0d7de" stroke-width="2"/>
+<text x="600" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">SKILL.md</text>
+<text x="600" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">bundled · on demand</text>
+<path d="M696 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M727 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="735" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#d0d7de" stroke-width="2"/>
+<text x="825" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">docs/levels.md</text>
+<text x="825" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">ENTRY · FLOW · BOOST</text>
+<path d="M921 198h33" stroke="#57606a" stroke-width="3"/>
+<path d="M952 191l10 7-10 7" fill="none" stroke="#57606a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="960" y="150" width="180" height="96" rx="14" fill="#f6f8fa" stroke="#16a34a" stroke-width="2"/>
+<text x="1050" y="190" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">dsh-standards</text>
+<text x="1050" y="218" fill="#57606a" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">dsh-levels --format json</text>
+<path d="M375 246v39" stroke="#4B67B4" stroke-width="2" stroke-dasharray="5 5"/>
+<path d="M825 246v39" stroke="#4B67B4" stroke-width="2" stroke-dasharray="5 5"/>
+<rect x="285" y="285" width="630" height="52" rx="12" fill="#f6f8fa" stroke="#4B67B4" stroke-width="2"/>
+<text x="600" y="318" fill="#1f2328" text-anchor="middle" font-family="ui-monospace,monospace" font-size="14">resourceBase: directory · SKILL.md + docs/*.md · no verdict</text>
+<text x="60" y="378" fill="#57606a" font-family="ui-monospace,monospace" font-size="13">static ≠ runtime · not-run ≠ pass · recognized ≠ pass · boost-evidenced ≠ plugin grade</text>
+</svg>
