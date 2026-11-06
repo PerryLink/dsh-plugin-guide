@@ -8,17 +8,26 @@
 > files, spawn processes, reach the network, and read the credential store
 > whether or not it declares that it does.
 
-`DSC-15`–`DSC-22` are **proposed** security checks from the 2026-11 audit. They
-are not in `dsh-standards` 1.4.x, and `--scope security` is a proposed scope, not
-a released flag. When they ship, four are mechanical (`15`, `16`, `17`, `21`)
-and four only produce clues (`18`, `19`, `20`, `22`); all eight reduce risk, and
-**none of them proves a plugin is safe**. Until then, this page is a checklist,
-not a gate.
+`DSC-15`–`DSC-22` are the **static security checks** shipped in
+`dsh-standards` **1.6.0**; `--scope security` is a released flag
+from 1.6.0 on (1.5.x and earlier treat `security` as an unknown scope and exit
+`3`; 1.6.1 supports it).
+With `--scope security`, `checks[]` carries all **22** checks (`DSC-01`–`DSC-14`
+plus `DSC-15`–`DSC-22`); the default `ds-c` run still carries 14 and reports the
+eight in the additive `security` block. Three can block (`15`, `16`, `17`), one
+is mandatory but **WARN-only and never blocks** (`21`, listing included), and
+four only produce clues (`18`, `19`, `20`, `22`); all eight reduce risk, and
+**none of them proves a plugin is safe**.
 
-The same boundary applies to the existing scopes: outside `--scope security`,
-a security `FAIL` can land in `buckets.blocking` while `status` and the exit
-code stay `0`, because only the mandatory set decides the verdict. Read the
-scope, not the bucket.
+The `security` block is a **separate view**, not a fourth verdict. In the default
+scope a security `FAIL` is capped to `WARN` inside `security.checks[]`; it is
+listed only in `security.warn[]` (`security.blocking[]` stays empty), does not
+enter `buckets.blocking` or `conclusion.headline`, and changes neither `status`
+nor the exit code. Only `--scope security` puts `15`/`16`/`17` into `checks[]`,
+where a `FAIL` enters `buckets.blocking`, the headline, `status=fail` and exit
+`1`. `DSC-21` never FAILs, so it never blocks in either profile. Read the scope,
+and read the block's `checks[]`, not just its four arrays — see
+[Reading the `security` block](#security-block).
 
 ## The trust boundary in one table
 
@@ -99,9 +108,10 @@ forward a token "just in case".
 ### 3. Egress endpoints (DSC-18)
 
 Use a constant allowlist of exact hostnames and `https` only. Never fetch a URL
-that came from a model, a tool result, or a user message; redirects are checked
-hop by hop, and a credential is never sent across an origin. Disclose third-party
-endpoints, what is retained, and whether session text is forwarded.
+that came from a model, a tool result, or a user message; use
+`redirect: 'manual'` and refuse a redirect unless every `Location` hop passes the
+same allowlist (bounded), and never send a credential across an origin. Disclose
+third-party endpoints, what is retained, and whether session text is forwarded.
 
 ```ts
 const ALLOW = new Set(['api.example.com'])
@@ -174,9 +184,10 @@ not shell it, and do not let it choose an arbitrary URL.
 ```ts
 import { randomUUID } from 'node:crypto'
 
-const id = randomUUID()
-const wrap = (s: string) =>
-  `<untrusted-${id}>\n${JSON.stringify(s).replaceAll('<', '\\u003c')}\n</untrusted-${id}>`
+const wrap = (s: string) => {
+  const id = randomUUID() // per call, so reused wrappers get a fresh boundary
+  return `<untrusted-${id}>\n${JSON.stringify(s).replaceAll('<', '\\u003c')}\n</untrusted-${id}>`
+}
 ```
 
 Rendering is part of the same boundary: use `textContent`/React escaping, never
@@ -238,10 +249,13 @@ Include the version, DSH version, impact, and a minimal repro. First response wi
 ## User guide
 
 The checks tell you what a package declares; they do not tell you what it does.
-Assume a loaded plugin can do anything the user can. The proposed checks that
-touch this path are `DSC-15` (lifecycle scripts), `DSC-21` (source pinning,
-typosquat), and `DSC-22` (integrity/provenance) before install; `DSC-17`/`DSC-18`
-only ever produce static clues about files and egress.
+Assume a loaded plugin can do anything the user can. The static checks that
+touch this path are `DSC-15` (lifecycle scripts), `DSC-17` (credential files),
+`DSC-21` (typosquat/lookalike names, WARN-only) and `DSC-22`
+(integrity/provenance) before install; `DSC-18` only ever produces a static clue
+about egress. Under `--scope security`, `DSC-15`/`DSC-16`/`DSC-17` can block;
+outside it every security finding is capped to WARN in the separate `security`
+block.
 
 **Before installing.** Read the manifest: `dsh.capabilities`, `dsh.labels`,
 `scripts`, `files`, `engines.dsh`, and the source pin. Then look at the source
@@ -255,16 +269,20 @@ clearance.
 
 ```sh
 npm view pkg@1.2.3 version dsh scripts dist.integrity dist.signatures dist.attestations repository.url time.modified --json
+
+# the released static security scope (1.6.0+; does not run the plugin)
+npx dsh-standards check ./pkg --scope security --format json
 ```
 
 **During install.** Start from a throwaway profile (`dsh plugin --profile lab
 ...` initializes it), add `--ignore-scripts`, and understand that it stops
 install scripts only, not the code the host loads. The GUI build approval runs
-a script with your permissions: read the script before approving. The CLI
-inherits your whole environment, so launch it from a clean shell with no
-tokens. A new session defaults to `workspace-write` + `ask`; do not switch to
-`danger-full-access` with `never`. `DSH_PERMISSION_MODE=read-only` constrains
-tool subprocesses, not plugins.
+a script with your permissions, but the approval list shows only the package
+name, not the script body: inspect the referenced script first (`npm pack`, then
+read `scripts/*`). The CLI inherits your whole environment, so launch it from a
+clean shell with no tokens. A new session defaults to `workspace-write` + `ask`;
+do not switch to `danger-full-access` with `never`.
+`DSH_PERMISSION_MODE=read-only` constrains tool subprocesses, not plugins.
 
 ```sh
 dsh plugin --profile lab add pkg@1.2.3 --ignore-scripts
@@ -316,7 +334,7 @@ Use the fixed disclaimer: "unofficial · not certified · not security-audited �
 not endorsed · no warranty".
 
 <a id="template"></a>
-## Template: minimal secure defaults
+## Template: minimal low-risk defaults
 
 The smallest honest starting point is: no lifecycle scripts, empty
 capabilities, a permissions disclosure marked draft, and a `SECURITY.md` in the
@@ -361,13 +379,37 @@ stale empty array hides the very `C-11.2` failure the check is for.
 
 | Scope | What runs | Verdict |
 |---|---|---|
-| `--scope ds-c` (default) / `entry` / `flow` / `boost` | DSC-01–14 mandatory; DSC-15–22 non-mandatory if implemented | a security `FAIL` is recorded in `blocking` but cannot change `status`/exit |
-| `--scope security` (proposed, not released) | + DSC-15–22 | `15`/`16`/`17` blocking; `21` blocking in the listing profile; `18` WARN; `19`/`20`/`22` advisory |
+| `--scope ds-c` (default) / `entry` / `flow` / `boost` | `DSC-01`–`DSC-14`: only the scope's mandatory subset counts (`DSC-10` is advisory; `03`/`14` can be NA/not-run). `DSC-15`–`DSC-22` run in the separate `security` block (`scope=advisory`) | a security `FAIL` is capped to `WARN` in that block; it is not in `checks[]`/`buckets.blocking` and cannot change `status`/exit |
+| `--scope security` (1.6.0+) | all 22 checks in `checks[]`: DSC-01–14 plus DSC-15–22 | `15`/`16`/`17` blocking (FAIL → exit 1); `21` mandatory **WARN-only**, never blocking (listing too); `18` WARN; `19`/`20`/`22` advisory |
 | runtime observation | sandbox with a network policy + capture | the only evidence that code actually egressed, read a file, or rewrote a prompt |
 
-When the scope ships, the JSON report gets an additive top-level `security`
-block; the DS-C verdicts stay unchanged. A PASS in that block means "no known
-shape matched in this static pass", not "safe".
+`DSC-16` blocks on `eval`/`new Function`/`vm`/`module._compile`/`process.binding`.
+A bare `child_process` import is WARN in 1.6.1; the FAIL for a statically
+dangerous subprocess command is scoped to 1.6.2.
+
+The JSON report carries an additive top-level `security` block; the DS-C verdicts
+stay unchanged. A PASS in that block means "no blocking FAIL, no WARN, and the
+mandatory `15`/`16`/`17`/`21` all produced a result", not "safe".
+
+<a id="security-block"></a>
+### Reading the `security` block
+
+- `conclusion.headline`'s `blocking N` and `buckets.blocking[]` are
+  **report-level**: they only count `checks[]` FAILs. `security.blocking[]` is
+  the block's own list and can only ever hold `DSC-15`/`DSC-16`/`DSC-17`.
+- **Default scope:** the eight run in `security.checks[]` with
+  `security.scope="advisory"`. A `FAIL` is capped to `WARN` (listed in
+  `security.warn[]`), `security.blocking=[]`, no security row appears in
+  `buckets.blocking`, the headline is unchanged, and `status`/exit stay the same.
+- **`--scope security`:** the eight join `checks[]`. A `15`/`16`/`17` FAIL →
+  `security.blocking=[...]` plus `buckets.blocking=[...]`, headline `blocking N`,
+  `status=fail`, exit `1`. `DSC-21` findings are WARN-only and never block;
+  `18`/`19`/`20`/`22` are advisory. A mandatory check with no result makes
+  `security.status=incomplete`.
+- **Partial:** 1.6.1 has no `security.partial[]`. A partly-run check is
+  `security.checks[].coverage === "partial"` (and top-level `coverage.partial` /
+  `buckets.partial`); `security.notRun[]` only carries `NA`/`ERROR`/full
+  `not-run`. Do not read the four arrays as complete coverage.
 
 <a id="limits"></a>
 ## What no static check can tell you

@@ -311,27 +311,31 @@ export function apply(ctx) {
 ## Security checks (DSC-15 to DSC-22)
 
 ENTRY is a compatibility gate; it does not answer "is this safe to install". The
-2026-11 audit proposes eight security checks as a separate scope:
+static security scope ships in `dsh-standards` 1.6.0+ and evaluates eight
+checks; with `--scope security` the report's `checks[]` carries all 22
+(`DSC-01`–`DSC-14` plus `DSC-15`–`DSC-22`).
 
 | Check | What it looks for | Verdict in `--scope security` |
 |---|---|---|
-| `DSC-15` | `preinstall`/`install`/`postinstall`/`prepare` that download, decode, or execute | blocking |
-| `DSC-16` | `eval`, `new Function`, `vm`, `module._compile`, `process.binding` | blocking |
+| `DSC-15` | `preinstall`/`install`/`postinstall`/`prepare` that download, decode, or execute (command string and referenced in-package script body, ≤512 KB) | blocking |
+| `DSC-16` | `eval`, `new Function`, `vm`, `module._compile`, `process.binding`; bare `child_process` is WARN in 1.6.1 | blocking |
 | `DSC-17` | reads of `~/.ssh`, `~/.aws`, `.npmrc`, `.netrc`, or credential backing files | blocking |
 | `DSC-18` | non-https, userinfo, bare-IP, webhook/paste/tunnel egress targets | WARN (clue) |
 | `DSC-19` | minified blobs, large base64 blocks, wasm/native without source | advisory |
-| `DSC-20` | tool/web text flowing into the system prompt without a boundary | advisory (runtime, v2) |
-| `DSC-21` | typosquat names, fake scopes, unpinned or script-bearing dependencies | blocking in listing |
+| `DSC-20` | tool/web text flowing into the system prompt without a boundary | advisory (static v1 + runtime hook v2) |
+| `DSC-21` | typosquat names, fake scopes, unpinned or script-bearing dependencies | mandatory but **WARN-only, never blocking** (listing included) |
 | `DSC-22` | `dist.integrity`, signatures, provenance attestations | advisory |
 
-These checks are **not released** in `dsh-standards` 1.4.x, and `--scope
-security` is a proposed flag; if your checker exits `3` for an unknown scope,
-that is expected. Outside that scope they do not run, and a security `FAIL` is
-capped at WARN, so it cannot change an ENTRY verdict. Four are mechanical and
-four only return clues — none of them proves a plugin is safe.
+`--scope security` is released in 1.6.0+; 1.5.x and earlier exit `3` for the
+unknown scope. Outside that scope the eight are not in `checks[]`; a security
+`FAIL` is capped to WARN in the separate `security` block, never enters
+`buckets.blocking`, and cannot change an ENTRY verdict. Only `15`/`16`/`17` can
+block (and only under `--scope security`); `21` never blocks; `18`/`19`/`20`/`22`
+are advice. `DSC-16` subprocess FAIL is scoped to 1.6.2; 1.6.1 keeps a bare
+`child_process` import at WARN.
 
 ```sh
-# proposed; not available in 1.4.x
+# 1.6.0+; exits 3 only on 1.5.x and earlier
 npx dsh-standards ./my-plugin --scope security --format json
 ```
 
@@ -343,6 +347,6 @@ and neither is a `DSC-11` PASS.
 ## What ENTRY does not do
 
 It is not a security audit, sandbox, full contract audit, market gate, score, or
-ranking. Those are separate concerns; do not borrow their authority. The
-proposed `DSC-15`–`DSC-22` are a static security scope, covered in
+ranking. Those are separate concerns; do not borrow their authority. The static
+`DSC-15`–`DSC-22` checks are a separate security scope, covered in
 [security.md](security.md), not part of the ENTRY verdict.

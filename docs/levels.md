@@ -76,10 +76,12 @@ The card fields are in
 
 ## Security is not a fourth layer
 
-Security checks are a **scope**, not a level, and they are proposed, not
-released: `DSC-15`–`DSC-22` sit behind a `--scope security` that
-`dsh-standards` 1.4.x does not have yet. They never change an ENTRY, FLOW, or
-BOOST verdict, and outside that scope a security `FAIL` is capped at WARN.
+Security checks are a **scope**, not a level, and they ship in `dsh-standards`
+1.6.0+ (1.5.x and earlier exit `3` for the unknown scope): `DSC-15`–`DSC-22`
+sit behind `--scope security`. They never change an ENTRY, FLOW, or BOOST
+verdict. Outside that scope a security `FAIL` is capped to WARN in the separate
+`security` block and does not enter `buckets.blocking`; under it only
+`DSC-15`/`16`/`17` can block, and `DSC-21` is WARN-only.
 
 - Static checks only match known source shapes; they cannot see runtime egress,
   file reads, or prompt corruption. Runtime security needs a sandbox with a

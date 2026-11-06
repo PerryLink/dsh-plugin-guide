@@ -205,10 +205,13 @@ example `J2.toggle → 32-DSH-FLOW #R2`).
 ## Security boundary
 
 J5 checks that permissions are declared consistently; it is static preflight,
-not a security test. The proposed `DSC-15`–`DSC-22` live behind a separate
-`--scope security` that `dsh-standards` 1.4.x does not ship yet, and they never
-turn a FLOW journey into a security pass. Outside that scope a security finding
-is advisory: it is capped at WARN and cannot change the FLOW verdict.
+not a security test. The static `DSC-15`–`DSC-22` checks live behind a separate
+`--scope security`, shipped in `dsh-standards` 1.6.0+ (1.5.x and earlier exit
+`3`), and they never turn a FLOW journey into a security pass. Outside that
+scope a security finding is advisory: it is capped to WARN in the separate
+`security` block, never enters `buckets.blocking`, and cannot change the FLOW
+verdict. Under `--scope security` only `DSC-15`/`DSC-16`/`DSC-17` can block;
+`DSC-21` is WARN-only.
 
 Static checks also cannot observe what a plugin does at runtime — which URLs it
 reaches, which files it reads, or whether a prompt was corrupted. Those answers

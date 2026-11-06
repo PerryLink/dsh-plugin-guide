@@ -58,5 +58,7 @@ audit, or market gate. It does not score or rank plugins. When in doubt, link to
 the source document and state what was not run.
 
 For plugin security — capabilities, credentials, egress, install scripts, and
-supply chain — read `docs/security.md`. Its checks are static and advisory,
-and runtime security needs a sandbox, not a checker.
+supply chain — read `docs/security.md`. The security scope is static and shipped
+in `dsh-standards` 1.6.0+; `DSC-15`/`DSC-16`/`DSC-17` can block only under
+`--scope security`, `DSC-21` is WARN-only, and runtime security needs a sandbox,
+not a checker.

@@ -3,6 +3,15 @@
 
 
 
+
+
+## [0.5.1] - 2026-11-07
+
+### Fixed
+
+- `docs/security.md` and the DSC-15…22 rows: removed the "proposed / unreleased" wording, made C-21 WARN-only, documented the default-scope security cap and the `--scope security` blocking set, and added the 12/14 coverage reading.
+- Verified: `node --test` 5/5.
+
 ## [0.5.0] - 2026-11-07
 
 ### Added

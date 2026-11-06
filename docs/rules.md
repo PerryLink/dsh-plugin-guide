@@ -22,8 +22,10 @@ incomplete/not-run, `3` usage error. `WARN` is not a clean pass and
 The JSON report also carries a sibling `advice[]` array: one entry per live
 detail, with `title`, `why`, `fix`, `docsUrl`, `severity`, and `evidence`. It is
 additive and never changes the verdict (turn it off with `--no-advice`). The
-`docsUrl` follows the checker's `DOCS_BASE` (currently `v0.4.4`); if it points
-at an older page, this table is the current mapping.
+`docsUrl` follows the checker's `DOCS_BASE`: 1.6.1 pins `v0.4.6`, and the 1.6.2
+release moves it to guide `v0.5.0`. The `docs/security.md` anchors used by the
+`C-15`–`C-22` advice exist in 0.5.0; if a link points at an older page, this
+table is the current mapping.
 
 <a id="scope-matrix"></a>
 ## Which checks run in which scope
@@ -35,7 +37,7 @@ at an older page, this table is the current mapping.
 | `--scope entry --entry-claim static` | 01, 02, 11, 12, 13 (+ 03 for listing) | 04–09 are attempted and printed (usually `ERROR`/`NA`), 14 is `NA`; a `DSC-11`/`DSC-12`/`DSC-13` FAIL is downgraded to `WARN` |
 | `--scope entry --entry-claim runtime` | + 14 | 14 carries the runtime verdict, not 04–09 |
 | `--scope mvp` | 01, 02, 04–09 | the MVP subset, labelled `MVP-13` |
-| `--scope security` (proposed, not in 1.4.x) | + 15, 16, 17, 21; 18/19/20/22 advisory; 21 listing only | security scope only; DS-C 01–14 are unchanged and the report gains an additive `security` block |
+| `--scope security` (1.6.0+) | + 15, 16, 17, 21; 18/19/20/22 advisory | `checks[]` becomes 22 (14 + 8); DS-C 01–14 are unchanged and the report gains an additive `security` block. `15`/`16`/`17` blocking, `21` mandatory but WARN-only |
 
 <a id="table"></a>
 ## The check table
@@ -56,24 +58,26 @@ at an older page, this table is the current mapping.
 | **DSC-12** | C-12 credentials + seams | Blocking (ds-c); `WARN` in ENTRY. | Read credentials through `ctx.credentials`, declare `credentials:list` for `listRecords()` and `credentials:provider` for a provider, and never read the backing file. | [entry.md § credentials and seams](entry.md#credentials-and-seams) |
 | **DSC-13** | C-13 labels + mirror | Blocking (ds-c); `WARN` in ENTRY, advisory as a WARN. | Use only the five labels, add the label each capability requires, point `dsh.upstream` at an https URL that is not this package **and** add `mirror`, and drop endorsement words. | [entry.md § labels and mirror](entry.md#labels-and-mirror) |
 | **DSC-14** | C-14 entry run | Blocking only for a runtime claim (`--scope entry`). | Supply the real host: `--host` for a bundle (G0–G3) or `--runtime` for a plugin (L1); a client or preset cannot claim runtime. | [entry.md § runtime surface](entry.md#runtime-surface) |
-| **DSC-15** | C-15 lifecycle scripts (proposed) | **Blocking only under `--scope security`**; not run in the default scopes. | Ship no `preinstall`/`install`/`postinstall`/`prepare`; if one is unavoidable, no download-to-shell, `base64 -d`, or `node -e`. | [security.md § author 4](security.md#author-files) |
-| **DSC-16** | C-16 dynamic execution (proposed) | **Blocking only under `--scope security`**. | Remove `eval`, `new Function`, `vm.runIn*`, `module._compile`, and `process.binding`; dynamic `import()` takes a static path only. | [security.md § author 4](security.md#author-files) |
-| **DSC-17** | C-17 sensitive files (proposed) | **Blocking only under `--scope security`**. | Read credentials through `ctx.credentials`; never read `~/.ssh`, `~/.aws`, `.npmrc`, `.netrc`, or a credential backing file. | [security.md § author 2](security.md#author-credentials) |
-| **DSC-18** | C-18 egress endpoints (proposed) | **WARN** under `--scope security` (clue, not blocking). | Use a constant `https` allowlist, `redirect: 'manual'`, no credentials across origins, and disclose third-party endpoints. | [security.md § author 3](security.md#author-egress) |
-| **DSC-19** | C-19 obfuscation/binary (proposed) | **Advisory** under `--scope security`. | No minified blobs or binary-only code; ship wasm/native with source, build method, and `sha256`. | [security.md § author 4](security.md#author-files) |
-| **DSC-20** | C-20 prompt injection (proposed) | **Advisory** (FLOW runtime, v2), never blocking. | Treat tool/web/file/session text as untrusted, validate `output.schema`, and wrap external text before it reaches a prompt. | [security.md § author 5](security.md#author-prompt) |
-| **DSC-21** | C-21 supply chain (proposed) | **Blocking under `--scope security` in the listing profile**; non-blocking outside a listing. | Commit the lockfile, pin dependencies, reject typosquat/lookalike scopes, and treat an unpinned or script-bearing dependency as `not-run`. | [security.md § author 6](security.md#author-publish) |
-| **DSC-22** | C-22 provenance/integrity (proposed) | **Advisory**, never blocking. | Publish with provenance/attestations; `dist.integrity` only binds the tarball to the registry, not the code to a source. | [security.md § author 6](security.md#author-publish) |
+| **DSC-15** | C-15 lifecycle scripts | **Blocking only under `--scope security`** (1.6.0+); not run in the default scopes. It reads the referenced in-package script body (≤512 KB) as well as the command string. | Ship no `preinstall`/`install`/`postinstall`/`prepare`; if one is unavoidable, no download-to-shell, `base64 -d`, or `node -e`. | [security.md § author 4](security.md#author-files) |
+| **DSC-16** | C-16 dynamic execution | **Blocking only under `--scope security`**. `eval`/`Function`/`vm`/`_compile`/`process.binding` FAIL; a bare `child_process` import is WARN in 1.6.1, and the dangerous-subprocess FAIL is 1.6.2. | Remove `eval`, `new Function`, `vm.runIn*`, `module._compile`, and `process.binding`; dynamic `import()` takes a static path only. | [security.md § author 4](security.md#author-files) |
+| **DSC-17** | C-17 sensitive files | **Blocking only under `--scope security`**. | Read credentials through `ctx.credentials`; never read `~/.ssh`, `~/.aws`, `.npmrc`, `.netrc`, or a credential backing file. | [security.md § author 2](security.md#author-credentials) |
+| **DSC-18** | C-18 egress endpoints | **WARN** under `--scope security` (clue, not blocking). | Use a constant `https` allowlist, `redirect: 'manual'`, no credentials across origins, and disclose third-party endpoints. | [security.md § author 3](security.md#author-egress) |
+| **DSC-19** | C-19 obfuscation/binary | **Advisory** under `--scope security`. | No minified blobs or binary-only code; ship wasm/native with source, build method, and `sha256`. | [security.md § author 4](security.md#author-files) |
+| **DSC-20** | C-20 prompt injection | **Advisory**: static v1 (external text into `systemPrompt`, instruction-like literals) plus a runtime hook in v2; never blocking. | Treat tool/web/file/session text as untrusted, validate `output.schema`, and wrap external text before it reaches a prompt. | [security.md § author 5](security.md#author-prompt) |
+| **DSC-21** | C-21 supply chain | **Mandatory under `--scope security`, but WARN-only and never blocking** (listing included). | Commit the lockfile, pin dependencies, reject typosquat/lookalike scopes, and treat an unpinned or script-bearing dependency as `not-run`. | [security.md § author 6](security.md#author-publish) |
+| **DSC-22** | C-22 provenance/integrity | **Advisory**, never blocking. | Publish with provenance/attestations; `dist.integrity` only binds the tarball to the registry, not the code to a source. | [security.md § author 6](security.md#author-publish) |
 
 `DSC-14` has no `C-14` in the clause text; it is the ENTRY run-set gate
 (`ENT-14` in 31-DSH-ENTRY). Treat it as "did the thing actually start".
 
-`DSC-15`–`DSC-22` are **proposed** by the 2026-11 audit and are not in
-`dsh-standards` 1.4.x. Only `--scope security` makes `15`/`16`/`17` (and `21`
-in a listing) blocking; in every other scope they are absent or capped at WARN,
-and none of them changes the existing DS-C verdict. They are static evidence:
-four can fail mechanically, four only return clues, and no PASS proves a plugin
-safe. The author/user/market checklists are in [security.md](security.md).
+`DSC-15`–`DSC-22` shipped in `dsh-standards` 1.6.0; 1.5.x and earlier treat
+`--scope security` as an unknown scope and exit `3`. Only `--scope security`
+makes `15`/`16`/`17` blocking; `21` is mandatory but WARN-only and never blocks
+(listing included). In every other scope the eight stay out of `checks[]`; their
+FAILs are capped to WARN in the separate `security` block and never change the
+DS-C verdict. They are static evidence: three can fail mechanically, one only
+warns, four only return clues, and no PASS proves a plugin safe. The
+author/user/market checklists are in [security.md](security.md).
 
 <a id="warn"></a>
 ## Two things that look like passes but are not
