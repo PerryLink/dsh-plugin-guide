@@ -43,8 +43,8 @@ dsh plugin --profile web add dsh-plugin-guide
 | **`dsh-primer`** | 旧的构建/脚手架技能和 CLI（原 `dsh-plugin-guide` 0.3.x） |
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v3-dark.svg">
-  <img src="docs/assets/dsh-plugin-guide-flow-v3-light.svg" width="100%" alt="dsh-plugin-guide 装配与路由流程：cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v4-dark.svg">
+  <img src="docs/assets/dsh-plugin-guide-flow-v4-light.svg" width="100%" alt="dsh-plugin-guide 装配与路由流程：cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
 </picture>
 
 ## 三步上手

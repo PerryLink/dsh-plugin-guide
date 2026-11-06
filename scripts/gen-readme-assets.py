@@ -199,76 +199,69 @@ def hero(lang, skin):
     print(f'dsh-plugin-guide-hero-{lang}-{skin}.webp')
 
 
-FLOW = {'light': dict(bg='#ffffff', card='#fcfcfe', edge='#e6e3f0',
-                      text='#141419', sub='#4d5261', accent='#4B67B4',
-                      accent2='#16a34a', grid='#f2f0f8', pill='#ece7f9'),
-        'dark': dict(bg='#0d1117', card='#161b26', edge='#2a3142',
-                     text='#f0f3f9', sub='#a8b1c4', accent='#8496f5',
-                     accent2='#3fb950', grid='#182031', pill='#242d42')}
+FLOW = {'light': dict(bg='#ffffff', zone='#f7f5fc', card='#ffffff',
+                      edge='#e6e3f0', text='#141419', sub='#4d5261',
+                      faint='#8f94a4', accent='#4B67B4', accent2='#16a34a',
+                      grid='#f2f0f8', pill='#ece7f9'),
+        'dark': dict(bg='#0d1117', zone='#121824', card='#161b26', edge='#2a3142',
+                     text='#f0f3f9', sub='#a8b1c4', faint='#737b8d',
+                     accent='#8496f5', accent2='#3fb950', grid='#182031',
+                     pill='#242d42')}
 
 
 def flow_svg(skin):
     s = FLOW[skin]
     W, H = 1100, 660
-    nodes = [('01', 'cordis.patch.yml', 'one inserted row', 50),
-             ('02', 'index.js', 'ctx.skills.register', 256),
-             ('03', 'SKILL.md', 'the skill body', 462),
-             ('04', 'docs/levels.md', 'ENTRY / FLOW / BOOST', 668),
-             ('05', 'dsh-standards', 'dsh-levels verdict', 874)]
-    nw, nh, y0 = 176, 118, 190
     solid = "0.10" if skin == 'light' else "0.55"
-    p = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="dsh-plugin-guide assembly and routing">
+    levels = [('ENTRY', '入门 · 6 个问题', '能装上、能跑、不崩', 50, 150),
+              ('FLOW', '顺畅 · 7 个问题', '日常任务顺、错误可恢复', 84, 268),
+              ('BOOST', '加速 · 5 个问题', '提效证据可复现', 118, 386)]
+    p = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="dsh-plugin-guide three-level ladder ending in a routing arrow">
 <defs>
-  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="{s['accent']}" stop-opacity=".15"/>
-    <stop offset=".5" stop-color="{s['accent']}" stop-opacity=".9"/>
-    <stop offset="1" stop-color="{s['accent']}" stop-opacity=".15"/>
-  </linearGradient>
   <filter id="soft" x="-40%" y="-40%" width="180%" height="200%">
     <feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1b1735" flood-opacity="{solid}"/>
   </filter>
   <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
     <circle cx="1.3" cy="1.3" r="1.3" fill="{s['grid']}"/>
   </pattern>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="{s['accent2']}"/>
+  </marker>
 </defs>
 <rect width="{W}" height="{H}" fill="{s['bg']}"/>
 <rect width="{W}" height="{H}" fill="url(#dots)" opacity=".5"/>
-<text x="50" y="62" fill="{s['text']}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="32" font-weight="700">dsh-plugin-guide</text>
-<text x="50" y="90" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">assembly and routing · the guide asks, dsh-standards decides</text>
-<rect x="50" y="108" width="1000" height="1.6" rx="1" fill="{s['edge']}"/>''']
-    for i, (num, title, sub, x) in enumerate(nodes):
-        accent = s['accent2'] if i == 4 else (s['accent'] if i == 1 else s['edge'])
-        stroke = 2.6 if i in (1, 4) else 1.3
-        p.append(f'''<g filter="url(#soft)">
-  <rect x="{x}" y="{y0}" width="{nw}" height="{nh}" rx="17" fill="{s['card']}" stroke="{accent}" stroke-width="{stroke}"/>
-</g>
-<circle cx="{x + 24}" cy="{y0 + 24}" r="12" fill="{s['pill']}"/>
-<text x="{x + 24}" y="{y0 + 29}" text-anchor="middle" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700">{num}</text>
-<text x="{x + nw / 2}" y="{y0 + 66}" text-anchor="middle" fill="{s['text']}" font-family="ui-monospace, monospace" font-size="15.5" font-weight="700">{escape(title)}</text>
-<text x="{x + nw / 2}" y="{y0 + 92}" text-anchor="middle" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12.5">{escape(sub)}</text>''')
-        if i < len(nodes) - 1:
-            x0, x1 = x + nw + 5, nodes[i + 1][3] - 5
-            mid, yy = (x0 + x1) / 2, y0 + nh / 2
-            p.append(f'''<path d="M{x0} {yy} C{mid} {yy}, {mid} {yy}, {x1} {yy}" stroke="url(#lineGrad)" stroke-width="2.2" fill="none"/>
-<path d="M{x1 - 10} {yy - 5} l8 5 -8 5" fill="none" stroke="{s['accent']}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>''')
-    # three level chips under nodes 2..4
-    chips = [('ENTRY', 'installs'), ('FLOW', 'works daily'), ('BOOST', 'faster')]
-    for i, (code, sub) in enumerate(chips):
-        cx = 256 + i * 206
-        p.append(f'''<g filter="url(#soft)">
-  <rect x="{cx}" y="378" width="176" height="58" rx="15" fill="{s['pill']}" stroke="{s['accent']}" stroke-width="1.2"/>
-</g>
-<text x="{cx + 88}" y="404" text-anchor="middle" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">{code}</text>
-<text x="{cx + 88}" y="423" text-anchor="middle" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12.5">{sub}</text>''')
-    p.append(f'''<rect x="50" y="476" width="1000" height="58" rx="15" fill="{s['card']}" stroke="{s['edge']}"/>
-<text x="74" y="502" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">route / dsh-levels</text>
-<text x="74" y="522" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">the guide explains what to check; the verdict belongs to dsh-standards</text>
-<text x="50" y="596" fill="{s['sub']}" font-family="ui-monospace, monospace" font-size="13">Apache-2.0 · PerryLink DSH plugin family</text>
+<text x="50" y="58" fill="{s['text']}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="32" font-weight="700">dsh-plugin-guide</text>
+<text x="50" y="86" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">three levels, deepening questions · the guide asks, dsh-standards decides</text>
+<text x="50" y="122" fill="{s['accent']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ADOPTION DEPTH</text>
+<line x1="38" y1="150" x2="38" y2="482" stroke="{s['accent']}" stroke-width="2" stroke-dasharray="4 6" opacity=".6"/>
+''']
+    for i, (code, sub, desc, x, y) in enumerate(levels):
+        p.append(f'''<rect x="{x}" y="{y}" width="392" height="92" rx="18" fill="{s['card']}" stroke="{s['accent'] if i == 2 else s['edge']}" stroke-width="{2.4 if i == 2 else 1.3}" filter="url(#soft)"/>
+<circle cx="{x + 32}" cy="{y + 46}" r="17" fill="{s['pill']}"/>
+<text x="{x + 32}" y="{y + 52}" text-anchor="middle" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="14" font-weight="700">{i + 1}</text>
+<text x="{x + 66}" y="{y + 36}" fill="{s['text']}" font-family="ui-monospace, monospace" font-size="20" font-weight="700">{code}</text>
+<text x="{x + 66}" y="{y + 60}" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15">{sub}</text>
+<text x="{x + 66}" y="{y + 80}" fill="{s['faint']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12.5">{desc}</text>
+<line x1="38" y1="{y + 46}" x2="{x}" y2="{y + 46}" stroke="{s['accent']}" stroke-width="1.6" opacity=".35"/>''')
+    p.append(f'''<path d="M510 432 L690 432" stroke="{s['accent2']}" stroke-width="2.6" fill="none" marker-end="url(#arr)"/>
+<text x="512" y="418" fill="{s['accent2']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">verdict to</text>
+<rect x="700" y="300" width="350" height="264" rx="20" fill="{s['card']}" stroke="{s['accent2']}" stroke-width="2.4" filter="url(#soft)"/>
+<text x="726" y="334" fill="{s['accent2']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">dsh-standards</text>
+<text x="726" y="366" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">DSC-01...13 static checks</text>
+<text x="726" y="394" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">L1-L3 runtime measurement</text>
+<text x="726" y="422" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">dsh-levels verdict</text>
+<line x1="726" y1="444" x2="1024" y2="444" stroke="{s['grid']}" stroke-width="2"/>
+<text x="726" y="470" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">certification, scoring, ranking: none of them here</text>
+<text x="726" y="494" fill="{s['faint']}" font-family="ui-monospace, monospace" font-size="12">guide asks · standards decides</text>
+<text x="726" y="530" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="12">ENTRY / FLOW / BOOST</text>
+<rect x="50" y="560" width="1000" height="52" rx="14" fill="{s['zone']}" stroke="{s['edge']}"/>
+<text x="74" y="582" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="12.5" font-weight="700">route / dsh-levels</text>
+<text x="74" y="602" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">every question has an owner: the guide says what to check, the verdict belongs to the checker</text>
 </svg>''')
-    with open(os.path.join(OUT, f'dsh-plugin-guide-flow-v3-{skin}.svg'), 'w',
+    with open(os.path.join(OUT, f'dsh-plugin-guide-flow-v4-{skin}.svg'), 'w',
               encoding='utf-8', newline='\n') as fh:
         fh.write('\n'.join(p) + '\n')
-    print(f'dsh-plugin-guide-flow-v3-{skin}.svg')
+    print(f'dsh-plugin-guide-flow-v4-{skin}.svg')
 
 
 def main():

@@ -43,8 +43,8 @@ dsh plugin --profile web add dsh-plugin-guide
 | **`dsh-primer`** | पुरानी बिल्ड/स्कैफ़ोल्ड स्किल और CLI (पूर्व `dsh-plugin-guide` 0.3.x) |
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v3-dark.svg">
-  <img src="docs/assets/dsh-plugin-guide-flow-v3-light.svg" width="100%" alt="dsh-plugin-guide assembly and routing: cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v4-dark.svg">
+  <img src="docs/assets/dsh-plugin-guide-flow-v4-light.svg" width="100%" alt="dsh-plugin-guide assembly and routing: cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
 </picture>
 
 ## तीन चरणों में शुरुआत
