@@ -7,6 +7,15 @@
 
 
 
+
+
+## [0.5.3] - 2026-11-07
+
+### Fixed
+
+- `docs/security.md`: version references moved to 1.6.4+ and `security.partial[]` is now described as present.
+- Verified: `node --test` 5/5.
+
 ## [0.5.2] - 2026-11-07
 
 ### Fixed

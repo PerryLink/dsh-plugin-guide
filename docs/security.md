@@ -11,7 +11,7 @@
 `DSC-15`–`DSC-22` are the **static security checks** shipped in
 `dsh-standards` **1.6.0**; `--scope security` is a released flag
 from 1.6.0 on (1.5.x and earlier treat `security` as an unknown scope and exit
-`3`; 1.6.1 supports it).
+`3`; 1.6.4 supports it).
 With `--scope security`, `checks[]` carries all **22** checks (`DSC-01`–`DSC-14`
 plus `DSC-15`–`DSC-22`); the default `ds-c` run still carries 14 and reports the
 eight in the additive `security` block. Three can block (`15`, `16`, `17`), one
@@ -393,7 +393,7 @@ stale empty array hides the very `C-11.2` failure the check is for.
 | runtime observation | sandbox with a network policy + capture | the only evidence that code actually egressed, read a file, or rewrote a prompt |
 
 `DSC-16` blocks on `eval`/`new Function`/`vm`/`module._compile`/`process.binding`.
-A bare `child_process` import is WARN in 1.6.1; the FAIL for a statically
+A bare `child_process` import is WARN in 1.6.4; the FAIL for a statically
 dangerous subprocess command is scoped to 1.6.2.
 
 The JSON report carries an additive top-level `security` block; the DS-C verdicts
@@ -415,7 +415,7 @@ mandatory `15`/`16`/`17`/`21` all produced a result", not "safe".
   `status=fail`, exit `1`. `DSC-21` findings are WARN-only and never block;
   `18`/`19`/`20`/`22` are advisory. A mandatory check with no result makes
   `security.status=incomplete`.
-- **Partial:** 1.6.1 has no `security.partial[]`. A partly-run check is
+- **Partial:** 1.6.4+ reports `security.partial[]`; a partly-run check is
   `security.checks[].coverage === "partial"` (and top-level `coverage.partial` /
   `buckets.partial`); `security.notRun[]` only carries `NA`/`ERROR`/full
   `not-run`. Do not read the four arrays as complete coverage.
