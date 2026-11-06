@@ -5,6 +5,15 @@
 
 
 
+
+
+## [0.5.2] - 2026-11-07
+
+### Fixed
+
+- `docs/security.md`: the `check --scope security` example now uses `--json` (it exited 3), and the marketplace section points at the real decision table / contract with concrete withdrawal and appeal fields.
+- Verified: `node --test` 5/5.
+
 ## [0.5.1] - 2026-11-07
 
 ### Fixed

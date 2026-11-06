@@ -19,7 +19,7 @@ is mandatory but **WARN-only and never blocks** (`21`, listing included), and
 four only produce clues (`18`, `19`, `20`, `22`); all eight reduce risk, and
 **none of them proves a plugin is safe**.
 
-The `security` block is a **separate view**, not a fourth verdict. In the default
+The `security` block is a **separate view**, a scope, not a fourth layer. In the default
 scope a security `FAIL` is capped to `WARN` inside `security.checks[]`; it is
 listed only in `security.warn[]` (`security.blocking[]` stays empty), does not
 enter `buckets.blocking` or `conclusion.headline`, and changes neither `status`
@@ -271,7 +271,7 @@ clearance.
 npm view pkg@1.2.3 version dsh scripts dist.integrity dist.signatures dist.attestations repository.url time.modified --json
 
 # the released static security scope (1.6.0+; does not run the plugin)
-npx dsh-standards check ./pkg --scope security --format json
+npx dsh-standards check ./pkg --scope security --json
 ```
 
 **During install.** Start from a throwaway profile (`dsh plugin --profile lab
@@ -321,12 +321,21 @@ read from the manifest. Missing data is never a pass. State that static checks
 cover known patterns and are not a security audit. The checker can import the
 plugin, so do not run it against an untrusted package on a host you care about.
 
-**Disputes and delisting.** Hard-reject only four cases: not a plugin /
-unparseable, source not pinnable, impersonation or infringement, and a malicious
-security hold (manual review with an appeal). List everything else with the
-finding attached. The author can withdraw at any time; a 90-day expiry removes
-only the label; a 14-day appeal window; keep history for at least two years and
-write the reason to `market-actions.jsonl`.
+**Disputes and delisting.** Hard-reject only four cases, each with its reason
+code: `not-a-plugin`, `source-not-pinnable`, `impersonation-or-infringement`,
+and `security-hold` (manual review with an appeal). List everything else with
+the finding attached. Market actions are not label fields: every listing and
+rejection is one row of `market-actions.jsonl`
+(`ts/subject/action/reasonCode/evidenceUrls/actor/signature/appealUrl`); a
+rejection carries one of the four reason codes above, and the authoritative
+fields, acting roles, and appeal link are in
+`00-live/market-contract/DECISION-TABLE.md` §2 and
+`00-live/market-contract/CONTRACT.md` §7. The author can withdraw at any time
+(`lifecycle` becomes `withdrawn` at `withdrawnAt`); a 90-day expiry counts from
+the record's `checkedAt` (rev1 records: from `generatedAt` to `expiresAt`) and
+removes only the label; a project-initiated withdrawal must carry a reason and
+evidence and opens a 14-day appeal window counted from `withdrawnAt` (shown as
+`under-review` while open). Keep record history for at least two years.
 
 **Wording ban.** Never write "secure", "certified", "official", "audited", or
 "100% risk-free", and never imply certification with a shield or a checkmark.
