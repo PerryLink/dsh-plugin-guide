@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-dark.svg">
-  <img src="docs/assets/dsh-plugin-guide-flow-light.svg" width="100%" alt="dsh-plugin-guide, असेंबली और रूटिंग: cordis.patch.yml एक पंक्ति जोड़ता है → index.js ctx.skills.register से स्किल दर्ज करता है → SKILL.md का बॉडी → तीन परतों के लिए docs/levels.md → निर्णय के लिए dsh-standards का dsh-levels">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-hero-en-dark.webp">
+  <img src="docs/assets/dsh-plugin-guide-hero-en-light.webp" width="100%" alt="dsh-plugin-guide: ENTRY / FLOW / BOOST question lists; the verdict belongs to dsh-standards">
 </picture>
 
 # dsh-plugin-guide
@@ -41,6 +41,11 @@ dsh plugin --profile web add dsh-plugin-guide
 | **`dsh-standards`** | निष्पादन छत्र: ENTRY/FLOW जाँचें, `dsh-levels` ऑडिट और स्पेक फ़ाइलें |
 | **`dsh-plugin-spec`** | निम्न-स्तरीय नियम-पाठ और धारा स्रोत |
 | **`dsh-primer`** | पुरानी बिल्ड/स्कैफ़ोल्ड स्किल और CLI (पूर्व `dsh-plugin-guide` 0.3.x) |
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v3-dark.svg">
+  <img src="docs/assets/dsh-plugin-guide-flow-v3-light.svg" width="100%" alt="dsh-plugin-guide assembly and routing: cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
+</picture>
 
 ## तीन चरणों में शुरुआत
 

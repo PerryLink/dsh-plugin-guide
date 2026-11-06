@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-dark.svg">
-  <img src="docs/assets/dsh-plugin-guide-flow-light.svg" width="100%" alt="dsh-plugin-guide, montagem e roteamento: cordis.patch.yml insere uma linha → index.js registra a skill via ctx.skills.register → o corpo de SKILL.md → docs/levels.md para as três camadas → dsh-levels do dsh-standards para o veredito">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-hero-en-dark.webp">
+  <img src="docs/assets/dsh-plugin-guide-hero-en-light.webp" width="100%" alt="dsh-plugin-guide: ENTRY / FLOW / BOOST question lists; the verdict belongs to dsh-standards">
 </picture>
 
 # dsh-plugin-guide
@@ -41,6 +41,11 @@ dsh plugin --profile web add dsh-plugin-guide
 | **`dsh-standards`** | O guarda-chuva de execução: verificações ENTRY/FLOW, auditoria `dsh-levels` e os arquivos de especificação |
 | **`dsh-plugin-spec`** | O texto de regras de baixo nível e a fonte das cláusulas |
 | **`dsh-primer`** | A skill e CLI legadas de construção/andaime (antigo `dsh-plugin-guide` 0.3.x) |
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v3-dark.svg">
+  <img src="docs/assets/dsh-plugin-guide-flow-v3-light.svg" width="100%" alt="dsh-plugin-guide assembly and routing: cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
+</picture>
 
 ## Instalação em três passos
 

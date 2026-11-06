@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-dark.svg">
-  <img src="docs/assets/dsh-plugin-guide-flow-light.svg" width="100%" alt="dsh-plugin-guide 装配与路由：cordis.patch.yml 插入一行 → index.js 经 ctx.skills.register 注册技能 → SKILL.md 正文 → docs/levels.md 三层 → dsh-standards 的 dsh-levels 出判定">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-hero-zh-dark.webp">
+  <img src="docs/assets/dsh-plugin-guide-hero-zh-light.webp" width="100%" alt="dsh-plugin-guide：ENTRY / FLOW / BOOST 三层问题清单，判定交给 dsh-standards">
 </picture>
 
 # dsh-plugin-guide
@@ -41,6 +41,11 @@ dsh plugin --profile web add dsh-plugin-guide
 | **`dsh-standards`** | 执行总包：ENTRY/FLOW 检查、三层审计（`dsh-levels`）、规范文件 |
 | **`dsh-plugin-spec`** | 底层规则文本与条款来源 |
 | **`dsh-primer`** | 旧的构建/脚手架技能和 CLI（原 `dsh-plugin-guide` 0.3.x） |
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v3-dark.svg">
+  <img src="docs/assets/dsh-plugin-guide-flow-v3-light.svg" width="100%" alt="dsh-plugin-guide 装配与路由流程：cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
+</picture>
 
 ## 三步上手
 
