@@ -22,8 +22,8 @@ incomplete/not-run, `3` usage error. `WARN` is not a clean pass and
 The JSON report also carries a sibling `advice[]` array: one entry per live
 detail, with `title`, `why`, `fix`, `docsUrl`, `severity`, and `evidence`. It is
 additive and never changes the verdict (turn it off with `--no-advice`). The
-`docsUrl` is built from a release-pinned base (`v0.4.3` in the current rule
-table); if it points at an older page, this table is the current mapping.
+`docsUrl` follows the checker's `DOCS_BASE` (currently `v0.4.4`); if it points
+at an older page, this table is the current mapping.
 
 <a id="scope-matrix"></a>
 ## Which checks run in which scope

@@ -1,5 +1,14 @@
 # Changelog
 
+
+
+## [0.4.5] - 2026-11-06
+
+### Fixed
+
+- `docs/rules.md` now says the docs base follows the checker's `DOCS_BASE` (currently `v0.4.4`) instead of a stale `v0.4.3`.
+- Verified: `node --test` 5/5.
+
 ## [0.4.4] - 2026-11-06
 
 ### Added
