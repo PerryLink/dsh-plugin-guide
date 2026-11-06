@@ -201,6 +201,23 @@ the original `command[]`, `exitCode`, the last 20 lines of stderr, and the
 absolute log path. Then attach the clause anchor the journey maps to (for
 example `J2.toggle → 32-DSH-FLOW #R2`).
 
+<a id="security-boundary"></a>
+## Security boundary
+
+J5 checks that permissions are declared consistently; it is static preflight,
+not a security test. The proposed `DSC-15`–`DSC-22` live behind a separate
+`--scope security` that `dsh-standards` 1.4.x does not ship yet, and they never
+turn a FLOW journey into a security pass. Outside that scope a security finding
+is advisory: it is capped at WARN and cannot change the FLOW verdict.
+
+Static checks also cannot observe what a plugin does at runtime — which URLs it
+reaches, which files it reads, or whether a prompt was corrupted. Those answers
+need a sandbox with a network policy plus capture, and a sandbox that only
+limits subprocess file writes is not that boundary. So do not write “FLOW
+passes, therefore it is safe”; write what was observed, and keep the security
+claim `not-run` until it was actually run. Details:
+[security.md](security.md#scope).
+
 ## Status, not a score
 
 | Status | Meaning |

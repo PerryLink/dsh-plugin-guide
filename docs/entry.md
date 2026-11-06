@@ -160,6 +160,10 @@ pass.
   fs write, or subprocess spawn. Do that work in `apply()` and clean up with
   `ctx.effect()`.
 - README says how to install and what it needs.
+- No `preinstall`/`install`/`postinstall`/`prepare` script in the published
+  package; if a build is needed, run it in CI, not on the user's machine.
+- No `eval`/`new Function`/`vm`; credentials go through `ctx.credentials`, not
+  a backing file; third-party endpoints are disclosed.
 - No “official”, “certified”, “secure”, or ranking claim.
 
 ## Declaration fields
@@ -303,7 +307,42 @@ export function apply(ctx) {
 }
 ```
 
+<a id="security-checks"></a>
+## Security checks (DSC-15 to DSC-22)
+
+ENTRY is a compatibility gate; it does not answer "is this safe to install". The
+2026-11 audit proposes eight security checks as a separate scope:
+
+| Check | What it looks for | Verdict in `--scope security` |
+|---|---|---|
+| `DSC-15` | `preinstall`/`install`/`postinstall`/`prepare` that download, decode, or execute | blocking |
+| `DSC-16` | `eval`, `new Function`, `vm`, `module._compile`, `process.binding` | blocking |
+| `DSC-17` | reads of `~/.ssh`, `~/.aws`, `.npmrc`, `.netrc`, or credential backing files | blocking |
+| `DSC-18` | non-https, userinfo, bare-IP, webhook/paste/tunnel egress targets | WARN (clue) |
+| `DSC-19` | minified blobs, large base64 blocks, wasm/native without source | advisory |
+| `DSC-20` | tool/web text flowing into the system prompt without a boundary | advisory (runtime, v2) |
+| `DSC-21` | typosquat names, fake scopes, unpinned or script-bearing dependencies | blocking in listing |
+| `DSC-22` | `dist.integrity`, signatures, provenance attestations | advisory |
+
+These checks are **not released** in `dsh-standards` 1.4.x, and `--scope
+security` is a proposed flag; if your checker exits `3` for an unknown scope,
+that is expected. Outside that scope they do not run, and a security `FAIL` is
+capped at WARN, so it cannot change an ENTRY verdict. Four are mechanical and
+four only return clues — none of them proves a plugin is safe.
+
+```sh
+# proposed; not available in 1.4.x
+npx dsh-standards ./my-plugin --scope security --format json
+```
+
+The author, user, and market checklists — with copyable manifests, commands,
+and the boundary between static checks and a runtime sandbox — are in
+[security.md](security.md). ENTRY's own declaration fields are not enforcement,
+and neither is a `DSC-11` PASS.
+
 ## What ENTRY does not do
 
 It is not a security audit, sandbox, full contract audit, market gate, score, or
-ranking. Those are separate concerns; do not borrow their authority.
+ranking. Those are separate concerns; do not borrow their authority. The
+proposed `DSC-15`–`DSC-22` are a static security scope, covered in
+[security.md](security.md), not part of the ENTRY verdict.

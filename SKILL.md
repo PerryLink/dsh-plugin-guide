@@ -56,3 +56,7 @@ It defines the three layers and the difference between a check and advice.
 This project is non-official and has no certification, accreditation, security
 audit, or market gate. It does not score or rank plugins. When in doubt, link to
 the source document and state what was not run.
+
+For plugin security — capabilities, credentials, egress, install scripts, and
+supply chain — read `docs/security.md`. Its checks are static and advisory,
+and runtime security needs a sandbox, not a checker.

@@ -90,6 +90,19 @@ pitfalls”), record it as a WARN or a note. Do not invent a number.
   loader/context-level fixtures.
 - BOOST is not a market gate and must not become a certification.
 
+<a id="security-boundary"></a>
+## Security boundary
+
+BOOST measures Cordis practice, not security. A reversible effect or a seam is
+good engineering, and it reduces blast radius, but it is not a sandbox: the
+plugin still shares the host process, the user, and the network. The proposed
+`DSC-15`–`DSC-22` checks are static and advisory outside `--scope security`
+(which `dsh-standards` 1.4.x does not ship yet); they never change a BOOST
+result and none of them proves a plugin safe. Runtime questions — actual egress,
+file reads, prompt corruption — require a sandbox with a network policy and
+capture, not an evidence card. Keep the security claim `not-run` instead of
+borrowing BOOST evidence for it. See [security.md](security.md#scope).
+
 ## Run the audit
 
 ```sh

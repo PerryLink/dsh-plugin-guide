@@ -20,6 +20,7 @@
 | an ENTRY question | [entry.md](entry.md) — package shape, runtime surface, declarations |
 | a FLOW journey to record | [flow.md](flow.md) — the `dsh-flow-evidence/2` file and J1–J8 evidence |
 | a BOOST practice to evidence | [boost.md](boost.md) — the thirteen-field evidence card |
+| a security question — what can a plugin do, is this safe to install, what must a market disclose | [security.md](security.md) — author/user/market checklists and the `DSC-15`–`DSC-22` boundary |
 
 The two reference docs exist because a report ID alone does not tell you what to
 change: [rules.md](rules.md) maps IDs to fixes, and [recipes.md](recipes.md)
@@ -73,6 +74,24 @@ Start here: [BOOST guide](boost.md) and the canonical
 The card fields are in
 [boost.md § evidence, not a badge](boost.md#thirteen-fields).
 
+## Security is not a fourth layer
+
+Security checks are a **scope**, not a level, and they are proposed, not
+released: `DSC-15`–`DSC-22` sit behind a `--scope security` that
+`dsh-standards` 1.4.x does not have yet. They never change an ENTRY, FLOW, or
+BOOST verdict, and outside that scope a security `FAIL` is capped at WARN.
+
+- Static checks only match known source shapes; they cannot see runtime egress,
+  file reads, or prompt corruption. Runtime security needs a sandbox with a
+  network policy and capture.
+- No security `PASS` means “safe”. It means “no known pattern matched in this
+  static pass”.
+- The three layers stay about compatibility, user journeys, and Cordis practice.
+  Do not turn them into a security certification, and do not add a “security
+  level” to the vocabulary.
+
+Read [security.md](security.md) for the author, user, and market checklists.
+
 ## Run the checks
 
 ```sh
@@ -94,5 +113,6 @@ The legacy build skill/CLI is [`dsh-primer`](https://github.com/PerryLink/dsh-pr
 - `static` ≠ `runtime`
 - `not-run` ≠ `pass`
 - `boost-evidenced` ≠ plugin grade
+- security check ≠ security audit
 - `A–D` grades (where they exist) are orthogonal to ENTRY/FLOW/BOOST
 - No official, certified, verified, audited, secure, recommended, or ranked claim

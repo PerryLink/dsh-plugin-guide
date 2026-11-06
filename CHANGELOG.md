@@ -1,6 +1,16 @@
 # Changelog
 
 
+
+
+## [0.5.0] - 2026-11-07
+
+### Added
+
+- `docs/security.md`: threat model, least privilege, credentials, egress, files/subprocess, prompt injection, dependencies/publishing, incident response, plus user and marketplace sections.
+- `docs/entry.md`, `docs/rules.md`, `docs/flow.md`, `docs/boost.md`, `docs/levels.md`: DSC-15…22 rows and the security-scope boundary (static only, never a safety proof).
+- Verified: `node --test` 5/5; `docs/security.md` ships in the package.
+
 ## [0.4.6] - 2026-11-06
 
 ### Fixed
