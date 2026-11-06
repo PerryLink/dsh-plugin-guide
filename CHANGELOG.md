@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.4] - 2026-11-06
+
+### Added
+
+- `docs/rules.md`: every DSC-01…14 check with its clause, blocking/advisory status, one-line fix and docs anchor.
+- `docs/recipes.md`: copy-pasteable `package.json`, `cordis.patch.yml` and client-entry recipes; both were run through the checker.
+- `docs/entry.md`: capabilities/labels trigger mapping, client files, DSC-12 and DSC-13 fixes.
+- `docs/flow.md`: the `dsh-flow-evidence/2` shape and the minimum evidence for J1–J8.
+- `docs/boost.md`: the 13-field evidence card the level audit validates.
+
+### Changed
+
+- `docs/levels.md` links the two new documents and the per-layer anchors.
+- Verified: `node --test` 5/5.
+
 ## [0.4.3] - 2026-11-04
 
 ### Changed

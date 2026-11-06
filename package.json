@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "A practical guide to DSH plugin quality: ENTRY checks, FLOW checks, and BOOST guidance. Community guide; not official, not a certification, not a ranking.",
   "type": "module",
   "main": "index.js",

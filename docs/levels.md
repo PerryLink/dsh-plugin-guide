@@ -11,6 +11,20 @@
 
 > **Current baseline (2026-11-04):** DSH `0.2.2-alpha.3` (npm `alpha`), Node `>=24.9.0` (since 0.2.2-alpha.2), Cordis `4.0.6-alpha.2`. `engines.dsh`, when declared, decides alone since 0.2.1-alpha.4; `ctx.menus` is gone in 0.2.2-alpha.3; Typert codecs use `create()` since 0.1.6-alpha.2; `@deepseek-ai/dsh-client-runtime` was removed in 0.1.2-alpha.1 and has no 0.2.x.
 
+## Where to go next
+
+| You have | Read |
+|---|---|
+| a report line with a `DSC-nn` or `C-n.m` ID | [rules.md](rules.md) — every check, whether it blocks, and the one-line fix |
+| a FAIL to fix right now | [recipes.md](recipes.md) — copy-paste `package.json`, `cordis.patch.yml`, and client entry |
+| an ENTRY question | [entry.md](entry.md) — package shape, runtime surface, declarations |
+| a FLOW journey to record | [flow.md](flow.md) — the `dsh-flow-evidence/2` file and J1–J8 evidence |
+| a BOOST practice to evidence | [boost.md](boost.md) — the thirteen-field evidence card |
+
+The two reference docs exist because a report ID alone does not tell you what to
+change: [rules.md](rules.md) maps IDs to fixes, and [recipes.md](recipes.md)
+holds the shapes those fixes need.
+
 ## ENTRY
 
 ENTRY is the compatibility floor. It checks the package shape, entry points,
@@ -24,6 +38,8 @@ made — an actual start.
 
 Start here: [ENTRY guide](entry.md) and the canonical
 [31-DSH-ENTRY](https://github.com/PerryLink/dsh-standards/blob/main/31-DSH-ENTRY%E5%85%A5%E9%97%A8%E8%A7%84%E8%8C%83.md).
+Then fix by ID: [rules.md `DSC-01`–`DSC-14`](rules.md#table) and
+[recipes.md](recipes.md).
 
 ## FLOW
 
@@ -38,6 +54,8 @@ modes.
 
 Start here: [FLOW guide](flow.md) and the canonical
 [32-DSH-FLOW](https://github.com/PerryLink/dsh-standards/blob/main/32-DSH-FLOW%E9%A1%BA%E7%95%85%E8%A7%84%E8%8C%83.md).
+The evidence file shape and the J1–J8 minimum are in
+[flow.md § the evidence file](flow.md#evidence-file).
 
 ## BOOST
 
@@ -52,6 +70,8 @@ parallel/jobs, and composition.
 
 Start here: [BOOST guide](boost.md) and the canonical
 [33-DSH-BOOST](https://github.com/PerryLink/dsh-standards/blob/main/33-DSH-BOOST%E5%8A%A0%E9%80%9F%E5%AE%9E%E8%B7%B5.md).
+The card fields are in
+[boost.md § evidence, not a badge](boost.md#thirteen-fields).
 
 ## Run the checks
 
