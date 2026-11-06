@@ -1,6 +1,12 @@
 # Changelog
 
 
+## [0.4.6] - 2026-11-06
+
+### Fixed
+
+- `docs/flow.md`: the `dsh-flow-evidence/2` example now matches the 1.3.0+ reader (subject name/version, producer command, checks with exit codes, evidenceHash), and the "does not read v2 yet" + flat-projection instructions are replaced with the current behaviour (v1/flat deprecated, runtime only for sandbox-attested).
+- Verified: `node --test` 5/5.
 
 ## [0.4.5] - 2026-11-06
 

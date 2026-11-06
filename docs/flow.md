@@ -32,42 +32,114 @@ a rewrite is detectable.
   "schema": "dsh-flow-evidence/2",
   "evidenceId": "01JCM8Z6R4W1V2K3N4P5Q6R7S8",
   "generatedAt": "2026-11-06T12:00:00Z",
-  "producer": { "kind": "local", "runner": "flow-collect 0.1.0", "runUrl": null, "actor": "author" },
+  "producer": {
+    "command": [
+      "node",
+      "40-checker/bin/dsh-flow-collect.mjs",
+      "--package",
+      "."
+    ],
+    "at": "2026-11-06T12:00:00Z",
+    "kind": "local",
+    "runner": "flow-collect 0.1.0",
+    "actor": "author"
+  },
   "subject": {
-    "package": "@acme/dsh-hello",
+    "name": "@acme/dsh-hello",
     "version": "0.1.0",
     "source": "npm",
-    "integrity": "sha512-…",
-    "tarballSha256": "sha256:…",
+    "integrity": "sha512-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+    "tarballSha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "commit": "ce7073d51254c26cd63b22a60835b8f948deb447",
-    "treeSha256": "sha256:…"
+    "treeSha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "treeStable": true
   },
-  "host": { "dsh": "0.2.2-alpha.2", "dshCommit": null, "cordis": "4.0.6-alpha.1", "node": "v24.11.0", "platform": "linux-x64" },
+  "host": {
+    "dsh": "0.2.2-alpha.2",
+    "dshCommit": null,
+    "cordis": "4.0.6-alpha.1",
+    "node": "v24.11.0",
+    "platform": "linux-x64"
+  },
   "journeys": {
     "J1": {
       "status": "pass",
-      "kind": "observed",
+      "limitations": [],
       "checks": [
         {
           "id": "J1.install",
-          "status": "pass",
-          "command": ["dsh", "plugin", "add", "."],
+          "kind": "observed",
+          "command": [
+            "dsh",
+            "plugin",
+            "add",
+            "."
+          ],
           "exitCode": 0,
           "startedAt": "2026-11-06T11:00:01Z",
           "endedAt": "2026-11-06T11:00:09Z",
-          "stdout": { "path": "logs/J1.install.out", "sha256": "sha256:…" },
-          "assertions": [{ "claim": "row visible in dump", "observed": true }]
+          "stdout": {
+            "path": "logs/J1.install.out",
+            "sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
+          "assertions": [
+            {
+              "claim": "row visible in dump",
+              "observed": true
+            }
+          ],
+          "durationMs": 8000
         }
-      ],
-      "limitations": []
+      ]
     },
-    "J8": { "status": "na", "reason": "no dsh.client" }
+    "J2": {
+      "status": "not-run",
+      "reason": "not collected in this example",
+      "checks": []
+    },
+    "J3": {
+      "status": "not-run",
+      "reason": "not collected in this example",
+      "checks": []
+    },
+    "J4": {
+      "status": "not-run",
+      "reason": "not collected in this example",
+      "checks": []
+    },
+    "J5": {
+      "status": "not-run",
+      "reason": "not collected in this example",
+      "checks": []
+    },
+    "J6": {
+      "status": "not-run",
+      "reason": "not collected in this example",
+      "checks": []
+    },
+    "J7": {
+      "status": "not-run",
+      "reason": "not collected in this example",
+      "checks": []
+    },
+    "J8": {
+      "status": "na",
+      "reason": "no dsh.client",
+      "checks": []
+    }
   },
-  "totals": { "pass": 7, "na": 1, "fail": 0 },
-  "conclusion": "flow-pass",
-  "claims": { "claimLevel": "self-attested", "notClaimed": ["certification", "security audit"] },
-  "chain": { "seq": 12, "prev": "sha256:…", "entrySha256": "sha256:…" },
-  "signature": null
+  "claims": {
+    "claimLevel": "self-attested",
+    "notClaimed": [
+      "certification",
+      "security audit"
+    ],
+    "method": "structural example: one observed J1 run; J2-J8 not collected"
+  },
+  "conclusion": "flow-warn",
+  "chain": {
+    "evidenceHash": "sha256:ee0364bfd26362dca8265c04b7609f6d489c100826c4778e46a1f9f56f3aa138"
+  }
 }
 ```
 
@@ -93,40 +165,22 @@ Honesty rules for the file itself:
   Put the limitation in `limitations[]` instead of dropping the row.
 
 <a id="what-the-checker-reads"></a>
-### What reads this file today
+### What reads this file
 
-`dsh-levels --flow-evidence` does **not** read the nested v2 shape yet. Its
-reader wants a flat map and only reads `status`:
+`dsh-levels --flow-evidence` reads this nested shape directly since
+`dsh-standards` 1.3.0. The flat `{ "J1": { "status": "pass" } }` map and the
+older `dsh-flow-journey/1` / `dsh-flow-runtime/1` files are `deprecated` and
+never count as a pass.
 
-```json
-{
-  "J1": { "status": "pass", "evidence": "add → dump → remove; logs/J1.*.out" },
-  "J2": { "status": "pass", "evidence": "same row id disable/enable; two dumps" }
-}
-```
-
-- Accepted values are `pass`, `fail`, `not-run`, `manual`. Anything else,
-  including `na` and `warn`, is silently downgraded to `not-run`.
-- FLOW becomes `runtime` only at **8/8 pass**. One `na` gives `7/8` and
-  `not-run` — which is the honest answer for a package with no client, but it
-  is not a pass.
-- The flat map has no binding, no hash, and no host. A hand-written 8-pass file
-  passes. That is why the v2 file above exists: keep the flat map as the
-  projection, and keep the v2 file plus logs as the thing you can defend.
-
-Project the v2 file to the flat map before running the audit:
-
-```sh
-node -e '
-const fs = require("node:fs");
-const evidence = require("./flow-evidence.json");
-const flat = {};
-for (const [id, journey] of Object.entries(evidence.journeys)) {
-  flat[id] = { status: journey.status, evidence: journey.reason ?? journey.checks?.[0]?.id ?? null };
-}
-fs.writeFileSync("flow-flat.json", JSON.stringify(flat, null, 2));
-'
-```
+- Every journey claimed as `pass` needs at least one `checks[]` entry with
+  `exitCode: 0`, an observed (non-`static`) kind, and a log hash.
+- `na` is a skip with a reason, not a pass. A package with no client ends at
+  7/8 and `not-run` — that is the honest answer.
+- `runtime` is reserved for `sandbox-attested` evidence (`producer.kind =
+  "sandbox"` or `claims.claimLevel = "sandbox-attested"`). Self-attested or CI
+  evidence keeps its pass count but lands on `not-run`.
+- The file binds subject, host, and a recomputable `chain.evidenceHash`; a
+  hand-written flat 8-pass file no longer passes.
 
 <a id="minimum-evidence-per-journey"></a>
 ## Minimum evidence per journey
@@ -186,7 +240,7 @@ the audit is
 The three-layer audit reads FLOW evidence through `--flow-evidence`:
 
 ```sh
-npx -p dsh-standards dsh-levels ./my-plugin --flow-evidence flow-flat.json --format json
+npx -p dsh-standards dsh-levels ./my-plugin --flow-evidence flow-evidence.json --format json
 ```
 
 ## Author checklist
