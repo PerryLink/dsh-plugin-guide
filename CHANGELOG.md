@@ -9,6 +9,15 @@
 
 
 
+
+
+## [0.5.4] - 2026-11-07
+
+### Added
+
+- `docs/boost.md`: the real DeepSeek LEV-6 cache evidence (90.7% vs 0%, 5 sessions/arm, constructed arms) with its boundaries; `levels.md` and `README.md` cross-reference it.
+- Verified: `node --test` 5/5.
+
 ## [0.5.3] - 2026-11-07
 
 ### Fixed

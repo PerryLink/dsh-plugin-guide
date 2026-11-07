@@ -66,7 +66,8 @@ parallel/jobs, and composition.
 
 - A practice can be evidenced; a plugin does not get a “BOOST level”.
 - The measured examples are fixtures or synthetic captures, not production
-  baselines.
+  baselines, plus one real-provider LEV-6 re-run (constructed arms; see
+  [boost.md § real-provider evidence](boost.md#lev6-real-provider)).
 - It is not a certification, score, or market gate.
 
 Start here: [BOOST guide](boost.md) and the canonical

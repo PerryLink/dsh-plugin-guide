@@ -3,6 +3,9 @@
 BOOST is a **practice library**, not a plugin grade. It records practices and
 evidence; it does not attach a “Boost level” to a plugin.
 
+FLOW checks the journey, BOOST checks the practice: the two answer different
+questions and are not comparable.
+
 The canonical text is
 [`33-DSH-BOOST`](https://github.com/PerryLink/dsh-standards/blob/main/33-DSH-BOOST%E5%8A%A0%E9%80%9F%E5%AE%9E%E8%B7%B5.md).
 
@@ -85,10 +88,36 @@ pitfalls”), record it as a WARN or a note. Do not invent a number.
 ## Current limits
 
 - The measured examples are fixture-level, provider-capture, or synthetic timer
-  results. They are not production baselines.
+  results, plus one real-provider re-run of LEV-6 (below). None of them is a
+  production baseline.
 - LEV-3, LEV-6, and LEV-7 have the strongest current evidence; the others have
   loader/context-level fixtures.
 - BOOST is not a market gate and must not become a certification.
+
+<a id="lev6-real-provider"></a>
+## Real-provider evidence (LEV-6)
+
+On 2026-11-07 the stable-prefix practice was re-run against the real DeepSeek
+API (`deepseek-official` / `deepseek-flash`): five sessions per arm, two calls
+per session, and the metric is the second call's
+`cache_read_input_tokens / prompt_tokens`.
+
+- **stable prefix (boost)**: 2048 / 2257 prompt tokens read from cache —
+  **90.7%**, 5/5 sessions.
+- **per-call nonce at the head (unboost)**: **0%** (0 / 2273–2276), 5/5.
+- **per-call nonce at the tail (tail)**: 2048 / 2274–2276 — **90.0%**, 5/5.
+
+All 15 sessions agreed, and the cache works in 2048-token blocks. The detail is
+in [`33-DSH-BOOST` §2.2](https://github.com/PerryLink/dsh-standards/blob/main/33-DSH-BOOST%E5%8A%A0%E9%80%9F%E5%AE%9E%E8%B7%B5.md#lev6-real-provider);
+the raw evidence is `00-live/adopter-audit-2026-11-06/impl/evidence-lev6-real/`
+with the report `00-live/adopter-audit-2026-11-06/impl/G5-lev6-real.md`
+(hub commit `de7e05a`).
+
+Boundary: constructed arms; one package, one model, one host; user prompt only;
+no latency measurement and no billing reconciliation. It shows that a stable
+prefix does hit the provider cache and that volatile text at the head drops the
+hit to zero — it is not a performance or cost claim, and it is not a
+BOOST-versus-FLOW comparison.
 
 <a id="security-boundary"></a>
 ## Security boundary

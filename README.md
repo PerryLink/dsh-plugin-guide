@@ -200,7 +200,7 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 
 - **指南不产生判定。** 本包没有 judge 能力：既不能把插件标成 pass，也不能把它标成 fail；判定只来自 `dsh-standards` 实际跑出的结果。
 - **FLOW 运行时仍是草案。** J1/J2/J4/J6 在 fixture 上有 runtime 证据；J3/J7 只到 fixture 级 runtime；J5/J8 只有静态预检；浏览器渲染尚未覆盖——所以「只跑了几个 journey」必须写成 `not-run`（见 [docs/flow.md](docs/flow.md)）。
-- **BOOST 的实测样例是 fixture / 合成采集。** 不是生产基线；LEV-3、LEV-6、LEV-7 证据最强，其余只有 loader/context 级 fixture；没有证据就是 `not-measured`（见 [docs/boost.md](docs/boost.md)）。
+- **BOOST 的实测样例是 fixture / 合成采集，另有一条真实 provider 复测。** 都不是生产基线；LEV-3、LEV-6、LEV-7 证据最强，其中 LEV-6 于 2026-11-07 在真实 DeepSeek API 上复测前缀缓存（90.7% vs 0%，构造臂、单包/单模型/单宿主），其余只有 loader/context 级 fixture；没有证据就是 `not-measured`（见 [docs/boost.md](docs/boost.md)）。
 - **规则随宿主演进。** 基线是 2026-11-04 的 DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2`；Node 自 `0.2.2-alpha.2` 起要求 `>=24.9.0`；`ctx.menus` 在 `0.2.2-alpha.3` 已移除；`engines.dsh` 自 `0.2.1-alpha.4` 起单独决定版本走廊（见 [docs/levels.md](docs/levels.md)）。
 - **`dsh.standards` 占位不是成绩。** `package.json` 里 entry/flow = `not-run`、boost = `not-measured`、`evidence: null`，它只是占位。
 - **0.3.x 停在旧形态。** 0.3.x 是 deprecated 的旧产品线；构建/脚手架能力现在在 `dsh-primer`，本包不再提供 CLI。
