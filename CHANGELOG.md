@@ -1,3 +1,10 @@
+## 0.5.5 — 2026-11-08
+
+### Added
+
+- `docs/release-checklist.md`: a copy-pasteable pre-publish pass (manifest, `npm pack --dry-run`, the static ENTRY check, install smoke, optional advisory CI, and an explicit "what this does not do" section).
+- Linked from `README.md`, `README.en.md`, and `SKILL.md` so the guide's skill surfaces it before publishing.
+
 # Changelog
 
 

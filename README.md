@@ -94,7 +94,7 @@ dsh plugin --profile web add dsh-plugin-guide
 | **FLOW** | 用户能不能装、配、用、升级、卸载 | 有 runtime 证据时能；否则 `not-run` |
 | **BOOST** | 有没有用好 Cordis | 不给插件级判定；按实践登记证据 |
 
-先读一页地图：[docs/levels.md](docs/levels.md)。
+先读一页地图：[docs/levels.md](docs/levels.md)。发布前自查：[docs/release-checklist.md](docs/release-checklist.md)。
 
 ### 检查命令
 

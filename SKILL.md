@@ -11,6 +11,7 @@ routes work to the tool that owns the verdict.
 ## Read first
 
 Read `docs/levels.md` before answering a “which level / is this good?” question.
+Before a plugin is published, walk `docs/release-checklist.md`.
 It defines the three layers and the difference between a check and advice.
 
 ## The three layers

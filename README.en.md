@@ -94,7 +94,7 @@ dsh plugin --profile web add dsh-plugin-guide
 | **FLOW** | Can a user install, configure, use, upgrade, and remove it? | Yes, where runtime evidence exists; otherwise `not-run` |
 | **BOOST** | Does it use Cordis well? | No plugin-level verdict; evidence is recorded per practice |
 
-Read the one-page map first: [docs/levels.md](docs/levels.md).
+Read the one-page map first: [docs/levels.md](docs/levels.md). Before publishing: [release checklist](docs/release-checklist.md).
 
 ### Running the checks
 
