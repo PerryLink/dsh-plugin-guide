@@ -42,6 +42,12 @@ dsh plugin --profile web add dsh-plugin-guide
 | **`dsh-plugin-spec`** | 底层规则文本与条款来源 |
 | **`dsh-primer`** | 旧的构建/脚手架技能和 CLI（原 `dsh-plugin-guide` 0.3.x） |
 
+### 上游与使用（事实，2026-11）
+
+- **dsh-plugin-hub** —— 版本感知的 npm 元数据校验已合入 main（[`4f3a560`](https://github.com/dshplugin/dsh-plugin-hub/commit/4f3a560)，2026-11-09）。范围仅安装侧 npm 元数据；不运行 ENTRY，也不构成对任何插件或市场的背书。
+- **使用量**（npm registry，2026-11）：本指南 ≈12.6k/月、`dsh-standards` ≈4.4k/月、`dsh-plugin-start` ≈1.65k/月。下载量不是独立用户数，也不构成排名、认证或安全结论。
+- **作者侧入口**：`dsh-plugin-start`（生成器，产物自带检查与 advisory CI）、`dsh-check-action`（只读 ENTRY Action）。
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v4-dark.svg">
   <img src="docs/assets/dsh-plugin-guide-flow-v4-light.svg" width="100%" alt="dsh-plugin-guide 装配与路由流程：cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">

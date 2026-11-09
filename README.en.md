@@ -42,6 +42,12 @@ dsh plugin --profile web add dsh-plugin-guide
 | **`dsh-plugin-spec`** | The low-level rule text and clause source |
 | **`dsh-primer`** | The legacy build/scaffold skill and CLI (formerly `dsh-plugin-guide` 0.3.x) |
 
+### Upstream and usage (facts, 2026-11)
+
+- **dsh-plugin-hub** — a version-aware npm metadata check is on main ([`4f3a560`](https://github.com/dshplugin/dsh-plugin-hub/commit/4f3a560), 2026-11-09). Scope: install-time npm metadata only; it does not run ENTRY and is not an endorsement of any plugin or market.
+- **Usage** (npm registry, 2026-11): this guide ~12.6k/month, `dsh-standards` ~4.4k/month, `dsh-plugin-start` ~1.65k/month. Downloads are not unique users and are not a ranking, certification, or security claim.
+- **Author-side entry points**: `dsh-plugin-start` (scaffolder with the check and an advisory CI snippet in its output) and `dsh-check-action` (read-only ENTRY Action).
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-plugin-guide-flow-v4-dark.svg">
   <img src="docs/assets/dsh-plugin-guide-flow-v4-light.svg" width="100%" alt="dsh-plugin-guide assembly and routing: cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
