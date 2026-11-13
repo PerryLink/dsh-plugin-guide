@@ -1,3 +1,9 @@
+## 0.5.6 — 2026-11-14
+
+### Changed
+
+- `docs/release-checklist.md` pins `dsh-standards@1.6.10` (was 1.6.9).
+
 ## 0.5.5 — 2026-11-08
 
 ### Added

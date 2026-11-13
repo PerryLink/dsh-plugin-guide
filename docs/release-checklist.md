@@ -33,7 +33,7 @@ published package (fixtures, local profiles, secrets, build caches).
 Node >= 24.9 is required for the 0.2.2 line.
 
 ```sh
-npx -y dsh-standards@1.6.9 check . --scope entry --entry-claim static --no-exec
+npx -y dsh-standards@1.6.10 check . --scope entry --entry-claim static --no-exec
 ```
 
 Read the report in this order:
