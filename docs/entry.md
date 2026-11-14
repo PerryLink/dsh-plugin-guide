@@ -309,6 +309,7 @@ capability** to a required label:
 Do not label a plugin `official`, `verified`, `certified`, `secure`, or
 `audited` — those words are treated as an endorsement claim and fail `DSC-13`.
 
+<a id="import-time-side-effects"></a>
 ## Import-time side effects
 
 `DSC-10` is advisory — it never changes the verdict — but it records module-scope

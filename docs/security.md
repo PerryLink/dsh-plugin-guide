@@ -98,6 +98,7 @@ promise", absent means "not declared". Do not fill every commitment `true`; an
 unsupported claim is worse than a missing one.
 
 <a id="author-credentials"></a>
+<a id="2-credentials-and-sensitive-files-dsc-17"></a>
 ### 2. Credentials and sensitive files (DSC-17)
 
 Resolve a reference per operation, through the seam, and never print, log,
@@ -121,6 +122,7 @@ parent environment, and an explicit `env` entry is a deliberate opt-in. Do not
 forward a token "just in case".
 
 <a id="author-egress"></a>
+<a id="3-egress-endpoints-dsc-18"></a>
 ### 3. Egress endpoints (DSC-18)
 
 Use a constant allowlist of exact hostnames and `https` only. Never fetch a URL
@@ -151,6 +153,7 @@ third party, say so in `dsh.disclosure.endpoints` (when that field exists) and
 in the README.
 
 <a id="author-files"></a>
+<a id="4-files-subprocesses-and-dynamic-execution-dsc-15-dsc-16-dsc-17-dsc-19"></a>
 ### 4. Files, subprocesses, and dynamic execution (DSC-15, DSC-16, DSC-17, DSC-19)
 
 - Use `ctx.fs`: `resolve()` the target, then `contains(workspace, target)`.
@@ -187,6 +190,7 @@ The sandbox still only covers subprocess file writes; a plugin's own `fetch` and
 `node:fs` bypass every seam. Do not read a declaration as isolation.
 
 <a id="author-prompt"></a>
+<a id="5-tool-output-and-prompt-injection-dsc-20"></a>
 ### 5. Tool output and prompt injection (DSC-20)
 
 Tool results, web pages, files, and session text are **untrusted data**. Validate
@@ -211,6 +215,7 @@ Rendering is part of the same boundary: use `textContent`/React escaping, never
 of injection; it is not isolation.
 
 <a id="author-publish"></a>
+<a id="6-dependencies-build-and-publish-dsc-15-dsc-21-dsc-22"></a>
 ### 6. Dependencies, build, and publish (DSC-15, DSC-21, DSC-22)
 
 Commit the lockfile and install with `npm ci --ignore-scripts` (or
