@@ -379,3 +379,8 @@ python scripts/gen-readme-assets.py     # 重出 docs/assets 的深浅两版 her
 [LICENSE](LICENSE)（Apache License 2.0）© 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · 社区指南，与 DeepSeek 无关。</sub></p>
+
+
+## Check compatibility
+
+Before publishing, run [HCB](https://github.com/PerryLink/dsh-compat-baseline) to see whether your declared `engines.dsh` covers the current host, and add a `dsh.standards` block so ENTRY/FLOW/BOOST are visible. See [docs/DECLARE.md](https://github.com/PerryLink/dsh-compat-baseline/blob/main/docs/DECLARE.md).
