@@ -36,7 +36,7 @@ published package (fixtures, local profiles, secrets, build caches).
 Node >= 24.9 is required for the 0.2.2 line.
 
 ```sh
-npx -y dsh-standards@1.6.11 check . --scope entry --entry-claim static --no-exec \
+npx -y dsh-standards@1.6.12 check . --scope entry --entry-claim static --no-exec \
   --host-version 0.2.2-rc.3
 ```
 
@@ -46,7 +46,9 @@ the report records `DSC-02` as `NA` — compatibility not judged — and still
 exits `0`. That is **not** a pass: a range that the host rejects is not caught
 until the install smoke in step 4. Pass the host you actually target; for the
 current line that is `0.2.2-rc.3` (npm `next`; npm `latest` is still `0.2.2-rc.1`).
-The pin `1.6.11` is the release that carries the rc3 defaults.
+The pin `1.6.12` carries the rc3 defaults and accepts the reserved capability IDs
+([`31-DS-C` §8.1](https://github.com/PerryLink/dsh-standards/blob/main/31-DS-C%E6%9D%A1%E6%AC%BE.md),
+[`60` §2.2](https://github.com/PerryLink/dsh-standards/blob/main/60-%E6%9D%83%E9%99%90%E4%B8%8E%E6%A0%87%E6%B3%A8%E8%A7%84%E8%8C%83.md)).
 
 Read the report in this order:
 

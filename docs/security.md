@@ -60,6 +60,15 @@ There are 15 IDs: `fs:read`, `fs:write`, `shell`, `subprocess`,
 `credentials:provider`, `llm:adapter`, `sessions:read`, `system-prompt:write`,
 `tools:register`, `remote:expose`, `plugin:install`.
 
+Since `dsh-standards` 1.6.12 the standard also accepts 16 **reserved** IDs
+(11 DSH `0.2.2-rc.3` host seams plus 5 pre-existing): `C-11.1` does not FAIL on
+a reserved ID and `C-11.5` records `NA`, while the `C-11.2` FAIL surface is
+**unchanged** — a reserved ID never satisfies a judged trigger. See the tables
+in [`31-DS-C` §8.1](https://github.com/PerryLink/dsh-standards/blob/main/31-DS-C%E6%9D%A1%E6%AC%BE.md)
+and [`60` §2.2](https://github.com/PerryLink/dsh-standards/blob/main/60-%E6%9D%83%E9%99%90%E4%B8%8E%E6%A0%87%E6%B3%A8%E8%A7%84%E8%8C%83.md),
+and [entry.md § capability triggers](entry.md#capability-triggers) for the ID
+list.
+
 ```json
 {
   "dsh": {

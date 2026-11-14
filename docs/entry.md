@@ -193,6 +193,20 @@ Allowed `capabilities`: `fs:read`, `fs:write`, `shell`, `subprocess`,
 Allowed `labels`: `prompt-modification`, `red-team`,
 `third-party-model-provider`, `remote-access`, `mirror`.
 
+Since `dsh-standards` 1.6.12 the standard also accepts 16 **reserved**
+capability IDs — 11 for DSH `0.2.2-rc.3` host seams the checker does not judge
+yet (`computer:control`, `browser:control`, `mcp:manage`, `mcp:resources`,
+`ssh:connect`, `terminal:control`, `sandbox:override`, `approval:override`,
+`authorization:delegate`, `remote-access:use`, `session-log:egress`) plus the
+five pre-existing ones (`mcp:client`, `browser`, `webhook:rule`, `theme:ui`,
+`client:ui`). Declaring a reserved ID is accepted by `C-11.1` (never an
+"unknown capability id" FAIL) and reported `NA` by `C-11.5`, but the `C-11.2`
+FAIL surface is **unchanged** — a reserved ID never satisfies a judged trigger
+(declaring `computer:control` does not cover a `ctx.shell` trigger). The
+authoritative tables are in
+[`31-DS-C` §8.1](https://github.com/PerryLink/dsh-standards/blob/main/31-DS-C%E6%9D%A1%E6%AC%BE.md)
+and [`60` §2.2](https://github.com/PerryLink/dsh-standards/blob/main/60-%E6%9D%83%E9%99%90%E4%B8%8E%E6%A0%87%E6%B3%A8%E8%A7%84%E8%8C%83.md).
+
 <a id="capability-triggers"></a>
 ## Capability triggers (DSC-11)
 
@@ -217,7 +231,8 @@ with `static trigger <cap> is not declared in dsh.capabilities`.
 
 Reading the other subitems:
 
-- `C-11.1`: an unknown capability id is a FAIL. A **missing** field is a
+- `C-11.1`: an unknown capability id is a FAIL; the 16 reserved IDs listed
+  above are accepted (since 1.6.12). A **missing** field is a
   transitional WARN; a declared empty array is the explicit "uses none"
   declaration and is **not** a WARN since 1.6.9. When the field is absent, a
   static trigger is reported on `C-11.2` as a WARN; once the array is declared
@@ -232,7 +247,8 @@ Reading the other subitems:
   `node:fs` reads/writes count as observation; dynamic calls and scan truncation
   are outside the trigger surface). Since 1.6.10 it is `NA`, not WARN, when no
   source was scanned or the capability has no static observation surface in this
-  checker version (`credentials:provider`). It is no longer called
+  checker version (`credentials:provider`); since 1.6.12 a reserved ID is `NA`
+  as well. It is no longer called
   "over-declaration": never delete a real declaration just because the scan
   cannot see it.
 

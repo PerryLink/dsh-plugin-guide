@@ -48,7 +48,7 @@ test('docs and package keep the 0.2.2-rc.3 baseline', () => {
   for (const file of ['README.md', 'README.en.md', 'README.es.md', 'README.pt.md', 'README.hi.md']) {
     const text = readFileSync(join(root, file), 'utf8')
     assert.match(text, /0\.2\.2-rc\.3/, `${file} must carry the rc3 baseline`)
-    assert.match(text, /0\.5\.7/, `${file} must carry the published version`)
+    assert.match(text, /0\.5\.8/, `${file} must carry the published version`)
     assert.doesNotMatch(
       text,
       /\^0\.2\.2-alpha\.3` (union arm|并集臂|brazo de unión|braço de união|यूनियन आर्म)/,
@@ -59,9 +59,13 @@ test('docs and package keep the 0.2.2-rc.3 baseline', () => {
   const checklist = readFileSync(join(root, 'docs', 'release-checklist.md'), 'utf8')
   assert.match(checklist, /"dsh": ">=0\.2\.2-0 <0\.3\.0"/)
   assert.match(checklist, /--host-version 0\.2\.2-rc\.3/)
-  assert.match(checklist, /dsh-standards@1\.6\.11/)
-  assert.doesNotMatch(checklist, /dsh-standards@1\.6\.10/)
+  assert.match(checklist, /dsh-standards@1\.6\.12/)
+  assert.doesNotMatch(checklist, /dsh-standards@1\.6\.11/)
   assert.match(checklist, /C-2 is judged only when the host version is known/)
+
+  const entry = readFileSync(join(root, 'docs', 'entry.md'), 'utf8')
+  assert.match(entry, /16 \*\*reserved\*\*/)
+  assert.match(entry, /31-DS-C/)
 
   const flow = readFileSync(join(root, 'docs', 'flow.md'), 'utf8')
   assert.match(flow, /dsh-flow-collect/)

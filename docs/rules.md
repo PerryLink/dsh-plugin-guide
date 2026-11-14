@@ -54,7 +54,7 @@ table is the current mapping.
 | **DSC-08** | C-8 restart idempotence | Blocking (ds-c). | Make `restart()` re-enter `ACTIVE`, keep the effect count, advance revision/epoch, and succeed from a fresh `Context`. | [entry.md § runtime surface](entry.md#runtime-surface) |
 | **DSC-09** | C-9 declared vs measured | Blocking (ds-c) for `C-9.1`; `C-9.2`/`C-9.3` are WARN. | Keep declarations equal to reality: provided ⊆ measured, measured ⊆ declared, and each declared `inject` is really read as `ctx.<service>`. | [entry.md § runtime surface](entry.md#runtime-surface) |
 | **DSC-10** | C-10 import-time work | Advice only; never changes the verdict. | Move module-scope `await`, timers, `process.on`, fs writes, and spawns into `apply()` and clean up with `ctx.effect()`. | [entry.md § import-time side effects](entry.md#import-time-side-effects) |
-| **DSC-11** | C-11 capabilities | Blocking (ds-c); `WARN` in ENTRY, and a `WARN` here is advisory even in ds-c. | Declare `dsh.capabilities` from the closed set, add one entry per static trigger, and never enable `@deepseek-ai/dsh-plugin-manager/tools` in a patch. | [entry.md § capability triggers](entry.md#capability-triggers) |
+| **DSC-11** | C-11 capabilities | Blocking (ds-c); `WARN` in ENTRY, and a `WARN` here is advisory even in ds-c. | Declare `dsh.capabilities` from the closed set, add one entry per static trigger, and never enable `@deepseek-ai/dsh-plugin-manager/tools` in a patch. Since `dsh-standards` 1.6.12 the 16 reserved IDs are accepted without widening the `C-11.2` FAIL surface (see [entry.md § capability triggers](entry.md#capability-triggers)). | [entry.md § capability triggers](entry.md#capability-triggers) |
 | **DSC-12** | C-12 credentials + seams | Blocking (ds-c); `WARN` in ENTRY. | Read credentials through `ctx.credentials`, declare `credentials:list` for `listRecords()` and `credentials:provider` for a provider, and never read the backing file. | [entry.md § credentials and seams](entry.md#credentials-and-seams) |
 | **DSC-13** | C-13 labels + mirror | Blocking (ds-c); `WARN` in ENTRY, advisory as a WARN. | Use only the five labels, add the label each capability requires, point `dsh.upstream` at an https URL that is not this package **and** add `mirror`, and drop endorsement words. | [entry.md § labels and mirror](entry.md#labels-and-mirror) |
 | **DSC-14** | C-14 entry run | Blocking only for a runtime claim (`--scope entry`). | Supply the real host: `--host` for a bundle (G0–G3) or `--runtime` for a plugin (L1); a client or preset cannot claim runtime. | [entry.md § runtime surface](entry.md#runtime-surface) |
@@ -128,7 +128,7 @@ Pass the host you actually target — for the current line that is
 `0.2.2-rc.3`:
 
 ```sh
-npx -y dsh-standards@1.6.11 check . --scope entry --entry-claim static --no-exec \
+npx -y dsh-standards@1.6.12 check . --scope entry --entry-claim static --no-exec \
   --host-version 0.2.2-rc.3
 ```
 

@@ -236,7 +236,7 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 
 ## 生态与质量
 
-- [npm 包页](https://www.npmjs.com/package/dsh-plugin-guide)（已发布版本，`0.5.7`）
+- [npm 包页](https://www.npmjs.com/package/dsh-plugin-guide)（已发布版本，`0.5.8`）
 - [Gitee 镜像](https://gitee.com/perrylink/dsh-plugin-guide)（只读快照；以 GitHub 为准）
 - [dsh-standards](https://www.npmjs.com/package/dsh-standards)（检查器与三层审计 `dsh-levels`）
 - [dsh-plugin-spec](https://github.com/PerryLink/dsh-plugin-spec)（底层规则文本与条款来源）

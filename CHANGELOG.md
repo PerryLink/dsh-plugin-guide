@@ -1,3 +1,18 @@
+## 0.5.8 — 2026-11-14
+
+### Changed
+
+- `dsh-standards` pin moved to `1.6.12` (was `1.6.11`) in `docs/release-checklist.md`, `docs/recipes.md`, and `docs/rules.md`; `1.6.12` keeps the rc3 default anchors and is the release that adds the reserved-capability-ID policy.
+- Capability docs (`docs/entry.md`, `docs/recipes.md`, `docs/rules.md`, `docs/security.md`) record the 1.6.12 reserved IDs: the standard accepts 16 **reserved** capability IDs — 11 DSH `0.2.2-rc.3` host seams plus 5 pre-existing — so `C-11.1` does not FAIL on them and `C-11.5` records `NA`, while the `C-11.2` FAIL surface is unchanged (a reserved ID never satisfies a judged trigger). Sources: `31-DS-C` §8.1 and `60` §2.2.
+- `.github/workflows/publish.yml`: added a `concurrency` group (`cancel-in-progress: false`) so publish runs are serialized per ref; together with the existing "skip an already-published version" guard, a re-run of a red tag job cannot race into npm `E409 Cannot publish over previously staged version` — the failure that hit `dsh-standards` 1.6.11.
+- All five READMEs say the published version is `0.5.8`.
+- `tests/skill.test.mjs` follows the bump: the READMEs must carry `0.5.8`, the checklist must pin `dsh-standards@1.6.12`, and `docs/entry.md` must carry the reserved-ID note.
+
+### Verified
+
+- `npm test`: 7/7 pass (Node 24).
+- `npm pack --dry-run`: the tarball still lists the expected files.
+
 ## 0.5.7 — 2026-11-14
 
 ### Changed

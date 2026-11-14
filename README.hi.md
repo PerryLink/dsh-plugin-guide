@@ -230,7 +230,7 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 
 ## इकोसिस्टम और गुणवत्ता
 
-- [npm पैकेज पेज](https://www.npmjs.com/package/dsh-plugin-guide) (प्रकाशित संस्करण, `0.5.7`)
+- [npm पैकेज पेज](https://www.npmjs.com/package/dsh-plugin-guide) (प्रकाशित संस्करण, `0.5.8`)
 - [Gitee मिरर](https://gitee.com/perrylink/dsh-plugin-guide) (केवल-पढ़ने वाला स्नैपशॉट; मुख्य स्रोत GitHub है)
 - [dsh-standards](https://www.npmjs.com/package/dsh-standards) (चेकर और `dsh-levels` तीन-परत ऑडिट)
 - [dsh-plugin-spec](https://github.com/PerryLink/dsh-plugin-spec) (निम्न-स्तरीय नियम-पाठ और धारा स्रोत)

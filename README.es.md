@@ -230,7 +230,7 @@ Línea base: DSH `0.2.2-rc.3` / Cordis `4.1.0` (según [docs/levels.md](docs/lev
 
 ## Ecosistema y calidad
 
-- [Página del paquete en npm](https://www.npmjs.com/package/dsh-plugin-guide) (versiones publicadas, `0.5.7`)
+- [Página del paquete en npm](https://www.npmjs.com/package/dsh-plugin-guide) (versiones publicadas, `0.5.8`)
 - [Espejo en Gitee](https://gitee.com/perrylink/dsh-plugin-guide) (instantánea de solo lectura; GitHub es la fuente canónica)
 - [dsh-standards](https://www.npmjs.com/package/dsh-standards) (el comprobador y la auditoría de tres capas `dsh-levels`)
 - [dsh-plugin-spec](https://github.com/PerryLink/dsh-plugin-spec) (el texto de reglas de bajo nivel y la fuente de las cláusulas)

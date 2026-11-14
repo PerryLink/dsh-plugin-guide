@@ -5,7 +5,7 @@
 
 Every block below was checked with the `dsh-standards` `40-checker`; the static
 report IDs are the ENTRY contract, and the release checklist pins the current
-checker (`1.6.11`). Pass `--host-version 0.2.2-rc.3` when you want C-2 judged
+checker (`1.6.12`). Pass `--host-version 0.2.2-rc.3` when you want C-2 judged
 against the current host — with no host version `C-2.1`/`C-2.2` are NA
 (compatibility not judged), not a pass. The package name
 `@acme/dsh-hello` is a placeholder — replace it everywhere, including the patch
@@ -58,7 +58,7 @@ a bundle row.
 | `engines.dsh` | the only declaration that decides compatibility alone; `workspace:` is a FAIL | `C-2.1`/`C-2.3` |
 | `license` | avoids the `C-1.5` WARN; SPDX string | `C-1.5` |
 | `dsh.bundle.patch` | the file a bundle layer composes; in-package relative path | `C-1.4` |
-| `dsh.capabilities` | declares the host surfaces you touch; closed set of 15 | `C-11.1` |
+| `dsh.capabilities` | declares the host surfaces you touch; closed set of 15 judged + 16 reserved (1.6.12) | `C-11.1` |
 | `dsh.labels` | declares high-risk categories; closed set of 5; `[]` is allowed | `C-13.1` |
 | `dsh.kind` | `plugin` gets L1; `bundle` gets G0–G3; a client is static-only | `DSC-14` |
 
@@ -67,6 +67,11 @@ Notes that come from the checker, not taste:
 - `dsh.capabilities` and `dsh.labels` are **standard extensions**: this host
   does not read them. They are declarations, not enforcement. Declaring them
   does not make the plugin safe, and omitting them is a WARN today.
+- Since `dsh-standards` 1.6.12 the standard also accepts 16 **reserved**
+  capability IDs: `C-11.1` does not FAIL on them and `C-11.5` records `NA`, but
+  the `C-11.2` FAIL surface is unchanged — a reserved ID never satisfies a
+  judged trigger. See [`31-DS-C` §8.1](https://github.com/PerryLink/dsh-standards/blob/main/31-DS-C%E6%9D%A1%E6%AC%BE.md)
+  and [`60` §2.2](https://github.com/PerryLink/dsh-standards/blob/main/60-%E6%9D%83%E9%99%90%E4%B8%8E%E6%A0%87%E6%B3%A8%E8%A7%84%E8%8C%83.md).
 - `dsh.manifestVersion`, `dsh.bundle`, `dsh.client` are host fields; keep
   `manifestVersion: 1`.
 - `engines.node` is **not** checked by the checker. Keep it for humans, but do

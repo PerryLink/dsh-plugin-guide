@@ -236,7 +236,7 @@ Baseline: DSH `0.2.2-rc.3` / Cordis `4.1.0` (as recorded in [docs/levels.md](doc
 
 ## Ecosystem & quality
 
-- [npm package page](https://www.npmjs.com/package/dsh-plugin-guide) (published releases, `0.5.7`)
+- [npm package page](https://www.npmjs.com/package/dsh-plugin-guide) (published releases, `0.5.8`)
 - [Gitee mirror](https://gitee.com/perrylink/dsh-plugin-guide) (read-only snapshot; GitHub is canonical)
 - [dsh-standards](https://www.npmjs.com/package/dsh-standards) (the checker and the `dsh-levels` three-layer audit)
 - [dsh-plugin-spec](https://github.com/PerryLink/dsh-plugin-spec) (the low-level rule text and clause source)
