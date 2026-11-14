@@ -383,4 +383,4 @@ python scripts/gen-readme-assets.py     # 重出 docs/assets 的深浅两版 her
 
 ## Check compatibility
 
-Before publishing, run [HCB](https://github.com/PerryLink/dsh-compat-baseline) to see whether your declared `engines.dsh` covers the current host, and add a `dsh.standards` block so ENTRY/FLOW/BOOST are visible. See [docs/DECLARE.md](https://github.com/PerryLink/dsh-compat-baseline/blob/main/docs/DECLARE.md).
+Before publishing, run [HCB](https://github.com/PerryLink/dsh-hcb) to see whether your declared `engines.dsh` covers the current host, and add a `dsh.standards` block so ENTRY/FLOW/BOOST are visible. See [docs/DECLARE.md](https://github.com/PerryLink/dsh-hcb/blob/main/docs/DECLARE.md).
