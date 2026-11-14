@@ -115,9 +115,28 @@ them:
 - whether a dependency's own install script ran, or whether a package is
   malicious. `DSC-15`/`DSC-21` cover known shapes, not intent.
 
-The checker's default `--runtime-version` is `0.2.2-alpha.2`. Pass
-`--runtime-version <the host you target>` when that differs, or `DSC-02` will
-judge your range against the wrong version.
+In `dsh-standards` 1.6.10+ the `check` subcommand never runs the PATH `dsh` by
+itself. It resolves the C-2 anchor in this order: `--host-version` →
+`DSH_HOST_VERSION` → the opt-in `--allow-host-probe` (which resolves the `dsh`
+JS entry and runs `node <entry> --version`) → unknown. With no source the anchor
+records the fallback version with `source=default` and `suspect=true`, and
+`C-2.1`/`C-2.2` are **NA — compatibility not judged**; they are neither PASS nor
+FAIL, and the command still exits `0`. Exit `0` therefore does not mean the
+range was judged.
+
+Pass the host you actually target — for the current line that is
+`0.2.2-rc.3`:
+
+```sh
+npx -y dsh-standards@1.6.11 check . --scope entry --entry-claim static --no-exec \
+  --host-version 0.2.2-rc.3
+```
+
+The raw checker (`dsh-plugin-verify`) differs: with neither `--host-version` nor
+`--runtime-version` it tries `dsh --version` from `PATH`; if that fails it also
+falls back to the constant and reports C-2 as NA. `--host-version` is the
+explicit anchor and skips the probe; `--runtime-version` is the older name for
+the same anchor, so prefer `--host-version` in the `check` path.
 
 If a report FAILs and you cannot find the ID here, open
 [`docs/recipes.md`](recipes.md) for the copy-paste shape, then re-run the same

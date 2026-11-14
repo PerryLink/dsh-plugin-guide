@@ -205,9 +205,9 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 ## 已知限制
 
 - **指南不产生判定。** 本包没有 judge 能力：既不能把插件标成 pass，也不能把它标成 fail；判定只来自 `dsh-standards` 实际跑出的结果。
-- **FLOW 运行时仍是草案。** J1/J2/J4/J6 在 fixture 上有 runtime 证据；J3/J7 只到 fixture 级 runtime；J5/J8 只有静态预检；浏览器渲染尚未覆盖——所以「只跑了几个 journey」必须写成 `not-run`（见 [docs/flow.md](docs/flow.md)）。
+- **FLOW 运行时仍是草案。** `dsh-flow-collect` 生成 `dsh-flow-evidence/2` 证据，运行时覆盖 J1/J2/J4/J6；J3/J5/J7/J8 仍是 static/blocked（部分只到 fixture 级），浏览器渲染没有探针——所以「只跑了几个 journey」必须写成 `not-run`（见 [docs/flow.md](docs/flow.md)）。
 - **BOOST 的实测样例是 fixture / 合成采集，另有一条真实 provider 复测。** 都不是生产基线；LEV-3、LEV-6、LEV-7 证据最强，其中 LEV-6 于 2026-11-07 在真实 DeepSeek API 上复测前缀缓存（90.7% vs 0%，构造臂、单包/单模型/单宿主），其余只有 loader/context 级 fixture；没有证据就是 `not-measured`（见 [docs/boost.md](docs/boost.md)）。
-- **规则随宿主演进。** 基线是 2026-11-04 的 DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2`；Node 自 `0.2.2-alpha.2` 起要求 `>=24.9.0`；`ctx.menus` 在 `0.2.2-alpha.3` 已移除；`engines.dsh` 自 `0.2.1-alpha.4` 起单独决定版本走廊（见 [docs/levels.md](docs/levels.md)）。
+- **规则随宿主演进。** 基线是 2026-11-14 的 DSH `0.2.2-rc.3`（npm `next`；`latest` 仍是 `0.2.2-rc.1`）/ Cordis `4.1.0` / Node `>=24.9.0`；历史基线 2026-11-04 为 DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2`，`ctx.menus` 在 `0.2.2-alpha.3` 已移除；`engines.dsh` 自 `0.2.1-alpha.4` 起单独决定版本走廊（见 [docs/levels.md](docs/levels.md)）。
 - **`dsh.standards` 占位不是成绩。** `package.json` 里 entry/flow = `not-run`、boost = `not-measured`、`evidence: null`，它只是占位。
 - **0.3.x 停在旧形态。** 0.3.x 是 deprecated 的旧产品线；构建/脚手架能力现在在 `dsh-primer`，本包不再提供 CLI。
 
@@ -223,25 +223,25 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 - **无全局改写。** 不改原型、不写 `process.env`、不替换全局 fetch dispatcher。
 - **注册即 effect。** `ctx.effect(() => ctx.skills.register(...))`，停止或热重载即撤销贡献。
 
-对照基线：DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2`（[docs/levels.md](docs/levels.md) 记录，2026-11-04）。
+对照基线：DSH `0.2.2-rc.3` / Cordis `4.1.0`（[docs/levels.md](docs/levels.md) 记录，2026-11-14；2026-11-04 的 alpha.3 记录保留为历史）。
 
 ## 兼容性
 
 | 维度 | 状态 |
 |---|---|
-| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0`（自 `0.2.1-alpha.4` 起 `engines.dsh` 单独决定；npm 默认 semver 需要显式 `^0.2.2-alpha.3` 并集臂）。基线 DSH `0.2.2-alpha.3`（npm `alpha`），Cordis `4.0.6-alpha.2`。 |
+| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0`（自 `0.2.1-alpha.4` 起 `engines.dsh` 单独决定；下限要带预发布标识——`>=0.2.2-0` 在 npm 默认 semver 下已包含 `0.2.2-rc.3`，裸 `^0.2.2` 不包含）。基线 DSH `0.2.2-rc.3`（npm `next`；`latest` 仍是 `0.2.2-rc.1`），Cordis `4.1.0`。 |
 | Node | `>=24.9.0`（0.2.2 线的要求，自 `0.2.2-alpha.2` 起） |
 | 平台 | 任何 DSH 可运行处（纯文本技能；无浏览器半，无原生扩展） |
 | 模型 | 不调用模型：技能文本由宿主注入上下文，无额外模型能力要求 |
 
 ## 生态与质量
 
-- [npm 包页](https://www.npmjs.com/package/dsh-plugin-guide)（已发布版本，`0.4.3`）
+- [npm 包页](https://www.npmjs.com/package/dsh-plugin-guide)（已发布版本，`0.5.7`）
 - [Gitee 镜像](https://gitee.com/perrylink/dsh-plugin-guide)（只读快照；以 GitHub 为准）
 - [dsh-standards](https://www.npmjs.com/package/dsh-standards)（检查器与三层审计 `dsh-levels`）
 - [dsh-plugin-spec](https://github.com/PerryLink/dsh-plugin-spec)（底层规则文本与条款来源）
 - [dsh-primer](https://github.com/PerryLink/dsh-primer)（旧的构建/脚手架技能与 CLI）
-- 本仓文档：[三层地图](docs/levels.md) · [ENTRY](docs/entry.md) · [FLOW](docs/flow.md) · [BOOST](docs/boost.md)
+- 本仓文档：[三层地图](docs/levels.md) · [ENTRY](docs/entry.md) · [FLOW](docs/flow.md) · [BOOST](docs/boost.md) · [rc3 宿主注记](docs/rc3-notes.md)
 - 仓库治理：[CHANGELOG](CHANGELOG.md) · [STANDARDS.md](STANDARDS.md) · [CONTRIBUTING](CONTRIBUTING.md)
 
 ## 开发

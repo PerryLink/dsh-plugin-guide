@@ -3,8 +3,11 @@
 <a id="before-you-copy"></a>
 ## Before you copy
 
-Every block below was run against `dsh-standards` `40-checker` (`0.1.0`,
-anchor `ce7073d51254`, default runtime `0.2.2-alpha.2`). The package name
+Every block below was checked with the `dsh-standards` `40-checker`; the static
+report IDs are the ENTRY contract, and the release checklist pins the current
+checker (`1.6.11`). Pass `--host-version 0.2.2-rc.3` when you want C-2 judged
+against the current host — with no host version `C-2.1`/`C-2.2` are NA
+(compatibility not judged), not a pass. The package name
 `@acme/dsh-hello` is a placeholder — replace it everywhere, including the patch
 row. The numbers in the verify sections are what the checker printed here; if
 your output differs, the diff line is your fix.
@@ -185,12 +188,14 @@ What each piece is for:
 | `dsh.client.inject` | informational package names, not Cordis injection | host only |
 | `dsh.client.external` | extra module-table requests; omit unless you need them | host build |
 
-`"capabilities": []` says the server half touches no host surface. The checker
-still WARNs (`C-11.1: dsh.capabilities is empty`) and the report's reason line
-says `advisory: DSC-11`; in ENTRY that WARN is advisory, so the status stays
-`pass`. If the server half does touch something, fill the array from the trigger
-table in [entry.md](entry.md#capability-triggers) — an empty array is not a
-substitute for the capabilities you actually use.
+`"capabilities": []` says the server half touches no host surface. That is an
+explicit declaration, not a warning: since `dsh-standards` 1.6.9 a declared empty
+array no longer produces `C-11.1` (the WARN is only for a missing field), and
+`C-11.2` only fires when a static trigger is actually observed. A freshly
+generated skeleton therefore reports hygiene 0 as long as its code touches no
+host surface. If the server half does touch something, fill the array from the
+trigger table in [entry.md](entry.md#capability-triggers) — an empty array is not
+a substitute for the capabilities you actually use.
 
 Two failure shapes you will see, and how to tell them apart:
 
@@ -240,12 +245,12 @@ DSC-13  PASS  C-13   L0
 level: DSH-ENTRY recognized
 ```
 
-For the client recipe, the same run ends `status=pass`, prints
-`level: DSH-ENTRY recognized`, and still shows
-`C-11.1: dsh.capabilities is empty` with `reason: advisory: DSC-11`. That is the
-transitional empty-array WARN, not a G4 failure. A `kind: client` package is
-static-only: `DSC-14` is `NA`, so `--host` cannot turn it into
-`DSH-ENTRY runtime`. Only a package installed as a bundle (`kind: bundle`)
-reaches runtime through G0–G3, and its G4 needs both the client export and the
-root row. If `G4` fails you get `exit=1` and no level — add the missing export
-or row, do not reword the report.
+For the client recipe, the same run ends `status=pass` and prints
+`level: DSH-ENTRY recognized`. The declared empty `dsh.capabilities` array is
+**not** a `C-11.1` WARN since 1.6.9, and `C-11.2`/`C-11.5` stay quiet when no
+trigger is observed, so the static report is hygiene 0 — not a G4 failure. A
+`kind: client` package is static-only: `DSC-14` is `NA`, so `--host` cannot turn
+it into `DSH-ENTRY runtime`. Only a package installed as a bundle (`kind:
+bundle`) reaches runtime through G0–G3, and its G4 needs both the client export
+and the root row. If `G4` fails you get `exit=1` and no level — add the missing
+export or row, do not reword the report.

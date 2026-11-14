@@ -22,6 +22,10 @@ The canonical text is
 | LEV-7 | bounded parallel / long work | independent calls are bounded-parallel; long work uses jobs; cancellation propagates |
 | LEV-8 | composition / evidence cards | bundle patches and presets express differences; each practice has a reproducible evidence card |
 
+Host API note for rc3: a wrapper or test double assigned to `Session['append']`
+must keep both the single-event and the array overload — see
+[rc3-notes.md](rc3-notes.md).
+
 ## Evidence, not a badge
 
 <a id="thirteen-fields"></a>

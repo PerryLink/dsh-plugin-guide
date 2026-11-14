@@ -72,6 +72,8 @@ a rewrite is detectable.
           "command": [
             "dsh",
             "plugin",
+            "--profile",
+            "demo",
             "add",
             "."
           ],
@@ -143,6 +145,12 @@ a rewrite is detectable.
 }
 ```
 
+**The sample above is a structural example, not a fresh rc3 run**: it was written
+against the 2026-11-06 alpha.2-era host and shows the field shape only. On the
+rc3 CLI `dsh plugin` takes `--profile` as a required option, so the commands
+include it. Re-run the collector against `0.2.2-rc.3` when you need evidence that
+counts today — a pass on another host does not transfer.
+
 | Field | Required | What belongs there |
 |---|---|---|
 | `schema`, `evidenceId`, `generatedAt` | yes | the version, a unique id, an ISO timestamp |
@@ -187,7 +195,7 @@ never count as a pass.
 
 | Journey | Run and record | The row is a pass only when |
 |---|---|---|
-| **J1** install / remove | `dsh plugin add .` → config dump → `dsh plugin remove` → dump | the row appears and then disappears, with no hand-edited profile; record both dumps and their hashes |
+| **J1** install / remove | `dsh plugin --profile demo add .` → config dump → `dsh plugin --profile demo remove` → dump | the row appears and then disappears, with no hand-edited profile; record both dumps and their hashes |
 | **J2** enable / disable | disable and enable the same row id, dumping after each | the change is visible in the composed config under the same stable id |
 | **J3** configuration | boot with an empty config; boot with an invalid field; change a `volatile()` field | empty config boots; the invalid value fails loudly with a field path; the volatile change restarts 0 times |
 | **J4** first success | follow the README quickstart on a clean profile; also start with no credential | a five-minute first success, and the error names the cause, the next command, and the doc anchor; a no-key start stops at a clear credential boundary |
@@ -200,6 +208,11 @@ When a journey fails, quote the five things a reader needs: `Jn.<subcheck>`,
 the original `command[]`, `exitCode`, the last 20 lines of stderr, and the
 absolute log path. Then attach the clause anchor the journey maps to (for
 example `J2.toggle → 32-DSH-FLOW #R2`).
+
+Two rc3 host contracts sit behind these rows: the bundle update API
+(`BundleInfo.update`, replacing `updatable`) behind the J6 upgrade, and window
+drag regions for a self-drawn client overlay behind J8. Both are indexed in
+[rc3-notes.md](rc3-notes.md).
 
 <a id="security-boundary"></a>
 ## Security boundary
@@ -239,20 +252,26 @@ to `not-run`. There is no `flow-warn` **FLOW state** — a partial run is
 
 ## Current limit
 
-The harness is a draft, and this document is deliberately ahead of it:
+The harness covers four of the eight journeys at runtime; the rest are static
+preflight or blocked, and this document is deliberately explicit about which:
 
-- The v2 shape above is the contract to record against. The audit's
-  `--flow-evidence` reader still consumes the flat map, so project v2 → flat
-  before you run it (see above). A v2 file fed to the audit directly reads as
-  `0/8` and `not-run`.
-- There is no shipped command that collects all eight journeys for you. J1 has
-  a runtime fixture (`journey-runtime.mjs`); the other journeys are recorded by
-  hand or by a fixture-level run. Browser rendering has no probe.
+- `dsh-flow-collect` (`40-checker/bin/dsh-flow-collect.mjs`, powered by
+  `40-checker/scripts/flow-collect.mjs`) is the shipped collector. It writes
+  `dsh-flow-evidence/2` directly — no v2 → flat projection — and its
+  `RUNTIME_JOURNEYS` cover **J1, J2, J4, J6**. Run it against the host you
+  target, not against a stub.
+- **J3, J5, J7, J8 are static or blocked.** J5 and a client-only J8 are static
+  preflight; an `na` row is a justified skip with a reason, not a pass. Browser
+  rendering has no probe.
 - `na`, `manual`, and `static` rows cannot become `runtime`. If one journey is
-  `na`, FLOW stays `not-run` — write that, not a pass.
+  `na` or `not-run`, FLOW stays `not-run` — write that, not a pass.
 
-The source harness lives in
-[`40-checker/scripts/journey.mjs`](https://github.com/PerryLink/dsh-standards/blob/main/40-checker/scripts/journey.mjs)
+The collector is
+[`40-checker/bin/dsh-flow-collect.mjs`](https://github.com/PerryLink/dsh-standards/blob/main/40-checker/bin/dsh-flow-collect.mjs)
+with its logic in
+[`40-checker/scripts/flow-collect.mjs`](https://github.com/PerryLink/dsh-standards/blob/main/40-checker/scripts/flow-collect.mjs);
+the fixture harnesses are
+[`journey.mjs`](https://github.com/PerryLink/dsh-standards/blob/main/40-checker/scripts/journey.mjs)
 and
 [`journey-runtime.mjs`](https://github.com/PerryLink/dsh-standards/blob/main/40-checker/scripts/journey-runtime.mjs);
 the audit is

@@ -13,6 +13,9 @@ routes work to the tool that owns the verdict.
 Read `docs/levels.md` before answering a “which level / is this good?” question.
 Before a plugin is published, walk `docs/release-checklist.md`.
 It defines the three layers and the difference between a check and advice.
+The current host baseline is DSH `0.2.2-rc.3`; the rc.1-line host notes that
+still apply (bundle updates, `Session.append` overloads, window regions) are in
+`docs/rc3-notes.md`.
 
 ## The three layers
 

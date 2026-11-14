@@ -38,7 +38,7 @@ failed. `DSC-03` runs only in the listing profile — in the package profile it 
 | `C-1.6` | `private:true; not publishable` (`NA`) | expected for a local profile package, not for a marketplace entry |
 | `G4` | `dsh.client exists but exports["./client"] is missing; a package-root row cannot resolve it` | add `exports["./client"]` and the package-root row — see [recipes.md](recipes.md#client-entry-and-root-row) |
 | `C-2.1` | `neither engines.dsh nor a @deepseek-ai/dsh* peer range is declared` | declare `"engines": { "dsh": ">=0.2.2-0 <0.3.0" }` |
-| `C-2.2` | `engines.dsh <range> does not satisfy runtime <v>` | widen the range to the host you target, or run the checker with `--runtime-version <v>` to judge against the right one |
+| `C-2.2` | `engines.dsh <range> does not satisfy runtime <v>` | widen the range to the host you target, or run the checker with `--host-version <v>` to judge against the right one |
 | `C-2.3` | `engines.dsh must not be a workspace: range` | publish a real SemVer range; `workspace:` must not reach a tarball |
 | `C-2.4` | `peer <name> range <range> conflicts with engines.dsh` (WARN) | the host decides on `engines.dsh` alone; align the peer anyway |
 | `C-3.1`/`C-3.2`/`C-3.5` | `install spec` / `source is pinned` / market entry | listing only: exact version or verifiable tag, `#<40-hex>` for git, and a `format:1` index entry with pinned versions |
@@ -150,7 +150,7 @@ pass.
 
 - `package.json` has a resolvable entry and, for bundles, a `dsh.bundle.patch`.
 - The patch target row exists; ordered patch arrays are allowed.
-- `engines.dsh` or an `@deepseek-ai/dsh*` peer range is declared. For 0.2.2, prefer `>=0.2.2-0 <0.3.0`; npm default semver needs an explicit `^0.2.2-alpha.3` union arm.
+- `engines.dsh` or an `@deepseek-ai/dsh*` peer range is declared. For the 0.2.2 line (which currently ships as prereleases such as `0.2.2-rc.3`), prefer `>=0.2.2-0 <0.3.0`: the prerelease lower bound is what makes npm's default semver include `0.2.2-rc.3`. A bare `^0.2.2` excludes prereleases and is not enough.
 - `dsh.capabilities` lists every host surface the plugin touches (see below).
 - `dsh.labels` is declared when the plugin modifies prompts, runs red-team
   workloads, adds a model provider, exposes remote access, or mirrors another
@@ -217,16 +217,24 @@ with `static trigger <cap> is not declared in dsh.capabilities`.
 
 Reading the other subitems:
 
-- `C-11.1`: an unknown capability id is a FAIL; an empty array is a WARN. A
-  missing field is a transitional WARN, and `C-11.2` is then **not evaluated** —
-  so an undeclared array hides the very failure you want to see.
+- `C-11.1`: an unknown capability id is a FAIL. A **missing** field is a
+  transitional WARN; a declared empty array is the explicit "uses none"
+  declaration and is **not** a WARN since 1.6.9. When the field is absent, a
+  static trigger is reported on `C-11.2` as a WARN; once the array is declared
+  (even as `[]`), an observed trigger that is not declared is a **FAIL** — so an
+  undeclared array hides the very failure you want to see.
 - `C-11.3`: a bundle patch that enables `@deepseek-ai/dsh-plugin-manager/tools`
   without `disabled: true` is a FAIL.
 - `C-11.4`: a string literal that is exactly `danger-full-access` is a WARN; a
   mention in a comment or a `console.log` description is not.
-- `C-11.5`: a declared capability with no matching trigger is a WARN (over-
-  declaration). Keep declarations to what the scan can see; a dynamic call may
-  not match.
+- `C-11.5`: a declared capability that the static scan did not observe is a WARN
+  — "not observed statically", which is **not** proof it is unused (direct
+  `node:fs` reads/writes count as observation; dynamic calls and scan truncation
+  are outside the trigger surface). Since 1.6.10 it is `NA`, not WARN, when no
+  source was scanned or the capability has no static observation surface in this
+  checker version (`credentials:provider`). It is no longer called
+  "over-declaration": never delete a real declaration just because the scan
+  cannot see it.
 
 The scan covers `.js`, `.mjs`, `.cjs`, `.ts`, `.tsx`, and `.jsx` files in the
 package, and skips `tests`, `docs`, `scripts`, `examples`, `fixtures`, `bench`,

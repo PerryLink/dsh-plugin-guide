@@ -1,3 +1,16 @@
+## 0.5.7 — 2026-11-14
+
+### Changed
+
+- Baseline moved to DSH `0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`), Cordis `4.1.0`, Node `>=24.9.0` in `docs/levels.md` and all five READMEs; the 2026-11-04 alpha.3 / Cordis `4.0.6-alpha.2` baseline is kept as history.
+- Removed the incorrect "npm's default semver needs a `^0.2.2-alpha.3` union arm" claim: `>=0.2.2-0 <0.3.0` already includes `0.2.2-rc.3`; a bare `^0.2.2` does not.
+- `docs/release-checklist.md`: the `engines.dsh` example is `>=0.2.2-0 <0.3.0`, the static check pins `dsh-standards@1.6.11` and passes `--host-version 0.2.2-rc.3`, and it states that without a host version C-2 is NA, not a pass.
+- `docs/flow.md`: removed the "flat map / no collector" limit; `dsh-flow-collect` writes `dsh-flow-evidence/2` and its runtime journeys are J1/J2/J4/J6, with J3/J5/J7/J8 static or blocked. J1 commands now include the rc3-required `dsh plugin --profile`.
+- `docs/rules.md`: the C-2 anchor is `--host-version` → `DSH_HOST_VERSION` → opt-in `--allow-host-probe` → unknown (NA), not a default-version judgement; `docs/entry.md` follows the same flag.
+- `docs/entry.md`, `docs/security.md`, `docs/recipes.md`: C-11.1 no longer warns on a declared empty array (1.6.9), and C-11.5 is "not observed statically" (WARN) or NA (1.6.10) rather than "over-declaration".
+- Added `docs/rc3-notes.md`: the rc.1-line host notes for `plugin-update-method`, `session-append-overloads`, and `window-drag-regions`, linked from `levels.md`, `flow.md`, `boost.md`, and `SKILL.md`.
+- READMEs say the published version is `0.5.7`; `package.json#files` no longer lists a nonexistent `README-zh.md`; `dshWorkshop.compatibility.dshVersions` is `0.2.2-rc.3`.
+
 ## 0.5.6 — 2026-11-14
 
 ### Changed

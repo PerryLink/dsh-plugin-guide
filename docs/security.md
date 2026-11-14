@@ -34,7 +34,7 @@ and read the block's `checks[]`, not just its four arrays — see
 | Fact | What follows |
 |---|---|
 | plugin and host share a process | `import node:fs`, `fetch`, `child_process`, and `process.env` are always reachable |
-| `dsh.capabilities` is a declaration | declaring `[]` does not remove a capability; over-declaring is a WARN, under-declaring is a static FAIL |
+| `dsh.capabilities` is a declaration | declaring `[]` does not remove a capability; under-declaring is a static FAIL, and a declaration the static scan cannot observe is a WARN |
 | the sandbox covers tool subprocess file writes only | it is not a boundary around plugin code, and not a network policy |
 | the checker executes the plugin | `--runtime`/C-4/C-14 import it; the check path has no sandbox and inherits `HOME` |
 | static checks see known source shapes | they cannot see runtime egress, dynamic URLs, or whether a prompt was really corrupted |
@@ -47,8 +47,15 @@ and read the block's `checks[]`, not just its four arrays — see
 ### 1. Least privilege and the capability declaration (DSC-16, DSC-18)
 
 Declare only the closed-set IDs the plugin really touches. Every static trigger
-needs its entry (`C-11.2`), and an entry with no trigger is an over-declaration
-WARN (`C-11.5`). There are 15 IDs: `fs:read`, `fs:write`, `shell`, `subprocess`,
+needs its entry (`C-11.2`). A declared capability that the static scan did not
+observe is a WARN (`C-11.5`: "not observed statically") — that is not proof it
+is unused, because direct `node:fs` use is observation evidence while dynamic
+calls and scan truncation stay outside the trigger surface; since 1.6.10 the
+clause is `NA` (not WARN) when nothing was scanned or the capability has no
+static observation surface (`credentials:provider`). Do not delete a real
+declaration just because the scan cannot see it.
+
+There are 15 IDs: `fs:read`, `fs:write`, `shell`, `subprocess`,
 `network:egress`, `network:ingress`, `credentials:read`, `credentials:list`,
 `credentials:provider`, `llm:adapter`, `sessions:read`, `system-prompt:write`,
 `tools:register`, `remote:expose`, `plugin:install`.

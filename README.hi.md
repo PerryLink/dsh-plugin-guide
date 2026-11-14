@@ -199,9 +199,9 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 ## ज्ञात सीमाएँ
 
 - **गाइड कोई निर्णय नहीं देती।** इसमें न्यायाधीश क्षमता नहीं है: यह किसी प्लगइन को न उत्तीर्ण बता सकती है न अनुत्तीर्ण; निर्णय केवल उस परिणाम से आता है जो `dsh-standards` ने वास्तव में चलाया हो।
-- **FLOW का runtime अभी मसौदा है।** J1/J2/J4/J6 के पास fixtures पर runtime साक्ष्य है; J3/J7 केवल fixture-स्तर runtime तक पहुँचते हैं; J5/J8 के पास केवल स्थिर पूर्व-जाँच है; ब्राउज़र रेंडरिंग अभी शामिल नहीं है — इसलिए «केवल कुछ journeys चले» को `not-run` लिखना चाहिए (देखें [docs/flow.md](docs/flow.md))।
+- **FLOW का runtime अभी मसौदा है।** `dsh-flow-collect` `dsh-flow-evidence/2` साक्ष्य बनाता है और runtime journeys J1/J2/J4/J6 को कवर करता है; J3/J5/J7/J8 अभी static या blocked हैं (कुछ केवल fixture-स्तर तक) और ब्राउज़र रेंडरिंग के लिए कोई प्रोब नहीं है — इसलिए «केवल कुछ journeys चले» को `not-run` लिखना चाहिए (देखें [docs/flow.md](docs/flow.md))।
 - **BOOST के मापे गए उदाहरण fixtures या सिंथेटिक कैप्चर हैं।** वे उत्पादन बेसलाइन नहीं हैं; LEV-3, LEV-6 और LEV-7 के पास सबसे मज़बूत साक्ष्य है, बाकी के पास केवल loader/context-स्तर fixtures; साक्ष्य न हो तो स्थिति `not-measured` है (देखें [docs/boost.md](docs/boost.md))।
-- **नियम होस्ट के साथ चलते हैं।** बेसलाइन 2026-11-04 तक DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2` है; Node को `0.2.2-alpha.2` से `>=24.9.0` चाहिए; `ctx.menus` `0.2.2-alpha.3` में हट चुका है; और `0.2.1-alpha.4` से घोषित `engines.dsh` अकेले संस्करण कॉरिडोर तय करता है (देखें [docs/levels.md](docs/levels.md))।
+- **नियम होस्ट के साथ चलते हैं।** बेसलाइन 2026-11-14 तक DSH `0.2.2-rc.3` (npm `next`; `latest` अभी भी `0.2.2-rc.1`) / Cordis `4.1.0` / Node `>=24.9.0` है; ऐतिहासिक बेसलाइन 2026-11-04 को DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2` थी, और `ctx.menus` `0.2.2-alpha.3` में हट चुका था; `0.2.1-alpha.4` से घोषित `engines.dsh` अकेले संस्करण कॉरिडोर तय करता है (देखें [docs/levels.md](docs/levels.md))।
 - **`dsh.standards` प्लेसहोल्डर स्कोर नहीं है।** `package.json` में entry/flow = `not-run`, boost = `not-measured`, `evidence: null` — केवल एक प्लेसहोल्डर।
 - **0.3.x पुराने रूप पर रुका है।** 0.3.x एक obsolete उत्पाद-लाइन है; बिल्ड/स्कैफ़ोल्ड क्षमता अब `dsh-primer` में है और यह पैकेज कोई CLI नहीं देता।
 
@@ -217,25 +217,25 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 - **कोई वैश्विक परिवर्तन नहीं।** प्रोटोटाइप पैच नहीं करता, `process.env` नहीं लिखता, वैश्विक fetch dispatcher नहीं बदलता।
 - **रजिस्ट्रेशन effect है।** `ctx.effect(() => ctx.skills.register(...))`: रोकने या हॉट-रीलोड पर योगदान हट जाता है।
 
-बेसलाइन: DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2` ([docs/levels.md](docs/levels.md) के अनुसार, 2026-11-04)।
+बेसलाइन: DSH `0.2.2-rc.3` / Cordis `4.1.0` ([docs/levels.md](docs/levels.md) के अनुसार, 2026-11-14; 2026-11-04 का alpha.3 रिकॉर्ड ऐतिहासिक रूप में सुरक्षित है)।
 
 ## संगतता
 
 | सतह | स्थिति |
 |---|---|
-| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0` (`0.2.1-alpha.4` से `engines.dsh` अकेले तय करता है; npm के डिफ़ॉल्ट semver को स्पष्ट `^0.2.2-alpha.3` यूनियन आर्म चाहिए)। बेसलाइन DSH `0.2.2-alpha.3` (npm `alpha`), Cordis `4.0.6-alpha.2`। |
+| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0` (`0.2.1-alpha.4` से `engines.dsh` अकेले तय करता है; निचली सीमा में prerelease पहचानकर्ता ज़रूरी है — npm के डिफ़ॉल्ट semver में `>=0.2.2-0` `0.2.2-rc.3` को शामिल करता है, जबकि अकेला `^0.2.2` नहीं)। बेसलाइन DSH `0.2.2-rc.3` (npm `next`; `latest` अभी भी `0.2.2-rc.1`), Cordis `4.1.0`। |
 | Node | `>=24.9.0` (0.2.2 लाइन की आवश्यकता, `0.2.2-alpha.2` से) |
 | प्लेटफ़ॉर्म | जहाँ DSH चले (सादा-पाठ स्किल; कोई ब्राउज़र आधा नहीं, कोई नेटिव एक्सटेंशन नहीं) |
 | मॉडल | कोई मॉडल कॉल नहीं: होस्ट स्किल पाठ को संदर्भ में डालता है, इसलिए अतिरिक्त मॉडल क्षमता नहीं चाहिए |
 
 ## इकोसिस्टम और गुणवत्ता
 
-- [npm पैकेज पेज](https://www.npmjs.com/package/dsh-plugin-guide) (प्रकाशित संस्करण, `0.4.3`)
+- [npm पैकेज पेज](https://www.npmjs.com/package/dsh-plugin-guide) (प्रकाशित संस्करण, `0.5.7`)
 - [Gitee मिरर](https://gitee.com/perrylink/dsh-plugin-guide) (केवल-पढ़ने वाला स्नैपशॉट; मुख्य स्रोत GitHub है)
 - [dsh-standards](https://www.npmjs.com/package/dsh-standards) (चेकर और `dsh-levels` तीन-परत ऑडिट)
 - [dsh-plugin-spec](https://github.com/PerryLink/dsh-plugin-spec) (निम्न-स्तरीय नियम-पाठ और धारा स्रोत)
 - [dsh-primer](https://github.com/PerryLink/dsh-primer) (पुरानी बिल्ड/स्कैफ़ोल्ड स्किल और CLI)
-- रेपो दस्तावेज़: [तीन परतें](docs/levels.md) · [ENTRY](docs/entry.md) · [FLOW](docs/flow.md) · [BOOST](docs/boost.md)
+- रेपो दस्तावेज़: [तीन परतें](docs/levels.md) · [ENTRY](docs/entry.md) · [FLOW](docs/flow.md) · [BOOST](docs/boost.md) · [rc3 होस्ट नोट्स](docs/rc3-notes.md)
 - रेपो गवर्नेंस: [CHANGELOG](CHANGELOG.md) · [STANDARDS.md](STANDARDS.md) · [CONTRIBUTING](CONTRIBUTING.md)
 
 ## डेवलपमेंट

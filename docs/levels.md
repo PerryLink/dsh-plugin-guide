@@ -9,7 +9,9 @@
 | **FLOW** | Can a user install, configure, use, upgrade, and remove it without fighting it? | J1–J8 user-journey checks | Yes, where runtime evidence exists; otherwise `not-run` |
 | **BOOST** | Does it use Cordis well? | LEV-1–8 practice library and evidence cards | No plugin-level pass/fail; evidence is per practice |
 
-> **Current baseline (2026-11-04):** DSH `0.2.2-alpha.3` (npm `alpha`), Node `>=24.9.0` (since 0.2.2-alpha.2), Cordis `4.0.6-alpha.2`. `engines.dsh`, when declared, decides alone since 0.2.1-alpha.4; `ctx.menus` is gone in 0.2.2-alpha.3; Typert codecs use `create()` since 0.1.6-alpha.2; `@deepseek-ai/dsh-client-runtime` was removed in 0.1.2-alpha.1 and has no 0.2.x.
+> **Current baseline (2026-11-14):** DSH `0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`), tag commit `38a6a5c9`; Node `>=24.9.0`; Cordis `4.1.0` (vendored upstream baseline `4.0.0-rc.11`). `engines.dsh`, when declared, decides alone since 0.2.1-alpha.4; `ctx.menus` is gone in 0.2.2-alpha.3; Typert codecs use `create()` since 0.1.6-alpha.2; `@deepseek-ai/dsh-client-runtime` was removed in 0.1.2-alpha.1 and has no 0.2.x.
+>
+> History and boundaries: the 2026-11-04 baseline was DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2`. The `v0.2.2-rc.2` changes (for example the `ctx.root` removal, `Service.metadata`, and the default WebServer auth) belong to the **next** release after rc3, not to rc3. The rc.1-line host guides that touch plugins are indexed in [rc3-notes.md](rc3-notes.md).
 
 ## Where to go next
 
@@ -20,6 +22,7 @@
 | an ENTRY question | [entry.md](entry.md) — package shape, runtime surface, declarations |
 | a FLOW journey to record | [flow.md](flow.md) — the `dsh-flow-evidence/2` file and J1–J8 evidence |
 | a BOOST practice to evidence | [boost.md](boost.md) — the thirteen-field evidence card |
+| a DSH `0.2.2-rc.3` host-API question | [rc3-notes.md](rc3-notes.md) — the rc.1-line notes for bundle updates, `Session.append` overloads, and window regions |
 | a security question — what can a plugin do, is this safe to install, what must a market disclose | [security.md](security.md) — author/user/market checklists and the `DSC-15`–`DSC-22` boundary |
 
 The two reference docs exist because a report ID alone does not tell you what to

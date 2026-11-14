@@ -205,9 +205,9 @@ The checker and the three-layer audit live in [`dsh-standards`](https://www.npmj
 ## Known limitations
 
 - **The guide produces no verdict.** It has no judge capability: it can neither mark a plugin pass nor mark it fail; a verdict comes only from a result `dsh-standards` actually ran.
-- **The FLOW runtime is still a draft.** J1/J2/J4/J6 have runtime evidence on fixtures; J3/J7 only reach fixture-level runtime; J5/J8 have static preflight only; browser rendering is not covered yet — so "only a few journeys ran" must be written as `not-run` (see [docs/flow.md](docs/flow.md)).
+- **The FLOW runtime is still a draft.** `dsh-flow-collect` writes `dsh-flow-evidence/2` evidence and covers the runtime journeys J1/J2/J4/J6; J3/J5/J7/J8 stay static or blocked (some only reach fixture level), and browser rendering has no probe — so "only a few journeys ran" must be written as `not-run` (see [docs/flow.md](docs/flow.md)).
 - **BOOST's measured examples are fixtures or synthetic captures.** They are not production baselines; LEV-3, LEV-6, and LEV-7 have the strongest evidence, the others only loader/context-level fixtures; without evidence the status is `not-measured` (see [docs/boost.md](docs/boost.md)).
-- **The rules track the host.** The baseline is DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2` as of 2026-11-04; Node has required `>=24.9.0` since `0.2.2-alpha.2`; `ctx.menus` is gone in `0.2.2-alpha.3`; and since `0.2.1-alpha.4` the declared `engines.dsh` decides the version corridor alone (see [docs/levels.md](docs/levels.md)).
+- **The rules track the host.** The baseline is DSH `0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`) / Cordis `4.1.0` / Node `>=24.9.0` as of 2026-11-14; the historical 2026-11-04 baseline was DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2`, and `ctx.menus` is gone in `0.2.2-alpha.3`; since `0.2.1-alpha.4` the declared `engines.dsh` decides the version corridor alone (see [docs/levels.md](docs/levels.md)).
 - **The `dsh.standards` placeholder is not a score.** In `package.json`, entry/flow = `not-run`, boost = `not-measured`, `evidence: null` — a placeholder only.
 - **0.3.x stays on the old shape.** 0.3.x is a deprecated product line; the build/scaffold capability now lives in `dsh-primer`, and this package ships no CLI.
 
@@ -223,25 +223,25 @@ This plugin **does not interfere** with other plugins:
 - **No global mutation.** It patches no prototypes, rewrites no `process.env`, and replaces no global fetch dispatcher.
 - **Registration is an effect.** `ctx.effect(() => ctx.skills.register(...))` — stop or hot-reload removes the contribution.
 
-Baseline: DSH `0.2.2-alpha.3` / Cordis `4.0.6-alpha.2` (as recorded in [docs/levels.md](docs/levels.md), 2026-11-04).
+Baseline: DSH `0.2.2-rc.3` / Cordis `4.1.0` (as recorded in [docs/levels.md](docs/levels.md), 2026-11-14; the 2026-11-04 alpha.3 record is kept as history).
 
 ## Compatibility
 
 | Surface | Status |
 |---|---|
-| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0` (since `0.2.1-alpha.4`, `engines.dsh` decides alone; npm's default semver needs an explicit `^0.2.2-alpha.3` union arm). Baseline DSH `0.2.2-alpha.3` (npm `alpha`), Cordis `4.0.6-alpha.2`. |
+| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0` (since `0.2.1-alpha.4`, `engines.dsh` decides alone; the lower bound must carry the prerelease tag — `>=0.2.2-0` already includes `0.2.2-rc.3` under npm's default semver, while a bare `^0.2.2` does not). Baseline DSH `0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`), Cordis `4.1.0`. |
 | Node | `>=24.9.0` (the 0.2.2 line's requirement, since `0.2.2-alpha.2`) |
 | Platforms | Anywhere DSH runs (plain-text skill; no browser half, no native extension) |
 | Model | No model calls: the host injects the skill text into context, so no extra model capability is required |
 
 ## Ecosystem & quality
 
-- [npm package page](https://www.npmjs.com/package/dsh-plugin-guide) (published releases, `0.4.3`)
+- [npm package page](https://www.npmjs.com/package/dsh-plugin-guide) (published releases, `0.5.7`)
 - [Gitee mirror](https://gitee.com/perrylink/dsh-plugin-guide) (read-only snapshot; GitHub is canonical)
 - [dsh-standards](https://www.npmjs.com/package/dsh-standards) (the checker and the `dsh-levels` three-layer audit)
 - [dsh-plugin-spec](https://github.com/PerryLink/dsh-plugin-spec) (the low-level rule text and clause source)
 - [dsh-primer](https://github.com/PerryLink/dsh-primer) (the legacy build/scaffold skill and CLI)
-- Repository docs: [the three layers](docs/levels.md) · [ENTRY](docs/entry.md) · [FLOW](docs/flow.md) · [BOOST](docs/boost.md)
+- Repository docs: [the three layers](docs/levels.md) · [ENTRY](docs/entry.md) · [FLOW](docs/flow.md) · [BOOST](docs/boost.md) · [rc3 host notes](docs/rc3-notes.md)
 - Repository governance: [CHANGELOG](CHANGELOG.md) · [STANDARDS.md](STANDARDS.md) · [CONTRIBUTING](CONTRIBUTING.md)
 
 ## Development

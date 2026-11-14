@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "A practical guide to DSH plugin quality: ENTRY checks, FLOW checks, and BOOST guidance. Community guide; not official, not a certification, not a ranking.",
   "type": "module",
   "main": "index.js",
@@ -16,7 +16,6 @@
     "icon.svg",
     "cordis.patch.yml",
     "README.md",
-    "README-zh.md",
     "STANDARDS.md",
     "LICENSE",
     "NOTICE.md",
@@ -100,7 +99,7 @@
     ],
     "compatibility": {
       "dshVersions": [
-        "0.2.1-rc.2"
+        "0.2.2-rc.3"
       ]
     },
     "capability": {

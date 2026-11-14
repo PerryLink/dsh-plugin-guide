@@ -6,8 +6,11 @@ before submitting to a catalog.
 
 ## 1. Manifest
 
-- [ ] top-level `engines.dsh` names the DSH line you support, for example
-      `"engines": { "dsh": ">=0.2.2 <0.3.0" }`. Since 0.2.1-alpha.4 the host
+- [ ] top-level `engines.dsh` names the DSH line you support. For the 0.2.2
+      line — which currently ships as prereleases such as `0.2.2-rc.3` — write
+      `"engines": { "dsh": ">=0.2.2-0 <0.3.0" }`. The `-0` lower bound matters:
+      `>=0.2.2` alone does **not** include `0.2.2-rc.3` (a prerelease sorts
+      before the release), so the host rejects it. Since 0.2.1-alpha.4 the host
       reads this field alone when it is present; without it, the host falls
       back to the `@deepseek-ai/dsh*` peer dependency ranges.
 - [ ] `peerDependencies["@deepseek-ai/dsh"]` still matches the same line, for
@@ -33,14 +36,24 @@ published package (fixtures, local profiles, secrets, build caches).
 Node >= 24.9 is required for the 0.2.2 line.
 
 ```sh
-npx -y dsh-standards@1.6.10 check . --scope entry --entry-claim static --no-exec
+npx -y dsh-standards@1.6.11 check . --scope entry --entry-claim static --no-exec \
+  --host-version 0.2.2-rc.3
 ```
+
+**C-2 is judged only when the host version is known.** `check` does not probe
+the PATH `dsh` on its own, so without `--host-version` (or `DSH_HOST_VERSION`)
+the report records `DSC-02` as `NA` — compatibility not judged — and still
+exits `0`. That is **not** a pass: a range that the host rejects is not caught
+until the install smoke in step 4. Pass the host you actually target; for the
+current line that is `0.2.2-rc.3` (npm `next`; npm `latest` is still `0.2.2-rc.1`).
+The pin `1.6.11` is the release that carries the rc3 defaults.
 
 Read the report in this order:
 
 1. `blocking` / FAIL items — fix these first;
 2. `hygiene` WARN items — judgment calls, not automatic failures;
-3. `partial` / `not checked` — the static pass did not cover them.
+3. `partial` / `not checked` / `NA` — the static pass did not cover them. A
+   `DSC-02 NA` means C-2 was not judged, not that the range passed.
 
 `--no-exec` means the checker never runs the plugin. The report covers the
 ENTRY layer only: it says nothing about FLOW (does it behave well at runtime)
