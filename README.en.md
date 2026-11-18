@@ -231,7 +231,7 @@ Baseline: DSH `0.2.2-rc.3` / Cordis `4.1.0` (as recorded in [docs/levels.md](doc
 
 | Surface | Status |
 |---|---|
-| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0` (since `0.2.1-alpha.4`, `engines.dsh` decides alone; the lower bound must carry the prerelease tag — `>=0.2.2-0` already includes `0.2.2-rc.3` under npm's default semver, while a bare `^0.2.2` does not). Baseline DSH `0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`), Cordis `4.1.0`. |
+| Harness | `dsh-v0.2.2-rc.4`（2026-11-18）；`engines.dsh` = `>=0.2.2-0 <0.3.0` (since `0.2.1-alpha.4`, `engines.dsh` decides alone; the lower bound must carry the prerelease tag — `>=0.2.2-0` already includes `0.2.2-rc.3` under npm's default semver, while a bare `^0.2.2` does not). Baseline DSH `0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`), Cordis `4.1.0`. |
 | Node | `>=24.9.0` (the 0.2.2 line's requirement, since `0.2.2-alpha.2`) |
 | Platforms | Anywhere DSH runs (plain-text skill; no browser half, no native extension) |
 | Model | No model calls: the host injects the skill text into context, so no extra model capability is required |

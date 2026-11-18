@@ -231,7 +231,7 @@ npx -p dsh-standards dsh-levels ./my-plugin --format json
 
 | 维度 | 状态 |
 |---|---|
-| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0`（自 `0.2.1-alpha.4` 起 `engines.dsh` 单独决定；下限要带预发布标识——`>=0.2.2-0` 在 npm 默认 semver 下已包含 `0.2.2-rc.3`，裸 `^0.2.2` 不包含）。基线 DSH `0.2.2-rc.3`（npm `next`；`latest` 仍是 `0.2.2-rc.1`），Cordis `4.1.0`。 |
+| Harness | `dsh-v0.2.2-rc.4`（2026-11-18）；`engines.dsh` = `>=0.2.2-0 <0.3.0`（自 `0.2.1-alpha.4` 起 `engines.dsh` 单独决定；下限要带预发布标识——`>=0.2.2-0` 在 npm 默认 semver 下已包含 `0.2.2-rc.3`，裸 `^0.2.2` 不包含）。基线 DSH `0.2.2-rc.3`（npm `next`；`latest` 仍是 `0.2.2-rc.1`），Cordis `4.1.0`。 |
 | Node | `>=24.9.0`（0.2.2 线的要求，自 `0.2.2-alpha.2` 起） |
 | 平台 | 任何 DSH 可运行处（纯文本技能；无浏览器半，无原生扩展） |
 | 模型 | 不调用模型：技能文本由宿主注入上下文，无额外模型能力要求 |

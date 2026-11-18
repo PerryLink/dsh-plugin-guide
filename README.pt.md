@@ -11,7 +11,7 @@
 
 **Faça a pergunta certa antes de construir: esclareça as camadas ENTRY / FLOW / BOOST de um plugin DSH e deixe o veredito para a ferramenta que executa as verificações.**
 
-A camada de guia para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito; não certifica, não pontua e não classifica, apenas encaminha as verificações para o `dsh-standards`.
+A camada de guia para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito; não certifica, não pontua e não classifica, apenas encaminha as verificações para o `dsh-v0.2.2-rc.4`（2026-11-18）`dsh-standards`.
 
 [Instalar](#instalação-em-três-passos) · [Configuração](#configuração) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -35,7 +35,7 @@ dsh plugin --profile web add dsh-plugin-guide
 
 ## O que é
 
-`dsh-plugin-guide` é a **camada de guia** para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito. Ao ser instalado, registra uma skill de agente carregada sob demanda cujo corpo é o `SKILL.md`; as referências relativas desse corpo (`./docs/...`) resolvem dentro do pacote por meio de um `resourceBase` de diretório. Não certifica, não pontua e não classifica: as verificações ficam no `dsh-standards`, o texto das regras no `dsh-plugin-spec` e a construção/andaime no `dsh-primer`.
+`dsh-v0.2.2-rc.4`（2026-11-18）`dsh-plugin-guide` é a **camada de guia** para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito. Ao ser instalado, registra uma skill de agente carregada sob demanda cujo corpo é o `SKILL.md`; as referências relativas desse corpo (`./docs/...`) resolvem dentro do pacote por meio de um `resourceBase` de diretório. Não certifica, não pontua e não classifica: as verificações ficam no `dsh-standards`, o texto das regras no `dsh-plugin-spec` e a construção/andaime no `dsh-primer`.
 
 | Pacote | Papel |
 |---|---|
@@ -225,7 +225,7 @@ Linha de base: DSH `0.2.2-rc.3` / Cordis `4.1.0` (conforme [docs/levels.md](docs
 
 | Superfície | Estado |
 |---|---|
-| Harness | `engines.dsh` = `>=0.2.2-0 <0.3.0` (desde `0.2.1-alpha.4`, o `engines.dsh` decide sozinho; o limite inferior precisa do identificador de pré-lançamento: `>=0.2.2-0` já inclui `0.2.2-rc.3` no semver padrão do npm, enquanto `^0.2.2` puro não inclui). Linha de base DSH `0.2.2-rc.3` (npm `next`; `latest` ainda é `0.2.2-rc.1`), Cordis `4.1.0`. |
+| Harness | `dsh-v0.2.2-rc.4`（2026-11-18）；`engines.dsh` = `>=0.2.2-0 <0.3.0` (desde `0.2.1-alpha.4`, o `engines.dsh` decide sozinho; o limite inferior precisa do identificador de pré-lançamento: `>=0.2.2-0` já inclui `0.2.2-rc.3` no semver padrão do npm, enquanto `^0.2.2` puro não inclui). Linha de base DSH `0.2.2-rc.3` (npm `next`; `latest` ainda é `0.2.2-rc.1`), Cordis `4.1.0`. |
 | Node | `>=24.9.0` (requisito da linha 0.2.2, desde `0.2.2-alpha.2`) |
 | Plataformas | Onde o DSH rodar (skill de texto puro; sem metade de navegador, sem extensão nativa) |
 | Modelo | Sem chamadas ao modelo: o host injeta o texto da skill no contexto, então nenhuma capacidade extra de modelo é necessária |

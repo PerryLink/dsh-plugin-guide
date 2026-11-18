@@ -171,6 +171,8 @@
 
 ## [Unreleased]
 
+## [0.5.10] - 2026-11-18
+
 ### Changed
 
 - **`dsh-plugin-dev new` now emits a `dsh.standards` placeholder** in both `templates/ts/package.json` and `templates/js/package.json`: `schema: "dsh-levels/1"`, `entry`/`flow` = `not-run`, `boost` = `not-measured`, and `evidence: null` for every level. The block is merged into the existing `dsh` object, so `manifestVersion` and `dsh.bundle.patch` are unchanged. The scaffolder copies template files with placeholder substitution, so the field survives generation; tests render both skeletons and generate temporary TS/JS projects to assert the placeholder is present and that no level reads as a pass. Each template README gains a `## Standards` section stating that the block is a placeholder to replace after a `level-audit` run, and that without evidence it stays `not-run`. `guide/standards.md` (EN/ZH) says the same. Non-official; no certification claim and no npm version bump.
