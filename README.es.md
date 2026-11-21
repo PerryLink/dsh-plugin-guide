@@ -49,6 +49,11 @@ dsh plugin --profile web add dsh-plugin-guide
   <img src="docs/assets/dsh-plugin-guide-flow-v4-light.svg" width="100%" alt="dsh-plugin-guide assembly and routing: cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
 </picture>
 
+![dsh-plugin-guide: ejecución real de terminal](docs/assets/dsh-plugin-guide-demo.gif)
+
+*Repetición animada de una ejecución real de este repositorio (2026-11-21).*
+
+
 ## Instalación en tres pasos
 
 1. **Instalar** (elige un canal):

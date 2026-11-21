@@ -57,6 +57,11 @@ dsh plugin --profile web add dsh-plugin-guide
 
 ## Three-step setup
 
+
+![dsh-plugin-guide: real terminal run](docs/assets/dsh-plugin-guide-demo.gif)
+
+*Animated replay of a real run in this repository (2026-11-21).*
+
 1. **Install** (pick one channel):
 
    ```sh

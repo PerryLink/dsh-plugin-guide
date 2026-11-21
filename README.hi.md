@@ -49,6 +49,11 @@ dsh plugin --profile web add dsh-plugin-guide
   <img src="docs/assets/dsh-plugin-guide-flow-v4-light.svg" width="100%" alt="dsh-plugin-guide assembly and routing: cordis.patch.yml → index.js → SKILL.md → docs/levels.md → dsh-standards">
 </picture>
 
+![dsh-plugin-guide का असली टर्मिनल रन](docs/assets/dsh-plugin-guide-demo.gif)
+
+*इस रिपॉज़िटरी के असली रन का एनिमेटेड रीप्ले (2026-11-21)।*
+
+
 ## तीन चरणों में शुरुआत
 
 1. **इंस्टॉल करें** (कोई एक चैनल चुनें):

@@ -57,6 +57,11 @@ dsh plugin --profile web add dsh-plugin-guide
 
 ## 三步上手
 
+
+![dsh-plugin-guide 真实终端运行](docs/assets/dsh-plugin-guide-demo.gif)
+
+*本仓库真实运行的动图回放（2026-11-21）。*
+
 1. **安装**（三选一）：
 
    ```sh
