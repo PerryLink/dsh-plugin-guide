@@ -380,3 +380,8 @@ python scripts/gen-readme-assets.py     # docs/assets में हल्के/
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · समुदाय गाइड, DeepSeek से संबद्ध नहीं।</sub></p>
+
+
+## संगतता जाँचें
+
+प्रकाशित करने से पहले [HCB](https://github.com/PerryLink/dsh-hcb) चलाएँ ताकि पता चले कि आपका घोषित `engines.dsh` मौजूदा होस्ट को कवर करता है या नहीं, और `dsh.standards` ब्लॉक जोड़ें ताकि ENTRY/FLOW/BOOST दिखाई दें। देखें [docs/DECLARE.md](https://github.com/PerryLink/dsh-hcb/blob/main/docs/DECLARE.md).

@@ -380,3 +380,8 @@ Este proyecto forma parte de la familia de plugins de DeepSeek Harness de [Perry
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · Guía de la comunidad, no afiliada a DeepSeek.</sub></p>
+
+
+## Comprobar la compatibilidad
+
+Antes de publicar, ejecuta [HCB](https://github.com/PerryLink/dsh-hcb) para comprobar si tu `engines.dsh` declarado cubre el host actual, y añade un bloque `dsh.standards` para que ENTRY/FLOW/BOOST sean visibles. Consulta [docs/DECLARE.md](https://github.com/PerryLink/dsh-hcb/blob/main/docs/DECLARE.md).
