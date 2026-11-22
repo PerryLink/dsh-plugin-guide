@@ -1,5 +1,3 @@
-> 宿主兼容性：DeepSeek Harness `dsh-v0.2.2-rc.4`（2026-11-18 核验）。
-
 <div align="center">
 
 <picture>
@@ -12,6 +10,8 @@
 **先问对问题再动手：把 DSH 插件的 ENTRY / FLOW / BOOST 三层问清楚，判定交给真正做检查的工具。**
 
 DSH 插件的指南层——解释要检查什么、为什么重要、判定归谁；自身不做认证、不打分、不排名，只把检查路由到 `dsh-standards`。
+
+最近一次核验：DeepSeek Harness `dsh-v0.2.3-alpha.1`（2026-11-22）。
 
 [安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -56,7 +56,6 @@ dsh plugin --profile web add dsh-plugin-guide
 </picture>
 
 ## 三步上手
-
 
 ![dsh-plugin-guide 真实终端运行](docs/assets/dsh-plugin-guide-demo.gif)
 
@@ -390,7 +389,6 @@ python scripts/gen-readme-assets.py     # 重出 docs/assets 的深浅两版 her
 [LICENSE](LICENSE)（Apache License 2.0）© 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · 社区指南，与 DeepSeek 无关。</sub></p>
-
 
 ## Check compatibility
 

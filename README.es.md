@@ -1,5 +1,3 @@
-> Host compatibility: DeepSeek Harness `dsh-v0.2.2-rc.4` (verified 2026-11-18).
-
 <div align="center">
 
 <picture>
@@ -11,7 +9,9 @@
 
 **Haz la pregunta correcta antes de construir: aclara las capas ENTRY / FLOW / BOOST de un plugin DSH y deja el veredicto a la herramienta que ejecuta las comprobaciones.**
 
-La capa de guía para plugins de DSH: explica qué comprobar, por qué importa y a qué herramienta pertenece el veredicto; no certifica, no puntúa y no clasifica, solo enruta las comprobaciones a `dsh-v0.2.2-rc.4`（2026-11-18）`dsh-standards`.
+La capa de guía para plugins de DSH: explica qué comprobar, por qué importa y a qué herramienta pertenece el veredicto; no certifica, no puntúa y no clasifica, solo enruta las comprobaciones a, `dsh-standards`.
+
+Última verificación: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
 
 [Instalar](#instalación-en-tres-pasos) · [Configuración](#configuración) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -35,7 +35,7 @@ dsh plugin --profile web add dsh-plugin-guide
 
 ## Qué es
 
-`dsh-v0.2.2-rc.4`（2026-11-18）`dsh-plugin-guide` es la **capa de guía** para plugins de DSH: explica qué comprobar, por qué importa y a qué herramienta pertenece el veredicto. Al instalarse registra una skill de agente que se carga bajo demanda y cuyo cuerpo es `SKILL.md`; las referencias relativas de ese cuerpo (`./docs/...`) se resuelven dentro del paquete mediante un `resourceBase` de tipo directorio. No certifica, no puntúa y no clasifica: las comprobaciones están en `dsh-standards`, el texto de las reglas en `dsh-plugin-spec` y la construcción/andamiaje en `dsh-primer`.
+, `dsh-plugin-guide` es la **capa de guía** para plugins de DSH: explica qué comprobar, por qué importa y a qué herramienta pertenece el veredicto. Al instalarse registra una skill de agente que se carga bajo demanda y cuyo cuerpo es `SKILL.md`; las referencias relativas de ese cuerpo (`./docs/...`) se resuelven dentro del paquete mediante un `resourceBase` de tipo directorio. No certifica, no puntúa y no clasifica: las comprobaciones están en `dsh-standards`, el texto de las reglas en `dsh-plugin-spec` y la construcción/andamiaje en `dsh-primer`.
 
 | Paquete | Rol |
 |---|---|
@@ -52,7 +52,6 @@ dsh plugin --profile web add dsh-plugin-guide
 ![dsh-plugin-guide: ejecución real de terminal](docs/assets/dsh-plugin-guide-demo.gif)
 
 *Repetición animada de una ejecución real de este repositorio (2026-11-21).*
-
 
 ## Instalación en tres pasos
 
@@ -384,7 +383,6 @@ Este proyecto forma parte de la familia de plugins de DeepSeek Harness de [Perry
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · Guía de la comunidad, no afiliada a DeepSeek.</sub></p>
-
 
 ## Comprobar la compatibilidad
 

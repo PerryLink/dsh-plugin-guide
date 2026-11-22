@@ -1,5 +1,3 @@
-> Host compatibility: DeepSeek Harness `dsh-v0.2.2-rc.4` (verified 2026-11-18).
-
 <div align="center">
 
 <picture>
@@ -12,6 +10,8 @@
 **बनाने से पहले सही सवाल पूछें: किसी DSH प्लगइन की ENTRY / FLOW / BOOST परतें साफ़ करें, और निर्णय उसी टूल को दें जो वास्तव में जाँच चलाता है।**
 
 DSH प्लगइनों के लिए गाइड परत — बताती है क्या जाँचना है, क्यों मायने रखता है, और निर्णय किस टूल का है; यह खुद प्रमाणन, स्कोरिंग या रैंकिंग नहीं करती, बस जाँचें `dsh-standards` तक पहुँचाती है।
+
+अंतिम सत्यापन: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
 
 [इंस्टॉल](#तीन-चरणों-में-शुरुआत) · [कॉन्फ़िगरेशन](#कॉन्फ़िगरेशन) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -52,7 +52,6 @@ dsh plugin --profile web add dsh-plugin-guide
 ![dsh-plugin-guide का असली टर्मिनल रन](docs/assets/dsh-plugin-guide-demo.gif)
 
 *इस रिपॉज़िटरी के असली रन का एनिमेटेड रीप्ले (2026-11-21)।*
-
 
 ## तीन चरणों में शुरुआत
 
@@ -384,7 +383,6 @@ python scripts/gen-readme-assets.py     # docs/assets में हल्के/
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · समुदाय गाइड, DeepSeek से संबद्ध नहीं।</sub></p>
-
 
 ## संगतता जाँचें
 

@@ -31,7 +31,7 @@
   },
   "engines": {
     "node": ">=24.9.0",
-    "dsh": ">=0.2.2-0 <0.3.0"
+    "dsh": ">=0.2.2-0 <0.3.0 || >=0.2.3-0 <0.3.0-0"
   },
   "keywords": [
     "dsh",
@@ -54,7 +54,7 @@
     "url": "https://github.com/PerryLink/dsh-plugin-guide/issues"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": ">=0.2.2-0 <0.3.0"
+    "@deepseek-ai/dsh": ">=0.2.2-0 <0.3.0 || >=0.2.3-0 <0.3.0-0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {

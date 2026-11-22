@@ -1,5 +1,3 @@
-> Host compatibility: DeepSeek Harness `dsh-v0.2.2-rc.4` (verified 2026-11-18).
-
 <div align="center">
 
 <picture>
@@ -11,7 +9,9 @@
 
 **Faça a pergunta certa antes de construir: esclareça as camadas ENTRY / FLOW / BOOST de um plugin DSH e deixe o veredito para a ferramenta que executa as verificações.**
 
-A camada de guia para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito; não certifica, não pontua e não classifica, apenas encaminha as verificações para o `dsh-v0.2.2-rc.4`（2026-11-18）`dsh-standards`.
+A camada de guia para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito; não certifica, não pontua e não classifica, apenas encaminha as verificações para o, `dsh-standards`.
+
+Última verificação: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
 
 [Instalar](#instalação-em-três-passos) · [Configuração](#configuração) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -35,7 +35,7 @@ dsh plugin --profile web add dsh-plugin-guide
 
 ## O que é
 
-`dsh-v0.2.2-rc.4`（2026-11-18）`dsh-plugin-guide` é a **camada de guia** para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito. Ao ser instalado, registra uma skill de agente carregada sob demanda cujo corpo é o `SKILL.md`; as referências relativas desse corpo (`./docs/...`) resolvem dentro do pacote por meio de um `resourceBase` de diretório. Não certifica, não pontua e não classifica: as verificações ficam no `dsh-standards`, o texto das regras no `dsh-plugin-spec` e a construção/andaime no `dsh-primer`.
+, `dsh-plugin-guide` é a **camada de guia** para plugins DSH: explica o que verificar, por que importa e qual ferramenta é dona do veredito. Ao ser instalado, registra uma skill de agente carregada sob demanda cujo corpo é o `SKILL.md`; as referências relativas desse corpo (`./docs/...`) resolvem dentro do pacote por meio de um `resourceBase` de diretório. Não certifica, não pontua e não classifica: as verificações ficam no `dsh-standards`, o texto das regras no `dsh-plugin-spec` e a construção/andaime no `dsh-primer`.
 
 | Pacote | Papel |
 |---|---|
@@ -52,7 +52,6 @@ dsh plugin --profile web add dsh-plugin-guide
 ![dsh-plugin-guide: execução real de terminal](docs/assets/dsh-plugin-guide-demo.gif)
 
 *Repetição animada de uma execução real deste repositório (2026-11-21).*
-
 
 ## Instalação em três passos
 
@@ -384,7 +383,6 @@ Este projeto faz parte da família de plugins do DeepSeek Harness da [PerryLink]
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · Guia da comunidade, sem afiliação com a DeepSeek.</sub></p>
-
 
 ## Verificar a compatibilidade
 

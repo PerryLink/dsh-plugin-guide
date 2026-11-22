@@ -1,5 +1,3 @@
-> Host compatibility: DeepSeek Harness `dsh-v0.2.2-rc.4` (verified 2026-11-18).
-
 <div align="center">
 
 <picture>
@@ -12,6 +10,8 @@
 **Ask the right question before you build: pin down a DSH plugin's ENTRY / FLOW / BOOST layers, then hand the verdict to the tool that actually runs the checks.**
 
 The guide layer for DSH plugins — it explains what to check, why it matters, and which tool owns the verdict; it never certifies, scores, or ranks, it only routes checks to `dsh-standards`.
+
+Last verified on DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
 
 [Install](#three-step-setup) · [Configuration](#configuration) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -56,7 +56,6 @@ dsh plugin --profile web add dsh-plugin-guide
 </picture>
 
 ## Three-step setup
-
 
 ![dsh-plugin-guide: real terminal run](docs/assets/dsh-plugin-guide-demo.gif)
 
@@ -390,7 +389,6 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-plugin-guide contributors
 
 <p align="center"><sub>Apache-2.0 · Community guide, not affiliated with DeepSeek.</sub></p>
-
 
 ## Check compatibility
 
