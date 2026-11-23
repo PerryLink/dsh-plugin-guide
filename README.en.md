@@ -7,6 +7,8 @@
 
 # dsh-plugin-guide
 
+Current version `0.5.12`.
+
 **Ask the right question before you build: pin down a DSH plugin's ENTRY / FLOW / BOOST layers, then hand the verdict to the tool that actually runs the checks.**
 
 The guide layer for DSH plugins — it explains what to check, why it matters, and which tool owns the verdict; it never certifies, scores, or ranks, it only routes checks to `dsh-standards`.

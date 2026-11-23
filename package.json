@@ -1,12 +1,13 @@
 {
   "name": "dsh-plugin-guide",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "description": "A practical guide to DSH plugin quality: ENTRY checks, FLOW checks, and BOOST guidance. Community guide; not official, not a certification, not a ranking.",
   "type": "module",
   "main": "index.js",
   "exports": {
     ".": "./index.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
   },
   "files": [
     "index.js",
@@ -123,5 +124,9 @@
     "type": "individual",
     "url": "https://github.com/sponsors/PerryLink"
   },
-  "icon": "icon.svg"
+  "icon": "icon.svg",
+  "author": {
+    "name": "PerryLink",
+    "url": "https://github.com/PerryLink"
+  }
 }
